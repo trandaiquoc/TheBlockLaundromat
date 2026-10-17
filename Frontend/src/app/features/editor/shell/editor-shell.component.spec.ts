@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -547,6 +548,91 @@ describe('editor shell movement/delete routing', () => {
     } finally {
       if (widthDescriptor) Object.defineProperty(window, 'innerWidth', widthDescriptor);
       fixture.destroy();
+      mount.mockRestore();
+    }
+  });
+
+  it('traps responsive sidebar focus and restores the opener on close', async () => {
+    const mount = vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
+    const fixture = TestBed.createComponent(EditorShellComponent);
+    const workspace = TestBed.inject(WorkspaceStateService);
+    await workspace.restore(TestBed.inject(PROJECT_STORE), undefined);
+    workspace.activate(project, undefined);
+    document.body.append(fixture.nativeElement);
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const i18n = TestBed.inject(I18nService);
+    const widthDescriptor = Object.getOwnPropertyDescriptor(window, 'innerWidth');
+    const leftOpener = root.querySelector<HTMLButtonElement>(
+      `.responsive-drawer-actions [aria-label="${i18n.t('openLeftSidebar')}"]`,
+    );
+    const leftDrawer = root.querySelector<HTMLElement>('.left-panel');
+    const rightOpener = root.querySelector<HTMLButtonElement>(
+      `.responsive-drawer-actions [aria-label="${i18n.t('openRightSidebar')}"]`,
+    );
+    const leftFocusTrap = fixture.debugElement
+      .query(By.css('.left-panel'))
+      .injector.get(CdkTrapFocus);
+    const rightFocusTrap = fixture.debugElement
+      .query(By.css('.right-panel'))
+      .injector.get(CdkTrapFocus);
+    const shell = fixture.componentInstance as unknown as { handleViewportResize: () => void };
+
+    try {
+      leftOpener?.focus();
+      leftOpener?.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      expect(leftDrawer?.getAttribute('role')).toBe('dialog');
+      expect(leftDrawer?.getAttribute('aria-modal')).toBe('true');
+      expect(leftDrawer?.getAttribute('aria-label')).toBe(i18n.t('leftSidebar'));
+      expect(document.activeElement).toBe(root.querySelector('#sidebar-tab-blocks'));
+      expect(leftFocusTrap.enabled, 'The open sidebar should trap keyboard focus').toBe(true);
+
+      const escape = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
+      });
+      const documentKeydown = vi.fn();
+      document.addEventListener('keydown', documentKeydown);
+      document.activeElement?.dispatchEvent(escape);
+      document.removeEventListener('keydown', documentKeydown);
+      fixture.detectChanges();
+      expect(escape.defaultPrevented, 'Escape should close the responsive drawer').toBe(true);
+      expect(documentKeydown, 'Escape should not reach editor shortcuts').not.toHaveBeenCalled();
+      expect(leftDrawer?.hasAttribute('aria-modal')).toBe(false);
+      expect(document.activeElement).toBe(leftOpener);
+
+      rightOpener?.focus();
+      rightOpener?.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(document.activeElement).toBe(root.querySelector('#right-sidebar-tab-selection'));
+
+      const rightDrawer = root.querySelector<HTMLElement>('.right-panel');
+      root.querySelector<HTMLButtonElement>('.right-panel .drawer-close')?.click();
+      fixture.detectChanges();
+      expect(document.activeElement).toBe(rightOpener);
+
+      rightOpener?.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      root.querySelector<HTMLButtonElement>('.right-panel .drawer-close')?.focus();
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1200 });
+      shell.handleViewportResize();
+      await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+      fixture.detectChanges();
+
+      expect(rightDrawer?.hasAttribute('aria-modal')).toBe(false);
+      expect(rightFocusTrap.enabled, 'Desktop layout should release the focus trap').toBe(false);
+      expect(document.activeElement).toBe(root.querySelector('#right-sidebar-tab-selection'));
+    } finally {
+      if (widthDescriptor) Object.defineProperty(window, 'innerWidth', widthDescriptor);
+      fixture.destroy();
+      fixture.nativeElement.remove();
       mount.mockRestore();
     }
   });

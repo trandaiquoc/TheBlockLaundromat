@@ -9,6 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Router } from '@angular/router';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { ThemeService } from '../../../core/ui/theme/theme.service';
@@ -102,6 +103,7 @@ type AssetManagerInitialTab = 'vanilla' | 'mods';
     StructureJsonExportDialogComponent,
     StructureJsonImportDialogComponent,
     StructureNbtExportDialogComponent,
+    CdkTrapFocus,
     LucideCircleAlert,
     LucideX,
     LucideCuboid,
@@ -460,6 +462,15 @@ export class EditorShellComponent implements OnDestroy {
       this.rightDrawerOpen.set(true);
       this.leftDrawerOpen.set(false);
     }
+    queueMicrotask(() => {
+      const isOpen = side === 'left' ? this.leftDrawerOpen() : this.rightDrawerOpen();
+      if (isOpen) this.focusDrawerTab(side);
+    });
+  }
+  protected closeDrawerFromEscape(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.closeDrawers();
   }
   protected closeDrawers(returnFocus = true): void {
     this.leftDrawerOpen.set(false);
@@ -657,6 +668,22 @@ export class EditorShellComponent implements OnDestroy {
     this.sidebarResize.clampToViewport();
     const side = this.focusedResizeSide;
     const view = this.document.defaultView;
+    if (view && view.innerWidth > 850) {
+      const openSide = this.leftDrawerOpen()
+        ? 'left'
+        : this.rightDrawerOpen()
+          ? 'right'
+          : undefined;
+      if (openSide) {
+        const activeElement = this.document.activeElement;
+        const focusNeedsRelocation =
+          activeElement instanceof HTMLElement &&
+          (activeElement.classList.contains('drawer-close') ||
+            !!activeElement.closest('.responsive-drawer-actions'));
+        this.closeDrawers(false);
+        if (focusNeedsRelocation) view.requestAnimationFrame(() => this.focusDrawerTab(openSide));
+      }
+    }
     if (!side || !view) return;
 
     view.requestAnimationFrame(() => {
@@ -679,6 +706,14 @@ export class EditorShellComponent implements OnDestroy {
   }
   protected handleWindowBlur(_event?: FocusEvent): void {
     this.clearPressedMovementActions();
+  }
+
+  private focusDrawerTab(side: 'left' | 'right'): void {
+    const selector =
+      side === 'left'
+        ? '.left-panel .sidebar-tabs [aria-selected="true"]'
+        : '.right-panel .sidebar-tabs [aria-selected="true"]';
+    this.editorBody()?.nativeElement.querySelector<HTMLElement>(selector)?.focus();
   }
 
   protected clearPressedMovementActions(): void {

@@ -145,7 +145,15 @@
         ></div>
       }
       @if (layout.preferences().leftSidebarVisible) {
-        <aside class="panel left-panel" [class.drawer-open]="leftDrawerOpen()">
+        <aside
+          class="panel left-panel"
+          [class.drawer-open]="leftDrawerOpen()"
+          [attr.role]="leftDrawerOpen() ? 'dialog' : null"
+          [attr.aria-modal]="leftDrawerOpen() ? 'true' : null"
+          [attr.aria-label]="i18n.t('leftSidebar')"
+          [cdkTrapFocus]="leftDrawerOpen()"
+          (keydown.escape)="closeDrawerFromEscape($event)"
+        >
           <button
             type="button"
             class="drawer-close ui-close-button ui-tooltip-align-end"
@@ -292,7 +300,15 @@
         }
       </main>
       @if (layout.preferences().rightSidebarVisible) {
-        <aside class="panel right-panel" [class.drawer-open]="rightDrawerOpen()">
+        <aside
+          class="panel right-panel"
+          [class.drawer-open]="rightDrawerOpen()"
+          [attr.role]="rightDrawerOpen() ? 'dialog' : null"
+          [attr.aria-modal]="rightDrawerOpen() ? 'true' : null"
+          [attr.aria-label]="i18n.t('inspector')"
+          [cdkTrapFocus]="rightDrawerOpen()"
+          (keydown.escape)="closeDrawerFromEscape($event)"
+        >
           <button
             type="button"
             class="drawer-close ui-close-button ui-tooltip-align-end"

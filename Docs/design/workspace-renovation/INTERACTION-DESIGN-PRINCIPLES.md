@@ -61,6 +61,9 @@ no demo code or assets were copied.
   dialogs. Keep the interaction target and surrounding layout steady.
 - Return focus to the trigger when a popover or nested dialog closes unless its
   action moves focus to an explicit next step.
+- Responsive sidebars opened over a blocking backdrop behave as modal dialogs:
+  focus enters the selected tab, Tab stays inside, Escape closes, and focus
+  returns to the opener. Releasing the narrow layout also releases the trap.
 - Searchable pickers keep query focus in a labeled combobox and expose the
   active listbox option. Arrow keys move through results, Enter selects,
   Escape closes and returns focus, and Tab closes while preserving the next
