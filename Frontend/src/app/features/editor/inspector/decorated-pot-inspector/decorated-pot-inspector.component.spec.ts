@@ -3,6 +3,8 @@ import {
   SimpleChange,
   createEnvironmentInjector,
   runInInjectionContext,
+  signal,
+  type WritableSignal,
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -18,10 +20,12 @@ describe('DecoratedPotInspectorComponent', () => {
   let component: DecoratedPotInspectorComponent;
   let locale: 'en' | 'vi';
   let setDecoratedPotItem: ReturnType<typeof vi.fn>;
+  let catalogRevision: WritableSignal<number>;
 
   beforeEach(() => {
     locale = 'en';
     setDecoratedPotItem = vi.fn();
+    catalogRevision = signal(0);
     const translations: Readonly<Record<string, Readonly<Record<'en' | 'vi', string>>>> = {
       inventoryCountPositiveInteger: {
         en: 'Enter a whole number of at least 1.',
@@ -42,8 +46,13 @@ describe('DecoratedPotInspectorComponent', () => {
         {
           provide: ItemCatalogService,
           useValue: {
-            get: (id: string) =>
-              id === 'minecraft:diamond' ? { displayName: 'Diamond', maxStackSize: 64 } : undefined,
+            generation: catalogRevision,
+            get: (id: string) => {
+              catalogRevision();
+              return id === 'minecraft:diamond'
+                ? { displayName: 'Diamond', maxStackSize: 64 }
+                : undefined;
+            },
           },
         },
         { provide: StructureEditorService, useValue: { setDecoratedPotItem } },
@@ -113,5 +122,18 @@ describe('DecoratedPotInspectorComponent', () => {
         count: 32,
       },
     );
+  });
+
+  it('keeps sherd options stable until catalog content changes', () => {
+    const state = component as unknown as {
+      sherdOptions: () => readonly { id: string; label: string }[];
+    };
+    const first = state.sherdOptions();
+
+    expect(state.sherdOptions()).toBe(first);
+
+    catalogRevision.update((revision) => revision + 1);
+
+    expect(state.sherdOptions()).not.toBe(first);
   });
 });

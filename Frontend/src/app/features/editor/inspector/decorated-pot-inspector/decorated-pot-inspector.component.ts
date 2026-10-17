@@ -1,4 +1,12 @@
-import { Component, Input, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { ItemCatalogService } from '../../../../core/items/catalog/item-catalog.service';
 import type { ItemStackData } from '../../../../core/items/item-stack.types';
 import {
@@ -43,13 +51,13 @@ export class DecoratedPotInspectorComponent implements OnChanges {
   protected data() {
     return decoratedPotData(this.block?.blockEntityData);
   }
-  protected sherdOptions(): readonly SearchableDropdownOption[] {
-    return [DECORATED_POT_DEFAULT_SHERD, ...decoratedPotSherdIds].map((id) => ({
+  protected readonly sherdOptions = computed<readonly SearchableDropdownOption[]>(() =>
+    [DECORATED_POT_DEFAULT_SHERD, ...decoratedPotSherdIds].map((id) => ({
       id,
       label: this.catalog.get(id)?.displayName ?? id,
       secondary: id,
-    }));
-  }
+    })),
+  );
   protected sideLabel(side: PotSide): string {
     return this.i18n.t(
       (

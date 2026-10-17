@@ -19,10 +19,21 @@ describe('SearchableDropdownComponent', () => {
     fixture.detectChanges();
 
     const trigger = fixture.nativeElement.querySelector('.dropdown-trigger') as HTMLButtonElement;
-    expect(trigger.getAttribute('role')).toBe('combobox');
+    expect(trigger.getAttribute('role')).toBeNull();
+    expect(trigger.getAttribute('aria-haspopup')).toBe('listbox');
+    expect(trigger.hasAttribute('aria-controls')).toBe(false);
     expect(trigger.getAttribute('aria-label')).toBe(
       'Minecraft version, Java 1.21.1, Verified support',
     );
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const listbox = document.body.querySelector('[role="listbox"]') as HTMLElement;
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger.getAttribute('aria-controls')).toBe(listbox.id);
+    const search = document.body.querySelector('.dropdown-search') as HTMLInputElement;
+    expect(search.getAttribute('role')).toBe('combobox');
+    expect(search.getAttribute('aria-controls')).toBe(listbox.id);
     fixture.destroy();
   });
 
@@ -114,12 +125,97 @@ describe('SearchableDropdownComponent', () => {
     const search = document.body.querySelector('.dropdown-search') as HTMLInputElement;
     search.focus();
     search.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    fixture.detectChanges();
+    const activeId = search.getAttribute('aria-activedescendant');
+    expect(document.getElementById(activeId ?? '')?.textContent).toContain('Diamond');
+    expect(document.getElementById(activeId ?? '')?.getAttribute('role')).toBe('option');
+    expect(
+      [...document.body.querySelectorAll<HTMLButtonElement>('[role="option"]')].every(
+        (option) => option.tabIndex === -1,
+      ),
+    ).toBe(true);
     search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     fixture.detectChanges();
     await fixture.whenStable();
 
     expect(document.body.querySelector('.dropdown-popover')).toBeNull();
     expect(document.activeElement).toBe(trigger);
+    fixture.destroy();
+  });
+
+  it('lets keyboard users choose the empty value from the searchable options', async () => {
+    await TestBed.configureTestingModule({
+      imports: [SearchableDropdownComponent],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(SearchableDropdownComponent);
+    fixture.componentRef.setInput('options', [{ id: 'minecraft:diamond', label: 'Diamond' }]);
+    fixture.componentRef.setInput('selectedId', 'minecraft:diamond');
+    fixture.componentRef.setInput('emptyLabel', 'Empty slot');
+    const selected: string[] = [];
+    fixture.componentInstance.selectionChange.subscribe((id) => selected.push(id));
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector('.dropdown-trigger') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const search = document.body.querySelector('.dropdown-search') as HTMLInputElement;
+    search.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    fixture.detectChanges();
+    const activeId = search.getAttribute('aria-activedescendant');
+    expect(document.getElementById(activeId ?? '')?.textContent).toContain('Empty slot');
+
+    search.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }),
+    );
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(selected).toEqual(['']);
+    expect(document.body.querySelector('.dropdown-popover')).toBeNull();
+    fixture.destroy();
+  });
+
+  it('closes when keyboard focus leaves the search popup without stealing focus', async () => {
+    await TestBed.configureTestingModule({
+      imports: [SearchableDropdownComponent],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(SearchableDropdownComponent);
+    fixture.componentRef.setInput('options', [{ id: 'minecraft:diamond', label: 'Diamond' }]);
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector('.dropdown-trigger') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const outside = document.createElement('button');
+    document.body.append(outside);
+    outside.focus();
+    fixture.detectChanges();
+
+    expect(document.body.querySelector('.dropdown-popover')).toBeNull();
+    expect(document.activeElement).toBe(outside);
+    outside.remove();
+    fixture.destroy();
+  });
+
+  it('drops the active descendant when the available options are replaced', async () => {
+    await TestBed.configureTestingModule({
+      imports: [SearchableDropdownComponent],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(SearchableDropdownComponent);
+    fixture.componentRef.setInput('options', [{ id: 'minecraft:diamond', label: 'Diamond' }]);
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector('.dropdown-trigger') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const search = document.body.querySelector('.dropdown-search') as HTMLInputElement;
+    search.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    fixture.detectChanges();
+    expect(search.hasAttribute('aria-activedescendant')).toBe(true);
+
+    fixture.componentRef.setInput('options', []);
+    fixture.detectChanges();
+
+    expect(search.hasAttribute('aria-activedescendant')).toBe(false);
     fixture.destroy();
   });
 

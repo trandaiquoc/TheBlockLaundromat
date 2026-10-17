@@ -33,7 +33,17 @@ let nextDropdownId = 0;
   host: { '(keydown)': 'onHostKeydown($event)' },
 })
 export class SearchableDropdownComponent {
-  @Input() options: readonly SearchableDropdownOption[] = [];
+  private optionValues: readonly SearchableDropdownOption[] = [];
+  @Input()
+  get options(): readonly SearchableDropdownOption[] {
+    return this.optionValues;
+  }
+  set options(value: readonly SearchableDropdownOption[]) {
+    if (this.optionValues === value) return;
+    this.optionValues = value;
+    this.indexedOptions = undefined;
+    this.activeIndex.set(null);
+  }
   @Input() selectedId = '';
   @Input() placeholder = '';
   @Input() emptyLabel = '';
@@ -62,6 +72,16 @@ export class SearchableDropdownComponent {
     return [this.ariaLabel || this.placeholder, selected?.label, selected?.secondary]
       .filter((part): part is string => Boolean(part))
       .join(', ');
+  }
+  protected optionId(index: number): string {
+    return `${this.listId}-option-${index}`;
+  }
+  protected optionIndex(filteredIndex: number): number {
+    return filteredIndex + (this.emptyLabel ? 1 : 0);
+  }
+  protected activeOptionId(): string | null {
+    const index = this.activeIndex();
+    return this.open() && index !== null ? this.optionId(index) : null;
   }
   protected filteredOptions(): readonly SearchableDropdownOption[] {
     this.ensureOptionIndex();
@@ -93,6 +113,12 @@ export class SearchableDropdownComponent {
     this.selectionChange.emit(id);
     this.close();
   }
+  protected closeWhenFocusLeaves(event: FocusEvent): void {
+    const next = event.relatedTarget;
+    const popup = event.currentTarget;
+    if (!(next instanceof Node) || !(popup instanceof HTMLElement) || !popup.contains(next))
+      this.close(false);
+  }
   protected onKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -101,23 +127,27 @@ export class SearchableDropdownComponent {
       return;
     }
     if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      const options = this.filteredOptions();
-      if (!options.length) return;
+      const optionCount = this.optionCount();
+      if (!optionCount) return;
       event.preventDefault();
       const delta = event.key === 'ArrowDown' ? 1 : -1;
       this.activeIndex.update((index) => {
-        if (index === null) return delta > 0 ? 0 : options.length - 1;
-        return (index + delta + options.length) % options.length;
+        if (index === null) return delta > 0 ? 0 : optionCount - 1;
+        return (index + delta + optionCount) % optionCount;
       });
       return;
     }
     if (event.key === 'Enter') {
       const index = this.activeIndex();
-      const option = index === null ? undefined : this.filteredOptions()[index];
-      if (option) {
-        event.preventDefault();
-        this.select(option.id);
+      if (index === null || index < 0 || index >= this.optionCount()) return;
+      event.preventDefault();
+      if (this.emptyLabel && index === 0) {
+        this.select('');
+        return;
       }
+      const filteredIndex = index - (this.emptyLabel ? 1 : 0);
+      const option = this.filteredOptions()[filteredIndex];
+      if (option) this.select(option.id);
     }
   }
   protected close(restoreFocus = true): void {
@@ -152,5 +182,8 @@ export class SearchableDropdownComponent {
     for (const option of this.options) {
       this.optionById.set(option.id, option);
     }
+  }
+  private optionCount(): number {
+    return this.filteredOptions().length + (this.emptyLabel ? 1 : 0);
   }
 }

@@ -61,6 +61,10 @@ no demo code or assets were copied.
   dialogs. Keep the interaction target and surrounding layout steady.
 - Return focus to the trigger when a popover or nested dialog closes unless its
   action moves focus to an explicit next step.
+- Searchable pickers keep query focus in a labeled combobox and expose the
+  active listbox option. Arrow keys move through results, Enter selects,
+  Escape closes and returns focus, and Tab closes while preserving the next
+  focus target. Any provided empty choice stays keyboard-selectable.
 - Keep theme-aware hover, pressed, selected, and focus states distinct.
 - Keep the primary action near its workflow; keep destructive or secondary
   actions visually quieter until needed.

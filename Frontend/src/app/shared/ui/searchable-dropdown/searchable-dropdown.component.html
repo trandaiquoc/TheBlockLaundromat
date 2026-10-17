@@ -5,11 +5,11 @@
     cdkOverlayOrigin
     #dropdownOrigin="cdkOverlayOrigin"
     class="dropdown-trigger"
-    role="combobox"
     [disabled]="disabled"
     [attr.aria-label]="triggerAriaLabel()"
     [attr.aria-expanded]="open()"
-    [attr.aria-controls]="listId"
+    [attr.aria-controls]="open() ? listId : null"
+    aria-haspopup="listbox"
     (click)="toggle()"
   >
     <span class="selected-value">
@@ -47,38 +47,54 @@
       (backdropClick)="close()"
       (detach)="close()"
     >
-      <div class="dropdown-popover" [id]="listId" role="listbox" (click)="$event.stopPropagation()">
+      <div
+        class="dropdown-popover"
+        (click)="$event.stopPropagation()"
+        (focusout)="closeWhenFocusLeaves($event)"
+      >
+        @let filtered = filteredOptions();
         <input
           #searchInput
           type="search"
           class="dropdown-search"
+          role="combobox"
           [value]="query()"
           [placeholder]="placeholder"
           [attr.aria-label]="placeholder"
+          aria-autocomplete="list"
+          aria-haspopup="listbox"
+          [attr.aria-expanded]="open()"
+          [attr.aria-controls]="listId"
+          [attr.aria-activedescendant]="activeOptionId()"
           (input)="setQuery($event)"
           (keydown)="onKeydown($event)"
         />
-        <div class="dropdown-options">
+        <div class="dropdown-options" [id]="listId" role="listbox">
           @if (emptyLabel) {
             <button
               type="button"
               role="option"
+              [id]="optionId(0)"
               class="dropdown-option"
               [class.selected]="!selectedId"
+              [class.active-option]="activeIndex() === 0"
               [attr.aria-selected]="!selectedId"
+              tabindex="-1"
               (click)="select('')"
             >
               {{ emptyLabel }}
             </button>
           }
-          @for (option of filteredOptions(); track option.id) {
+          @for (option of filtered; track option.id) {
             <button
               type="button"
               role="option"
+              [id]="optionId(optionIndex($index))"
               class="dropdown-option"
               [class.selected]="option.id === selectedId"
-              [class.active-option]="$index === activeIndex()"
+              [class.active-option]="optionIndex($index) === activeIndex()"
               [attr.aria-selected]="option.id === selectedId"
+              tabindex="-1"
               (click)="select(option.id)"
             >
               @if (option.thumbnail) {
@@ -103,10 +119,10 @@
               </span>
             </button>
           }
-          @if (!filteredOptions().length) {
-            <p class="no-results">{{ noResults }}</p>
-          }
         </div>
+        @if (!filtered.length) {
+          <p class="no-results" role="status">{{ noResults }}</p>
+        }
       </div>
     </ng-template>
   }
