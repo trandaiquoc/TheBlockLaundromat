@@ -467,6 +467,19 @@ export class EditorShellComponent implements OnDestroy {
       if (isOpen) this.focusDrawerTab(side);
     });
   }
+  protected openBlockBrowserFromViewport(event: Event): void {
+    this.leftSidebarTab.set('blocks');
+    if (!this.layout.preferences().leftSidebarVisible) {
+      this.layout.set('leftSidebarVisible', true);
+    }
+
+    const view = this.document.defaultView;
+    if (!view) return;
+    if (view.innerWidth <= 850) {
+      this.openDrawer('left', event);
+    }
+    view.requestAnimationFrame(() => this.focusDrawerTab('left'));
+  }
   protected closeDrawerFromEscape(event: Event): void {
     event.preventDefault();
     event.stopPropagation();

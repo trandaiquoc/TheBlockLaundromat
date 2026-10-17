@@ -14,11 +14,13 @@ describe('ViewportOverlayStackComponent', () => {
     fixture = TestBed.createComponent(ViewportOverlayStackComponent);
   });
 
-  it('places placement feedback after empty-project guidance in the same overlay stack', () => {
+  it('forwards the empty-state action request and keeps placement feedback in the overlay stack', () => {
     fixture.componentRef.setInput('project', { blocks: [], decorations: [] });
     fixture.componentRef.setInput('hasActiveBlock', true);
     fixture.componentRef.setInput('placementStatus', 'valid');
     fixture.componentRef.setInput('target', '2, 0, 3');
+    const openRequested = vi.fn();
+    fixture.componentInstance.openBlockBrowserRequested.subscribe(openRequested);
     fixture.detectChanges();
 
     const host = fixture.nativeElement as HTMLElement;
@@ -34,6 +36,11 @@ describe('ViewportOverlayStackComponent', () => {
     expect(emptyState?.parentElement).toBe(stack);
     expect(status?.parentElement).toBe(stack);
     expect(emptyState?.compareDocumentPosition(status!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+
+    fixture.componentRef.setInput('hasActiveBlock', false);
+    fixture.detectChanges();
+    (host.querySelector('.starter-action') as HTMLButtonElement).click();
+    expect(openRequested).toHaveBeenCalledOnce();
   });
 
   it('keeps placement feedback when a populated project has no starter card', () => {

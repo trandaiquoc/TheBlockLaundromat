@@ -7,6 +7,7 @@ import {
   effect,
   inject,
   input as angularInput,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -84,6 +85,7 @@ export const Y_LAYER_PROJECTION_STATUS_DELAY_MS = 180;
 })
 export class YLayerComponent implements AfterViewInit, OnDestroy {
   readonly viewportActive = angularInput(true);
+  readonly openBlockBrowserRequested = output<Event>();
   private readonly host = viewChild<ElementRef<HTMLElement>>('host');
   protected readonly workspace = inject(WorkspaceStateService);
   private readonly assets = inject(ContentAssetRuntimeService);

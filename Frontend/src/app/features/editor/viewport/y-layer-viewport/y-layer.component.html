@@ -98,6 +98,7 @@
       [placementStatus]="placementFeedback()?.status"
       [placementReason]="reasonLabel()"
       [target]="target()"
+      (openBlockBrowserRequested)="openBlockBrowserRequested.emit($event)"
     />
   </div>
 </div>

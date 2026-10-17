@@ -4,6 +4,7 @@
     [tool]="tool()"
     [hasActiveBlock]="hasActiveBlock()"
     [hasActiveDecoration]="hasActiveDecoration()"
+    (openBlockBrowserRequested)="openBlockBrowserRequested.emit($event)"
   />
   @if (placementStatus() || placementReason() || target()) {
     <div class="viewport-status" [attr.data-status]="placementStatus()">

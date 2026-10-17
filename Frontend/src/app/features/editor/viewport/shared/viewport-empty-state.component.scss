@@ -169,6 +169,12 @@
   overflow-wrap: anywhere;
 }
 
+.starter-action {
+  grid-column: 2;
+  justify-self: start;
+  pointer-events: auto;
+}
+
 :host-context([data-theme='craft']) {
   --starter-cube-top: #4b8c37;
   --starter-cube-left: #785234;

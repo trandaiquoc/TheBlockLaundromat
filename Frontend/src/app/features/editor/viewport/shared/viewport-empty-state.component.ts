@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import type { ProjectDocument } from '../../../../core/domain/project.types';
 import type { EditorTool } from '../../../../core/editor/state/tool.service';
 import { I18nService } from '../../../../core/ui/localization/i18n.service';
@@ -31,6 +31,7 @@ type ViewportEmptyGuidance =
   styleUrl: './viewport-empty-state.component.scss',
 })
 export class ViewportEmptyStateComponent {
+  readonly openBlockBrowserRequested = output<Event>();
   readonly project = input<Pick<ProjectDocument, 'blocks' | 'decorations'> | undefined>();
   readonly tool = input<EditorTool>('place');
   readonly hasActiveBlock = input(false);

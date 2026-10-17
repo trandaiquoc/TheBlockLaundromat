@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import type { ProjectDocument } from '../../../../core/domain/project.types';
 import type { PlacementStatus } from '../../../../core/editor/placement/placement';
 import type { EditorTool } from '../../../../core/editor/state/tool.service';
@@ -12,6 +12,7 @@ import { ViewportEmptyStateComponent } from './viewport-empty-state.component';
   styleUrl: './viewport-overlay-stack.component.scss',
 })
 export class ViewportOverlayStackComponent {
+  readonly openBlockBrowserRequested = output<Event>();
   readonly project = input<Pick<ProjectDocument, 'blocks' | 'decorations'> | undefined>();
   readonly tool = input<EditorTool>('place');
   readonly hasActiveBlock = input(false);

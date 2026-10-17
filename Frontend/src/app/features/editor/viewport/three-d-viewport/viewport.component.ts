@@ -8,6 +8,7 @@ import {
   inject,
   input as angularInput,
   isDevMode,
+  output,
   viewChild,
   signal,
 } from '@angular/core';
@@ -85,6 +86,7 @@ declare global {
 })
 export class ViewportComponent implements AfterViewInit, OnDestroy {
   readonly viewportActive = angularInput(true);
+  readonly openBlockBrowserRequested = output<Event>();
   private readonly host = viewChild.required<ElementRef<HTMLElement>>('host');
   private readonly selectionMarquee = viewChild<ElementRef<HTMLDivElement>>('selectionMarquee');
   protected readonly workspace = inject(WorkspaceStateService);

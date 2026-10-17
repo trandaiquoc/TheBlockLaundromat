@@ -1,10 +1,5 @@
 @if (guidance(); as guidance) {
-  <div
-    class="viewport-starter"
-    role="status"
-    aria-atomic="true"
-    [attr.data-guidance]="guidance.kind"
-  >
+  <div class="viewport-starter" [attr.data-guidance]="guidance.kind">
     <div class="starter-art" aria-hidden="true">
       <svg viewBox="0 0 128 112" focusable="false">
         <path class="starter-ground" d="m10 69 54-31 54 31-54 31z" />
@@ -22,7 +17,7 @@
         <path class="starter-stitch-line" d="m42 40 22-13 22 13m-45 5 21 12m24-12L65 57" />
       </svg>
     </div>
-    <div class="starter-copy">
+    <div class="starter-copy" role="status" aria-atomic="true">
       <span class="starter-eyebrow">{{ i18n.t('viewportEmptyEyebrow') }}</span>
       <h2>{{ i18n.t('viewportEmptyTitle') }}</h2>
       <p>{{ i18n.t(guidance.hint) }}</p>
@@ -31,5 +26,14 @@
         <strong>{{ i18n.t(guidance.nextStep) }}</strong>
       </div>
     </div>
+    @if (guidance.kind === 'choose') {
+      <button
+        type="button"
+        class="ui-button ui-button--primary ui-button--sm starter-action"
+        (click)="openBlockBrowserRequested.emit($event)"
+      >
+        {{ i18n.t('openLeftSidebar') }}
+      </button>
+    }
   </div>
 }

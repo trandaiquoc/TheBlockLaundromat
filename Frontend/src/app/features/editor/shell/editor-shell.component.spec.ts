@@ -637,6 +637,46 @@ describe('editor shell movement/delete routing', () => {
     }
   });
 
+  it('opens the Block Browser from empty-viewport guidance when its sidebar is hidden', async () => {
+    const mount = vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
+    const fixture = TestBed.createComponent(EditorShellComponent);
+    const workspace = TestBed.inject(WorkspaceStateService);
+    const layout = TestBed.inject(EditorLayoutPreferencesService);
+    const widthDescriptor = Object.getOwnPropertyDescriptor(window, 'innerWidth');
+    await workspace.restore(TestBed.inject(PROJECT_STORE), undefined);
+
+    try {
+      workspace.activate({ ...project, blocks: [] }, undefined);
+      layout.set('leftSidebarVisible', false);
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 780 });
+      document.body.append(fixture.nativeElement);
+      fixture.detectChanges();
+
+      const root = fixture.nativeElement as HTMLElement;
+      const openButton = root.querySelector<HTMLButtonElement>('.starter-action');
+      expect(openButton?.textContent).toContain(TestBed.inject(I18nService).t('openLeftSidebar'));
+      openButton?.click();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+      fixture.detectChanges();
+
+      expect(layout.preferences().leftSidebarVisible).toBe(true);
+      expect(root.querySelector('.left-panel')?.classList.contains('drawer-open')).toBe(true);
+      expect(document.activeElement).toBe(root.querySelector('#sidebar-tab-blocks'));
+
+      root.querySelector<HTMLButtonElement>('.left-panel .drawer-close')?.click();
+      fixture.detectChanges();
+      expect(document.activeElement).toBe(openButton);
+    } finally {
+      if (widthDescriptor) Object.defineProperty(window, 'innerWidth', widthDescriptor);
+      layout.set('leftSidebarVisible', true);
+      fixture.destroy();
+      fixture.nativeElement.remove();
+      mount.mockRestore();
+    }
+  });
+
   it('keeps Inspector tabs keyboard-operable with the selected tab in sync', () => {
     const mount = vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
     const fixture = TestBed.createComponent(EditorShellComponent);
