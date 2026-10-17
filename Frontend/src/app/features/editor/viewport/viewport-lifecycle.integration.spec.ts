@@ -33,6 +33,26 @@ function createAssetRuntimeStub() {
   };
 }
 
+const viewportOverlayTemplate = `
+  <div #host>
+    <app-viewport-overlay-stack
+      [project]="workspace.project()"
+      [tool]="tool.active()"
+      [hasActiveBlock]="!!active.active()"
+      [hasActiveDecoration]="!!decorations.active()"
+      [placementStatus]="placementFeedback()?.status"
+      [placementReason]="reasonLabel()"
+      [target]="target()"
+    />
+  </div>
+`;
+
+type ViewportFeedbackSignals = {
+  placementFeedback: WritableSignal<PlacementFeedback | undefined>;
+  decorationReason: WritableSignal<string>;
+  target: WritableSignal<string>;
+};
+
 describe('editor viewport engine teardown', () => {
   afterEach(() => {
     vi.restoreAllMocks();
@@ -46,21 +66,8 @@ describe('editor viewport engine teardown', () => {
     'clears stale placement feedback when the %s tool changes',
     async (_mode, component) => {
       const componentType = component as unknown as Type<unknown>;
-      const overlayTemplate = `
-      <div #host>
-        <app-viewport-overlay-stack
-          [project]="workspace.project()"
-          [tool]="tool.active()"
-          [hasActiveBlock]="!!active.active()"
-          [hasActiveDecoration]="!!decorations.active()"
-          [placementStatus]="placementFeedback()?.status"
-          [placementReason]="reasonLabel()"
-          [target]="target()"
-        />
-      </div>
-    `;
       await TestBed.configureTestingModule({ imports: [componentType] })
-        .overrideComponent(componentType, { set: { template: overlayTemplate } })
+        .overrideComponent(componentType, { set: { template: viewportOverlayTemplate } })
         .compileComponents();
       vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => undefined);
       vi.spyOn(ThreeViewportEngine.prototype, 'update').mockImplementation(() => undefined);
@@ -68,10 +75,7 @@ describe('editor viewport engine teardown', () => {
 
       const fixture = TestBed.createComponent(componentType);
       fixture.detectChanges();
-      const instance = fixture.componentInstance as unknown as {
-        placementFeedback: WritableSignal<PlacementFeedback | undefined>;
-        decorationReason: WritableSignal<string>;
-        target: WritableSignal<string>;
+      const instance = fixture.componentInstance as unknown as ViewportFeedbackSignals & {
         cancelPointer(): void;
       };
       instance['placementFeedback'].set({ status: 'valid' });
@@ -99,6 +103,43 @@ describe('editor viewport engine teardown', () => {
       expect(instance['placementFeedback']()).toBeUndefined();
       expect(instance['decorationReason']()).toBe('');
       expect(instance['target']()).toBe('');
+      fixture.destroy();
+    },
+  );
+
+  it.each([
+    ['3D', ViewportComponent],
+    ['Y-Layer', YLayerComponent],
+  ] as const)(
+    'clears retained %s feedback while that viewport is inactive',
+    async (_mode, component) => {
+      const componentType = component as unknown as Type<unknown>;
+      await TestBed.configureTestingModule({ imports: [componentType] })
+        .overrideComponent(componentType, { set: { template: viewportOverlayTemplate } })
+        .compileComponents();
+      vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => undefined);
+      vi.spyOn(ThreeViewportEngine.prototype, 'update').mockImplementation(() => undefined);
+      vi.spyOn(ThreeViewportEngine.prototype, 'dispose').mockImplementation(() => undefined);
+
+      const fixture = TestBed.createComponent(componentType);
+      fixture.detectChanges();
+      const instance = fixture.componentInstance as unknown as ViewportFeedbackSignals;
+      instance.placementFeedback.set({ status: 'valid' });
+      instance.decorationReason.set('missing-support');
+      instance.target.set('1, 2, 3');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.viewport-status')).not.toBeNull();
+
+      fixture.componentRef.setInput('viewportActive', false);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.viewport-status')).toBeNull();
+      expect(instance.placementFeedback()).toBeUndefined();
+      expect(instance.decorationReason()).toBe('');
+      expect(instance.target()).toBe('');
+
+      fixture.componentRef.setInput('viewportActive', true);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.viewport-status')).toBeNull();
       fixture.destroy();
     },
   );

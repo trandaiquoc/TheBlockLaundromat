@@ -260,6 +260,9 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
     this.previousTool = tool;
     this.clearInteractionFeedback();
   });
+  private readonly clearFeedbackWhenInactive = effect(() => {
+    if (!this.viewportActive()) this.clearInteractionFeedback();
+  });
 
   private renderOptions(
     project: import('../../../../core/domain/project.types').ProjectDocument | undefined,

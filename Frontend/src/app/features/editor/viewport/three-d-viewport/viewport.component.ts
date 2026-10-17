@@ -167,7 +167,10 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
     this.mountViewport();
   });
   private readonly cancelGestureWhenInactive = effect(() => {
-    if (!this.viewportActive()) this.clearPointerGesture();
+    if (!this.viewportActive()) {
+      this.clearPointerGesture();
+      this.clearInteractionFeedback();
+    }
   });
   private readonly sync = effect(() => {
     this.viewReady();
