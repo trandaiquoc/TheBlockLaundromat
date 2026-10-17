@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as THREE from 'three';
 import {
   ThreeViewportEngine,
@@ -29,6 +29,42 @@ import type { ViewportRenderOptions } from './viewport-engine-contracts';
 import type { YLayerPresentationReadiness } from './projection/y-layer-presentation-owner';
 import { deriveViewportFinalizationState } from '../../editor/state/viewport-finalization-coordinator';
 
+function previewReadbackContext(
+  overrides: Partial<WebGL2RenderingContext> = {},
+): WebGL2RenderingContext {
+  return {
+    PIXEL_PACK_BUFFER_BINDING: 0x88ed,
+    PIXEL_PACK_BUFFER: 0x88eb,
+    STREAM_READ: 0x88e1,
+    RGBA: 0x1908,
+    UNSIGNED_BYTE: 0x1401,
+    SYNC_GPU_COMMANDS_COMPLETE: 0x9117,
+    SYNC_FLUSH_COMMANDS_BIT: 1,
+    WAIT_FAILED: 0x911d,
+    TIMEOUT_EXPIRED: 0x911b,
+    ALREADY_SIGNALED: 0x911a,
+    CONDITION_SATISFIED: 0x911c,
+    getParameter: vi.fn(() => null),
+    isContextLost: vi.fn(() => false),
+    createBuffer: vi.fn(() => ({}) as WebGLBuffer),
+    bindBuffer: vi.fn(),
+    bufferData: vi.fn(),
+    readPixels: vi.fn(),
+    fenceSync: vi.fn(() => ({}) as WebGLSync),
+    flush: vi.fn(),
+    clientWaitSync: vi.fn(() => 0x911a),
+    getBufferSubData: vi.fn((_target, _offset, pixels: Uint8Array) => pixels.fill(20)),
+    deleteSync: vi.fn(),
+    deleteBuffer: vi.fn(),
+    ...overrides,
+  } as unknown as WebGL2RenderingContext;
+}
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.unstubAllGlobals();
+});
+
 describe('project preview capture lifecycle', () => {
   it('returns no preview when the renderer is unavailable', async () => {
     const engine = new ThreeViewportEngine();
@@ -49,7 +85,11 @@ describe('project preview capture lifecycle', () => {
     const previousClearAlpha = 0.4;
     const previousBackground = new THREE.Color(0xabcdef);
     const readbackError = new Error('readback failed');
-    let failReadback!: (error: Error) => void;
+    const gl = previewReadbackContext({
+      clientWaitSync: vi.fn(() => {
+        throw readbackError;
+      }),
+    });
     const root = new THREE.Group();
     const overlay = new THREE.Group();
     const internals = engine as unknown as {
@@ -76,23 +116,13 @@ describe('project preview capture lifecycle', () => {
       setClearColor: vi.fn(),
       clear: vi.fn(),
       render: vi.fn(),
-      readRenderTargetPixelsAsync: vi.fn(
-        () =>
-          new Promise<Uint8Array>((_resolve, reject) => {
-            failReadback = reject;
-          }),
-      ),
+      getContext: () => gl,
       dispose: vi.fn(),
       domElement: { remove: vi.fn() },
     } as unknown as THREE.WebGLRenderer;
     internals.renderer = renderer;
     const targetDispose = vi.spyOn(THREE.WebGLRenderTarget.prototype, 'dispose');
     const capture = engine.captureProjectPreview(project);
-    engine.dispose();
-
-    expect(renderer.dispose).not.toHaveBeenCalled();
-    expect(targetDispose).not.toHaveBeenCalled();
-    failReadback(readbackError);
 
     await expect(capture).rejects.toBe(readbackError);
 
@@ -106,9 +136,174 @@ describe('project preview capture lifecycle', () => {
     expect(renderer.setScissorTest).toHaveBeenLastCalledWith(true);
     expect(renderer.setClearColor).toHaveBeenLastCalledWith(previousClearColor, previousClearAlpha);
     expect(targetDispose).toHaveBeenCalledOnce();
+    expect(renderer.dispose).not.toHaveBeenCalled();
+    engine.dispose();
     expect(renderer.dispose).toHaveBeenCalledOnce();
+  });
 
-    targetDispose.mockRestore();
+  it('returns a preview and restores live renderer state after readback succeeds', async () => {
+    vi.stubGlobal(
+      'OffscreenCanvas',
+      class {
+        constructor(
+          readonly width: number,
+          readonly height: number,
+        ) {}
+        getContext() {
+          return {
+            createImageData: () => ({ data: new Uint8ClampedArray(this.width * this.height * 4) }),
+            putImageData: vi.fn(),
+          };
+        }
+        async convertToBlob(): Promise<Blob> {
+          return new Blob(['encoded'], { type: 'image/webp' });
+        }
+      },
+    );
+    const engine = new ThreeViewportEngine();
+    const project = rendererBenchmarkProject('small');
+    const previousTarget = {} as THREE.WebGLRenderTarget;
+    const internals = engine as unknown as {
+      project: ProjectDocument;
+      renderer: THREE.WebGLRenderer;
+      scene: THREE.Scene;
+      canonicalRoot: THREE.Group;
+    };
+    internals.project = project;
+    internals.scene.add(internals.canonicalRoot);
+    const gl = previewReadbackContext();
+    const renderer = {
+      getRenderTarget: () => previousTarget,
+      getViewport: (target: THREE.Vector4) => target.set(1, 2, 640, 480),
+      getScissor: (target: THREE.Vector4) => target.set(3, 4, 320, 240),
+      getScissorTest: () => true,
+      getClearColor: (target: THREE.Color) => target.set(0x123456),
+      getClearAlpha: () => 0.4,
+      getContext: () => gl,
+      setRenderTarget: vi.fn(),
+      setViewport: vi.fn(),
+      setScissor: vi.fn(),
+      setScissorTest: vi.fn(),
+      setClearColor: vi.fn(),
+      clear: vi.fn(),
+      render: vi.fn(),
+      dispose: vi.fn(),
+      domElement: { remove: vi.fn() },
+    } as unknown as THREE.WebGLRenderer;
+    internals.renderer = renderer;
+    const targetDispose = vi.spyOn(THREE.WebGLRenderTarget.prototype, 'dispose');
+
+    const preview = await engine.captureProjectPreview(project);
+
+    expect(preview?.type).toBe('image/webp');
+    expect(renderer.setRenderTarget).toHaveBeenLastCalledWith(previousTarget);
+    expect(targetDispose).toHaveBeenCalledOnce();
+    expect(renderer.dispose).not.toHaveBeenCalled();
+    engine.dispose();
+    expect(renderer.dispose).toHaveBeenCalledOnce();
+  });
+
+  it('cancels pending readback on disposal without restoring disposed renderer state', async () => {
+    const engine = new ThreeViewportEngine();
+    const project = rendererBenchmarkProject('small');
+    const previousTarget = {} as THREE.WebGLRenderTarget;
+    const previousBackground = new THREE.Color(0xabcdef);
+    const root = new THREE.Group();
+    const internals = engine as unknown as {
+      project: ProjectDocument;
+      renderer: THREE.WebGLRenderer;
+      scene: THREE.Scene;
+      canonicalRoot: THREE.Group;
+      pendingProjectPreviewReadbacks: Set<unknown>;
+    };
+    internals.project = project;
+    internals.scene.add(internals.canonicalRoot, root);
+    internals.scene.background = previousBackground;
+    const gl = previewReadbackContext({ clientWaitSync: vi.fn(() => 0x911b) });
+    const renderer = {
+      getRenderTarget: () => previousTarget,
+      getViewport: (target: THREE.Vector4) => target.set(1, 2, 640, 480),
+      getScissor: (target: THREE.Vector4) => target.set(3, 4, 320, 240),
+      getScissorTest: () => true,
+      getClearColor: (target: THREE.Color) => target.set(0x123456),
+      getClearAlpha: () => 0.4,
+      getContext: () => gl,
+      setRenderTarget: vi.fn(),
+      setViewport: vi.fn(),
+      setScissor: vi.fn(),
+      setScissorTest: vi.fn(),
+      setClearColor: vi.fn(),
+      clear: vi.fn(),
+      render: vi.fn(),
+      dispose: vi.fn(),
+      domElement: { remove: vi.fn() },
+    } as unknown as THREE.WebGLRenderer;
+    internals.renderer = renderer;
+    const targetDispose = vi.spyOn(THREE.WebGLRenderTarget.prototype, 'dispose');
+
+    const capture = engine.captureProjectPreview(project);
+    expect(internals.pendingProjectPreviewReadbacks.size).toBe(1);
+    engine.dispose();
+
+    await expect(capture).resolves.toBeUndefined();
+    expect(renderer.dispose).toHaveBeenCalledOnce();
+    expect(targetDispose).toHaveBeenCalledOnce();
+    expect(renderer.setRenderTarget).not.toHaveBeenLastCalledWith(previousTarget);
+    expect(internals.scene.background).toBeNull();
+    expect(root.visible).toBe(false);
+    expect(internals.pendingProjectPreviewReadbacks.size).toBe(0);
+  });
+
+  it('restores scene state and resets renderer bookkeeping after context loss', async () => {
+    const engine = new ThreeViewportEngine();
+    const project = rendererBenchmarkProject('small');
+    const previousTarget = {} as THREE.WebGLRenderTarget;
+    const previousBackground = new THREE.Color(0xabcdef);
+    const root = new THREE.Group();
+    const internals = engine as unknown as {
+      project: ProjectDocument;
+      renderer: THREE.WebGLRenderer;
+      scene: THREE.Scene;
+    };
+    internals.project = project;
+    internals.scene.add(root);
+    internals.scene.background = previousBackground;
+    let contextLost = false;
+    const gl = previewReadbackContext({
+      isContextLost: vi.fn(() => contextLost),
+    });
+    const renderer = {
+      getRenderTarget: () => previousTarget,
+      getViewport: (target: THREE.Vector4) => target.set(1, 2, 640, 480),
+      getScissor: (target: THREE.Vector4) => target.set(3, 4, 320, 240),
+      getScissorTest: () => true,
+      getClearColor: (target: THREE.Color) => target.set(0x123456),
+      getClearAlpha: () => 0.4,
+      getContext: () => gl,
+      setRenderTarget: vi.fn(),
+      resetState: vi.fn(),
+      setViewport: vi.fn(),
+      setScissor: vi.fn(),
+      setScissorTest: vi.fn(),
+      setClearColor: vi.fn(),
+      clear: vi.fn(),
+      render: vi.fn(),
+      dispose: vi.fn(),
+      domElement: { remove: vi.fn() },
+    } as unknown as THREE.WebGLRenderer;
+    internals.renderer = renderer;
+    const targetDispose = vi.spyOn(THREE.WebGLRenderTarget.prototype, 'dispose');
+
+    const capture = engine.captureProjectPreview(project);
+    contextLost = true;
+    await expect(capture).rejects.toThrow('WebGL context was lost');
+
+    expect(internals.scene.background).toBe(previousBackground);
+    expect(root.visible).toBe(true);
+    expect(renderer.setRenderTarget).not.toHaveBeenLastCalledWith(previousTarget);
+    expect(renderer.resetState).toHaveBeenCalledOnce();
+    expect(targetDispose).toHaveBeenCalledOnce();
+    engine.dispose();
   });
 });
 

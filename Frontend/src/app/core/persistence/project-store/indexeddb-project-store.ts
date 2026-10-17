@@ -13,11 +13,12 @@ import {
 } from './project-store.port';
 
 const DATABASE_NAME = 'minecraft-builder';
-const DATABASE_VERSION = 7;
+const DATABASE_VERSION = 8;
 const PROJECTS_STORE = 'projects';
 const PROJECT_SUMMARIES_STORE = 'project-summaries';
 const RECOVERY_STORE = 'recovery-snapshots';
 const EDITOR_SETTINGS_STORE = 'project-editor-settings';
+const RECOVERY_EDITOR_SETTINGS_STORE = 'recovery-editor-settings';
 const PROJECT_PREVIEWS_STORE = 'project-previews';
 
 type StoredProjectDocument = Omit<ProjectDocument, 'editorSettings'> & {
@@ -94,18 +95,20 @@ export class IndexedDbProjectStore implements ProjectStore {
   async save(project: ProjectDocument, metadata?: ProjectPersistenceMetadata): Promise<void> {
     await this.writeProject(project, false, metadata);
   }
-  async savePreview(projectId: string, updatedAt: string, preview: Blob): Promise<void> {
+  async savePreview(projectId: string, updatedAt: string, preview: Blob): Promise<boolean> {
     assertProjectPreview(preview);
     const database = await this.database;
-    await new Promise<void>((resolve, reject) => {
+    return new Promise<boolean>((resolve, reject) => {
       const transaction = database.transaction(
         [PROJECT_SUMMARIES_STORE, PROJECT_PREVIEWS_STORE],
         'readwrite',
       );
       const request = transaction.objectStore(PROJECT_SUMMARIES_STORE).get(projectId);
+      let saved = false;
       request.onsuccess = () => {
         const summary = request.result as ProjectSummary | undefined;
         if (summary?.updatedAt === updatedAt) {
+          saved = true;
           transaction.objectStore(PROJECT_PREVIEWS_STORE).put({
             id: projectId,
             updatedAt,
@@ -113,7 +116,7 @@ export class IndexedDbProjectStore implements ProjectStore {
           } satisfies StoredProjectPreview);
         }
       };
-      transaction.oncomplete = () => resolve();
+      transaction.oncomplete = () => resolve(saved);
       transaction.onerror = () =>
         reject(transaction.error ?? new Error('Unable to save project preview'));
       transaction.onabort = () =>
@@ -153,8 +156,10 @@ export class IndexedDbProjectStore implements ProjectStore {
   }
   async saveEditorSettings(projectId: string, settings: EditorSettings): Promise<void> {
     const database = await this.database;
-    await runRequest(database, EDITOR_SETTINGS_STORE, 'readwrite', (store) =>
-      store.put({ id: projectId, settings } satisfies StoredEditorSettings),
+    await runTransaction(database, [EDITOR_SETTINGS_STORE], 'readwrite', (transaction) =>
+      transaction
+        .objectStore(EDITOR_SETTINGS_STORE)
+        .put({ id: projectId, settings } satisfies StoredEditorSettings),
     );
   }
   async delete(id: string): Promise<void> {
@@ -166,6 +171,7 @@ export class IndexedDbProjectStore implements ProjectStore {
         PROJECT_SUMMARIES_STORE,
         RECOVERY_STORE,
         EDITOR_SETTINGS_STORE,
+        RECOVERY_EDITOR_SETTINGS_STORE,
         PROJECT_PREVIEWS_STORE,
       ],
       'readwrite',
@@ -174,6 +180,7 @@ export class IndexedDbProjectStore implements ProjectStore {
         transaction.objectStore(PROJECT_SUMMARIES_STORE).delete(id);
         transaction.objectStore(RECOVERY_STORE).delete(id);
         transaction.objectStore(EDITOR_SETTINGS_STORE).delete(id);
+        transaction.objectStore(RECOVERY_EDITOR_SETTINGS_STORE).delete(id);
         transaction.objectStore(PROJECT_PREVIEWS_STORE).delete(id);
       },
     );
@@ -191,23 +198,33 @@ export class IndexedDbProjectStore implements ProjectStore {
     const normalized = migrateProject(project);
     await runTransaction(
       database,
-      [RECOVERY_STORE, EDITOR_SETTINGS_STORE],
+      [RECOVERY_STORE, RECOVERY_EDITOR_SETTINGS_STORE],
       'readwrite',
       (transaction) => {
         transaction.objectStore(RECOVERY_STORE).put(toStoredProject(normalized, metadata));
-        transaction.objectStore(EDITOR_SETTINGS_STORE).put(toStoredEditorSettings(normalized));
+        transaction
+          .objectStore(RECOVERY_EDITOR_SETTINGS_STORE)
+          .put(toStoredEditorSettings(normalized));
       },
     );
   }
   async openRecoverySnapshot(id: string): Promise<ProjectDocument | undefined> {
-    return this.read(RECOVERY_STORE, id);
+    return this.read(RECOVERY_STORE, id, RECOVERY_EDITOR_SETTINGS_STORE);
   }
   async openRecoveryRecord(id: string): Promise<ProjectRecord | undefined> {
-    return this.readRecord(RECOVERY_STORE, id, false);
+    return this.readRecord(RECOVERY_STORE, id, RECOVERY_EDITOR_SETTINGS_STORE, false);
   }
   async deleteRecoverySnapshot(id: string): Promise<void> {
     const database = await this.database;
-    await runRequest(database, RECOVERY_STORE, 'readwrite', (store) => store.delete(id));
+    await runTransaction(
+      database,
+      [RECOVERY_STORE, RECOVERY_EDITOR_SETTINGS_STORE],
+      'readwrite',
+      (transaction) => {
+        transaction.objectStore(RECOVERY_STORE).delete(id);
+        transaction.objectStore(RECOVERY_EDITOR_SETTINGS_STORE).delete(id);
+      },
+    );
   }
   private async writeProject(
     project: ProjectDocument,
@@ -231,12 +248,17 @@ export class IndexedDbProjectStore implements ProjectStore {
       },
     );
   }
-  private async read(storeName: string, id: string): Promise<ProjectDocument | undefined> {
-    return (await this.readRecord(storeName, id))?.project;
+  private async read(
+    storeName: string,
+    id: string,
+    settingsStoreName = EDITOR_SETTINGS_STORE,
+  ): Promise<ProjectDocument | undefined> {
+    return (await this.readRecord(storeName, id, settingsStoreName))?.project;
   }
   private async readRecord(
     storeName: string,
     id: string,
+    settingsStoreName = EDITOR_SETTINGS_STORE,
     migrate = true,
   ): Promise<ProjectRecord | undefined> {
     const database = await this.database;
@@ -246,7 +268,7 @@ export class IndexedDbProjectStore implements ProjectStore {
       ),
       runRequest<StoredEditorSettings | undefined>(
         database,
-        EDITOR_SETTINGS_STORE,
+        settingsStoreName,
         'readonly',
         (store) => store.get(id),
       ),
@@ -309,6 +331,11 @@ function openDatabase(name: string): Promise<IDBDatabase> {
       const editorSettings = database.objectStoreNames.contains(EDITOR_SETTINGS_STORE)
         ? request.transaction?.objectStore(EDITOR_SETTINGS_STORE)
         : database.createObjectStore(EDITOR_SETTINGS_STORE, { keyPath: 'id' });
+      const recoveryEditorSettings = database.objectStoreNames.contains(
+        RECOVERY_EDITOR_SETTINGS_STORE,
+      )
+        ? request.transaction?.objectStore(RECOVERY_EDITOR_SETTINGS_STORE)
+        : database.createObjectStore(RECOVERY_EDITOR_SETTINGS_STORE, { keyPath: 'id' });
       if (!database.objectStoreNames.contains(PROJECT_PREVIEWS_STORE))
         database.createObjectStore(PROJECT_PREVIEWS_STORE, { keyPath: 'id' });
       const migrateRecoveryRecords = (): void => {
@@ -319,13 +346,19 @@ function openDatabase(name: string): Promise<IDBDatabase> {
           const normalized = normalizeStoredProject(cursor.value as StoredProject);
           const legacySettings = normalized.document.editorSettings;
           cursor.update(stripLegacyEditorSettings(normalized));
-          if (legacySettings && editorSettings) {
+          if (legacySettings) {
+            recoveryEditorSettings?.put({
+              id: normalized.id,
+              settings: legacySettings,
+            } satisfies StoredEditorSettings);
+          } else if (editorSettings) {
+            // Schema 7 shared one settings key, so this is its only recoverable value.
             const settingsRequest = editorSettings.get(normalized.id);
             settingsRequest.onsuccess = () => {
-              if (settingsRequest.result) return;
-              editorSettings.put({
+              if (!settingsRequest.result) return;
+              recoveryEditorSettings?.put({
                 id: normalized.id,
-                settings: legacySettings,
+                settings: (settingsRequest.result as StoredEditorSettings).settings,
               } satisfies StoredEditorSettings);
             };
           }

@@ -1120,7 +1120,7 @@ describe('editor shell retained viewport lifecycle', () => {
     viewport.captureProjectPreview = capture;
     TestBed.inject(EditorModeService).setMode('y-layer');
     const shell = fixture.componentInstance as unknown as {
-      captureProjectPreviewBeforeLeaving: () => void;
+      captureProjectPreviewBeforeLeaving: () => Promise<void>;
     };
 
     shell.captureProjectPreviewBeforeLeaving();
@@ -1148,7 +1148,7 @@ describe('editor shell retained viewport lifecycle', () => {
       .componentInstance as TestViewportStub;
     viewport.captureProjectPreview = capture;
     const shell = fixture.componentInstance as unknown as {
-      captureProjectPreviewBeforeLeaving: () => void;
+      captureProjectPreviewBeforeLeaving: () => Promise<void>;
       threeDViewport: () => TestViewportStub;
     };
     shell.threeDViewport = () => viewport;
@@ -1157,7 +1157,7 @@ describe('editor shell retained viewport lifecycle', () => {
     vi.spyOn(autosave, 'isUnsafeDirty', 'get').mockReturnValue(false);
     const savePreview = vi.spyOn(TestBed.inject(PROJECT_STORE), 'savePreview');
 
-    shell.captureProjectPreviewBeforeLeaving();
+    const captureTask = shell.captureProjectPreviewBeforeLeaving();
     expect(capture).toHaveBeenCalledWith(project);
 
     workspace.publishProject({
@@ -1166,8 +1166,7 @@ describe('editor shell retained viewport lifecycle', () => {
     });
     fixture.detectChanges();
     finishCapture(new Blob(['stale capture'], { type: 'image/webp' }));
-    await Promise.resolve();
-    await Promise.resolve();
+    await captureTask;
 
     expect(savePreview).not.toHaveBeenCalled();
     fixture.destroy();

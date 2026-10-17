@@ -40,6 +40,17 @@ function legacyRecord(value: ProjectDocument): Record<string, unknown> {
   };
 }
 
+function currentRecord(value: ProjectDocument): Record<string, unknown> {
+  const { editorSettings: _settings, ...document } = value;
+  return {
+    id: value.id,
+    name: value.metadata.name,
+    minecraftVersion: value.metadata.minecraftVersion,
+    updatedAt: value.metadata.updatedAt,
+    document,
+  };
+}
+
 async function createIndexedDbBlob(content: string, type: string): Promise<Blob> {
   const moduleName = ['node', 'buffer'].join(':');
   const bufferModule = (await import(moduleName)) as { Blob: typeof Blob };
@@ -66,6 +77,35 @@ function seedVersionSixDatabase(
       for (const record of records.recoveries) recoveries.put(record);
     };
     request.onerror = () => reject(request.error ?? new Error('Unable to seed schema version 6'));
+    request.onsuccess = () => {
+      request.result.close();
+      resolve();
+    };
+  });
+}
+
+function seedVersionSevenDatabase(
+  factory: IDBFactory,
+  databaseName: string,
+  canonical: ProjectDocument,
+  recovery: ProjectDocument,
+  sharedSettings: EditorSettings,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const request = factory.open(databaseName, 7);
+    request.onupgradeneeded = () => {
+      const database = request.result;
+      database.createObjectStore('projects', { keyPath: 'id' }).put(currentRecord(canonical));
+      database.createObjectStore('project-summaries', { keyPath: 'id' });
+      database
+        .createObjectStore('recovery-snapshots', { keyPath: 'id' })
+        .put(currentRecord(recovery));
+      database
+        .createObjectStore('project-editor-settings', { keyPath: 'id' })
+        .put({ id: canonical.id, settings: sharedSettings });
+      database.createObjectStore('project-previews', { keyPath: 'id' });
+    };
+    request.onerror = () => reject(request.error ?? new Error('Unable to seed schema version 7'));
     request.onsuccess = () => {
       request.result.close();
       resolve();
@@ -101,9 +141,9 @@ describe('IndexedDbProjectStore integration', () => {
 
     expect(summaries).toHaveLength(1);
     expect(migratedProject?.project.schemaVersion).toBe(3);
-    expect(migratedProject?.project.editorSettings).toEqual(editorSettings);
     expect(recovery?.project.editorSettings).toEqual(editorSettings);
-    expect(recoveryForSaved?.project.editorSettings).toEqual(editorSettings);
+    expect(recoveryForSaved?.project.editorSettings).toEqual({ ...editorSettings, currentY: 7 });
+    expect(migratedProject?.project.editorSettings).toEqual(editorSettings);
     expect(recovery?.project.metadata.updatedAt).toBe(recoveryProject.metadata.updatedAt);
 
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -112,7 +152,33 @@ describe('IndexedDbProjectStore integration', () => {
       request.onsuccess = () => resolve(request.result);
     });
     expect(database.objectStoreNames.contains('project-previews')).toBe(true);
+    expect(database.objectStoreNames.contains('recovery-editor-settings')).toBe(true);
     database.close();
+  });
+
+  it('preserves readable schema 7 settings while assigning recovery its own settings record', async () => {
+    const factory = new IDBFactory();
+    vi.stubGlobal('indexedDB', factory);
+    const databaseName = 'project-store-schema-seven-migration';
+    const canonical = project('schema-seven-project', '2026-10-01T00:00:00.000Z');
+    const recovery = { ...canonical, editorSettings: { ...editorSettings, currentY: 8 } };
+    await seedVersionSevenDatabase(factory, databaseName, canonical, recovery, editorSettings);
+
+    const store = new IndexedDbProjectStore(databaseName);
+    expect((await store.openRecord(canonical.id))?.project.editorSettings).toEqual(editorSettings);
+    expect((await store.openRecoveryRecord(canonical.id))?.project.editorSettings).toEqual(
+      editorSettings,
+    );
+
+    const newRecoverySettings = { ...editorSettings, currentY: 9 };
+    await store.saveRecoverySnapshot({ ...recovery, editorSettings: newRecoverySettings });
+    expect((await store.openRecord(canonical.id))?.project.editorSettings).toEqual(editorSettings);
+    expect((await store.openRecoveryRecord(canonical.id))?.project.editorSettings).toEqual(
+      newRecoverySettings,
+    );
+    await store.deleteRecoverySnapshot(canonical.id);
+    expect((await store.openRecord(canonical.id))?.project.editorSettings).toEqual(editorSettings);
+    expect(await store.openRecoveryRecord(canonical.id)).toBeUndefined();
   });
 
   it('keeps previews revision-bound and project data, settings, recovery, and deletion in IndexedDB', async () => {
@@ -125,7 +191,7 @@ describe('IndexedDbProjectStore integration', () => {
     expect(await store.exists(initial.id)).toBe(true);
     expect((await store.open(initial.id))?.id).toBe(initial.id);
     expect((await store.list())[0]?.updatedAt).toBe(initial.metadata.updatedAt);
-    await store.savePreview(initial.id, initial.metadata.updatedAt, preview);
+    expect(await store.savePreview(initial.id, initial.metadata.updatedAt, preview)).toBe(true);
     const storedPreview = await store.openPreview(initial.id, initial.metadata.updatedAt);
     expect(storedPreview?.type).toBe('image/webp');
     expect(await storedPreview?.text()).toBe('webp preview');
@@ -137,7 +203,7 @@ describe('IndexedDbProjectStore integration', () => {
     };
     await store.save(saved, { persistenceToken: 'revision-two' });
     expect(await store.openPreview(initial.id, saved.metadata.updatedAt)).toBeUndefined();
-    await store.savePreview(initial.id, initial.metadata.updatedAt, preview);
+    expect(await store.savePreview(initial.id, initial.metadata.updatedAt, preview)).toBe(false);
     expect(await store.openPreview(initial.id, saved.metadata.updatedAt)).toBeUndefined();
 
     const previewFirst = project('preview-first-race', '2026-10-01T00:00:00.000Z');
@@ -170,8 +236,14 @@ describe('IndexedDbProjectStore integration', () => {
     await store.saveEditorSettings(initial.id, changedSettings);
     expect((await store.openRecord(initial.id))?.project.editorSettings).toEqual(changedSettings);
 
+    const recoverySettings = {
+      ...editorSettings,
+      currentY: 5,
+      layerVisibility: 'whole-structure' as const,
+    };
     const recovery = {
       ...saved,
+      editorSettings: recoverySettings,
       blocks: [
         {
           kind: 'missing' as const,
@@ -184,14 +256,29 @@ describe('IndexedDbProjectStore integration', () => {
     };
     await store.saveRecoverySnapshot(recovery, { persistenceToken: 'recovery-two' });
     expect((await store.openRecoveryRecord(initial.id))?.project.blocks).toEqual(recovery.blocks);
-    const workspace = new WorkspaceStateService();
-    await workspace.restore(store, {
+    expect((await store.openRecord(initial.id))?.project.editorSettings).toEqual(changedSettings);
+    expect((await store.openRecoveryRecord(initial.id))?.project.editorSettings).toEqual(
+      recoverySettings,
+    );
+
+    const canonicalWorkspace = new WorkspaceStateService();
+    await canonicalWorkspace.restore(store, {
       getItem: () => initial.id,
       setItem: () => undefined,
     });
-    expect(workspace.restoreStatus()).toBe('recovery-pending');
-    await workspace.restoreRecovery();
-    expect(workspace.project()?.blocks).toEqual(recovery.blocks);
+    expect(canonicalWorkspace.restoreStatus()).toBe('recovery-pending');
+    canonicalWorkspace.continueWithMain();
+    expect(canonicalWorkspace.project()?.editorSettings).toEqual(changedSettings);
+
+    const recoveryWorkspace = new WorkspaceStateService();
+    await recoveryWorkspace.restore(store, {
+      getItem: () => initial.id,
+      setItem: () => undefined,
+    });
+    await recoveryWorkspace.restoreRecovery();
+    expect(recoveryWorkspace.project()?.blocks).toEqual(recovery.blocks);
+    expect(recoveryWorkspace.project()?.editorSettings).toEqual(recoverySettings);
+    expect((await store.openRecord(initial.id))?.project.editorSettings).toEqual(recoverySettings);
     expect(await store.openRecoverySnapshot(initial.id)).toBeUndefined();
 
     await store.delete(initial.id);

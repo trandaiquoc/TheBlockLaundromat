@@ -618,6 +618,7 @@ class MemoryProjectStore implements ProjectStore {
   protected readonly projects = new Map<string, ProjectDocument>();
   private readonly recovery = new Map<string, ProjectDocument>();
   private readonly editorSettings = new Map<string, ProjectDocument['editorSettings']>();
+  private readonly recoveryEditorSettings = new Map<string, ProjectDocument['editorSettings']>();
   private readonly previews = new Map<
     string,
     { readonly updatedAt: string; readonly blob: Blob }
@@ -647,9 +648,12 @@ class MemoryProjectStore implements ProjectStore {
     this.editorSettings.set(value.id, structuredClone(value.editorSettings));
     this.previews.delete(value.id);
   }
-  async savePreview(id: string, updatedAt: string, blob: Blob): Promise<void> {
-    if (this.projects.get(id)?.metadata.updatedAt === updatedAt)
+  async savePreview(id: string, updatedAt: string, blob: Blob): Promise<boolean> {
+    if (this.projects.get(id)?.metadata.updatedAt === updatedAt) {
       this.previews.set(id, { updatedAt, blob });
+      return true;
+    }
+    return false;
   }
   async openPreview(id: string, expectedUpdatedAt: string): Promise<Blob | undefined> {
     const preview = this.previews.get(id);
@@ -663,6 +667,7 @@ class MemoryProjectStore implements ProjectStore {
     this.projects.delete(id);
     this.editorSettings.delete(id);
     this.recovery.delete(id);
+    this.recoveryEditorSettings.delete(id);
     this.previews.delete(id);
   }
   async list(): Promise<readonly ProjectSummary[]> {
@@ -677,18 +682,22 @@ class MemoryProjectStore implements ProjectStore {
   }
   async saveRecoverySnapshot(value: ProjectDocument): Promise<void> {
     this.recovery.set(value.id, structuredClone(value));
+    this.recoveryEditorSettings.set(value.id, structuredClone(value.editorSettings));
   }
   async openRecoverySnapshot(id: string): Promise<ProjectDocument | undefined> {
     const value = this.recovery.get(id);
     return (
       value && {
         ...structuredClone(value),
-        editorSettings: structuredClone(this.editorSettings.get(id) ?? value.editorSettings),
+        editorSettings: structuredClone(
+          this.recoveryEditorSettings.get(id) ?? value.editorSettings,
+        ),
       }
     );
   }
   async deleteRecoverySnapshot(id: string): Promise<void> {
     this.recovery.delete(id);
+    this.recoveryEditorSettings.delete(id);
   }
 }
 

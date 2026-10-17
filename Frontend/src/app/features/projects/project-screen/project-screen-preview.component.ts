@@ -9,8 +9,10 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LucideImage } from '@lucide/angular';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
+import { ProjectPreviewService } from '../../../core/persistence/project-preview.service';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
 
 @Component({
@@ -26,11 +28,20 @@ export class ProjectScreenPreviewComponent implements AfterViewInit, OnDestroy {
   protected readonly previewUrl = signal<string | undefined>(undefined);
   private readonly shouldLoadPreview = signal(false);
   private readonly workflow = inject(ProjectScreenWorkflow);
+  private readonly projectPreviews = inject(ProjectPreviewService);
   private readonly errorHandler = inject(ErrorHandler);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly refreshToken = signal(0);
 
   constructor() {
+    this.projectPreviews.updates.pipe(takeUntilDestroyed()).subscribe((update) => {
+      const project = this.project();
+      if (project.id === update.projectId && project.updatedAt === update.updatedAt)
+        this.refreshToken.update((token) => token + 1);
+    });
+
     effect((onCleanup) => {
+      this.refreshToken();
       const shouldLoadPreview = this.shouldLoadPreview();
       const project = this.project();
       this.previewUrl.set(undefined);

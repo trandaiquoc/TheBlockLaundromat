@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { EMPTY } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import type { ProjectDocument } from '../../../core/domain/project.types';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
@@ -9,6 +10,7 @@ import { MojangVersionService } from '../../../core/assets/vanilla/mojang-vanill
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { ProjectScreenComponent } from './project-screen.component';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
+import { ProjectPreviewService } from '../../../core/persistence/project-preview.service';
 
 describe('ProjectScreenComponent', () => {
   it('marks the project name input as the create dialog initial focus target', () => {
@@ -124,6 +126,7 @@ describe('ProjectScreenComponent', () => {
     TestBed.configureTestingModule({
       imports: [ProjectScreenComponent],
       providers: [
+        { provide: ProjectPreviewService, useValue: { updates: EMPTY } },
         {
           provide: MojangVersionService,
           useValue: { releases: signal([]), loadReleases: vi.fn(async () => []) },

@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ErrorHandler } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { Subject } from 'rxjs';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
 import { ProjectScreenPreviewComponent } from './project-screen-preview.component';
+import { ProjectPreviewService } from '../../../core/persistence/project-preview.service';
 
 class TestIntersectionObserver implements IntersectionObserver {
   readonly root = null;
@@ -57,11 +59,13 @@ describe('ProjectScreenPreviewComponent', () => {
       .mockReturnValueOnce('blob:project-preview-2');
     const revokeObjectUrl = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
     const getObserver = installIntersectionObserver();
+    const updates = new Subject<{ projectId: string; updatedAt: string }>();
 
     await TestBed.configureTestingModule({
       imports: [ProjectScreenPreviewComponent],
       providers: [
         { provide: ProjectScreenWorkflow, useValue: { loadProjectPreview } },
+        { provide: ProjectPreviewService, useValue: { updates: updates.asObservable() } },
         { provide: ErrorHandler, useValue: { handleError: vi.fn() } },
       ],
     }).compileComponents();
@@ -104,10 +108,12 @@ describe('ProjectScreenPreviewComponent', () => {
   it('keeps an honest empty preview frame when a project has no current capture', async () => {
     const loadProjectPreview = vi.fn(async () => undefined);
     const getObserver = installIntersectionObserver();
+    const updates = new Subject<{ projectId: string; updatedAt: string }>();
     await TestBed.configureTestingModule({
       imports: [ProjectScreenPreviewComponent],
       providers: [
         { provide: ProjectScreenWorkflow, useValue: { loadProjectPreview } },
+        { provide: ProjectPreviewService, useValue: { updates: updates.asObservable() } },
         { provide: ErrorHandler, useValue: { handleError: vi.fn() } },
       ],
     }).compileComponents();
@@ -128,13 +134,23 @@ describe('ProjectScreenPreviewComponent', () => {
     fixture.destroy();
   });
 
-  it('shares one visibility observer across project preview surfaces', async () => {
-    const loadProjectPreview = vi.fn(async () => undefined);
+  it('refreshes only the matching project when its persisted preview changes', async () => {
+    const preview = new Blob(['updated'], { type: 'image/webp' });
+    const loadProjectPreview = vi.fn(async (id: string) =>
+      id === 'first' &&
+      loadProjectPreview.mock.calls.filter(([projectId]) => projectId === 'first').length > 1
+        ? preview
+        : undefined,
+    );
     const getObserver = installIntersectionObserver();
+    const updates = new Subject<{ projectId: string; updatedAt: string }>();
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:first-preview');
+    const revokeObjectUrl = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
     await TestBed.configureTestingModule({
       imports: [ProjectScreenPreviewComponent],
       providers: [
         { provide: ProjectScreenWorkflow, useValue: { loadProjectPreview } },
+        { provide: ProjectPreviewService, useValue: { updates: updates.asObservable() } },
         { provide: ErrorHandler, useValue: { handleError: vi.fn() } },
       ],
     }).compileComponents();
@@ -153,8 +169,75 @@ describe('ProjectScreenPreviewComponent', () => {
     expect(loadProjectPreview).toHaveBeenCalledWith('first', 'revision-1');
     expect(loadProjectPreview).toHaveBeenCalledTimes(1);
 
+    getObserver()?.intersect(second.nativeElement as Element);
+    await second.whenStable();
+    second.detectChanges();
+    updates.next({ projectId: 'first', updatedAt: 'revision-1' });
+    await first.whenStable();
+    first.detectChanges();
+    await second.whenStable();
+    second.detectChanges();
+    expect(loadProjectPreview).toHaveBeenCalledTimes(3);
+    expect(loadProjectPreview.mock.calls.map(([projectId]) => projectId)).toEqual([
+      'first',
+      'second',
+      'first',
+    ]);
+    expect(first.nativeElement.querySelector('img')?.getAttribute('src')).toBe(
+      'blob:first-preview',
+    );
+    expect(revokeObjectUrl).not.toHaveBeenCalled();
+
     first.destroy();
     second.destroy();
     expect(getObserver()?.disconnect).toHaveBeenCalledOnce();
   });
+
+  it('ignores in-flight preview loads after the card changes project or is destroyed', async () => {
+    const firstLoad = deferred<Blob | undefined>();
+    const secondLoad = deferred<Blob | undefined>();
+    const loadProjectPreview = vi.fn((id: string) =>
+      id === 'first' ? firstLoad.promise : secondLoad.promise,
+    );
+    const updates = new Subject<{ projectId: string; updatedAt: string }>();
+    const getObserver = installIntersectionObserver();
+    const createObjectUrl = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:unexpected');
+    await TestBed.configureTestingModule({
+      imports: [ProjectScreenPreviewComponent],
+      providers: [
+        { provide: ProjectScreenWorkflow, useValue: { loadProjectPreview } },
+        { provide: ProjectPreviewService, useValue: { updates: updates.asObservable() } },
+        { provide: ErrorHandler, useValue: { handleError: vi.fn() } },
+      ],
+    }).compileComponents();
+
+    const changed = TestBed.createComponent(ProjectScreenPreviewComponent);
+    changed.componentRef.setInput('project', { id: 'first', updatedAt: 'revision-1' });
+    changed.detectChanges();
+    getObserver()?.intersect(changed.nativeElement as Element);
+    changed.componentRef.setInput('project', { id: 'second', updatedAt: 'revision-2' });
+    changed.detectChanges();
+    firstLoad.resolve(new Blob(['stale project'], { type: 'image/webp' }));
+    secondLoad.resolve(undefined);
+    await changed.whenStable();
+    expect(createObjectUrl).not.toHaveBeenCalled();
+    changed.destroy();
+
+    const destroyedLoad = deferred<Blob | undefined>();
+    loadProjectPreview.mockImplementation(() => destroyedLoad.promise);
+    const destroyed = TestBed.createComponent(ProjectScreenPreviewComponent);
+    destroyed.componentRef.setInput('project', { id: 'third', updatedAt: 'revision-3' });
+    destroyed.detectChanges();
+    getObserver()?.intersect(destroyed.nativeElement as Element);
+    destroyed.destroy();
+    destroyedLoad.resolve(new Blob(['late result'], { type: 'image/webp' }));
+    await Promise.resolve();
+    expect(createObjectUrl).not.toHaveBeenCalled();
+  });
 });
+
+function deferred<T>(): { promise: Promise<T>; resolve(value: T): void } {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((complete) => (resolve = complete));
+  return { promise, resolve };
+}

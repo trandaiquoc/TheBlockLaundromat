@@ -1,7 +1,6 @@
 import {
   Component,
   ElementRef,
-  ErrorHandler,
   OnDestroy,
   computed,
   effect,
@@ -40,6 +39,7 @@ import { QuickBlockBarService } from '../../../core/editor/quick-bar/quick-block
 import { PROJECT_STORE } from '../../../core/persistence/project-store/project-store.token';
 import { ProjectAutosaveService } from '../../../core/persistence/autosave/project-autosave.service';
 import { ProjectDeletionService } from '../../../core/persistence/project-deletion.service';
+import { ProjectPreviewService } from '../../../core/persistence/project-preview.service';
 import { EditorLeaveCoordinator } from '../../../core/persistence/editor-leave-coordinator.service';
 import { DialogService } from '../../../core/ui/dialog/dialog.service';
 import { EditorLayoutPreferencesService } from '../../../core/ui/preferences/editor-layout-preferences.service';
@@ -149,7 +149,7 @@ export class EditorShellComponent implements OnDestroy {
   private readonly leaveCoordinator = inject(EditorLeaveCoordinator);
   private readonly library = inject(BlockLibraryService);
   private readonly projectDeletion = inject(ProjectDeletionService);
-  private readonly errorHandler = inject(ErrorHandler);
+  private readonly projectPreviews = inject(ProjectPreviewService);
   private readonly threeDViewport = viewChild(ViewportComponent);
   private readonly yLayerViewport = viewChild(YLayerComponent);
   private readonly unregisterPreviewCapture = this.leaveCoordinator.registerProjectPreviewCapture(
@@ -474,24 +474,21 @@ export class EditorShellComponent implements OnDestroy {
     await this.router.navigateByUrl('/');
   }
 
-  private captureProjectPreviewBeforeLeaving(): void {
+  private async captureProjectPreviewBeforeLeaving(): Promise<void> {
     const project = this.workspace.project();
     if (!project || this.mode.mode() !== '3d' || this.autosave.isUnsafeDirty) return;
 
     const capture = this.threeDViewport()?.captureProjectPreview(project);
     if (!capture) return;
-    void capture
-      .then((preview) => {
-        if (
-          !preview ||
-          this.mode.mode() !== '3d' ||
-          this.workspace.project() !== project ||
-          this.autosave.isUnsafeDirty
-        )
-          return;
-        return this.projectStore.savePreview(project.id, project.metadata.updatedAt, preview);
-      })
-      .catch((error: unknown) => this.errorHandler.handleError(error));
+    const preview = await capture;
+    if (
+      !preview ||
+      this.mode.mode() !== '3d' ||
+      this.workspace.project() !== project ||
+      this.autosave.isUnsafeDirty
+    )
+      return;
+    await this.projectPreviews.savePreview(project.id, project.metadata.updatedAt, preview);
   }
   protected async saveProject(): Promise<void> {
     try {

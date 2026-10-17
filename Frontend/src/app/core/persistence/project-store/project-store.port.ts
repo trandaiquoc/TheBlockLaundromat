@@ -30,11 +30,13 @@ export interface ProjectStore {
   open(id: string): Promise<ProjectDocument | undefined>;
   openRecord?(id: string): Promise<ProjectRecord | undefined>;
   save(project: ProjectDocument, metadata?: ProjectPersistenceMetadata): Promise<void>;
-  savePreview(projectId: string, updatedAt: string, preview: Blob): Promise<void>;
+  /** Resolves true only when the preview matched the current canonical project revision. */
+  savePreview(projectId: string, updatedAt: string, preview: Blob): Promise<boolean>;
   openPreview(projectId: string, expectedUpdatedAt: string): Promise<Blob | undefined>;
   saveEditorSettings?(projectId: string, settings: EditorSettings): Promise<void>;
   delete(id: string): Promise<void>;
   list(): Promise<readonly ProjectSummary[]>;
+  /** Saves a recovery checkpoint with editor settings independent from the canonical record. */
   saveRecoverySnapshot(
     project: ProjectDocument,
     metadata?: ProjectPersistenceMetadata,

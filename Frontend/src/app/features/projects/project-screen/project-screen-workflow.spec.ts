@@ -93,7 +93,7 @@ describe('ProjectScreenWorkflow', () => {
       exists: vi.fn(async (id) => stored.has(id)),
       open: vi.fn(async (id) => stored.get(id)),
       save: vi.fn(async (project) => void stored.set(project.id, project)),
-      savePreview: vi.fn(async () => undefined),
+      savePreview: vi.fn(async () => false),
       openPreview: vi.fn(async () => undefined),
       delete: vi.fn(async (id) => {
         stored.delete(id);

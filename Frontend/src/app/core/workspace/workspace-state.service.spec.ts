@@ -202,7 +202,7 @@ function memoryStore(projects: readonly ProjectDocument[], onOpen?: () => void):
     create: async () => undefined,
     exists: async () => false,
     save: async () => undefined,
-    savePreview: async () => undefined,
+    savePreview: async () => false,
     openPreview: async () => undefined,
     delete: async () => undefined,
     list: async () =>
@@ -247,7 +247,7 @@ function recordStore(
     save: async (value) => {
       currentMain = structuredClone(value);
     },
-    savePreview: async () => undefined,
+    savePreview: async () => false,
     openPreview: async () => undefined,
     delete: async () => undefined,
     list: async () => [

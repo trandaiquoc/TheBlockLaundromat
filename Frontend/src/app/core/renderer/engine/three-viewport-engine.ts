@@ -53,6 +53,7 @@ import {
 import { DecorationTextureCache } from '../visuals/decorations/decoration-visuals';
 import { DecorationRenderLifecycle } from '../visuals/decorations/decoration-render-lifecycle';
 import { projectPreviewBounds } from './project-preview-bounds';
+import { readProjectPreviewPixels } from './project-preview-readback';
 import { BlockRepresentationResourceOwner } from '../visuals/block-representation-resource-owner';
 import { BlockRepresentationHydrationOwner } from '../visuals/block-representation-hydration-owner';
 import {
@@ -344,6 +345,11 @@ export function viewportRenderSize(
   return { width: Math.max(Math.round(width), 1), height: Math.max(Math.round(height), 1) };
 }
 
+interface PendingProjectPreviewReadback {
+  cancel(): void;
+  disposeTarget(): void;
+}
+
 export class ThreeViewportEngine {
   private readonly scene = new THREE.Scene();
   private readonly realityEnvironment: RealityEnvironmentOwner;
@@ -570,8 +576,7 @@ export class ThreeViewportEngine {
     this.decorationGhostPresenter.currentKey = value;
   }
   private renderer?: THREE.WebGLRenderer;
-  private pendingProjectPreviewReadbacks = 0;
-  private rendererDeferredForPreviewReadback?: THREE.WebGLRenderer;
+  private readonly pendingProjectPreviewReadbacks = new Set<PendingProjectPreviewReadback>();
   private controls?: OrbitControls;
   private ground?: THREE.Mesh;
   private readonly editingPlanePresenter = new EditingPlanePresenter(
@@ -3652,9 +3657,12 @@ export class ThreeViewportEngine {
     this.renderer = undefined;
     renderer?.domElement.remove();
     if (renderer) {
-      if (this.pendingProjectPreviewReadbacks > 0)
-        this.rendererDeferredForPreviewReadback = renderer;
-      else renderer.dispose();
+      const pendingReadbacks = [...this.pendingProjectPreviewReadbacks];
+      for (const readback of pendingReadbacks) {
+        readback.cancel();
+        readback.disposeTarget();
+      }
+      renderer.dispose();
     }
     this.terrainPipeline.dispose();
     this.blockRepresentationCommit.dispose();
@@ -4232,7 +4240,7 @@ export class ThreeViewportEngine {
   async captureProjectPreview(expectedProject: ProjectDocument): Promise<Blob | undefined> {
     const renderer = this.renderer;
     const project = this.project;
-    if (!renderer || !project || project !== expectedProject) return undefined;
+    if (this.disposed || !renderer || !project || project !== expectedProject) return undefined;
 
     const width = 256;
     const height = 144;
@@ -4281,7 +4289,18 @@ export class ThreeViewportEngine {
       stencilBuffer: false,
     });
     target.texture.colorSpace = THREE.SRGBColorSpace;
-    this.pendingProjectPreviewReadbacks += 1;
+    const readbackController = new AbortController();
+    let targetDisposed = false;
+    const pendingReadback: PendingProjectPreviewReadback = {
+      cancel: () => readbackController.abort(),
+      disposeTarget: () => {
+        if (targetDisposed) return;
+        targetDisposed = true;
+        target.dispose();
+      },
+    };
+    this.pendingProjectPreviewReadbacks.add(pendingReadback);
+    let readbackCompleted = false;
 
     try {
       for (const [child] of visibleStates) {
@@ -4295,34 +4314,33 @@ export class ThreeViewportEngine {
       renderer.setClearColor(0x000000, 0);
       renderer.clear(true, true, true);
       renderer.render(this.scene, camera);
-      await renderer.readRenderTargetPixelsAsync(target, 0, 0, width, height, pixels);
+      await readProjectPreviewPixels(renderer, target, pixels, readbackController.signal);
+      readbackCompleted = true;
+    } catch (error) {
+      if (!readbackController.signal.aborted && !this.disposed) throw error;
     } finally {
       try {
-        for (const [child, visible] of visibleStates) child.visible = visible;
-        this.scene.background = previousBackground;
-        renderer.setRenderTarget(previousTarget);
-        renderer.setViewport(previousViewport);
-        renderer.setScissor(previousScissor);
-        renderer.setScissorTest(previousScissorTest);
-        renderer.setClearColor(previousClearColor, previousClearAlpha);
-      } finally {
-        try {
-          target.dispose();
-        } finally {
-          this.completeProjectPreviewReadback(renderer);
+        if (!this.disposed && this.renderer === renderer) {
+          for (const [child, visible] of visibleStates) child.visible = visible;
+          this.scene.background = previousBackground;
+          if (renderer.getContext().isContextLost()) {
+            renderer.resetState();
+          } else {
+            renderer.setRenderTarget(previousTarget);
+            renderer.setViewport(previousViewport);
+            renderer.setScissor(previousScissor);
+            renderer.setScissorTest(previousScissorTest);
+            renderer.setClearColor(previousClearColor, previousClearAlpha);
+          }
         }
+      } finally {
+        pendingReadback.disposeTarget();
+        this.pendingProjectPreviewReadbacks.delete(pendingReadback);
       }
     }
 
+    if (!readbackCompleted || this.disposed) return undefined;
     return renderTargetPixelsToBlob(pixels, width, height);
-  }
-
-  private completeProjectPreviewReadback(renderer: THREE.WebGLRenderer): void {
-    this.pendingProjectPreviewReadbacks -= 1;
-    if (this.pendingProjectPreviewReadbacks !== 0 || !this.disposed) return;
-    if (this.rendererDeferredForPreviewReadback !== renderer) return;
-    this.rendererDeferredForPreviewReadback = undefined;
-    renderer.dispose();
   }
 
   setCameraPreset(preset: CameraPreset): void {
