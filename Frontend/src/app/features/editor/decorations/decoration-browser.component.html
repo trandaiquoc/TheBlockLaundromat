@@ -18,7 +18,7 @@
           (click)="selectPaintingForSource()"
         >
           <span class="decoration-card-preview painting-preview"
-            ><img [src]="paintingTexture()" [alt]="i18n.t('painting')"
+            ><img [src]="paintingTexture()" alt=""
           /></span>
           <span class="decoration-card-copy"
             ><strong>{{ i18n.t('painting') }}</strong
@@ -41,9 +41,7 @@
           [attr.aria-pressed]="decorations.active()?.kind === 'item-frame'"
           (click)="decorations.selectFrame(false)"
         >
-          <span class="decoration-card-preview"
-            ><img [src]="frameTexture(false)" [alt]="i18n.t('itemFrame')"
-          /></span>
+          <span class="decoration-card-preview"><img [src]="frameTexture(false)" alt="" /></span>
           <span class="decoration-card-copy"
             ><strong>{{ i18n.t('itemFrame') }}</strong
             ><small>{{ i18n.t('normalFrame') }}</small></span
@@ -64,7 +62,7 @@
           (click)="decorations.selectFrame(true)"
         >
           <span class="decoration-card-preview glow-preview"
-            ><img [src]="frameTexture(true)" [alt]="i18n.t('glowItemFrame')"
+            ><img [src]="frameTexture(true)" alt=""
           /></span>
           <span class="decoration-card-copy"
             ><strong>{{ i18n.t('glowItemFrame') }}</strong

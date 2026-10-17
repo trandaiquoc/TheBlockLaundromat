@@ -32,6 +32,7 @@ describe('PaintingPickerComponent', () => {
     const cards = [...fixture.nativeElement.querySelectorAll('.painting-card')];
     expect(cards).toHaveLength(1);
     expect(cards[0]?.textContent).toContain('Poster');
+    expect(cards[0]?.querySelector('img')?.getAttribute('alt')).toBe('');
     catalog.removeSource('example-paintings');
   });
 
