@@ -111,6 +111,46 @@ describe('editor viewport engine teardown', () => {
     ['3D', ViewportComponent],
     ['Y-Layer', YLayerComponent],
   ] as const)(
+    'clears stale %s feedback when the active project changes',
+    async (_mode, component) => {
+      const componentType = component as unknown as Type<unknown>;
+      await TestBed.configureTestingModule({ imports: [componentType] })
+        .overrideComponent(componentType, { set: { template: viewportOverlayTemplate } })
+        .compileComponents();
+      vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => undefined);
+      vi.spyOn(ThreeViewportEngine.prototype, 'update').mockImplementation(() => undefined);
+      vi.spyOn(ThreeViewportEngine.prototype, 'dispose').mockImplementation(() => undefined);
+
+      const fixture = TestBed.createComponent(componentType);
+      fixture.detectChanges();
+      const instance = fixture.componentInstance as unknown as ViewportFeedbackSignals;
+      const workspace = TestBed.inject(WorkspaceStateService);
+      const firstProject = rendererBenchmarkProject('small');
+      const secondProject = { ...firstProject, id: `${firstProject.id}-next` };
+      workspace.activate(firstProject, undefined);
+      fixture.detectChanges();
+
+      instance.placementFeedback.set({ status: 'valid' });
+      instance.decorationReason.set('missing-support');
+      instance.target.set('1, 2, 3');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.viewport-status')).not.toBeNull();
+
+      workspace.activate(secondProject, undefined);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.viewport-status')).toBeNull();
+      expect(instance.placementFeedback()).toBeUndefined();
+      expect(instance.decorationReason()).toBe('');
+      expect(instance.target()).toBe('');
+      fixture.destroy();
+    },
+  );
+
+  it.each([
+    ['3D', ViewportComponent],
+    ['Y-Layer', YLayerComponent],
+  ] as const)(
     'clears retained %s feedback while that viewport is inactive',
     async (_mode, component) => {
       const componentType = component as unknown as Type<unknown>;

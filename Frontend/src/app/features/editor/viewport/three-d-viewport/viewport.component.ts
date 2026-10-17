@@ -162,15 +162,18 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
     readonly cameraState: CameraState | undefined;
   };
   private readonly onNativePointerMove = (event: PointerEvent) => this.pointerMove(event);
+  private previousProjectId?: string;
   private readonly mountActiveViewport = effect(() => {
     if (!this.viewReady() || !this.viewportActive() || this.viewportMounted) return;
     this.mountViewport();
   });
   private readonly cancelGestureWhenInactive = effect(() => {
-    if (!this.viewportActive()) {
-      this.clearPointerGesture();
-      this.clearInteractionFeedback();
-    }
+    const viewportActive = this.viewportActive();
+    const projectId = this.workspace.project()?.id;
+    const projectChanged = projectId !== this.previousProjectId;
+    this.previousProjectId = projectId;
+    if (!viewportActive) this.clearPointerGesture();
+    if (!viewportActive || projectChanged) this.clearInteractionFeedback();
   });
   private readonly sync = effect(() => {
     this.viewReady();

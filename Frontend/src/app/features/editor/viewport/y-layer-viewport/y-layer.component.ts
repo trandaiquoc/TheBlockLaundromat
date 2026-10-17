@@ -254,14 +254,19 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
     );
   });
   private previousTool?: EditorTool;
+  private previousProjectId?: string;
   private readonly toolSync = effect(() => {
     const tool = this.tool.active();
     if (!shouldClearInteractionFeedbackForToolChange(this.previousTool, tool)) return;
     this.previousTool = tool;
     this.clearInteractionFeedback();
   });
-  private readonly clearFeedbackWhenInactive = effect(() => {
-    if (!this.viewportActive()) this.clearInteractionFeedback();
+  private readonly clearFeedbackWhenSessionChanges = effect(() => {
+    const viewportActive = this.viewportActive();
+    const projectId = this.workspace.project()?.id;
+    const projectChanged = projectId !== this.previousProjectId;
+    this.previousProjectId = projectId;
+    if (!viewportActive || projectChanged) this.clearInteractionFeedback();
   });
 
   private renderOptions(
