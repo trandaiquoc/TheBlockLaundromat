@@ -18,6 +18,7 @@ describe('ContentSourceSelectorComponent navigation', () => {
       { id: 'all', label: 'All' },
       { id: 'vanilla', label: 'Vanilla' },
     ]);
+    fixture.componentRef.setInput('selectedId', 'all');
     fixture.detectChanges();
 
     const selected: string[] = [];
@@ -27,12 +28,21 @@ describe('ContentSourceSelectorComponent navigation', () => {
       managed = true;
     });
     const sourceButtons = fixture.nativeElement.querySelectorAll('.source-option');
+    const selector = fixture.nativeElement.querySelector('.content-source-selector');
+    expect(selector.getAttribute('role')).toBe('group');
+    expect(fixture.nativeElement.querySelector('[role="listbox"]')).toBeNull();
     expect(sourceButtons).toHaveLength(2);
+    expect(sourceButtons[0].getAttribute('aria-pressed')).toBe('true');
+    expect(sourceButtons[1].getAttribute('aria-pressed')).toBe('false');
+    expect(sourceButtons[0].hasAttribute('aria-selected')).toBe(false);
     expect(sourceButtons[1].getAttribute('aria-label')).toBe('Vanilla');
     expect(fixture.nativeElement.querySelector('.source-manage').classList).toContain(
       'ui-tooltip-align-end',
     );
     sourceButtons[1].click();
+    fixture.componentRef.setInput('selectedId', 'vanilla');
+    fixture.detectChanges();
+    expect(sourceButtons[1].getAttribute('aria-pressed')).toBe('true');
     fixture.nativeElement.querySelector('.source-manage').click();
     expect(selected).toEqual(['vanilla']);
     expect(managed).toBe(true);

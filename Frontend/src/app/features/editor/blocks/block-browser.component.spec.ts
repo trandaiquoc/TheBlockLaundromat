@@ -87,10 +87,21 @@ describe('BlockBrowserComponent bootstrap presentation', () => {
   it('keeps the search as a single full-width structure without an active preview card', async () => {
     await TestBed.configureTestingModule({ imports: [BlockBrowserComponent] }).compileComponents();
     const fixture = TestBed.createComponent(BlockBrowserComponent);
+    const component = fixture.componentInstance;
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('#block-search')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.search-icon')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('label[for="block-search"]')?.className).toBe(
+      'visually-hidden',
+    );
     expect(fixture.nativeElement.querySelector('.active-block')).toBeNull();
     expect(fixture.nativeElement.querySelector('.search-active-row')).toBeNull();
+    component['library'].setQuery('chain');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.search-icon')).toBeNull();
+    component['library'].setQuery('');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.search-icon')).not.toBeNull();
   });
 
   it('offers a clear-search action for empty results and returns focus to search', async () => {

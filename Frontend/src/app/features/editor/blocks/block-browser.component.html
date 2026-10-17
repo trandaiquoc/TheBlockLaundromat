@@ -8,15 +8,20 @@
     (manageRequested)="openAssetManager()"
   />
   <div class="search-field">
-    <label class="search-label" for="block-search">{{ i18n.t('blockSearch') }}</label
-    ><input
-      #searchInput
-      id="block-search"
-      type="search"
-      [value]="library.query()"
-      (input)="search($event)"
-      [placeholder]="i18n.t('blockSearchPlaceholder')"
-    />
+    <label class="visually-hidden" for="block-search">{{ i18n.t('blockSearch') }}</label>
+    <div class="search-control">
+      <input
+        #searchInput
+        id="block-search"
+        type="search"
+        [value]="library.query()"
+        (input)="search($event)"
+        [placeholder]="i18n.t('blockSearchPlaceholder')"
+      />
+      @if (!library.query()) {
+        <svg lucideSearch class="search-icon" aria-hidden="true"></svg>
+      }
+    </div>
   </div>
   @if (assetsUnavailable()) {
     <div class="asset-empty-state">

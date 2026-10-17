@@ -36,22 +36,41 @@
 }
 .search-field {
   display: grid;
-  gap: 0.2rem;
   min-width: 0;
 }
-.search-label {
-  color: var(--workspace-sidebar-text);
-  font-size: 0.78rem;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.search-control {
+  position: relative;
+  min-width: 0;
 }
 .block-browser input {
   width: 100%;
   box-sizing: border-box;
   border: 1px solid var(--workspace-border);
   border-radius: var(--radius-sm);
-  padding: 0.48rem 0.6rem;
+  padding: 0.48rem 2rem 0.48rem 0.6rem;
   background: var(--surface-raised);
   color: var(--text);
   text-overflow: ellipsis;
+}
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 0.6rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
 }
 .block-browser input:focus-visible {
   border-color: var(--workspace-focus);
@@ -321,7 +340,6 @@
   font-family: var(--font-ui);
 }
 
-:host-context([data-font='chakra-petch']) .search-label,
 :host-context([data-font='chakra-petch']) .block-copy strong {
   font-size: 0.84rem;
   line-height: 1.05;

@@ -11,8 +11,6 @@
   <div
     #sourceOptions
     class="source-options"
-    role="listbox"
-    [attr.aria-label]="label()"
     (scroll)="updateScrollState()"
     (wheel)="onSourceWheel($event)"
     (focusin)="onSourceFocus($event)"
@@ -22,7 +20,7 @@
         type="button"
         class="source-option"
         [class.selected]="selectedId() === source.id"
-        [attr.aria-selected]="selectedId() === source.id"
+        [attr.aria-pressed]="selectedId() === source.id"
         [attr.aria-label]="source.tooltip || source.label"
         [attr.data-source-id]="source.id"
         [attr.title]="source.tooltip || source.label"
