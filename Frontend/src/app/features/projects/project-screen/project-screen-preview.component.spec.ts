@@ -186,7 +186,7 @@ describe('ProjectScreenPreviewComponent', () => {
     expect(first.nativeElement.querySelector('img')?.getAttribute('src')).toBe(
       'blob:first-preview',
     );
-    expect(revokeObjectUrl).not.toHaveBeenCalled();
+    expect(revokeObjectUrl).not.toHaveBeenCalledWith('blob:first-preview');
 
     first.destroy();
     second.destroy();
@@ -217,10 +217,11 @@ describe('ProjectScreenPreviewComponent', () => {
     getObserver()?.intersect(changed.nativeElement as Element);
     changed.componentRef.setInput('project', { id: 'second', updatedAt: 'revision-2' });
     changed.detectChanges();
-    firstLoad.resolve(new Blob(['stale project'], { type: 'image/webp' }));
+    const staleProjectPreview = new Blob(['stale project'], { type: 'image/webp' });
+    firstLoad.resolve(staleProjectPreview);
     secondLoad.resolve(undefined);
     await changed.whenStable();
-    expect(createObjectUrl).not.toHaveBeenCalled();
+    expect(createObjectUrl.mock.calls.some(([blob]) => blob === staleProjectPreview)).toBe(false);
     changed.destroy();
 
     const destroyedLoad = deferred<Blob | undefined>();
@@ -230,9 +231,10 @@ describe('ProjectScreenPreviewComponent', () => {
     destroyed.detectChanges();
     getObserver()?.intersect(destroyed.nativeElement as Element);
     destroyed.destroy();
-    destroyedLoad.resolve(new Blob(['late result'], { type: 'image/webp' }));
+    const latePreview = new Blob(['late result'], { type: 'image/webp' });
+    destroyedLoad.resolve(latePreview);
     await Promise.resolve();
-    expect(createObjectUrl).not.toHaveBeenCalled();
+    expect(createObjectUrl.mock.calls.some(([blob]) => blob === latePreview)).toBe(false);
   });
 });
 

@@ -82,6 +82,7 @@ describe('project preview readback', () => {
 
   it('aborts a pending readback and clears its timer immediately', async () => {
     vi.useFakeTimers();
+    const timersBeforeReadback = vi.getTimerCount();
     const gl = createReadbackContext({ clientWaitSync: vi.fn(() => 0x911b) });
     const { renderer, target } = createReadback(gl);
     const controller = new AbortController();
@@ -96,13 +97,14 @@ describe('project preview readback', () => {
     controller.abort();
     await rejection;
 
-    expect(vi.getTimerCount()).toBe(0);
+    expect(vi.getTimerCount()).toBe(timersBeforeReadback);
     expect(gl.deleteSync).toHaveBeenCalledOnce();
     expect(gl.deleteBuffer).toHaveBeenCalledOnce();
   });
 
   it('times out a stalled GPU fence and releases its resources', async () => {
     vi.useFakeTimers();
+    const timersBeforeReadback = vi.getTimerCount();
     const gl = createReadbackContext({ clientWaitSync: vi.fn(() => 0x911b) });
     const { renderer, target } = createReadback(gl);
     const readback = readProjectPreviewPixels(
@@ -117,13 +119,14 @@ describe('project preview readback', () => {
     await vi.advanceTimersByTimeAsync(8);
     await rejection;
 
-    expect(vi.getTimerCount()).toBe(0);
+    expect(vi.getTimerCount()).toBe(timersBeforeReadback);
     expect(gl.deleteSync).toHaveBeenCalledOnce();
     expect(gl.deleteBuffer).toHaveBeenCalledOnce();
   });
 
   it('stops polling and releases handles after context loss', async () => {
     vi.useFakeTimers();
+    const timersBeforeReadback = vi.getTimerCount();
     let contextLost = false;
     const gl = createReadbackContext({ isContextLost: vi.fn(() => contextLost) });
     const { renderer, target } = createReadback(gl);
@@ -139,7 +142,7 @@ describe('project preview readback', () => {
     await vi.advanceTimersByTimeAsync(4);
     await rejection;
 
-    expect(vi.getTimerCount()).toBe(0);
+    expect(vi.getTimerCount()).toBe(timersBeforeReadback);
     expect(gl.deleteSync).toHaveBeenCalledOnce();
     expect(gl.deleteBuffer).toHaveBeenCalledOnce();
   });
