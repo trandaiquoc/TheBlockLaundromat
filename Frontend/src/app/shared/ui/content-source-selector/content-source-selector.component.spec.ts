@@ -15,8 +15,8 @@ describe('ContentSourceSelectorComponent navigation', () => {
     const fixture = TestBed.createComponent(ContentSourceSelectorComponent);
     const component = fixture.componentInstance;
     fixture.componentRef.setInput('sources', [
-      { id: 'all', label: 'All' },
-      { id: 'vanilla', label: 'Vanilla' },
+      { id: 'all', label: 'All', count: 12, tooltip: 'All content (12)' },
+      { id: 'vanilla', label: 'Vanilla', count: 7 },
     ]);
     fixture.componentRef.setInput('selectedId', 'all');
     fixture.detectChanges();
@@ -35,7 +35,8 @@ describe('ContentSourceSelectorComponent navigation', () => {
     expect(sourceButtons[0].getAttribute('aria-pressed')).toBe('true');
     expect(sourceButtons[1].getAttribute('aria-pressed')).toBe('false');
     expect(sourceButtons[0].hasAttribute('aria-selected')).toBe(false);
-    expect(sourceButtons[1].getAttribute('aria-label')).toBe('Vanilla');
+    expect(sourceButtons[0].getAttribute('aria-label')).toBe('All content (12)');
+    expect(sourceButtons[1].getAttribute('aria-label')).toBe('Vanilla (7)');
     expect(fixture.nativeElement.querySelector('.source-manage').classList).toContain(
       'ui-tooltip-align-end',
     );

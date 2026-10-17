@@ -142,6 +142,11 @@ export class ContentSourceSelectorComponent {
     target.scrollIntoView?.({ inline: 'nearest', block: 'nearest' });
   }
 
+  protected sourceAccessibleLabel(source: ContentSourceOption): string {
+    if (source.tooltip) return source.tooltip;
+    return source.count === undefined ? source.label : `${source.label} (${source.count})`;
+  }
+
   protected revealSelected(): void {
     const selectedId = this.selectedId();
     const host = this.sourceOptions()?.nativeElement;

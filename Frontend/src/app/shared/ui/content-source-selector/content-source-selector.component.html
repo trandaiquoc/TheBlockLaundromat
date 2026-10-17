@@ -21,7 +21,7 @@
         class="source-option"
         [class.selected]="selectedId() === source.id"
         [attr.aria-pressed]="selectedId() === source.id"
-        [attr.aria-label]="source.tooltip || source.label"
+        [attr.aria-label]="sourceAccessibleLabel(source)"
         [attr.data-source-id]="source.id"
         [attr.title]="source.tooltip || source.label"
         (click)="selectionChange.emit(source.id)"
