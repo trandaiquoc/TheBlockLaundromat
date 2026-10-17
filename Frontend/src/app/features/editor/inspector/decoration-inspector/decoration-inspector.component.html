@@ -15,9 +15,7 @@
     @if (selected.kind === 'painting') {
       <div class="painting-summary">
         <span class="painting-summary-image"
-          ><img
-            [src]="paintingTexture(selected.variantId)"
-            [alt]="paintingLabel(selected.variantId)"
+          ><img [src]="paintingTexture(selected.variantId)" alt=""
         /></span>
         <span
           ><strong>{{ paintingLabel(selected.variantId) }}</strong
