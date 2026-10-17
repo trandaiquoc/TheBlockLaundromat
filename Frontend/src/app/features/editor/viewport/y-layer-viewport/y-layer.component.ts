@@ -23,6 +23,7 @@ import {
 import { placementFeedbackForHit } from '../../../../core/renderer/interaction/viewport-hit-resolver';
 import { isPointerClick } from '../../../../core/editor/input/interaction';
 import { EditorToolService } from '../../../../core/editor/state/tool.service';
+import type { EditorTool } from '../../../../core/editor/state/tool.service';
 import { CameraStateService } from '../../../../core/editor/camera/camera-state.service';
 import { CameraPreset } from '../../../../core/editor/camera/camera';
 import { GroupService } from '../../../../core/editor/groups/group.service';
@@ -63,6 +64,7 @@ import {
   ViewportPreparationScheduler,
   type ViewportPreparationScope,
 } from '../shared/viewport-preparation-scheduler';
+import { shouldClearInteractionFeedbackForToolChange } from '../shared/viewport-interaction-feedback';
 import { ViewportHitInteractionWorkflow } from '../shared/viewport-hit-interaction-workflow';
 import { ViewportOverlayStackComponent } from '../shared/viewport-overlay-stack.component';
 
@@ -250,6 +252,13 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
       this.renderOptions(project),
       activeViewport ? this.mutationHints.consume(project, 'y-layer-viewport') : undefined,
     );
+  });
+  private previousTool?: EditorTool;
+  private readonly toolSync = effect(() => {
+    const tool = this.tool.active();
+    if (!shouldClearInteractionFeedbackForToolChange(this.previousTool, tool)) return;
+    this.previousTool = tool;
+    this.clearInteractionFeedback();
   });
 
   private renderOptions(
@@ -571,7 +580,7 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
     this.pickConsumed = false;
     this.boxCornerStart = undefined;
     this.engine.clearInput();
-    this.viewportStatus.clear(this.viewportStatusOwner);
+    this.clearInteractionFeedback();
   }
   private capturePointer(event: PointerEvent): void {
     const target = event.currentTarget as HTMLElement | null;

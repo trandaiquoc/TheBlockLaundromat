@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { Type } from '@angular/core';
+import type { Type, WritableSignal } from '@angular/core';
 import { ThreeViewportEngine } from '../../../core/renderer/engine/three-viewport-engine';
+import type { PlacementFeedback } from '../../../core/renderer/interaction/viewport-hit-resolver';
 import { ContentAssetRuntimeService } from '../../../core/assets/content-asset-runtime.service';
 import { ContentSourceRegistry } from '../../../core/assets/content-source/content-source-registry';
 import { BlockLibraryService } from '../../../core/blocks/catalog/block-library.service';
@@ -14,6 +15,7 @@ import { ViewportPreparationScheduler } from './shared/viewport-preparation-sche
 import type { YLayerPrewarmTerminalNotification } from '../../../core/renderer/engine/viewport-engine-contracts';
 import { ViewportComponent } from './three-d-viewport/viewport.component';
 import { YLayerComponent } from './y-layer-viewport/y-layer.component';
+import { EditorToolService } from '../../../core/editor/state/tool.service';
 
 function createAssetRuntimeStub() {
   return {
@@ -36,6 +38,70 @@ describe('editor viewport engine teardown', () => {
     vi.restoreAllMocks();
     localStorage.removeItem('the-block-laundromat.ui-preferences');
   });
+
+  it.each([
+    ['3D', ViewportComponent],
+    ['Y-Layer', YLayerComponent],
+  ] as const)(
+    'clears stale placement feedback when the %s tool changes',
+    async (_mode, component) => {
+      const componentType = component as unknown as Type<unknown>;
+      const overlayTemplate = `
+      <div #host>
+        <app-viewport-overlay-stack
+          [project]="workspace.project()"
+          [tool]="tool.active()"
+          [hasActiveBlock]="!!active.active()"
+          [hasActiveDecoration]="!!decorations.active()"
+          [placementStatus]="placementFeedback()?.status"
+          [placementReason]="reasonLabel()"
+          [target]="target()"
+        />
+      </div>
+    `;
+      await TestBed.configureTestingModule({ imports: [componentType] })
+        .overrideComponent(componentType, { set: { template: overlayTemplate } })
+        .compileComponents();
+      vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => undefined);
+      vi.spyOn(ThreeViewportEngine.prototype, 'update').mockImplementation(() => undefined);
+      vi.spyOn(ThreeViewportEngine.prototype, 'dispose').mockImplementation(() => undefined);
+
+      const fixture = TestBed.createComponent(componentType);
+      fixture.detectChanges();
+      const instance = fixture.componentInstance as unknown as {
+        placementFeedback: WritableSignal<PlacementFeedback | undefined>;
+        decorationReason: WritableSignal<string>;
+        target: WritableSignal<string>;
+        cancelPointer(): void;
+      };
+      instance['placementFeedback'].set({ status: 'valid' });
+      instance['decorationReason'].set('missing-support');
+      instance['target'].set('1, 2, 3');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.viewport-status')?.textContent).toContain(
+        '1, 2, 3',
+      );
+
+      instance.cancelPointer();
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.viewport-status')).toBeNull();
+
+      instance.placementFeedback.set({ status: 'valid' });
+      instance.decorationReason.set('missing-support');
+      instance.target.set('1, 2, 3');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.viewport-status')).not.toBeNull();
+
+      TestBed.inject(EditorToolService).select('select');
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('.viewport-status')).toBeNull();
+      expect(instance['placementFeedback']()).toBeUndefined();
+      expect(instance['decorationReason']()).toBe('');
+      expect(instance['target']()).toBe('');
+      fixture.destroy();
+    },
+  );
 
   it('disposes the 3D engine once when the real viewport component is destroyed', async () => {
     await TestBed.configureTestingModule({ imports: [ViewportComponent] })

@@ -67,6 +67,7 @@ import {
   ViewportPreparationScheduler,
   type ViewportPreparationScope,
 } from '../shared/viewport-preparation-scheduler';
+import { shouldClearInteractionFeedbackForToolChange } from '../shared/viewport-interaction-feedback';
 import { ViewportHitInteractionWorkflow } from '../shared/viewport-hit-interaction-workflow';
 import { ViewportOverlayStackComponent } from '../shared/viewport-overlay-stack.component';
 
@@ -235,10 +236,9 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
   });
   private readonly toolSync = effect(() => {
     const tool = this.tool.active();
-    if (!shouldClearGhostForToolChange(this.previousTool, tool)) return;
+    if (!shouldClearInteractionFeedbackForToolChange(this.previousTool, tool)) return;
     this.previousTool = tool;
-    this.engine.clearGhost();
-    this.viewportStatus.clear(this.viewportStatusOwner);
+    this.clearInteractionFeedback();
   });
 
   ngAfterViewInit(): void {
@@ -555,6 +555,9 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
     const target = event.currentTarget as HTMLElement | null;
     if (target?.hasPointerCapture?.(event.pointerId)) return;
     this.clearPointerGesture();
+    this.clearInteractionFeedback();
+  }
+  private clearInteractionFeedback(): void {
     this.engine.clearGhost();
     this.placementFeedback.set(undefined);
     this.decorationReason.set('');
@@ -566,7 +569,7 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
     this.engine.endEditorPointerGesture();
     this.clearPointerGesture();
     if (this.viewportActive()) this.engine.clearInput();
-    this.viewportStatus.clear(this.viewportStatusOwner);
+    this.clearInteractionFeedback();
   }
   private capturePointer(event: PointerEvent): void {
     const target = event.currentTarget as HTMLElement | null;
@@ -653,13 +656,6 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
   clearCameraInput(): void {
     this.engine.clearInput();
   }
-}
-
-export function shouldClearGhostForToolChange(
-  previousTool: EditorTool | undefined,
-  nextTool: EditorTool,
-): boolean {
-  return previousTool !== nextTool;
 }
 
 function isEditorMouseAction(
