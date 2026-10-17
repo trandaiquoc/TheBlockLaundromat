@@ -3,10 +3,7 @@
   <div class="details-identity">
     <div class="details-mod-icon">
       @if (currentMod.iconUrl) {
-        <img
-          [src]="currentMod.iconUrl"
-          [alt]="i18n.t('assetManagerIconAlt').replace('{name}', currentMod.displayName)"
-        />
+        <img [src]="currentMod.iconUrl" alt="" />
       } @else {
         <span>M</span>
       }

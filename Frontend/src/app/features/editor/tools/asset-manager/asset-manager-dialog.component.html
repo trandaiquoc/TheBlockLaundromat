@@ -308,18 +308,7 @@
                 <div class="preflight-header">
                   <div class="mod-icon">
                     @if (modImport.preflightIconUrl(); as icon) {
-                      <img
-                        [src]="icon"
-                        [alt]="
-                          i18n
-                            .t('assetManagerIconAlt')
-                            .replace(
-                              '{name}',
-                              prepared.normalizedMetadata?.displayName ||
-                                i18n.t('assetManagerUnknownMod')
-                            )
-                        "
-                      />
+                      <img [src]="icon" alt="" />
                     } @else {
                       <span>M</span>
                     }
@@ -581,10 +570,7 @@
                     <article class="imported-mod-card">
                       <div class="mod-icon">
                         @if (mod.iconUrl) {
-                          <img
-                            [src]="mod.iconUrl"
-                            [alt]="i18n.t('assetManagerIconAlt').replace('{name}', mod.displayName)"
-                          />
+                          <img [src]="mod.iconUrl" alt="" />
                         } @else {
                           <span>M</span>
                         }

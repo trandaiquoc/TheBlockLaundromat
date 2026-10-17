@@ -121,3 +121,16 @@ describe('AssetManagerDialogComponent empty states', () => {
     expect(assetManagerTemplate).toContain("i18n.t('assetManagerNoModMatches')");
   });
 });
+
+describe('AssetManagerDialogComponent mod icons', () => {
+  it('keeps preflight and imported icons decorative beside their mod names', () => {
+    const iconBlocks = [
+      ...assetManagerTemplate.matchAll(/<div class="mod-icon">([\s\S]*?)<\/div>/g),
+    ]
+      .map(([, contents]) => contents)
+      .filter((contents) => contents.includes('<img'));
+
+    expect(iconBlocks).toHaveLength(2);
+    expect(iconBlocks.every((contents) => contents.includes('alt=""'))).toBe(true);
+  });
+});

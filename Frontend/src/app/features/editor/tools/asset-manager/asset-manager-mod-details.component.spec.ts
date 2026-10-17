@@ -28,6 +28,7 @@ const mod: ImportedModSummary = {
   version: '1.0',
   namespaces: ['mod_a'],
   candidateBlockCount: 0,
+  iconUrl: 'blob:mod-icon',
   report: {
     metadataFormat: 'fabric',
     loader: 'fabric',
@@ -86,6 +87,12 @@ describe('AssetManagerModDetailsComponent', () => {
     fixture.componentRef.setInput('mod', mod);
     fixture.detectChanges();
     await fixture.whenStable();
+    expect(
+      (fixture.nativeElement.querySelector('.details-mod-icon img') as HTMLImageElement).alt,
+    ).toBe('');
+    expect(fixture.nativeElement.querySelector('.details-identity h3')?.textContent).toContain(
+      'Mod A',
+    );
     expect(
       [...fixture.nativeElement.querySelectorAll('.details-item-copy code')].map(
         (node: Element) => node.textContent,
