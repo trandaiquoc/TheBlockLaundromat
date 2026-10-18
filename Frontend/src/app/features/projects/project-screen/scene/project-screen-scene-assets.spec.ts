@@ -18,15 +18,30 @@ describe('Project Screen scene asset contract', () => {
     const createProjectTile = readFileSync(
       'public/assets/project-screen/layers/create-project-tile-craft.png',
     );
+    const boardCleanup = readFileSync(
+      'public/assets/project-screen/layers/scene-minecraft-board-cleanup.png',
+    );
 
     expect([...reference.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
     expect(reference.readUInt32BE(16)).toBe(1672);
     expect(reference.readUInt32BE(20)).toBe(941);
     expect(runtimeReference.equals(reference)).toBe(true);
-    expect(craft.room.src).toMatch(/layers\/scene-minecraft-reference\.png$/);
+    expect(craft.room.src).toMatch(/layers\/scene-minecraft-room-shell\.png$/);
     expect(craft.room.width).toBe(1672);
     expect(craft.room.height).toBe(941);
-    expect(craft.exterior).toBeUndefined();
+    expect(craft.exterior?.src).toMatch(/layers\/scene-minecraft-exterior-view\.png$/);
+    expect(craft.exterior?.width).toBe(1672);
+    expect(craft.exterior?.height).toBe(941);
+    for (const asset of [craft.room, craft.exterior!]) {
+      const image = readFileSync(asset.src.replace(/^assets\//, 'public/assets/'));
+      expect([...image.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+      expect(image.readUInt32BE(16)).toBe(1672);
+      expect(image.readUInt32BE(20)).toBe(941);
+      expect(image[25]).toBe(6);
+    }
+    expect(craft.referenceBoardCleanup?.src).toMatch(/layers\/scene-minecraft-board-cleanup\.png$/);
+    expect(craft.referenceBoardCleanup?.width).toBe(1672);
+    expect(craft.referenceBoardCleanup?.height).toBe(941);
     expect(craft.roomMask).toBeUndefined();
     expect(craft.washer).toBeUndefined();
     expect(craft.board).toBeUndefined();
@@ -35,6 +50,10 @@ describe('Project Screen scene asset contract', () => {
     expect([...createProjectTile.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
     expect(createProjectTile.readUInt32BE(16)).toBe(142);
     expect(createProjectTile.readUInt32BE(20)).toBe(156);
+    expect([...boardCleanup.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+    expect(boardCleanup.readUInt32BE(16)).toBe(1672);
+    expect(boardCleanup.readUInt32BE(20)).toBe(941);
+    expect(boardCleanup[25]).toBe(6);
   });
 
   it('keeps alpha-channel masks for themes with a separate outdoor layer', () => {
@@ -97,14 +116,21 @@ describe('Project Screen scene asset contract', () => {
       const ambientLighting = fixture.nativeElement.querySelector(
         '.scene-layer--ambient-lighting',
       ) as HTMLElement;
+      const boardCleanup = fixture.nativeElement.querySelector(
+        '.scene-layer--reference-board-cleanup',
+      ) as HTMLImageElement;
 
       expect(scene.dataset['theme']).toBe(themeName);
       if (themeName === 'craft') {
-        expect(exterior).toBeNull();
-        expect(lighting).toBeNull();
+        expect(boardCleanup).not.toBeNull();
+        expect(boardCleanup.getAttribute('src')).toContain(assets.referenceBoardCleanup!.src);
+        expect(assets.exterior).toBeDefined();
+        expect(exterior.getAttribute('src')).toContain(assets.exterior!.src);
+        expect(lighting).not.toBeNull();
         expect(roomLighting).toBeNull();
         expect(room.style.getPropertyValue('--room-opening-mask')).toBe('');
       } else {
+        expect(boardCleanup).toBeNull();
         expect(assets.exterior).toBeDefined();
         expect(exterior.getAttribute('src')).toContain(assets.exterior!.src);
         expect(lighting).not.toBeNull();

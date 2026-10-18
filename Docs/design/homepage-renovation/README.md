@@ -5,11 +5,12 @@ remaining scope; it is not a full application acceptance report.
 
 ## Implemented Project Screen
 
-- The Minecraft (`craft`) scene uses the exact 1672 × 941 source image in
-  `Docs/design/references/01-minecraft.png`. The other themes still use their
-  earlier layered scene assets and have not yet been brought into parity with
-  the Minecraft reference. Project controls, project data, preview, actions,
-  and local status remain real DOM layers over the artwork.
+- The Minecraft (`craft`) scene starts from the exact 1672 × 941 source in
+  `Docs/design/references/01-minecraft.png`. The left doorway and two right
+  window-view groups are split into a transparent exterior layer and a
+  complementary room layer. The other themes still use their earlier layered
+  scene assets and have not yet been brought into parity. Project controls,
+  data, preview, actions, and local status remain real DOM layers over artwork.
 - Recent projects appear as real selectable entries on the wooden board. The
   washer drum displays the selected project's real cached capture when one is
   available. The selected project name and size appear on the washer's angled
@@ -40,26 +41,34 @@ remaining scope; it is not a full application acceptance report.
 
 ## Art Assets
 
-The Minecraft runtime asset
-`Frontend/public/assets/project-screen/layers/scene-minecraft-reference.png`
-is a byte-for-byte copy of `Docs/design/references/01-minecraft.png`; it is not
-generated or repainted. The matching canvas uses the reference's 1672 × 941
-composition. `create-project-tile-craft.png` is a 142 × 156 pixel crop at
-`(1026, 385)` from that same source; its button stays interactive while showing
-the reference's original tile art. The craft board has no separate opaque
-surface placed over the reference. Its baked heading and search/sort surfaces
-remain visible while transparent DOM controls preserve the live interactions.
-Live project rows replace matching reference cards; unused reference sample
-cards remain part of the static scene. The washer preview, selected-project
-display, action hit areas, project board controls, and local status remain
-independent DOM layers.
+`scene-minecraft-reference.png` remains a byte-for-byte copy of the approved
+Minecraft source. The current split assets are derived only from that image:
+`scene-minecraft-room-shell.png` and `scene-minecraft-exterior-view.png` use the
+same 1672 × 941 canvas. Their measured mask regions are recorded in the
+[asset manifest](asset-manifest.json); the extraction script verifies that
+compositing both layers reproduces every source pixel. Only the visible view
+groups are isolated so far; unseen outdoor regions are not generated. The split
+does not yet remove the baked logo, washer, board, controls, or mascots. Those
+still form the source artwork under their live DOM layers.
+`scene-minecraft-board-cleanup.png` covers the five static sample project cards
+while preserving the original New Project tile. The source-derived
+`project-card-craft.png` crop at `(1176, 385)` preserves its pin and paper frame,
+opens a transparent preview window, and replaces baked card text with live DOM
+text. A browser screenshot with an empty IndexedDB project confirms the card
+frame, placeholder, and title alignment; non-empty thumbnail alignment remains
+pending. `create-project-tile-craft.png` is a 142 × 156 pixel crop at `(1026,
+385)` from that same source; its button remains interactive while showing the
+original tile art.
 
 `Frontend/public/assets/project-screen/layers/ref4/` still contains the earlier
 layered artwork masters used by Light, Raccoon, and Dark. Those themes, their
 geometry, and their transition lighting remain pending alignment with the
-Minecraft source. Exterior panoramas and room-opening masks are used only by
-those layered themes. The experimental craft cutouts were removed after the
-reference comparison showed that they did not match its composition.
+Minecraft source. The new Craft exterior layer currently contains only the
+visible source pixels from the measured doorway/window groups. Its scene
+composition is pixel-identical to the source before the separate board cleanup
+overlay is applied. The empty washer preview now shows a dark glass grid while
+no saved capture exists; the cached renderer image remains the visible content
+when available.
 
 The project board reads lightweight summary records while full structure data
 stays in separate project records. Once route checks approve leaving the 3D

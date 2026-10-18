@@ -9,7 +9,8 @@
 
 .scene-background,
 .scene-layer--exterior,
-.scene-layer--room {
+.scene-layer--room,
+.scene-layer--reference-board-cleanup {
   position: absolute;
   inset: 0;
   display: block;
@@ -85,6 +86,11 @@
   z-index: 0;
   filter: var(--exterior-filter);
   transition: filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scene-layer--reference-board-cleanup {
+  z-index: 2;
+  pointer-events: none;
 }
 
 .scene-layer--exterior-lighting {

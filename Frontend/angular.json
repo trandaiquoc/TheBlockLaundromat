@@ -42,7 +42,12 @@
                 "output": "assets/project-screen/layers"
               },
               {
-                "glob": "scene-minecraft-reference.png",
+                "glob": "scene-minecraft-*.png",
+                "input": "public/assets/project-screen/layers",
+                "output": "assets/project-screen/layers"
+              },
+              {
+                "glob": "project-card-craft.png",
                 "input": "public/assets/project-screen/layers",
                 "output": "assets/project-screen/layers"
               },

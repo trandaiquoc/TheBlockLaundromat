@@ -81,7 +81,11 @@
   height: 31.5%;
   border-radius: 50%;
   clip-path: ellipse(49% 49% at 50% 50%);
-  background: radial-gradient(circle at 42% 34%, #3a4140 0, #1d2424 66%, #111718 100%);
+  background:
+    radial-gradient(circle at 50% 50%, transparent 56%, rgb(7 14 17 / 28%) 100%),
+    repeating-linear-gradient(0deg, transparent 0 19px, rgb(153 193 188 / 20%) 20px 21px),
+    repeating-linear-gradient(90deg, transparent 0 19px, rgb(153 193 188 / 20%) 20px 21px),
+    radial-gradient(circle at 42% 34%, #3a4140 0, #1d2424 66%, #111718 100%);
   box-shadow: inset 0 0 1rem rgb(10 13 14 / 68%);
 }
 
@@ -441,46 +445,63 @@
 }
 
 .project-page[data-theme='craft'] .project-row {
-  height: 9.4rem;
-  min-height: 0;
-  padding: 0.22rem;
-  border-color: #a57b4b;
-  border-radius: 0.28rem;
-  background: #f3dfbb;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 72%),
-    0 0.12rem 0.2rem rgb(67 43 20 / 22%);
+  height: 9.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .project-page[data-theme='craft'] .project-row.selected {
-  border-color: #5d9437;
-  background: #f3dfbb;
   color: #392717;
-  box-shadow:
-    inset 0 0 0 1px #a8c781,
-    0 0.12rem 0.2rem rgb(67 43 20 / 22%);
 }
 
 .project-page[data-theme='craft'] .project-row::before {
-  border-color: #4b742f;
-  background: radial-gradient(circle at 32% 28%, #b8e966, #4b8c25 70%);
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 108%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: url('/assets/project-screen/layers/project-card-craft.png') left top / 100% 100%
+    no-repeat;
+  box-shadow: none;
+  transform: none;
 }
 
 .project-page[data-theme='craft'] .project-select-action {
-  gap: 0.12rem;
-  padding: 0.2rem 0.14rem;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
 }
 
 .project-page[data-theme='craft'] .project-select-preview {
+  position: absolute;
+  top: 7.8%;
+  left: 5.1%;
+  width: 92%;
+  height: 69%;
   max-height: none;
-  aspect-ratio: 1.55;
+  margin: 0;
+  --border: #d2b488;
+  --surface-muted: #ead9b7;
 }
 
 .project-page[data-theme='craft'] .project-select-action > strong {
+  position: absolute;
+  top: 82.5%;
+  left: 5.1%;
+  width: 90%;
   font-size: 0.7rem;
 }
 
 .project-page[data-theme='craft'] .project-row-meta {
+  position: absolute;
+  top: 93.4%;
+  left: 5.1%;
+  width: 90%;
   gap: 0.12rem 0.24rem;
   font-size: 0.59rem;
 }
@@ -907,6 +928,17 @@
 .project-list-empty {
   border-style: dashed;
   background: color-mix(in srgb, var(--surface) 58%, transparent);
+}
+
+.project-page[data-theme='craft'] .project-list-empty,
+.project-page[data-theme='craft'] .board-message {
+  padding: 0.65rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #684a2b;
+  font-size: clamp(0.72rem, 0.82vw, 0.86rem);
+  font-weight: 650;
 }
 
 .board-error,

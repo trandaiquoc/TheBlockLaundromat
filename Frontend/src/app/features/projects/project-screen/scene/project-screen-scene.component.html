@@ -7,14 +7,25 @@
 >
   <!-- Scene boxes use stable intrinsic sizes so NgOptimizedImage can swap theme sources. -->
   @if (scene().exterior; as exterior) {
-    <img
-      class="scene-layer--exterior"
-      [ngSrc]="exterior.src"
-      width="1828"
-      height="860"
-      priority
-      alt=""
-    />
+    @if (theme() === 'craft') {
+      <img
+        class="scene-layer--exterior"
+        [ngSrc]="exterior.src"
+        width="1672"
+        height="941"
+        priority
+        alt=""
+      />
+    } @else {
+      <img
+        class="scene-layer--exterior"
+        [ngSrc]="exterior.src"
+        width="1828"
+        height="860"
+        priority
+        alt=""
+      />
+    }
     <div class="scene-layer--exterior-lighting"></div>
   }
   @if (theme() === 'craft') {
@@ -30,9 +41,19 @@
     <img
       class="scene-layer--room"
       [ngSrc]="scene().room.src"
-      width="1832"
-      height="860"
+      width="1831"
+      height="859"
       [style.--room-opening-mask]="'url(/' + scene().roomMask!.src + ')'"
+      priority
+      alt=""
+    />
+  }
+  @if (scene().referenceBoardCleanup; as boardCleanup) {
+    <img
+      class="scene-layer--reference-board-cleanup"
+      [ngSrc]="boardCleanup.src"
+      [width]="boardCleanup.width"
+      [height]="boardCleanup.height"
       priority
       alt=""
     />

@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "coordinateSystem": {
+    "width": 1672,
+    "height": 941,
+    "origin": "top-left",
+    "units": "source pixels"
+  },
+  "sources": {
+    "minecraft": "Docs/design/references/01-minecraft.png",
+    "light": "Docs/design/references/02-light.png",
+    "raccoon": "Docs/design/references/03-raccoon.png",
+    "dark": "Docs/design/references/04-dark.png"
+  },
+  "extractions": [
+    {
+      "id": "minecraft-window-views",
+      "theme": "minecraft",
+      "source": "Docs/design/references/01-minecraft.png",
+      "canvas": {
+        "width": 1672,
+        "height": 941
+      },
+      "regions": [
+        {
+          "id": "left-door-opening-view",
+          "polygon": [
+            [105, 183],
+            [258, 251],
+            [258, 678],
+            [108, 656]
+          ]
+        },
+        {
+          "id": "upper-right-window-view",
+          "polygon": [
+            [1289, 128],
+            [1671, 111],
+            [1671, 284],
+            [1289, 267]
+          ]
+        },
+        {
+          "id": "right-side-window-view",
+          "polygon": [
+            [1596, 284],
+            [1671, 284],
+            [1671, 710],
+            [1596, 710]
+          ]
+        }
+      ],
+      "outputs": {
+        "roomShell": "Frontend/public/assets/project-screen/layers/scene-minecraft-room-shell.png",
+        "exteriorView": "Frontend/public/assets/project-screen/layers/scene-minecraft-exterior-view.png"
+      },
+      "validation": {
+        "recomposesToSource": true,
+        "method": "extract-minecraft-exterior.ps1 checks every canvas pixel after layer compositing",
+        "scope": "The source pixels visible in the three measured opening groups are isolated; unseen exterior regions are not synthesized."
+      }
+    },
+    {
+      "id": "minecraft-project-card",
+      "theme": "minecraft",
+      "source": "Docs/design/references/01-minecraft.png",
+      "sourceRect": {
+        "x": 1176,
+        "y": 385,
+        "width": 158,
+        "height": 154
+      },
+      "output": "Frontend/public/assets/project-screen/layers/project-card-craft.png",
+      "transparentRegions": [
+        {
+          "id": "live-preview-window",
+          "rect": {
+            "x": 10,
+            "y": 12,
+            "width": 136,
+            "height": 109
+          }
+        }
+      ],
+      "reconstructedRegions": [
+        {
+          "id": "live-project-label-area",
+          "rect": {
+            "x": 10,
+            "y": 121,
+            "width": 136,
+            "height": 31
+          },
+          "method": "Fill each source row from the card paper at source-local x=130; live project title and metadata are DOM text."
+        }
+      ],
+      "validation": {
+        "sourceCropInspected": true,
+        "browserScreenshot": "1672 by 941 with an empty IndexedDB project; frame, transparent preview opening, and live title alignment inspected",
+        "realThumbnail": "pending"
+      }
+    }
+  ]
+}
