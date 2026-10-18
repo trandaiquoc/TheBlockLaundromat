@@ -6,66 +6,89 @@
   aria-hidden="true"
 >
   <!-- Scene boxes use stable intrinsic sizes so NgOptimizedImage can swap theme sources. -->
-  <img
-    class="scene-layer--exterior"
-    [ngSrc]="scene().exterior.src"
-    width="1832"
-    height="860"
-    priority
-    alt=""
-  />
-  <div class="scene-layer--exterior-lighting"></div>
-  <img
-    class="scene-layer--room"
-    [ngSrc]="scene().room.src"
-    width="1832"
-    height="860"
-    [style.--room-opening-mask]="'url(/' + scene().roomMask.src + ')'"
-    priority
-    alt=""
-  />
-  <div class="scene-layer--wall-sign">
+  @if (scene().exterior; as exterior) {
     <img
-      class="scene-layer--wall-sign-logo"
-      ngSrc="assets/brand/the-block-laundromat-logo.svg"
-      width="1774"
-      height="887"
+      class="scene-layer--exterior"
+      [ngSrc]="exterior.src"
+      width="1828"
+      height="860"
+      priority
       alt=""
     />
-  </div>
-  <img class="scene-layer--washer" [ngSrc]="scene().washer.src" width="1373" height="1222" alt="" />
-  <img class="scene-layer--board" [ngSrc]="scene().board.src" width="1402" height="1122" alt="" />
-  @if (animationsEnabled()) {
+    <div class="scene-layer--exterior-lighting"></div>
+  }
+  @if (theme() === 'craft') {
     <img
-      class="scene-layer--washer-mascot"
-      [ngSrc]="washerMascotStateAsset().src"
-      width="1254"
-      height="1254"
+      class="scene-layer--room"
+      [ngSrc]="scene().room.src"
+      width="1672"
+      height="941"
+      priority
       alt=""
     />
   } @else {
     <img
-      class="scene-layer--washer-mascot"
-      [ngSrc]="scene().washerMascot.src"
-      width="1388"
-      height="1208"
+      class="scene-layer--room"
+      [ngSrc]="scene().room.src"
+      width="1832"
+      height="860"
+      [style.--room-opening-mask]="'url(/' + scene().roomMask!.src + ')'"
+      priority
       alt=""
     />
   }
-  <img
-    class="scene-layer--map-mascot"
-    [ngSrc]="scene().mapMascot.src"
-    width="1388"
-    height="1222"
-    alt=""
-  />
-  <div class="scene-layer--foreground">
+  @if (scene().roomMask; as roomMask) {
+    <div
+      class="scene-layer--room-lighting"
+      [style.--room-opening-mask]="'url(/' + roomMask.src + ')'"
+    ></div>
+  }
+  @if (theme() !== 'craft') {
+    <div class="scene-layer--wall-sign">
+      <img
+        class="scene-layer--wall-sign-logo"
+        ngSrc="assets/brand/the-block-laundromat-logo.svg"
+        width="1774"
+        height="887"
+        alt=""
+      />
+    </div>
+  }
+  @if (scene().washer; as washer) {
     <img
-      class="scene-layer--foreground-image"
-      [ngSrc]="scene().foreground.src"
-      width="664"
-      height="374"
+      class="scene-layer--washer"
+      [ngSrc]="washer.src"
+      width="1373"
+      height="1222"
+      priority
       alt=""
     />
-  </div>
+  }
+  @if (scene().board; as board) {
+    <img class="scene-layer--board" [ngSrc]="board.src" width="1402" height="1122" alt="" />
+  }
+  @if (scene().washer) {
+    <div class="scene-layer--washer-mascot">
+      <img [ngSrc]="washerMascotStateAsset().src" width="1254" height="1254" alt="" />
+    </div>
+  }
+  @if (scene().mapMascot; as mapMascot) {
+    <div class="scene-layer--map-mascot">
+      <img [ngSrc]="mapMascot.src" width="1388" height="1222" alt="" />
+    </div>
+  }
+  @if (scene().foreground; as foreground) {
+    <div class="scene-layer--foreground">
+      <img
+        class="scene-layer--foreground-image"
+        [ngSrc]="foreground.src"
+        width="664"
+        height="374"
+        alt=""
+      />
+    </div>
+  }
+  @if (theme() !== 'craft') {
+    <div class="scene-layer--ambient-lighting"></div>
+  }
 </div>

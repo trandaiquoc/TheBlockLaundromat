@@ -1,4 +1,8 @@
-<main class="project-page">
+<main
+  class="project-page"
+  [attr.data-theme]="theme.theme()"
+  [attr.data-animations]="homeSpaceAnimationsEnabled()"
+>
   <div class="scene-stage">
     <header class="outer-topbar">
       <app-project-screen-controls (settingsRequested)="openSettingsDialog()" />
@@ -18,6 +22,18 @@
             aria-hidden="true"
           />
         }
+        <section class="washer-display" [attr.aria-label]="i18n.t('selectedProject')">
+          @if (selectedProject(); as project) {
+            <p class="washer-display-kicker">{{ i18n.t('selectedProject') }}</p>
+            <h2>{{ project.name }}</h2>
+            <p class="washer-display-meta">
+              {{ summarySizeLabel(project) }} · {{ summaryModeFullLabel(project.structureMode) }}
+            </p>
+          } @else {
+            <p class="washer-display-kicker">{{ i18n.t('projectTitle') }}</p>
+            <h2>{{ i18n.t('newProject') }}</h2>
+          }
+        </section>
       </div>
       <section class="project-note" [attr.aria-label]="i18n.t('selectedProject')">
         @if (selectedProject(); as project) {
@@ -39,15 +55,20 @@
       @if (selectedProject(); as project) {
         <div class="washer-actions" role="group" [attr.aria-label]="i18n.t('projectActions')">
           <button
-            class="ui-button ui-button--primary washer-action"
+            class="washer-action washer-action--open"
             type="button"
             [disabled]="!!openingId() || creating() || deletingProjectIds().has(project.id)"
+            [attr.aria-label]="
+              openingId() === project.id ? i18n.t('openingProject') : i18n.t('open')
+            "
             (click)="openProject(project.id)"
           >
-            {{ openingId() === project.id ? i18n.t('openingProject') : i18n.t('open') }}
+            <span>{{
+              openingId() === project.id ? i18n.t('openingProject') : i18n.t('open')
+            }}</span>
           </button>
           <button
-            class="ui-button ui-button--danger washer-action washer-delete-action"
+            class="washer-action washer-action--delete washer-delete-action"
             type="button"
             [disabled]="!!openingId() || creating() || deletingProjectIds().has(project.id)"
             [attr.aria-label]="i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)"
@@ -78,66 +99,82 @@
                 hidden
                 (change)="selectStructureJson($event)"
               />
-              <button
-                class="project-create-trigger"
-                type="button"
-                [disabled]="creating() || !!openingId() || structureJsonImport.creating()"
-                [attr.aria-label]="i18n.t('create')"
-                [attr.title]="i18n.t('create')"
-                [cdkMenuTriggerFor]="projectCreateMenu"
-              >
-                <span aria-hidden="true">+</span>
-              </button>
-              <ng-template #projectCreateMenu>
-                <div class="project-create-menu" cdkMenu>
-                  <button
-                    class="project-create-menu-item"
-                    type="button"
-                    cdkMenuItem
-                    (click)="openCreateDialog()"
-                  >
-                    {{ i18n.t('newProject') }}
-                  </button>
-                  <button
-                    class="project-create-menu-item"
-                    type="button"
-                    cdkMenuItem
-                    (click)="openStructureJsonPicker(structureJsonFile)"
-                  >
-                    <svg lucideFileUp aria-hidden="true"></svg>
-                    {{ i18n.t('createFromStructureJson') }}
-                  </button>
-                </div>
-              </ng-template>
+              @if (theme.theme() !== 'craft') {
+                <button
+                  class="project-create-trigger"
+                  type="button"
+                  [disabled]="creating() || !!openingId() || structureJsonImport.creating()"
+                  [attr.aria-label]="i18n.t('create')"
+                  [attr.title]="i18n.t('create')"
+                  [cdkMenuTriggerFor]="projectCreateMenu"
+                >
+                  <span aria-hidden="true">+</span>
+                </button>
+              }
             </div>
+            @if (loadStatus() === 'ready' && projects().length > 0) {
+              <div class="project-list-controls">
+                <label
+                  class="project-search-field"
+                  [class.project-search-field--active]="projectSearch().length > 0"
+                >
+                  <svg lucideSearch aria-hidden="true"></svg>
+                  <input
+                    type="search"
+                    [value]="projectSearch()"
+                    [attr.aria-label]="i18n.t('searchProjects')"
+                    [placeholder]="i18n.t('searchProjects')"
+                    (input)="updateProjectSearch($event)"
+                  />
+                </label>
+                <select
+                  class="project-sort"
+                  [class.project-sort--changed]="projectOrder() !== 'newest'"
+                  [value]="projectOrder()"
+                  [attr.aria-label]="i18n.t('sortProjects')"
+                  (change)="updateProjectOrder($event)"
+                >
+                  <option value="newest">{{ i18n.t('projectSortNewest') }}</option>
+                  <option value="oldest">{{ i18n.t('projectSortOldest') }}</option>
+                  <option value="name">{{ i18n.t('projectSortName') }}</option>
+                </select>
+              </div>
+            }
           </div>
-          @if (loadStatus() === 'ready' && projects().length > 0) {
-            <div class="project-list-controls">
-              <label class="project-search-field">
-                <svg lucideSearch aria-hidden="true"></svg>
-                <input
-                  type="search"
-                  [value]="projectSearch()"
-                  [attr.aria-label]="i18n.t('searchProjects')"
-                  [placeholder]="i18n.t('searchProjects')"
-                  (input)="updateProjectSearch($event)"
-                />
-              </label>
-              <select
-                class="project-sort"
-                [value]="projectOrder()"
-                [attr.aria-label]="i18n.t('sortProjects')"
-                (change)="updateProjectOrder($event)"
-              >
-                <option value="newest">{{ i18n.t('projectSortNewest') }}</option>
-                <option value="oldest">{{ i18n.t('projectSortOldest') }}</option>
-                <option value="name">{{ i18n.t('projectSortName') }}</option>
-              </select>
-            </div>
-          }
         </header>
 
+        <ng-template #projectCreateMenu>
+          <div class="project-create-menu" cdkMenu>
+            <button
+              class="project-create-menu-item"
+              type="button"
+              cdkMenuItem
+              (click)="openCreateDialog()"
+            >
+              {{ i18n.t('newProject') }}
+            </button>
+            <button
+              class="project-create-menu-item"
+              type="button"
+              cdkMenuItem
+              (click)="openStructureJsonPicker(structureJsonFile)"
+            >
+              <svg lucideFileUp aria-hidden="true"></svg>
+              {{ i18n.t('createFromStructureJson') }}
+            </button>
+          </div>
+        </ng-template>
+
         <div class="project-list" aria-live="polite">
+          @if (theme.theme() === 'craft') {
+            <button
+              class="project-create-trigger project-create-trigger--tile"
+              type="button"
+              [disabled]="creating() || !!openingId() || structureJsonImport.creating()"
+              [attr.aria-label]="i18n.t('create')"
+              [cdkMenuTriggerFor]="projectCreateMenu"
+            ></button>
+          }
           @if (loadStatus() === 'loading') {
             <p class="muted board-message">{{ i18n.t('loadingProjects') }}</p>
           } @else if (loadStatus() === 'error') {

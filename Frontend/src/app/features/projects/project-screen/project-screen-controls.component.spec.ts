@@ -34,14 +34,18 @@ describe('ProjectScreenControlsComponent', () => {
     const fixture = TestBed.createComponent(ProjectScreenControlsComponent);
     fixture.detectChanges();
     const host = fixture.nativeElement as HTMLElement;
+    const controlBar = host.querySelector('.screen-control-bar') as HTMLElement;
     const settingsRequested = vi.fn();
     fixture.componentInstance.settingsRequested.subscribe(settingsRequested);
 
     expect(host.querySelector('[data-locale="en"]')?.getAttribute('aria-pressed')).toBe('true');
-    expect(host.querySelector('[data-theme="craft"]')?.getAttribute('aria-pressed')).toBe('true');
+    expect(
+      host.querySelector('.theme-button[data-theme="craft"]')?.getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(controlBar.dataset['theme']).toBe('craft');
 
     (host.querySelector('[data-locale="vi"]') as HTMLButtonElement).click();
-    (host.querySelector('[data-theme="raccoon"]') as HTMLButtonElement).click();
+    (host.querySelector('.theme-button[data-theme="raccoon"]') as HTMLButtonElement).click();
     (host.querySelector('.settings-button') as HTMLButtonElement).click();
     fixture.detectChanges();
 
@@ -49,6 +53,9 @@ describe('ProjectScreenControlsComponent', () => {
     expect(setTheme).toHaveBeenCalledWith('raccoon');
     expect(settingsRequested).toHaveBeenCalledOnce();
     expect(host.querySelector('[data-locale="vi"]')?.getAttribute('aria-pressed')).toBe('true');
-    expect(host.querySelector('[data-theme="raccoon"]')?.getAttribute('aria-pressed')).toBe('true');
+    expect(
+      host.querySelector('.theme-button[data-theme="raccoon"]')?.getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(controlBar.dataset['theme']).toBe('raccoon');
   });
 });

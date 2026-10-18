@@ -56,12 +56,15 @@ describe('ProjectScreenComponent', () => {
     expect(template).toContain('[project]="project"');
     expect(template).toContain('class="project-note"');
     expect(template).toContain('class="project-note-meta"');
+    expect(template).toContain('class="washer-display"');
+    expect(template).toContain('class="washer-display-meta"');
     expect(template).toContain("i18n.t('minecraftJavaVersion')");
     expect(template).toContain("i18n.t('structureSize')");
     expect(template).toContain('class="washer-actions"');
     expect(sceneTemplate).toContain('[ngSrc]="scene().room.src"');
-    expect(sceneTemplate).toContain('[ngSrc]="scene().exterior.src"');
-    expect(sceneTemplate).toContain('scene().roomMask.src');
+    expect(sceneTemplate).toContain('[ngSrc]="exterior.src"');
+    expect(sceneTemplate).toContain('scene().roomMask!');
+    expect(sceneTemplate).toContain("theme() === 'craft'");
     expect(sceneTemplate).toContain('class="scene-layer--exterior"');
     expect(sceneTemplate).toContain('class="scene-layer--exterior-lighting"');
     expect(sceneTemplate).toContain('scene-layer--wall-sign');
@@ -72,7 +75,7 @@ describe('ProjectScreenComponent', () => {
     expect(sceneTemplate).toContain('class="scene-layer--foreground"');
   });
 
-  it('keeps the official logo as a separate scene overlay', () => {
+  it('keeps the official logo overlay for layered themes', () => {
     const sceneTemplate = String(
       readFileSync(
         'src/app/features/projects/project-screen/scene/project-screen-scene.component.html',
@@ -82,6 +85,38 @@ describe('ProjectScreenComponent', () => {
 
     expect(sceneTemplate).toContain('class="scene-layer--wall-sign"');
     expect(sceneTemplate).toContain('assets/brand/the-block-laundromat-logo.svg');
+  });
+
+  it('aligns real project controls to the Minecraft reference image', () => {
+    const layoutStyles = String(
+      readFileSync(
+        'src/app/features/projects/project-screen/project-screen.component.scss',
+        'utf8',
+      ),
+    );
+    const craftDisplay = layoutStyles.match(
+      /\.project-page\[data-theme='craft'\] \.washer-display\s*\{([^}]+)\}/,
+    )?.[1];
+    const craftActions = layoutStyles.match(
+      /\.project-page\[data-theme='craft'\] \.washer-actions\s*\{([^}]+)\}/,
+    )?.[1];
+    const craftBoard = layoutStyles.match(
+      /\.project-page\[data-theme='craft'\] \.project-board\s*\{([^}]+)\}/,
+    )?.[1];
+
+    expect(craftDisplay).toContain('left: 29.4%');
+    expect(craftDisplay).toContain('top: 39.8%');
+    expect(craftActions).toContain('left: 52.4%');
+    expect(craftActions).toContain('top: 50.1%');
+    expect(craftBoard).toContain('left: 60.8%');
+    expect(craftBoard).toContain('top: 35%');
+    expect(craftBoard).not.toContain('background:');
+    expect(craftBoard).not.toContain('clip-path:');
+    expect(layoutStyles).toContain('create-project-tile-craft.png');
+    expect(layoutStyles).toContain(".project-page[data-theme='craft'] .scene-canvas");
+    expect(layoutStyles).toContain('width: max(100vw, 177.68svh)');
+    expect(layoutStyles).toContain('height: max(100svh, 56.28vw)');
+    expect(layoutStyles).toContain('color: transparent');
   });
 
   it('delegates imported project activation to the screen workflow', async () => {
@@ -158,7 +193,7 @@ describe('ProjectScreenComponent', () => {
     await TestBed.compileComponents();
 
     const preferences = TestBed.inject(UiPreferencesService);
-    preferences.setAppearance({ preset: 'craft' });
+    preferences.setAppearance({ preset: 'light' });
     preferences.update({ homeSpaceAnimations: true });
     const fixture = TestBed.createComponent(ProjectScreenComponent);
     fixture.detectChanges();
@@ -174,7 +209,7 @@ describe('ProjectScreenComponent', () => {
     expect(root.querySelectorAll('.project-row app-project-screen-preview')).toHaveLength(3);
     const scene = (): HTMLElement => root.querySelector('.scene-background') as HTMLElement;
     const washerMascot = (): HTMLImageElement =>
-      root.querySelector('.scene-layer--washer-mascot') as HTMLImageElement;
+      root.querySelector('.scene-layer--washer-mascot img') as HTMLImageElement;
     expect(scene().getAttribute('data-mascot-state')).toBe('selected');
     expect(scene().getAttribute('data-animations')).toBe('true');
     expect(washerMascot().getAttribute('src')).toContain('raccoon-washer-selected.webp');
@@ -187,7 +222,7 @@ describe('ProjectScreenComponent', () => {
     fixture.detectChanges();
     expect(scene().getAttribute('data-mascot-state')).toBe('selected');
     expect(scene().getAttribute('data-animations')).toBe('false');
-    expect(washerMascot().getAttribute('src')).toContain('washer-mascot-craft.webp');
+    expect(washerMascot().getAttribute('src')).toContain('raccoon-washer-selected.webp');
     preferences.update({ homeSpaceAnimations: true });
     fixture.detectChanges();
     const projectNote = root.querySelector('.project-note');
@@ -271,6 +306,11 @@ describe('ProjectScreenComponent', () => {
     expect(root.querySelector('.board-actions .project-create-trigger')).not.toBeNull();
     expect(root.querySelector('.project-list-controls')).toBeNull();
     expect(root.querySelector('.project-note')?.textContent).toContain('Start a new project');
+
+    preferences.setAppearance({ preset: 'craft' });
+    fixture.detectChanges();
+    expect(root.querySelector('.board-actions .project-create-trigger')).toBeNull();
+    expect(root.querySelector('.project-list .project-create-trigger--tile')).not.toBeNull();
     fixture.destroy();
   });
 });

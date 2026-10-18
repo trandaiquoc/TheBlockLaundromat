@@ -5,22 +5,16 @@ remaining scope; it is not a full application acceptance report.
 
 ## Implemented Project Screen
 
-- The Homepage scene uses four distinct theme-specific wide room backdrops,
-  one shared exterior panorama, alpha masks for the window and doorway
-  openings, and independent washer, board, mascot, and foreground layers based
-  on the approved Minecraft, Light, Raccoon, and Dark references. The shared
-  panorama sits behind each room backdrop, whose masked openings keep the room
-  frames visible and preserve the same outdoor landmarks across themes. A
-  theme-specific lighting layer changes the time-of-day appearance without
-  moving the scenery. The official logo asset stays unchanged as a separate
-  wall sign, with a restrained glow adapted to each theme.
-  Language/theme/settings controls and local status remain real DOM outside
-  the illustrated room.
+- The Minecraft (`craft`) scene uses the exact 1672 × 941 source image in
+  `Docs/design/references/01-minecraft.png`. The other themes still use their
+  earlier layered scene assets and have not yet been brought into parity with
+  the Minecraft reference. Project controls, project data, preview, actions,
+  and local status remain real DOM layers over the artwork.
 - Recent projects appear as real selectable entries on the wooden board. The
   washer drum displays the selected project's real cached capture when one is
-  available. A pinned paper note beside the washer lists the selected project's
-  name, Minecraft version, dimensions, and structure mode without an image.
-  Open/Delete actions stack beside the drum.
+  available. The selected project name and size appear on the washer's angled
+  control display. Real Open/Delete buttons align their hit areas and labels
+  with the washer artwork's green and gray controls.
 - On wide desktop, the unchanged official logo sits above the washer in the
   scene's open wall area. The board arranges real project summaries as cards;
   the layout reduces to one column when the board is narrow. Local search
@@ -46,28 +40,26 @@ remaining scope; it is not a full application acceptance report.
 
 ## Art Assets
 
-`Frontend/public/assets/project-screen/layers/ref4/` owns the four wide room
-backdrops and each theme's transparent washer, board, and mascot layers. The
-parent `layers/` directory owns one shared exterior panorama, the four
-alpha-channel room masks, and the shared transparent foreground props. The
-panorama fills the scene canvas below each room backdrop. The mask keeps the
-interior and window frames opaque while the outdoor openings reveal the same
-fixed landscape in every theme. A tint and brightness layer provides the
-time-of-day transition without swapping or moving landmarks. The old detached
-exterior cutouts are not used or copied into production. The original theme
-layer PNGs remain source masters; the runtime manifest uses their WebP
-derivatives, and Angular excludes the source PNGs from production asset
-copying while explicitly including the four room masks. The desktop canvas
-follows the generated backdrops' approximately 2.13:1 ratio and fills wide
-displays; narrower desktop ratios crop the outer edges while preserving the
-reference composition. At
-mobile widths, the artwork becomes a 16:9 room header and the real project
-board moves below it. The logo, actual project previews, pinned project note,
-controls, and metadata stay in independent DOM/image layers, so generated room
-backdrops contain no project names, fake thumbnails, or interface controls.
-Only the active theme's room layers and the shared foreground props are rendered.
-The unused flattened scenes and map-reader PNGs stay in the repository but are
-excluded from production because the layered scene has no consumers for them.
+The Minecraft runtime asset
+`Frontend/public/assets/project-screen/layers/scene-minecraft-reference.png`
+is a byte-for-byte copy of `Docs/design/references/01-minecraft.png`; it is not
+generated or repainted. The matching canvas uses the reference's 1672 × 941
+composition. `create-project-tile-craft.png` is a 142 × 156 pixel crop at
+`(1026, 385)` from that same source; its button stays interactive while showing
+the reference's original tile art. The craft board has no separate opaque
+surface placed over the reference. Its baked heading and search/sort surfaces
+remain visible while transparent DOM controls preserve the live interactions.
+Live project rows replace matching reference cards; unused reference sample
+cards remain part of the static scene. The washer preview, selected-project
+display, action hit areas, project board controls, and local status remain
+independent DOM layers.
+
+`Frontend/public/assets/project-screen/layers/ref4/` still contains the earlier
+layered artwork masters used by Light, Raccoon, and Dark. Those themes, their
+geometry, and their transition lighting remain pending alignment with the
+Minecraft source. Exterior panoramas and room-opening masks are used only by
+those layered themes. The experimental craft cutouts were removed after the
+reference comparison showed that they did not match its composition.
 
 The project board reads lightweight summary records while full structure data
 stays in separate project records. Once route checks approve leaving the 3D
@@ -99,11 +91,17 @@ structure during list load.
 
 ## Browser Evidence
 
-The captures linked below document the earlier flattened-scene implementation.
-They remain historical workflow evidence; they do not verify the current
-layered composition. The current scene has code-level tests, but a browser
-visual pass against all four references and the user's preview report is still
-pending.
+The captures linked below document earlier implementations and remain
+historical workflow evidence. The exact Minecraft scene asset is covered by a
+byte-comparison test. Browser inspection confirmed the background uses the
+reference at its native composition and the original toolbar no longer doubles
+under its interactive hit areas. The original board surface is visible without
+an opaque replacement layer; transparent search/sort hit targets preserve the
+baked controls until focus. Dynamic project rows replace matching sample cards,
+while sample cards in unused positions remain visible, so board data has not
+reached visual acceptance. The selected washer preview was inspected with a
+temporary test project rather than the user's Cresselia project. Visual parity
+for the other three themes also remains pending.
 
 The [2026-10-17 laundromat scene review](evidence/20261017-laundromat-scene/README.md)
 contains captures of the empty state, project selection, four themes, creation

@@ -40,6 +40,16 @@
                 "glob": "room-mask-*.png",
                 "input": "public/assets/project-screen/layers",
                 "output": "assets/project-screen/layers"
+              },
+              {
+                "glob": "scene-minecraft-reference.png",
+                "input": "public/assets/project-screen/layers",
+                "output": "assets/project-screen/layers"
+              },
+              {
+                "glob": "create-project-tile-craft.png",
+                "input": "public/assets/project-screen/layers",
+                "output": "assets/project-screen/layers"
               }
             ],
             "styles": [

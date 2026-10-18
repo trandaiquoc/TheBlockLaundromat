@@ -4,6 +4,13 @@
 }
 
 .screen-control-bar {
+  --control-bar-background: linear-gradient(145deg, rgb(75 52 35 / 94%), rgb(29 27 25 / 95%));
+  --control-bar-border: rgb(235 207 163 / 38%);
+  --control-bar-text: #fff2d5;
+  --control-bar-muted: rgb(255 242 213 / 73%);
+  --control-selected-background: linear-gradient(145deg, #86b644, #4e7b28);
+  --control-selected-border: rgb(231 245 200 / 62%);
+  --control-selected-text: #fff9e9;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -11,11 +18,75 @@
   gap: 0.3rem;
   max-width: 100%;
   padding: 0.3rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--shadow-control-raised);
+  border: 1px solid var(--control-bar-border);
+  border-radius: 0.6rem;
+  background: var(--control-bar-background);
+  color: var(--control-bar-text);
+  box-shadow:
+    inset 0 1px 0 rgb(255 249 229 / 14%),
+    0 0.35rem 1rem rgb(24 17 12 / 42%);
+  backdrop-filter: blur(8px);
+}
+
+.screen-control-bar[data-theme='craft'] {
+  box-sizing: border-box;
+  width: 100%;
+  flex-wrap: nowrap;
+  gap: 0.12rem;
+  justify-content: space-between;
+  padding: 0.22rem 0.55rem;
+  border-color: transparent;
+  background: transparent;
+  color: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  pointer-events: none;
+}
+
+.screen-control-bar[data-theme='craft'] .screen-control-group > svg,
+.screen-control-bar[data-theme='craft'] .screen-control-separator,
+.screen-control-bar[data-theme='craft'] .settings-button svg {
+  visibility: hidden;
+}
+
+.screen-control-bar[data-theme='craft'] .screen-control-button,
+.screen-control-bar[data-theme='craft'] .screen-control-button.selected,
+.screen-control-bar[data-theme='craft'] .screen-control-button[aria-pressed='true'] {
+  border-color: transparent;
+  background: transparent;
+  color: transparent;
+  box-shadow: none;
+  pointer-events: auto;
+}
+
+.screen-control-bar[data-theme='craft'] .screen-control-button:hover:not(.selected) {
+  background: transparent;
+  color: transparent;
+}
+
+.screen-control-bar[data-theme='light'] {
+  --control-bar-background: linear-gradient(145deg, rgb(255 253 246 / 96%), rgb(235 228 208 / 96%));
+  --control-bar-border: rgb(104 87 61 / 28%);
+  --control-bar-text: #2e342c;
+  --control-bar-muted: #566052;
+  --control-selected-background: linear-gradient(145deg, #303b4d, #202b3b);
+  --control-selected-border: rgb(37 47 63 / 72%);
+  --control-selected-text: #fff;
+}
+
+.screen-control-bar[data-theme='raccoon'] {
+  --control-selected-background: linear-gradient(145deg, #c98a61, #9d6547);
+  --control-selected-border: rgb(255 226 194 / 63%);
+}
+
+.screen-control-bar[data-theme='dark'] {
+  --control-bar-background: linear-gradient(145deg, rgb(21 29 44 / 96%), rgb(19 22 32 / 97%));
+  --control-bar-border: rgb(159 183 224 / 32%);
+  --control-bar-text: #f0f4ff;
+  --control-bar-muted: #b8c2d7;
+  --control-selected-background: linear-gradient(145deg, #e4ebf8, #c8d4e8);
+  --control-selected-border: rgb(255 255 255 / 78%);
+  --control-selected-text: #202a3c;
 }
 
 .screen-control-group {
@@ -33,7 +104,7 @@
 
 .screen-control-group > svg {
   margin-inline: 0.4rem 0.15rem;
-  color: var(--text-muted);
+  color: var(--control-bar-muted);
 }
 
 .screen-control-button {
@@ -46,7 +117,7 @@
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   background: transparent;
-  color: var(--text-muted);
+  color: var(--control-bar-muted);
   cursor: pointer;
   font: inherit;
   font-size: 0.76rem;
@@ -61,17 +132,25 @@
     transform var(--motion-duration-fast) var(--motion-easing-standard);
 }
 
+.screen-control-bar[data-theme='craft'] .screen-control-button {
+  min-height: 2rem;
+  padding: 0.32rem 0.4rem;
+  font-size: 0.7rem;
+}
+
 .screen-control-button:hover:not(.selected) {
-  background: var(--control-hover);
-  color: var(--text);
+  background: rgb(255 255 255 / 12%);
+  color: var(--control-bar-text);
 }
 
 .screen-control-button.selected,
 .screen-control-button[aria-pressed='true'] {
-  border-color: var(--border-strong);
-  background: var(--control-selected);
+  border-color: var(--control-selected-border);
+  background: var(--control-selected-background);
   color: var(--control-selected-text);
-  box-shadow: var(--shadow-control);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 29%),
+    0 0.12rem 0.22rem rgb(20 16 12 / 28%);
 }
 
 .screen-control-button:active {
@@ -88,12 +167,17 @@
   width: 1px;
   height: 1.35rem;
   margin-inline: 0.12rem;
-  background: var(--border);
+  background: color-mix(in srgb, var(--control-bar-muted) 33%, transparent);
 }
 
 .locale-button {
   min-width: 2.25rem;
   padding-inline: 0.4rem;
+}
+
+.screen-control-bar[data-theme='craft'] .locale-button {
+  min-width: 1.9rem;
+  padding-inline: 0.32rem;
 }
 
 .settings-button {
