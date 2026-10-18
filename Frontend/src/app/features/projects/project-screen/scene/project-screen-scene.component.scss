@@ -32,6 +32,14 @@
   object-fit: contain;
 }
 
+.scene-layer--exterior {
+  z-index: 1;
+  top: 0;
+  left: 8.225%;
+  width: 83.55%;
+  height: 100%;
+}
+
 .scene-layer--wall-sign {
   z-index: 4;
   top: 2.8%;
@@ -78,7 +86,32 @@
   height: 36%;
 }
 
+.scene-layer--foreground {
+  z-index: 4;
+  top: 81%;
+  left: 46.5%;
+  width: 26%;
+  height: 19%;
+}
+
+.scene-background[data-theme='light'] .scene-layer--foreground {
+  filter: brightness(1.08) saturate(0.88);
+}
+
+.scene-background[data-theme='raccoon'] .scene-layer--foreground {
+  filter: brightness(0.9) saturate(0.9);
+}
+
+.scene-background[data-theme='dark'] .scene-layer--foreground {
+  filter: brightness(0.58) saturate(0.78);
+}
+
 @media (max-width: 860px) {
+  .scene-layer--exterior {
+    left: 0;
+    width: 100%;
+  }
+
   .scene-layer--wall-sign {
     top: 1.5%;
     left: 32%;
@@ -108,5 +141,12 @@
     left: 73%;
     width: 25%;
     height: 42%;
+  }
+
+  .scene-layer--foreground {
+    top: 82%;
+    left: 44%;
+    width: 31%;
+    height: 18%;
   }
 }

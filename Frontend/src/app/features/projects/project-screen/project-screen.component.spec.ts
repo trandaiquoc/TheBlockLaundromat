@@ -52,13 +52,18 @@ describe('ProjectScreenComponent', () => {
     expect(template).toContain('<app-project-screen-scene');
     expect(template).toContain('[project]="project"');
     expect(template).toContain('class="project-note"');
+    expect(template).toContain('class="project-note-meta"');
+    expect(template).toContain("i18n.t('minecraftJavaVersion')");
+    expect(template).toContain("i18n.t('structureSize')");
     expect(template).toContain('class="washer-actions"');
     expect(sceneTemplate).toContain('[ngSrc]="scene().background.src"');
+    expect(sceneTemplate).toContain('class="scene-layer--exterior"');
     expect(sceneTemplate).toContain('scene-layer--wall-sign');
     expect(sceneTemplate).toContain('scene-layer--washer');
     expect(sceneTemplate).toContain('scene-layer--board');
     expect(sceneTemplate).toContain('scene-layer--washer-mascot');
     expect(sceneTemplate).toContain('scene-layer--map-mascot');
+    expect(sceneTemplate).toContain('class="scene-layer--foreground"');
   });
 
   it('keeps the official logo as a separate scene overlay', () => {
@@ -158,6 +163,13 @@ describe('ProjectScreenComponent', () => {
       );
     expect(cardNames()).toEqual(['Lakeside Cabin', 'Garden Study', 'Tower 2']);
     expect(root.querySelectorAll('.project-row app-project-screen-preview')).toHaveLength(3);
+    const projectNote = root.querySelector('.project-note');
+    expect(projectNote?.textContent).toContain('Selected project');
+    expect(projectNote?.textContent).toContain('Lakeside Cabin');
+    expect(projectNote?.textContent).toContain('Minecraft Java 1.21.1');
+    expect(projectNote?.textContent).toContain('16 × 16 × 16');
+    expect(projectNote?.textContent).toContain('Vanilla Structure Block');
+    expect(projectNote?.querySelector('app-project-screen-preview')).toBeNull();
 
     (root.querySelector('.project-create-trigger') as HTMLButtonElement).click();
     fixture.detectChanges();

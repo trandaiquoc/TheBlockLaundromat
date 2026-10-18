@@ -15,12 +15,19 @@
           />
         }
       </div>
-      <section class="project-note" [attr.aria-label]="i18n.t('projectTitle')">
+      <section class="project-note" [attr.aria-label]="i18n.t('selectedProject')">
         @if (selectedProject(); as project) {
-          <p class="project-note-kicker">{{ i18n.t('projectTitle') }}</p>
+          <p class="project-note-kicker">{{ i18n.t('selectedProject') }}</p>
           <h2>{{ project.name }}</h2>
+          <div class="project-note-meta">
+            <span>
+              {{ i18n.t('minecraftJavaVersion').replace('{version}', project.minecraftVersion) }}
+            </span>
+            <span>{{ i18n.t('structureSize') }}: {{ summarySizeLabel(project) }}</span>
+            <span>{{ summaryModeFullLabel(project.structureMode) }}</span>
+          </div>
         } @else {
-          <p class="project-note-kicker">{{ i18n.t('projectTitle') }}</p>
+          <p class="project-note-kicker">{{ i18n.t('selectedProject') }}</p>
           <h2>{{ i18n.t('newProject') }}</h2>
         }
       </section>

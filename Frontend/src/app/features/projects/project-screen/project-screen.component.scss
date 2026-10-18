@@ -74,26 +74,42 @@
 .project-note {
   position: absolute;
   z-index: 5;
-  top: 36%;
-  left: 33.5%;
+  top: 39%;
+  left: 22.5%;
   display: flex;
-  width: 15.5%;
-  height: 8.5%;
+  width: 12.8%;
+  min-height: 18%;
   flex-direction: column;
-  justify-content: center;
   box-sizing: border-box;
-  overflow: hidden;
-  padding: 0.25% 0.55%;
-  border: 0;
-  background: transparent;
-  color: #f6f1e8;
-  transform: rotate(-1.2deg);
+  padding: 0.9rem 0.75rem 0.65rem;
+  border: 1px solid rgb(99 67 28 / 58%);
+  border-radius: 2px 3px 1px 2px;
+  background:
+    linear-gradient(165deg, rgb(255 255 255 / 36%), transparent 38%),
+    linear-gradient(175deg, #fff8dc 0%, #f0dcab 100%);
+  box-shadow: 0.16rem 0.22rem 0.35rem rgb(20 14 8 / 35%);
+  color: #3f2d1b;
+  transform: rotate(-1.3deg);
+}
+
+.project-note::before {
+  position: absolute;
+  top: 0.28rem;
+  left: 50%;
+  width: 0.52rem;
+  height: 0.52rem;
+  border: 1px solid rgb(81 28 22 / 62%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f4b5a2, #a83c30 68%);
+  box-shadow: 0 1px 2px rgb(35 20 12 / 45%);
+  content: '';
+  transform: translateX(-50%);
 }
 
 .project-note-kicker {
-  margin: 0;
-  color: #d6cab5;
-  font-size: clamp(0.5rem, 0.66vw, 0.7rem);
+  margin: 0.4rem 0 0.15rem;
+  color: #80613a;
+  font-size: clamp(0.49rem, 0.58vw, 0.67rem);
   font-weight: 800;
   letter-spacing: 0.06em;
   line-height: 1.2;
@@ -105,20 +121,26 @@
   max-width: 100%;
   margin: 0;
   overflow: hidden;
-  color: #fffaf2;
-  font-size: clamp(0.68rem, 0.95vw, 1rem);
+  color: #342416;
+  font-size: clamp(0.68rem, 0.86vw, 0.96rem);
   line-height: 1.22;
   overflow-wrap: anywhere;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
-.project-note p:not(.project-note-kicker) {
-  max-width: 100%;
-  margin: 0;
-  color: #e0d8ca;
-  font-size: clamp(0.55rem, 0.7vw, 0.74rem);
-  line-height: 1.3;
+.project-note-meta {
+  display: grid;
+  gap: 0.12rem;
+  margin-top: 0.28rem;
+  color: #5d452b;
+  font-size: clamp(0.5rem, 0.57vw, 0.66rem);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.project-note > h2:last-child {
+  margin-top: 0.1rem;
 }
 
 .washer-actions {
@@ -1082,8 +1104,12 @@
     padding: 0.8rem;
   }
 
+  .project-note::before {
+    display: none;
+  }
+
   .project-note-kicker,
-  .project-note p:not(.project-note-kicker) {
+  .project-note-meta {
     color: var(--text-muted);
   }
 

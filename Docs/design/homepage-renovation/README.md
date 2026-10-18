@@ -5,15 +5,17 @@ remaining scope; it is not a full application acceptance report.
 
 ## Implemented Project Screen
 
-- The Homepage scene uses four theme-specific wide room backdrops and separate
-  washer, board, and mascot layers based on the approved Minecraft, Light,
-  Raccoon, and Dark references. The layers share the same camera angle and
-  placement. The official logo asset stays unchanged as a separate wall sign.
+- The Homepage scene uses four theme-specific wide room backdrops, exterior
+  cutouts, washer, board, mascot, and foreground layers based on the approved
+  Minecraft, Light, Raccoon, and Dark references. The layers share the same
+  camera angle and placement. The official logo asset stays unchanged as a
+  separate wall sign.
   Language/theme/settings controls and local status remain real DOM outside
   the illustrated room.
 - Recent projects appear as real selectable entries on the wooden board. The
   washer drum displays the selected project's real cached capture when one is
-  available. A text-only project note uses the washer's top control panel, and
+  available. A pinned paper note beside the washer lists the selected project's
+  name, Minecraft version, dimensions, and structure mode without an image.
   Open/Delete actions stack beside the drum.
 - On wide desktop, the unchanged official logo sits above the washer in the
   scene's open wall area. The board arranges real project summaries as cards;
@@ -39,13 +41,15 @@ remaining scope; it is not a full application acceptance report.
 
 `Frontend/public/assets/project-screen/layers/ref4/` owns the four wide room
 backdrops and each theme's transparent washer, board, and mascot layers. The
-desktop canvas follows the generated backdrops' approximately 2.13:1 ratio and
-fills wide displays; narrower desktop ratios crop the outer edges while
-preserving the reference composition. At mobile widths, the artwork becomes a
-16:9 room header and the real project board moves below it. The logo, actual
-project previews, project controls, and metadata stay in independent DOM/image
-layers, so generated room backdrops contain no project names, fake thumbnails,
-or interface controls. Only assets for the active theme are rendered.
+parent `layers/` directory owns four theme-specific exterior cutouts and the
+shared transparent foreground props. The desktop canvas follows the generated
+backdrops' approximately 2.13:1 ratio and fills wide displays; narrower desktop
+ratios crop the outer edges while preserving the reference composition. At
+mobile widths, the artwork becomes a 16:9 room header and the real project
+board moves below it. The logo, actual project previews, pinned project note,
+controls, and metadata stay in independent DOM/image layers, so generated room
+backdrops contain no project names, fake thumbnails, or interface controls.
+Only the active theme's room layers and the shared foreground props are rendered.
 
 The project board reads lightweight summary records while full structure data
 stays in separate project records. Once route checks approve leaving the 3D

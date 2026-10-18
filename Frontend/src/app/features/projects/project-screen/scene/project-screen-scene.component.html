@@ -1,9 +1,17 @@
-<div class="scene-background" aria-hidden="true">
+<div class="scene-background" [attr.data-theme]="theme()" aria-hidden="true">
   <img
     class="scene-background-image"
     [ngSrc]="scene().background.src"
     [width]="scene().background.width"
     [height]="scene().background.height"
+    priority
+    alt=""
+  />
+  <img
+    class="scene-layer--exterior"
+    [ngSrc]="scene().exterior.src"
+    [width]="scene().exterior.width"
+    [height]="scene().exterior.height"
     priority
     alt=""
   />
@@ -40,6 +48,13 @@
     [ngSrc]="scene().mapMascot.src"
     [width]="scene().mapMascot.width"
     [height]="scene().mapMascot.height"
+    alt=""
+  />
+  <img
+    class="scene-layer--foreground"
+    [ngSrc]="scene().foreground.src"
+    [width]="scene().foreground.width"
+    [height]="scene().foreground.height"
     alt=""
   />
 </div>
