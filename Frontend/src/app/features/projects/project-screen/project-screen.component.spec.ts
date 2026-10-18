@@ -35,7 +35,7 @@ describe('ProjectScreenComponent', () => {
     expect(template).toMatch(/<h2\s+cdkFocusInitial\s+tabindex="-1"/);
   });
 
-  it('composes the page from the fixed-frame scene and real project data', () => {
+  it('composes the page from layered theme artwork and real project data', () => {
     const template = String(
       readFileSync(
         'src/app/features/projects/project-screen/project-screen.component.html',
@@ -53,9 +53,12 @@ describe('ProjectScreenComponent', () => {
     expect(template).toContain('[project]="project"');
     expect(template).toContain('class="project-note"');
     expect(template).toContain('class="washer-actions"');
-    expect(sceneTemplate).toContain('class="scene-background-image"');
-    expect(sceneTemplate).toContain('[ngSrc]="scene()"');
+    expect(sceneTemplate).toContain('[ngSrc]="scene().background.src"');
     expect(sceneTemplate).toContain('scene-layer--wall-sign');
+    expect(sceneTemplate).toContain('scene-layer--washer');
+    expect(sceneTemplate).toContain('scene-layer--board');
+    expect(sceneTemplate).toContain('scene-layer--washer-mascot');
+    expect(sceneTemplate).toContain('scene-layer--map-mascot');
   });
 
   it('keeps the official logo as a separate scene overlay', () => {

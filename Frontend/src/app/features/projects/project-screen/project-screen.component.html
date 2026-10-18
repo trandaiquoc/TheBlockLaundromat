@@ -19,8 +19,6 @@
         @if (selectedProject(); as project) {
           <p class="project-note-kicker">{{ i18n.t('projectTitle') }}</p>
           <h2>{{ project.name }}</h2>
-          <p>{{ i18n.t('minecraftJavaVersion').replace('{version}', project.minecraftVersion) }}</p>
-          <p>{{ summarySizeLabel(project) }} · {{ summaryModeFullLabel(project.structureMode) }}</p>
         } @else {
           <p class="project-note-kicker">{{ i18n.t('projectTitle') }}</p>
           <h2>{{ i18n.t('newProject') }}</h2>
@@ -50,7 +48,11 @@
         </div>
       }
 
-      <section class="project-board" aria-labelledby="project-board-title">
+      <section
+        class="project-board"
+        [class.project-board--dark]="theme.theme() === 'dark'"
+        aria-labelledby="project-board-title"
+      >
         <header class="board-header">
           <div class="board-header-main">
             <div class="board-heading">

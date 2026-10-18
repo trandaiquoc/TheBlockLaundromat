@@ -22,17 +22,91 @@
 
 .scene-background-image {
   max-width: none;
-  object-fit: fill;
+  object-fit: cover;
+}
+
+.scene-background > img:not(.scene-background-image) {
+  position: absolute;
+  display: block;
+  max-width: none;
+  object-fit: contain;
 }
 
 .scene-layer--wall-sign {
-  position: absolute;
-  z-index: 1;
-  top: 3%;
-  left: 31%;
-  display: block;
-  width: 30%;
+  z-index: 4;
+  top: 2.8%;
+  left: 34.5%;
+  width: 27.5%;
   height: auto;
   filter: drop-shadow(0 0 0.38rem rgb(255 209 116 / 0.72))
     drop-shadow(0 0 1.1rem rgb(255 169 75 / 0.36));
+}
+
+.scene-layer--washer {
+  z-index: 2;
+  top: 28%;
+  left: 29%;
+  width: 32.5%;
+  height: 68%;
+  clip-path: inset(6.5% 0 0);
+}
+
+.scene-layer--board {
+  z-index: 1;
+  top: 27%;
+  left: 56.5%;
+  width: 33%;
+  height: 55%;
+}
+
+.scene-layer--washer-mascot,
+.scene-layer--map-mascot {
+  z-index: 3;
+}
+
+.scene-layer--washer-mascot {
+  top: 55%;
+  left: 19%;
+  width: 22%;
+  height: 43%;
+}
+
+.scene-layer--map-mascot {
+  top: 64%;
+  left: 69.5%;
+  width: 21%;
+  height: 36%;
+}
+
+@media (max-width: 860px) {
+  .scene-layer--wall-sign {
+    top: 1.5%;
+    left: 32%;
+    width: 35%;
+  }
+
+  .scene-layer--washer {
+    top: 29%;
+    left: 21%;
+    width: 42%;
+    height: 66%;
+  }
+
+  .scene-layer--board {
+    display: none;
+  }
+
+  .scene-layer--washer-mascot {
+    top: 53%;
+    left: 9%;
+    width: 27%;
+    height: 45%;
+  }
+
+  .scene-layer--map-mascot {
+    top: 57%;
+    left: 73%;
+    width: 25%;
+    height: 42%;
+  }
 }

@@ -5,12 +5,12 @@ remaining scope; it is not a full application acceptance report.
 
 ## Implemented Project Screen
 
-- The Homepage scene uses four theme-specific 16:9 illustrations based on the
-  approved Minecraft, Light, Raccoon, and Dark references. They share the same
-  camera angle and placement for the washer, project board, windows, and
-  characters. The official logo asset stays unchanged and is composited as a
-  separate wall sign. Language/theme/settings controls and local status remain
-  real DOM outside the illustrated room.
+- The Homepage scene uses four theme-specific wide room backdrops and separate
+  washer, board, and mascot layers based on the approved Minecraft, Light,
+  Raccoon, and Dark references. The layers share the same camera angle and
+  placement. The official logo asset stays unchanged as a separate wall sign.
+  Language/theme/settings controls and local status remain real DOM outside
+  the illustrated room.
 - Recent projects appear as real selectable entries on the wooden board. The
   washer drum displays the selected project's real cached capture when one is
   available. A text-only project note uses the washer's top control panel, and
@@ -37,12 +37,15 @@ remaining scope; it is not a full application acceptance report.
 
 ## Art Assets
 
-`Frontend/public/assets/project-screen/scenes/` owns the four 16:9 WebP
-background illustrations. They share fixed object placement and use separate
-theme lighting. The logo, actual project previews, project controls, and
-metadata stay in independent DOM/image layers, so the generated backgrounds
-contain no project names, fake thumbnails, or interface controls. Only the
-active theme's scene image is requested.
+`Frontend/public/assets/project-screen/layers/ref4/` owns the four wide room
+backdrops and each theme's transparent washer, board, and mascot layers. The
+desktop canvas follows the generated backdrops' approximately 2.13:1 ratio and
+fills wide displays; narrower desktop ratios crop the outer edges while
+preserving the reference composition. At mobile widths, the artwork becomes a
+16:9 room header and the real project board moves below it. The logo, actual
+project previews, project controls, and metadata stay in independent DOM/image
+layers, so generated room backdrops contain no project names, fake thumbnails,
+or interface controls. Only assets for the active theme are rendered.
 
 The project board reads lightweight summary records while full structure data
 stays in separate project records. Once route checks approve leaving the 3D

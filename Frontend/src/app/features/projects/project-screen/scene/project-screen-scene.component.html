@@ -1,10 +1,45 @@
 <div class="scene-background" aria-hidden="true">
-  <img class="scene-background-image" [ngSrc]="scene()" width="1672" height="941" priority alt="" />
+  <img
+    class="scene-background-image"
+    [ngSrc]="scene().background.src"
+    [width]="scene().background.width"
+    [height]="scene().background.height"
+    priority
+    alt=""
+  />
   <img
     class="scene-layer--wall-sign"
     ngSrc="assets/brand/the-block-laundromat-logo.svg"
     width="1774"
     height="887"
+    alt=""
+  />
+  <img
+    class="scene-layer--washer"
+    [ngSrc]="scene().washer.src"
+    [width]="scene().washer.width"
+    [height]="scene().washer.height"
+    alt=""
+  />
+  <img
+    class="scene-layer--board"
+    [ngSrc]="scene().board.src"
+    [width]="scene().board.width"
+    [height]="scene().board.height"
+    alt=""
+  />
+  <img
+    class="scene-layer--washer-mascot"
+    [ngSrc]="scene().washerMascot.src"
+    [width]="scene().washerMascot.width"
+    [height]="scene().washerMascot.height"
+    alt=""
+  />
+  <img
+    class="scene-layer--map-mascot"
+    [ngSrc]="scene().mapMascot.src"
+    [width]="scene().mapMascot.width"
+    [height]="scene().mapMascot.height"
     alt=""
   />
 </div>

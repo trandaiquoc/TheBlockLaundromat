@@ -4,20 +4,29 @@ import { describe, expect, it } from 'vitest';
 import { PROJECT_SCREEN_SCENE_ASSETS } from './project-screen-scene-assets';
 
 describe('Project Screen scene asset contract', () => {
-  it('uses one fixed-frame scene image for each theme', () => {
-    const scenes = Object.values(PROJECT_SCREEN_SCENE_ASSETS);
+  it('uses independent room, washer, board, and mascot layers for every theme', () => {
+    const themes = Object.values(PROJECT_SCREEN_SCENE_ASSETS);
 
-    expect(scenes).toHaveLength(4);
-    expect(new Set(scenes).size).toBe(4);
-    expect(scenes.every((scene) => scene.startsWith('assets/project-screen/scenes/'))).toBe(true);
-    expect(scenes.every((scene) => scene.endsWith('.webp'))).toBe(true);
+    expect(themes).toHaveLength(4);
+    for (const theme of themes) {
+      expect(theme.background.src).toMatch(/layers\/ref4\/scene-.*\.jpg$/);
+      expect(theme.background.width / theme.background.height).toBeGreaterThan(2);
+      expect(theme.washer.src).toMatch(/layers\/ref4\/washer-.*\.png$/);
+      expect(theme.board.src).toMatch(/layers\/ref4\/board-.*\.png$/);
+      expect(theme.washerMascot.src).toMatch(/layers\/ref4\/washer-mascot-.*\.png$/);
+      expect(theme.mapMascot.src).toMatch(/layers\/ref4\/map-mascot-.*\.png$/);
+    }
   });
 
-  it('points every theme at an existing public asset', () => {
-    const paths = Object.values(PROJECT_SCREEN_SCENE_ASSETS);
-
-    expect(paths.every((path) => existsSync(path.replace(/^assets\//, 'public/assets/')))).toBe(
-      true,
+  it('points every theme layer at an existing public asset with valid dimensions', () => {
+    const assets = Object.values(PROJECT_SCREEN_SCENE_ASSETS).flatMap((theme) =>
+      Object.values(theme),
     );
+
+    for (const asset of assets) {
+      expect(existsSync(asset.src.replace(/^assets\//, 'public/assets/'))).toBe(true);
+      expect(asset.width).toBeGreaterThan(0);
+      expect(asset.height).toBeGreaterThan(0);
+    }
   });
 });
