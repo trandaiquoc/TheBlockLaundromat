@@ -42,6 +42,7 @@ export interface UiPreferences {
   readonly locale: UiLocale;
   readonly autoUseHugeStructureBlocks: boolean;
   readonly showStructureBlockGuide: boolean;
+  readonly homeSpaceAnimations: boolean;
   readonly structureExport: StructureExportPreferences;
   readonly editorMode: PersistedEditorMode;
   readonly appearance: {
@@ -88,6 +89,7 @@ const defaults: UiPreferences = {
   locale: 'en',
   autoUseHugeStructureBlocks: false,
   showStructureBlockGuide: true,
+  homeSpaceAnimations: true,
   structureExport: {
     namespace: DEFAULT_STRUCTURE_EXPORT_NAMESPACE,
     archiveName: '',
@@ -344,6 +346,10 @@ function normalize(value: unknown): UiPreferences {
       typeof candidate.showStructureBlockGuide === 'boolean'
         ? candidate.showStructureBlockGuide
         : defaults.showStructureBlockGuide,
+    homeSpaceAnimations:
+      typeof candidate.homeSpaceAnimations === 'boolean'
+        ? candidate.homeSpaceAnimations
+        : defaults.homeSpaceAnimations,
     structureExport: normalizeStructureExport(candidate.structureExport),
     editorMode: isEditorMode(candidate.editorMode) ? candidate.editorMode : defaults.editorMode,
     appearance: {

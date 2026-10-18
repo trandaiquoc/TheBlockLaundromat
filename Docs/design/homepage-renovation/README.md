@@ -33,6 +33,9 @@ remaining scope; it is not a full application acceptance report.
   explicit; no account or cloud behavior was added.
 - Theme controls and project rows use the shared 120 ms standard-easing token;
   reduced-motion preferences suppress these transitions.
+- Settings includes a persisted Home Space Animations toggle. The washer mascot
+  uses idle, create, selected, and opening poses; both mascots use state-aware
+  motion, and the browser's reduced-motion preference suppresses that motion.
 - At narrow widths, the scene becomes a responsive visual header followed by
   the project details, board, and local status. Project controls remain within
   the document width.

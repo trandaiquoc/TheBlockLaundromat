@@ -6,7 +6,11 @@
 
     <div class="scene-canvas">
       <div class="scene-artwork">
-        <app-project-screen-scene [theme]="theme.theme()" />
+        <app-project-screen-scene
+          [theme]="theme.theme()"
+          [mascotState]="mascotState()"
+          [animationsEnabled]="homeSpaceAnimationsEnabled()"
+        />
         @if (selectedProject(); as project) {
           <app-project-screen-preview
             class="washer-project-preview"

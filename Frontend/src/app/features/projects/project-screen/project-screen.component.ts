@@ -47,6 +47,7 @@ import {
 } from './project-screen-project-list';
 import type { ProjectScreenProjectOrder } from './project-screen-project-list';
 import { ProjectScreenSceneComponent } from './scene/project-screen-scene.component';
+import type { ProjectScreenMascotState } from './scene/project-screen-scene-assets';
 
 @Component({
   selector: 'app-project-screen',
@@ -81,6 +82,15 @@ export class ProjectScreenComponent {
       projects.find((project) => project.id === this.selectedProjectId()) ?? projects[0] ?? null
     );
   });
+  protected readonly mascotState = computed<ProjectScreenMascotState>(() => {
+    if (this.openingId()) return 'opening';
+    if (this.creating() || this.createDialogOpen() || this.structureJsonImport.open())
+      return 'create';
+    return this.selectedProject() ? 'selected' : 'idle';
+  });
+  protected readonly homeSpaceAnimationsEnabled = computed(
+    () => this.preferences.preferences().homeSpaceAnimations,
+  );
   protected readonly createDialogOpen = signal(false);
   protected readonly name = signal(this.i18n.t('untitledStructure'));
   private readonly projectNameEdited = signal(false);

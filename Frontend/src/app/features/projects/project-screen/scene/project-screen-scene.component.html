@@ -1,4 +1,10 @@
-<div class="scene-background" [attr.data-theme]="theme()" aria-hidden="true">
+<div
+  class="scene-background"
+  [attr.data-theme]="theme()"
+  [attr.data-mascot-state]="mascotState()"
+  [attr.data-animations]="animationsEnabled()"
+  aria-hidden="true"
+>
   <img
     class="scene-background-image"
     [ngSrc]="scene().background.src"
@@ -36,13 +42,23 @@
     [height]="scene().board.height"
     alt=""
   />
-  <img
-    class="scene-layer--washer-mascot"
-    [ngSrc]="scene().washerMascot.src"
-    [width]="scene().washerMascot.width"
-    [height]="scene().washerMascot.height"
-    alt=""
-  />
+  @if (animationsEnabled()) {
+    <img
+      class="scene-layer--washer-mascot"
+      [ngSrc]="washerMascotStateAsset().src"
+      width="1254"
+      height="1254"
+      alt=""
+    />
+  } @else {
+    <img
+      class="scene-layer--washer-mascot"
+      [ngSrc]="scene().washerMascot.src"
+      [width]="scene().washerMascot.width"
+      [height]="scene().washerMascot.height"
+      alt=""
+    />
+  }
   <img
     class="scene-layer--map-mascot"
     [ngSrc]="scene().mapMascot.src"

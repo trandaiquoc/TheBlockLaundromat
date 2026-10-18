@@ -16,6 +16,8 @@ interface ProjectScreenSceneAssets {
   readonly mapMascot: ProjectScreenImageAsset;
 }
 
+export type ProjectScreenMascotState = 'idle' | 'create' | 'selected' | 'opening';
+
 const ref4Layer = (name: string, width: number, height: number): ProjectScreenImageAsset => ({
   src: `assets/project-screen/layers/ref4/${name}`,
   width,
@@ -27,6 +29,16 @@ const roomLayer = (name: string, width: number, height: number): ProjectScreenIm
   width,
   height,
 });
+
+export const PROJECT_SCREEN_WASHER_MASCOT_STATES: Record<
+  ProjectScreenMascotState,
+  ProjectScreenImageAsset
+> = {
+  idle: roomLayer('raccoon-washer-idle.webp', 1254, 1254),
+  create: roomLayer('raccoon-washer-create.webp', 1254, 1254),
+  selected: roomLayer('raccoon-washer-selected.webp', 1254, 1254),
+  opening: roomLayer('raccoon-washer-opening.webp', 1254, 1254),
+};
 
 export const PROJECT_SCREEN_SCENE_ASSETS: Record<Theme, ProjectScreenSceneAssets> = {
   craft: {

@@ -3,16 +3,19 @@ import { readFileSync } from 'node:fs';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { EMPTY } from 'rxjs';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ProjectDocument } from '../../../core/domain/project.types';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
 import { MojangVersionService } from '../../../core/assets/vanilla/mojang-vanilla-asset-source';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
+import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
 import { ProjectScreenComponent } from './project-screen.component';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
 import { ProjectPreviewService } from '../../../core/persistence/project-preview.service';
 
 describe('ProjectScreenComponent', () => {
+  afterEach(() => localStorage.removeItem('the-block-laundromat.ui-preferences'));
+
   it('marks the project name input as the create dialog initial focus target', () => {
     const template = String(
       readFileSync(
@@ -151,6 +154,9 @@ describe('ProjectScreenComponent', () => {
     });
     await TestBed.compileComponents();
 
+    const preferences = TestBed.inject(UiPreferencesService);
+    preferences.setAppearance({ preset: 'craft' });
+    preferences.update({ homeSpaceAnimations: true });
     const fixture = TestBed.createComponent(ProjectScreenComponent);
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
@@ -163,6 +169,24 @@ describe('ProjectScreenComponent', () => {
       );
     expect(cardNames()).toEqual(['Lakeside Cabin', 'Garden Study', 'Tower 2']);
     expect(root.querySelectorAll('.project-row app-project-screen-preview')).toHaveLength(3);
+    const scene = (): HTMLElement => root.querySelector('.scene-background') as HTMLElement;
+    const washerMascot = (): HTMLImageElement =>
+      root.querySelector('.scene-layer--washer-mascot') as HTMLImageElement;
+    expect(scene().getAttribute('data-mascot-state')).toBe('selected');
+    expect(scene().getAttribute('data-animations')).toBe('true');
+    expect(washerMascot().getAttribute('src')).toContain('raccoon-washer-selected.webp');
+    workflow.openingId.set('cabin');
+    fixture.detectChanges();
+    expect(scene().getAttribute('data-mascot-state')).toBe('opening');
+    expect(washerMascot().getAttribute('src')).toContain('raccoon-washer-opening.webp');
+    workflow.openingId.set(undefined);
+    preferences.update({ homeSpaceAnimations: false });
+    fixture.detectChanges();
+    expect(scene().getAttribute('data-mascot-state')).toBe('selected');
+    expect(scene().getAttribute('data-animations')).toBe('false');
+    expect(washerMascot().getAttribute('src')).toContain('washer-mascot-craft.png');
+    preferences.update({ homeSpaceAnimations: true });
+    fixture.detectChanges();
     const projectNote = root.querySelector('.project-note');
     expect(projectNote?.textContent).toContain('Selected project');
     expect(projectNote?.textContent).toContain('Lakeside Cabin');
@@ -181,6 +205,8 @@ describe('ProjectScreenComponent', () => {
     expect(createMenuItems[1].textContent).toContain('Create from Structure JSON');
     createMenuItems[0].click();
     fixture.detectChanges();
+    expect(scene().getAttribute('data-mascot-state')).toBe('create');
+    expect(washerMascot().getAttribute('src')).toContain('raccoon-washer-create.webp');
     const projectName = root.querySelector('.project-text-input') as HTMLInputElement;
     expect(projectName.value).toBe('Untitled structure');
     i18n.setLocale('vi');
@@ -234,8 +260,11 @@ describe('ProjectScreenComponent', () => {
     expect(root.querySelectorAll('.project-row app-project-screen-preview')).toHaveLength(3);
     expect(root.querySelectorAll('.board-actions .project-create-trigger')).toHaveLength(1);
 
+    (fixture.componentInstance as unknown as { closeCreateDialog(): void }).closeCreateDialog();
     workflow.projects.set([]);
     fixture.detectChanges();
+    expect(scene().getAttribute('data-mascot-state')).toBe('idle');
+    expect(washerMascot().getAttribute('src')).toContain('raccoon-washer-idle.webp');
     expect(root.querySelector('.board-actions .project-create-trigger')).not.toBeNull();
     expect(root.querySelector('.project-list-controls')).toBeNull();
     expect(root.querySelector('.project-note')?.textContent).toContain('Start a new project');

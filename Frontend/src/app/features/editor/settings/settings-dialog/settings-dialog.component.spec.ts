@@ -19,6 +19,53 @@ interface SettingsAppearanceView {
   }[];
 }
 
+describe('SettingsDialogComponent Home Space Animations', () => {
+  afterEach(() => localStorage.removeItem('the-block-laundromat.ui-preferences'));
+
+  it('keeps the preference in the draft until the user saves it', async () => {
+    localStorage.removeItem('the-block-laundromat.ui-preferences');
+    await TestBed.configureTestingModule({
+      imports: [SettingsDialogComponent],
+      providers: [
+        {
+          provide: ContentAssetRuntimeService,
+          useValue: {
+            generation: signal(0),
+            resourceAvailabilitySettled: signal(true),
+            sources: { resources: { textureUrl: () => undefined } },
+          },
+        },
+      ],
+    }).compileComponents();
+
+    const preferences = TestBed.inject(UiPreferencesService);
+    const fixture = TestBed.createComponent(SettingsDialogComponent);
+    fixture.detectChanges();
+    const animationToggle = fixture.nativeElement.querySelector(
+      '[aria-label="Home Space Animations"]',
+    ) as HTMLInputElement;
+    const session = fixture.debugElement.injector.get(SettingsDialogSession);
+
+    expect(animationToggle.checked).toBe(true);
+    animationToggle.checked = false;
+    animationToggle.dispatchEvent(new Event('change', { bubbles: true }));
+    fixture.detectChanges();
+    expect(session.draft().homeSpaceAnimations).toBe(false);
+    expect(preferences.preferences().homeSpaceAnimations).toBe(true);
+
+    (
+      fixture.nativeElement.querySelector('.settings-dialog-footer .primary') as HTMLButtonElement
+    ).click();
+    fixture.detectChanges();
+    expect(preferences.preferences().homeSpaceAnimations).toBe(false);
+    expect(
+      JSON.parse(localStorage.getItem('the-block-laundromat.ui-preferences') ?? '{}'),
+    ).toMatchObject({ homeSpaceAnimations: false });
+
+    fixture.destroy();
+  });
+});
+
 describe('SettingsDialogComponent Reality previews', () => {
   afterEach(() => localStorage.removeItem('the-block-laundromat.ui-preferences'));
 

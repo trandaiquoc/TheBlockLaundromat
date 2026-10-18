@@ -1,7 +1,10 @@
 // @ts-expect-error Vitest checks the public asset contract in Node.
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { PROJECT_SCREEN_SCENE_ASSETS } from './project-screen-scene-assets';
+import {
+  PROJECT_SCREEN_SCENE_ASSETS,
+  PROJECT_SCREEN_WASHER_MASCOT_STATES,
+} from './project-screen-scene-assets';
 
 describe('Project Screen scene asset contract', () => {
   it('uses independent room, exterior, washer, board, mascot, and foreground layers per theme', () => {
@@ -33,6 +36,21 @@ describe('Project Screen scene asset contract', () => {
       expect(existsSync(asset.src.replace(/^assets\//, 'public/assets/'))).toBe(true);
       expect(asset.width).toBeGreaterThan(0);
       expect(asset.height).toBeGreaterThan(0);
+    }
+  });
+
+  it('provides an image for each intentional washer mascot state', () => {
+    expect(Object.keys(PROJECT_SCREEN_WASHER_MASCOT_STATES)).toEqual([
+      'idle',
+      'create',
+      'selected',
+      'opening',
+    ]);
+    for (const asset of Object.values(PROJECT_SCREEN_WASHER_MASCOT_STATES)) {
+      expect(asset.src).toMatch(/layers\/raccoon-washer-.*\.webp$/);
+      expect(existsSync(asset.src.replace(/^assets\//, 'public/assets/'))).toBe(true);
+      expect(asset.width).toBe(1254);
+      expect(asset.height).toBe(1254);
     }
   });
 });
