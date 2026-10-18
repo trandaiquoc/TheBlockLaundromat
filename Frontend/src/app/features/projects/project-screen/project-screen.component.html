@@ -1,86 +1,54 @@
 <main class="project-page">
   <div class="scene-stage">
     <header class="outer-topbar">
-      <div class="outer-brand">
-        <img
-          class="outer-brand-logo"
-          ngSrc="assets/brand/the-block-laundromat-logo.svg"
-          width="1774"
-          height="887"
-          [alt]="i18n.t('appName')"
-          priority
-        />
-      </div>
       <app-project-screen-controls (settingsRequested)="openSettingsDialog()" />
     </header>
 
     <div class="scene-canvas">
-      <div class="scene-illustration">
-        <img
-          class="scene-art"
-          [ngSrc]="sceneAsset()"
-          width="1672"
-          height="941"
-          alt=""
-          aria-hidden="true"
-          priority
-        />
-        <div class="scene-mascots" aria-hidden="true">
-          <img
-            class="scene-mascot scene-mascot--washer-helper"
-            [ngSrc]="washerHelperAsset()"
-            width="768"
-            height="702"
-            alt=""
-            priority
-          />
-          <img
-            class="scene-mascot scene-mascot--map-reader"
-            [ngSrc]="mapReaderAsset()"
-            width="768"
-            height="576"
-            alt=""
-            priority
-          />
-        </div>
-      </div>
-      <section class="washer-project" [attr.aria-label]="i18n.t('projectActions')">
+      <div class="scene-artwork">
+        <app-project-screen-scene [theme]="theme.theme()" />
         @if (selectedProject(); as project) {
           <app-project-screen-preview
             class="washer-project-preview"
             [project]="project"
             aria-hidden="true"
           />
-          <span class="washer-project-label">{{ i18n.t('openProject') }}</span>
+        }
+      </div>
+      <section class="project-note" [attr.aria-label]="i18n.t('projectTitle')">
+        @if (selectedProject(); as project) {
+          <p class="project-note-kicker">{{ i18n.t('projectTitle') }}</p>
           <h2>{{ project.name }}</h2>
           <p>{{ i18n.t('minecraftJavaVersion').replace('{version}', project.minecraftVersion) }}</p>
-          <p>{{ summaryModeFullLabel(project.structureMode) }}</p>
-          <span
-            class="project-size-badge"
-            [class.project-size-badge--huge]="project.structureMode === 'huge-structure-blocks'"
-            [attr.aria-label]="summarySizeBadgeAriaLabel(project)"
-            [attr.title]="summarySizeBadgeAriaLabel(project)"
-            >{{ summarySizeLabel(project) }}</span
-          >
+          <p>{{ summarySizeLabel(project) }} · {{ summaryModeFullLabel(project.structureMode) }}</p>
+        } @else {
+          <p class="project-note-kicker">{{ i18n.t('projectTitle') }}</p>
+          <h2>{{ i18n.t('newProject') }}</h2>
+        }
+      </section>
+
+      @if (selectedProject(); as project) {
+        <div class="washer-actions" role="group" [attr.aria-label]="i18n.t('projectActions')">
           <button
-            class="ui-button ui-button--primary washer-open-action"
+            class="ui-button ui-button--primary washer-action"
             type="button"
             [disabled]="!!openingId() || creating() || deletingProjectIds().has(project.id)"
             (click)="openProject(project.id)"
           >
             {{ openingId() === project.id ? i18n.t('openingProject') : i18n.t('open') }}
           </button>
-        } @else {
-          <span class="washer-project-label">{{ i18n.t('newProject') }}</span>
           <button
-            class="ui-button ui-button--primary washer-open-action"
+            class="ui-button ui-button--danger washer-action washer-delete-action"
             type="button"
-            (click)="openCreateDialog()"
+            [disabled]="!!openingId() || creating() || deletingProjectIds().has(project.id)"
+            [attr.aria-label]="i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)"
+            (click)="deleteProject(project, $event)"
           >
-            {{ i18n.t('create') }}
+            <svg lucideTrash2 aria-hidden="true"></svg>
+            <span>{{ i18n.t('deleteProjectConfirm') }}</span>
           </button>
-        }
-      </section>
+        </div>
+      }
 
       <section class="project-board" aria-labelledby="project-board-title">
         <header class="board-header">
@@ -90,16 +58,6 @@
               <h1 id="project-board-title">{{ i18n.t('recent') }}</h1>
             </div>
             <div class="board-actions">
-              @if (selectedProject()) {
-                <button
-                  class="ui-button ui-button--primary ui-button--sm"
-                  type="button"
-                  [disabled]="creating() || !!openingId()"
-                  (click)="openCreateDialog()"
-                >
-                  {{ i18n.t('create') }}
-                </button>
-              }
               <input
                 #structureJsonFile
                 type="file"
@@ -108,14 +66,36 @@
                 (change)="selectStructureJson($event)"
               />
               <button
-                class="ui-button ui-button--secondary ui-button--sm structure-json-create-action"
+                class="project-create-trigger"
                 type="button"
-                [disabled]="creating() || !!openingId()"
-                (click)="openStructureJsonPicker(structureJsonFile)"
+                [disabled]="creating() || !!openingId() || structureJsonImport.creating()"
+                [attr.aria-label]="i18n.t('create')"
+                [attr.title]="i18n.t('create')"
+                [cdkMenuTriggerFor]="projectCreateMenu"
               >
-                <svg lucideFileUp aria-hidden="true"></svg>
-                <span>{{ i18n.t('createFromStructureJson') }}</span>
+                <span aria-hidden="true">+</span>
               </button>
+              <ng-template #projectCreateMenu>
+                <div class="project-create-menu" cdkMenu>
+                  <button
+                    class="project-create-menu-item"
+                    type="button"
+                    cdkMenuItem
+                    (click)="openCreateDialog()"
+                  >
+                    {{ i18n.t('newProject') }}
+                  </button>
+                  <button
+                    class="project-create-menu-item"
+                    type="button"
+                    cdkMenuItem
+                    (click)="openStructureJsonPicker(structureJsonFile)"
+                  >
+                    <svg lucideFileUp aria-hidden="true"></svg>
+                    {{ i18n.t('createFromStructureJson') }}
+                  </button>
+                </div>
+              </ng-template>
             </div>
           </div>
           @if (loadStatus() === 'ready' && projects().length > 0) {
@@ -197,31 +177,6 @@
                     >
                   </span>
                 </button>
-                <div class="project-row-actions">
-                  <button
-                    class="ui-button ui-button--secondary ui-button--sm project-row-open"
-                    type="button"
-                    [disabled]="!!openingId() || creating() || deletingProjectIds().has(project.id)"
-                    (click)="openProject(project.id)"
-                  >
-                    {{ openingId() === project.id ? i18n.t('openingProject') : i18n.t('open') }}
-                  </button>
-                  <button
-                    class="project-delete-action ui-button ui-button--danger ui-button--icon ui-tooltip-align-end"
-                    type="button"
-                    uiTooltip="{{
-                      i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)
-                    }}"
-                    [disabled]="deletingProjectIds().has(project.id)"
-                    [attr.aria-label]="
-                      i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)
-                    "
-                    [attr.title]="i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)"
-                    (click)="deleteProject(project, $event)"
-                  >
-                    <svg lucideTrash2 aria-hidden="true"></svg>
-                  </button>
-                </div>
               </article>
             }
           }

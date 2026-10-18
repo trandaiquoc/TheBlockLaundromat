@@ -1,5 +1,6 @@
-import { DatePipe, NgOptimizedImage } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
+import { CdkMenuModule } from '@angular/cdk/menu';
 import { Component, computed, inject, signal } from '@angular/core';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
 import {
@@ -23,7 +24,6 @@ import {
   LucideTrash2,
   LucideX,
 } from '@lucide/angular';
-import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import {
   SearchableDropdownComponent,
   SearchableDropdownOption,
@@ -46,23 +46,24 @@ import {
   isProjectScreenProjectOrder,
 } from './project-screen-project-list';
 import type { ProjectScreenProjectOrder } from './project-screen-project-list';
+import { ProjectScreenSceneComponent } from './scene/project-screen-scene.component';
 
 @Component({
   selector: 'app-project-screen',
   providers: [ProjectScreenWorkflow],
   imports: [
     CdkTrapFocus,
+    CdkMenuModule,
     DatePipe,
-    NgOptimizedImage,
     LucideFileUp,
     LucideHardDrive,
     LucideSearch,
     LucideTrash2,
     LucideX,
-    UiTooltipDirective,
     SearchableDropdownComponent,
     ProjectScreenControlsComponent,
     ProjectScreenPreviewComponent,
+    ProjectScreenSceneComponent,
     SettingsDialogComponent,
   ],
   templateUrl: './project-screen.component.html',
@@ -73,19 +74,6 @@ export class ProjectScreenComponent {
   private readonly preferences = inject(UiPreferencesService);
   protected readonly theme = inject(ThemeService);
   protected readonly workflow = inject(ProjectScreenWorkflow);
-  protected readonly sceneAsset = computed(
-    () => `assets/project-screen/laundromat-${this.theme.theme()}-background.jpg`,
-  );
-  protected readonly washerHelperAsset = computed(() =>
-    this.theme.theme() === 'dark'
-      ? 'assets/project-screen/raccoon-washer-helper-dark.png'
-      : 'assets/project-screen/raccoon-washer-helper.png',
-  );
-  protected readonly mapReaderAsset = computed(() =>
-    this.theme.theme() === 'dark'
-      ? 'assets/project-screen/raccoon-map-reader-dark.png'
-      : 'assets/project-screen/raccoon-map-reader.png',
-  );
   protected readonly selectedProjectId = signal<string | undefined>(undefined);
   protected readonly selectedProject = computed(() => {
     const projects = this.projects();

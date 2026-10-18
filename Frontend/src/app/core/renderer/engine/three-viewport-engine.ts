@@ -4314,7 +4314,10 @@ export class ThreeViewportEngine {
     try {
       for (const [child] of visibleStates) {
         child.visible =
-          child === this.canonicalRoot || child === this.hemisphereLight || child === this.keyLight;
+          child === this.canonicalRoot ||
+          child === this.projectGrid ||
+          child === this.hemisphereLight ||
+          child === this.keyLight;
       }
       this.scene.background = null;
       renderer.setRenderTarget(target);

@@ -5,13 +5,16 @@ remaining scope; it is not a full application acceptance report.
 
 ## Implemented Project Screen
 
-- Four theme-specific laundromat scenes are selected through the existing
-  `ThemeService`: Minecraft, Raccoon, Light, and Dark. The official logo stays
-  unchanged. The scene stays at its illustrated aspect ratio on desktop, with
-  the language/theme/settings controls and local status rendered as real DOM.
+- The Homepage scene uses four theme-specific 16:9 illustrations based on the
+  approved Minecraft, Light, Raccoon, and Dark references. They share the same
+  camera angle and placement for the washer, project board, windows, and
+  characters. The official logo asset stays unchanged and is composited as a
+  separate wall sign. Language/theme/settings controls and local status remain
+  real DOM outside the illustrated room.
 - Recent projects appear as real selectable entries on the wooden board. The
-  washer shows the selected project's name, Minecraft version, structure mode,
-  dimensions, and Open action, with a cached capture when one is available.
+  washer drum displays the selected project's real cached capture when one is
+  available. A text-only project note uses the washer's top control panel, and
+  Open/Delete actions stack beside the drum.
 - On wide desktop, the unchanged official logo sits above the washer in the
   scene's open wall area. The board arranges real project summaries as cards;
   the layout reduces to one column when the board is narrow. Local search
@@ -19,8 +22,10 @@ remaining scope; it is not a full application acceptance report.
   newest, oldest, and name order. Search and sorting appear once projects exist,
   keeping the empty board clear while preserving both controls for populated
   lists.
-- Project creation reuses the existing size and version form in a focus-trapped
-  dialog. Structure JSON import remains available directly from the board.
+- The board's `+` menu offers the two existing creation workflows: project
+  creation reuses the size/version form in a focus-trapped dialog, and
+  Structure JSON import reuses its validated file workflow. The menu uses
+  Angular CDK keyboard, focus, Escape, and outside-dismiss behavior.
 - The existing Project Screen workflow still owns create/open/delete, import,
   local persistence, and project navigation. Local guest status remains
   explicit; no account or cloud behavior was added.
@@ -32,16 +37,12 @@ remaining scope; it is not a full application acceptance report.
 
 ## Art Assets
 
-The four 1672 x 941 JPEG scene plates live under
-`Frontend/public/assets/project-screen/`. They were generated with the built-in
-image generation tool using the four approved references in this repository as
-composition and style guidance. They contain no UI text, project cards, app
-logo, or external stock assets. The Light, Raccoon, and Dark variants preserve
-the same scene layout; Dark uses the approved moonlit castle setting.
-The two raccoons are separate transparent image layers. Their idle animations
-use different timing and motion, and stop when reduced motion is requested.
-Dark uses cool-lit versions of the same characters so their lighting fits the
-moonlit scene.
+`Frontend/public/assets/project-screen/scenes/` owns the four 16:9 WebP
+background illustrations. They share fixed object placement and use separate
+theme lighting. The logo, actual project previews, project controls, and
+metadata stay in independent DOM/image layers, so the generated backgrounds
+contain no project names, fake thumbnails, or interface controls. Only the
+active theme's scene image is requested.
 
 The project board reads lightweight summary records while full structure data
 stays in separate project records. Once route checks approve leaving the 3D
@@ -60,7 +61,9 @@ any matching card already on Home so it can reload that image without a page
 reload. Home loads only the selected project's preview for the washer and
 lazily loads near-visible project-card previews through one shared visibility
 observer. Object URLs are released when a preview leaves the near viewport or
-its component is destroyed.
+its component is destroyed. Preview capture now keeps the project grid visible
+for the render and restores its prior visibility afterward, so a saved preview
+can show the structure against the grid.
 Saving the canonical project invalidates its preview in the same transaction;
 previews do not enter project JSON, backups, exports, or summary records. Empty
 projects, Y-Layer exits, stale captures, and unavailable captures show no image.
@@ -68,6 +71,12 @@ The project board remains metadata-only and never opens or renders every full
 structure during list load.
 
 ## Browser Evidence
+
+The captures linked below document the earlier flattened-scene implementation.
+They remain historical workflow evidence; they do not verify the current
+layered composition. The current scene has code-level tests, but a browser
+visual pass against all four references and the user's preview report is still
+pending.
 
 The [2026-10-17 laundromat scene review](evidence/20261017-laundromat-scene/README.md)
 contains captures of the empty state, project selection, four themes, creation

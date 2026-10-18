@@ -165,14 +165,21 @@ describe('project preview capture lifecycle', () => {
     const engine = new ThreeViewportEngine();
     const project = rendererBenchmarkProject('small');
     const previousTarget = {} as THREE.WebGLRenderTarget;
+    const previewGrid = new THREE.LineSegments(
+      new THREE.BufferGeometry(),
+      new THREE.LineBasicMaterial(),
+    );
+    previewGrid.visible = false;
     const internals = engine as unknown as {
       project: ProjectDocument;
       renderer: THREE.WebGLRenderer;
       scene: THREE.Scene;
       canonicalRoot: THREE.Group;
+      projectGrid: THREE.LineSegments;
     };
     internals.project = project;
-    internals.scene.add(internals.canonicalRoot);
+    internals.projectGrid = previewGrid;
+    internals.scene.add(internals.canonicalRoot, previewGrid);
     const gl = previewReadbackContext();
     const renderer = {
       getRenderTarget: () => previousTarget,
@@ -188,7 +195,7 @@ describe('project preview capture lifecycle', () => {
       setScissorTest: vi.fn(),
       setClearColor: vi.fn(),
       clear: vi.fn(),
-      render: vi.fn(),
+      render: vi.fn(() => expect(previewGrid.visible).toBe(true)),
       dispose: vi.fn(),
       domElement: { remove: vi.fn() },
     } as unknown as THREE.WebGLRenderer;
@@ -198,6 +205,7 @@ describe('project preview capture lifecycle', () => {
     const preview = await engine.captureProjectPreview(project);
 
     expect(preview?.type).toBe('image/webp');
+    expect(previewGrid.visible).toBe(false);
     expect(renderer.setRenderTarget).toHaveBeenLastCalledWith(previousTarget);
     expect(targetDispose).toHaveBeenCalledOnce();
     expect(renderer.dispose).not.toHaveBeenCalled();

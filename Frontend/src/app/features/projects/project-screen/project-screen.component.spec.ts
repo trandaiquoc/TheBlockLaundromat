@@ -35,34 +35,39 @@ describe('ProjectScreenComponent', () => {
     expect(template).toMatch(/<h2\s+cdkFocusInitial\s+tabindex="-1"/);
   });
 
-  it('renders both scene mascots as decorative image layers', () => {
+  it('composes the page from the fixed-frame scene and real project data', () => {
     const template = String(
       readFileSync(
         'src/app/features/projects/project-screen/project-screen.component.html',
         'utf8',
       ),
     );
-
-    expect(template).toContain('<div class="scene-mascots" aria-hidden="true">');
-    expect(template).toContain('class="scene-mascot scene-mascot--washer-helper"');
-    expect(template).toContain('[ngSrc]="washerHelperAsset()"');
-    expect(template).toContain('class="scene-mascot scene-mascot--map-reader"');
-    expect(template).toContain('[ngSrc]="mapReaderAsset()"');
-  });
-
-  it('animates the scene mascots separately and honors reduced-motion preferences', () => {
-    const stylesheet = String(
+    const sceneTemplate = String(
       readFileSync(
-        'src/app/features/projects/project-screen/project-screen.component.scss',
+        'src/app/features/projects/project-screen/scene/project-screen-scene.component.html',
         'utf8',
       ),
     );
 
-    expect(stylesheet).toMatch(/\.scene-mascot--washer-helper\s*\{[^}]*washer-helper-idle/);
-    expect(stylesheet).toMatch(/\.scene-mascot--map-reader\s*\{[^}]*map-reader-idle/);
-    expect(stylesheet).toMatch(
-      /@media\s*\(prefers-reduced-motion:\s*reduce\)[\s\S]*?\.scene-mascot\s*\{[^}]*animation:\s*none/,
+    expect(template).toContain('<app-project-screen-scene');
+    expect(template).toContain('[project]="project"');
+    expect(template).toContain('class="project-note"');
+    expect(template).toContain('class="washer-actions"');
+    expect(sceneTemplate).toContain('class="scene-background-image"');
+    expect(sceneTemplate).toContain('[ngSrc]="scene()"');
+    expect(sceneTemplate).toContain('scene-layer--wall-sign');
+  });
+
+  it('keeps the official logo as a separate scene overlay', () => {
+    const sceneTemplate = String(
+      readFileSync(
+        'src/app/features/projects/project-screen/scene/project-screen-scene.component.html',
+        'utf8',
+      ),
     );
+
+    expect(sceneTemplate).toContain('class="scene-layer--wall-sign"');
+    expect(sceneTemplate).toContain('assets/brand/the-block-laundromat-logo.svg');
   });
 
   it('delegates imported project activation to the screen workflow', async () => {
@@ -151,7 +156,15 @@ describe('ProjectScreenComponent', () => {
     expect(cardNames()).toEqual(['Lakeside Cabin', 'Garden Study', 'Tower 2']);
     expect(root.querySelectorAll('.project-row app-project-screen-preview')).toHaveLength(3);
 
-    (root.querySelector('.board-actions .ui-button--primary') as HTMLButtonElement).click();
+    (root.querySelector('.project-create-trigger') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    const createMenuItems = Array.from(
+      document.querySelectorAll<HTMLButtonElement>('.project-create-menu-item'),
+    );
+    expect(createMenuItems).toHaveLength(2);
+    expect(createMenuItems[0].textContent).toContain('Start a new project');
+    expect(createMenuItems[1].textContent).toContain('Create from Structure JSON');
+    createMenuItems[0].click();
     fixture.detectChanges();
     const projectName = root.querySelector('.project-text-input') as HTMLInputElement;
     expect(projectName.value).toBe('Untitled structure');
@@ -204,13 +217,13 @@ describe('ProjectScreenComponent', () => {
     fixture.detectChanges();
     expect(cardNames()).toEqual(['Garden Study', 'Lakeside Cabin', 'Tower 2']);
     expect(root.querySelectorAll('.project-row app-project-screen-preview')).toHaveLength(3);
-    expect(root.querySelectorAll('.board-actions .ui-button--primary')).toHaveLength(1);
+    expect(root.querySelectorAll('.board-actions .project-create-trigger')).toHaveLength(1);
 
     workflow.projects.set([]);
     fixture.detectChanges();
-    expect(root.querySelector('.board-actions .ui-button--primary')).toBeNull();
+    expect(root.querySelector('.board-actions .project-create-trigger')).not.toBeNull();
     expect(root.querySelector('.project-list-controls')).toBeNull();
-    expect(root.querySelector('.washer-open-action')?.textContent).toContain('Create project');
+    expect(root.querySelector('.project-note')?.textContent).toContain('Start a new project');
     fixture.destroy();
   });
 });

@@ -1,0 +1,38 @@
+:host {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene-background,
+.scene-background-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.scene-background {
+  isolation: isolate;
+}
+
+.scene-background-image {
+  max-width: none;
+  object-fit: fill;
+}
+
+.scene-layer--wall-sign {
+  position: absolute;
+  z-index: 1;
+  top: 3%;
+  left: 31%;
+  display: block;
+  width: 30%;
+  height: auto;
+  filter: drop-shadow(0 0 0.38rem rgb(255 209 116 / 0.72))
+    drop-shadow(0 0 1.1rem rgb(255 169 75 / 0.36));
+}
