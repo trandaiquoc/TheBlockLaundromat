@@ -16,14 +16,17 @@ describe('Project Screen scene asset contract', () => {
       expect(theme.background.width / theme.background.height).toBeGreaterThan(2);
       expect(theme.exterior.src).toMatch(new RegExp(`layers/exterior-${themeName}\\.webp$`));
       expect(theme.exterior.width / theme.exterior.height).toBeCloseTo(1672 / 941, 3);
-      expect(theme.washer.src).toMatch(new RegExp(`layers/ref4/washer-${themeName}\\.png$`));
-      expect(theme.board.src).toMatch(new RegExp(`layers/ref4/board-${themeName}\\.png$`));
+      expect(theme.washer.src).toMatch(new RegExp(`layers/ref4/washer-${themeName}\\.webp$`));
+      expect(theme.board.src).toMatch(new RegExp(`layers/ref4/board-${themeName}\\.webp$`));
       expect(theme.washerMascot.src).toMatch(
-        new RegExp(`layers/ref4/washer-mascot-${themeName}\\.png$`),
+        new RegExp(`layers/ref4/washer-mascot-${themeName}\\.webp$`),
       );
-      expect(theme.mapMascot.src).toMatch(new RegExp(`layers/ref4/map-mascot-${themeName}\\.png$`));
+      expect(theme.mapMascot.src).toMatch(
+        new RegExp(`layers/ref4/map-mascot-${themeName}\\.webp$`),
+      );
       expect(theme.foreground.src).toMatch(/layers\/laundry-foreground\.webp$/);
-      expect(theme.foreground.width / theme.foreground.height).toBeCloseTo(1672 / 941, 3);
+      expect(theme.foreground.width).toBe(664);
+      expect(theme.foreground.height).toBe(374);
     }
   });
 

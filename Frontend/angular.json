@@ -28,7 +28,12 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "public",
+                "ignore": [
+                  "assets/project-screen/layers/**/*.png",
+                  "assets/project-screen/raccoon-map-reader*.png",
+                  "assets/project-screen/scenes/**/*.webp"
+                ]
               }
             ],
             "styles": [

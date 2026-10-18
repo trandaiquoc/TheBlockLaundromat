@@ -44,15 +44,20 @@ remaining scope; it is not a full application acceptance report.
 
 `Frontend/public/assets/project-screen/layers/ref4/` owns the four wide room
 backdrops and each theme's transparent washer, board, and mascot layers. The
-parent `layers/` directory owns four theme-specific exterior cutouts and the
-shared transparent foreground props. The desktop canvas follows the generated
-backdrops' approximately 2.13:1 ratio and fills wide displays; narrower desktop
+original theme layer PNGs remain source masters; the runtime manifest uses
+their WebP derivatives, and Angular excludes the source PNGs from production
+asset copying. The parent `layers/` directory owns four theme-specific
+exterior cutouts and the shared transparent foreground props. The desktop
+canvas follows the generated backdrops' approximately 2.13:1 ratio and fills
+wide displays; narrower desktop
 ratios crop the outer edges while preserving the reference composition. At
 mobile widths, the artwork becomes a 16:9 room header and the real project
 board moves below it. The logo, actual project previews, pinned project note,
 controls, and metadata stay in independent DOM/image layers, so generated room
 backdrops contain no project names, fake thumbnails, or interface controls.
 Only the active theme's room layers and the shared foreground props are rendered.
+The unused flattened scenes and map-reader PNGs stay in the repository but are
+excluded from production because the layered scene has no consumers for them.
 
 The project board reads lightweight summary records while full structure data
 stays in separate project records. Once route checks approve leaving the 3D
@@ -71,9 +76,11 @@ any matching card already on Home so it can reload that image without a page
 reload. Home loads only the selected project's preview for the washer and
 lazily loads near-visible project-card previews through one shared visibility
 observer. Object URLs are released when a preview leaves the near viewport or
-its component is destroyed. Preview capture now keeps the project grid visible
-for the render and restores its prior visibility afterward, so a saved preview
-can show the structure against the grid.
+its component is destroyed. Preview capture renders the project grid in a
+brighter preview-specific color over a solid dark olive background, then
+restores the live grid material and renderer state immediately after
+submission. Saved previews show the structure against a visible grid without
+changing the editor viewport appearance.
 Saving the canonical project invalidates its preview in the same transaction;
 previews do not enter project JSON, backups, exports, or summary records. Empty
 projects, Y-Layer exits, stale captures, and unavailable captures show no image.

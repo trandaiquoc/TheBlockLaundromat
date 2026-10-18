@@ -162,7 +162,29 @@
   justify-content: center;
   gap: 0.35rem;
   padding: 0.3rem clamp(0.25rem, 0.45vw, 0.5rem);
+  border: 1px solid rgb(255 241 204 / 56%);
+  border-radius: 0.32rem;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 43%),
+    inset 0 -2px 0 rgb(31 22 13 / 25%),
+    0 0.22rem 0.28rem rgb(28 20 13 / 43%);
   font-size: clamp(0.52rem, 0.64vw, 0.7rem);
+  text-shadow: 0 1px 1px rgb(20 25 13 / 44%);
+  transform: perspective(650px) rotateY(-11deg) rotateZ(-1.2deg);
+  transform-origin: left center;
+  transition:
+    filter var(--motion-duration-ui) var(--motion-easing-standard),
+    transform var(--motion-duration-ui) var(--motion-easing-standard);
+}
+
+.washer-action:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: perspective(650px) rotateY(-11deg) rotateZ(-1.2deg) translateY(-1px);
+}
+
+.washer-action:active:not(:disabled) {
+  filter: brightness(0.94);
+  transform: perspective(650px) rotateY(-11deg) rotateZ(-1.2deg) translateY(1px);
 }
 
 .washer-delete-action svg {
@@ -184,6 +206,8 @@
   gap: 0.35rem;
   overflow: hidden;
   padding: 0.7% 1% 1.4%;
+  transform: perspective(1200px) rotateY(-1.4deg) rotateZ(-0.9deg);
+  transform-origin: 0 50%;
 }
 
 .board-header {
@@ -1132,6 +1156,12 @@
     min-height: var(--control-md);
     flex: 1 1 0;
     font-size: 0.85rem;
+    transform: none;
+  }
+
+  .washer-action:hover:not(:disabled),
+  .washer-action:active:not(:disabled) {
+    transform: none;
   }
 
   .project-board {
@@ -1145,6 +1175,7 @@
     aspect-ratio: 1.32;
     overflow: visible;
     padding: 8% 9% 9%;
+    transform: none;
     border: 1px solid rgb(92 57 25 / 0.35);
     border-radius: 0.85rem;
     background: linear-gradient(145deg, #d6a36a, #b77c47 54%, #8d5934);

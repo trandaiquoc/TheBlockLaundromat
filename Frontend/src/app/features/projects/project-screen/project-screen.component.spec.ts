@@ -184,7 +184,7 @@ describe('ProjectScreenComponent', () => {
     fixture.detectChanges();
     expect(scene().getAttribute('data-mascot-state')).toBe('selected');
     expect(scene().getAttribute('data-animations')).toBe('false');
-    expect(washerMascot().getAttribute('src')).toContain('washer-mascot-craft.png');
+    expect(washerMascot().getAttribute('src')).toContain('washer-mascot-craft.webp');
     preferences.update({ homeSpaceAnimations: true });
     fixture.detectChanges();
     const projectNote = root.querySelector('.project-note');

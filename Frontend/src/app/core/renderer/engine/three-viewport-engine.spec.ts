@@ -87,6 +87,9 @@ describe('project preview capture lifecycle', () => {
     const previousClearAlpha = 0.4;
     const previousBackground = new THREE.Color(0xabcdef);
     const readbackError = new Error('readback failed');
+    const previewGridMaterial = new THREE.LineBasicMaterial({ color: 0x344252, opacity: 0.72 });
+    const previewGrid = new THREE.LineSegments(new THREE.BufferGeometry(), previewGridMaterial);
+    previewGrid.visible = false;
     const gl = previewReadbackContext({
       clientWaitSync: vi.fn(() => {
         throw readbackError;
@@ -99,10 +102,12 @@ describe('project preview capture lifecycle', () => {
       renderer: THREE.WebGLRenderer;
       scene: THREE.Scene;
       canonicalRoot: THREE.Group;
+      projectGrid: THREE.LineSegments;
     };
     internals.project = project;
+    internals.projectGrid = previewGrid;
     internals.canonicalRoot.add(new THREE.Object3D());
-    internals.scene.add(internals.canonicalRoot, root, overlay);
+    internals.scene.add(internals.canonicalRoot, root, overlay, previewGrid);
     internals.scene.background = previousBackground;
     const renderer = {
       getRenderTarget: () => previousTarget,
@@ -131,6 +136,9 @@ describe('project preview capture lifecycle', () => {
     expect(internals.canonicalRoot.visible).toBe(true);
     expect(root.visible).toBe(true);
     expect(overlay.visible).toBe(true);
+    expect(previewGrid.visible).toBe(false);
+    expect(previewGridMaterial.color.getHex()).toBe(0x344252);
+    expect(previewGridMaterial.opacity).toBe(0.72);
     expect(internals.scene.background).toBe(previousBackground);
     expect(renderer.setRenderTarget).toHaveBeenLastCalledWith(previousTarget);
     expect(renderer.setViewport).toHaveBeenLastCalledWith(previousViewport);
@@ -165,10 +173,8 @@ describe('project preview capture lifecycle', () => {
     const engine = new ThreeViewportEngine();
     const project = rendererBenchmarkProject('small');
     const previousTarget = {} as THREE.WebGLRenderTarget;
-    const previewGrid = new THREE.LineSegments(
-      new THREE.BufferGeometry(),
-      new THREE.LineBasicMaterial(),
-    );
+    const previewGridMaterial = new THREE.LineBasicMaterial({ color: 0x344252, opacity: 0.72 });
+    const previewGrid = new THREE.LineSegments(new THREE.BufferGeometry(), previewGridMaterial);
     previewGrid.visible = false;
     const internals = engine as unknown as {
       project: ProjectDocument;
@@ -195,7 +201,11 @@ describe('project preview capture lifecycle', () => {
       setScissorTest: vi.fn(),
       setClearColor: vi.fn(),
       clear: vi.fn(),
-      render: vi.fn(() => expect(previewGrid.visible).toBe(true)),
+      render: vi.fn(() => {
+        expect(previewGrid.visible).toBe(true);
+        expect(previewGridMaterial.color.getHex()).toBe(0x91a37d);
+        expect(previewGridMaterial.opacity).toBe(0.92);
+      }),
       dispose: vi.fn(),
       domElement: { remove: vi.fn() },
     } as unknown as THREE.WebGLRenderer;
@@ -206,6 +216,9 @@ describe('project preview capture lifecycle', () => {
 
     expect(preview?.type).toBe('image/webp');
     expect(previewGrid.visible).toBe(false);
+    expect(previewGridMaterial.color.getHex()).toBe(0x344252);
+    expect(previewGridMaterial.opacity).toBe(0.72);
+    expect(renderer.setClearColor).toHaveBeenNthCalledWith(1, 0x191d17, 1);
     expect(renderer.setRenderTarget).toHaveBeenLastCalledWith(previousTarget);
     expect(targetDispose).toHaveBeenCalledOnce();
     expect(renderer.dispose).not.toHaveBeenCalled();

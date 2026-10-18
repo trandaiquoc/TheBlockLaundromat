@@ -315,6 +315,9 @@ export type {
 export const VIEWPORT_BOOTSTRAP_SIZE: ProjectSize = { x: 16, y: 16, z: 16 };
 export const VIEWPORT_HYDRATION_BATCH_SIZE = 96;
 export const VIEWPORT_VISUAL_CONCURRENCY = 6;
+const PROJECT_PREVIEW_BACKGROUND_COLOR = 0x191d17;
+const PROJECT_PREVIEW_GRID_COLOR = 0x91a37d;
+const PROJECT_PREVIEW_GRID_OPACITY = 0.92;
 
 export const VIEWPORT_INSTANCE_CHUNK_SIZE = RENDER_CHUNK_SIZE;
 /** Presentation regions reduce far-view batch fragmentation while preserving culling locality. */
@@ -4288,6 +4291,20 @@ export class ThreeViewportEngine {
     const previousClearColor = renderer.getClearColor(new THREE.Color());
     const previousClearAlpha = renderer.getClearAlpha();
     const previousBackground = this.scene.background;
+    const previewGridMaterial = this.projectGrid?.material;
+    const previousGridColor =
+      previewGridMaterial instanceof THREE.LineBasicMaterial
+        ? previewGridMaterial.color.getHex()
+        : undefined;
+    const previousGridOpacity =
+      previewGridMaterial instanceof THREE.LineBasicMaterial
+        ? previewGridMaterial.opacity
+        : undefined;
+    const restorePreviewGridMaterial = (): void => {
+      if (!(previewGridMaterial instanceof THREE.LineBasicMaterial)) return;
+      if (previousGridColor !== undefined) previewGridMaterial.color.setHex(previousGridColor);
+      if (previousGridOpacity !== undefined) previewGridMaterial.opacity = previousGridOpacity;
+    };
     const visibleStates = this.scene.children.map((child) => [child, child.visible] as const);
     const pixels = new Uint8Array(width * height * 4);
     const target = new THREE.WebGLRenderTarget(width, height, {
@@ -4319,11 +4336,15 @@ export class ThreeViewportEngine {
           child === this.hemisphereLight ||
           child === this.keyLight;
       }
+      if (previewGridMaterial instanceof THREE.LineBasicMaterial) {
+        previewGridMaterial.color.setHex(PROJECT_PREVIEW_GRID_COLOR);
+        previewGridMaterial.opacity = PROJECT_PREVIEW_GRID_OPACITY;
+      }
       this.scene.background = null;
       renderer.setRenderTarget(target);
       renderer.setViewport(0, 0, width, height);
       renderer.setScissorTest(false);
-      renderer.setClearColor(0x000000, 0);
+      renderer.setClearColor(PROJECT_PREVIEW_BACKGROUND_COLOR, 1);
       renderer.clear(true, true, true);
       renderer.render(this.scene, camera);
       readback = readProjectPreviewPixels(renderer, target, pixels, readbackController.signal);
@@ -4332,6 +4353,7 @@ export class ThreeViewportEngine {
     } finally {
       if (!this.disposed && this.renderer === renderer) {
         try {
+          restorePreviewGridMaterial();
           for (const [child, visible] of visibleStates) child.visible = visible;
           this.scene.background = previousBackground;
           if (renderer.getContext().isContextLost()) {
@@ -4345,6 +4367,7 @@ export class ThreeViewportEngine {
           }
         } catch (error) {
           captureError ??= error;
+          restorePreviewGridMaterial();
           try {
             renderer.resetState();
           } catch {
