@@ -31,9 +31,15 @@
                 "input": "public",
                 "ignore": [
                   "assets/project-screen/layers/**/*.png",
+                  "assets/project-screen/layers/exterior-*.webp",
                   "assets/project-screen/raccoon-map-reader*.png",
                   "assets/project-screen/scenes/**/*.webp"
                 ]
+              },
+              {
+                "glob": "room-mask-*.png",
+                "input": "public/assets/project-screen/layers",
+                "output": "assets/project-screen/layers"
               }
             ],
             "styles": [

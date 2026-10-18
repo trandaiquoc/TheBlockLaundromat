@@ -8,7 +8,8 @@
 }
 
 .scene-background,
-.scene-background-image {
+.scene-layer--exterior,
+.scene-layer--room {
   position: absolute;
   inset: 0;
   display: block;
@@ -18,43 +19,64 @@
 
 .scene-background {
   isolation: isolate;
+  --exterior-filter: brightness(0.96) saturate(1.08) sepia(0.1);
+  --exterior-lighting: rgb(255 169 93 / 0.22);
   --wall-sign-glow: drop-shadow(0 0 0.38rem rgb(255 209 116 / 0.72))
     drop-shadow(0 0 1.1rem rgb(255 169 75 / 0.36));
 }
 
 .scene-background[data-theme='light'] {
+  --exterior-filter: brightness(1.02) saturate(1) sepia(0);
+  --exterior-lighting: rgb(255 255 255 / 0);
   --wall-sign-glow: drop-shadow(0 0 0.28rem rgb(255 239 194 / 0.58))
     drop-shadow(0 0 0.75rem rgb(255 218 159 / 0.24));
 }
 
 .scene-background[data-theme='raccoon'] {
+  --exterior-filter: brightness(0.82) saturate(0.9) sepia(0.12);
+  --exterior-lighting: rgb(177 86 126 / 0.3);
   --wall-sign-glow: drop-shadow(0 0 0.34rem rgb(255 203 145 / 0.62))
     drop-shadow(0 0 0.95rem rgb(246 159 95 / 0.3));
 }
 
 .scene-background[data-theme='dark'] {
+  --exterior-filter: brightness(0.52) saturate(0.7) sepia(0.04);
+  --exterior-lighting: rgb(30 29 38 / 0.38);
   --wall-sign-glow: drop-shadow(0 0 0.4rem rgb(255 216 165 / 0.68))
     drop-shadow(0 0 1.05rem rgb(225 149 83 / 0.34));
 }
 
-.scene-background-image {
-  max-width: none;
-  object-fit: cover;
-}
-
-.scene-background > img:not(.scene-background-image) {
+.scene-background > img {
   position: absolute;
   display: block;
   max-width: none;
-  object-fit: contain;
+  object-fit: fill;
 }
 
 .scene-layer--exterior {
+  z-index: 0;
+  filter: var(--exterior-filter);
+  transition: filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scene-layer--exterior-lighting {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background-color: var(--exterior-lighting);
+  mix-blend-mode: multiply;
+  transition: background-color 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.scene-layer--room {
   z-index: 1;
-  top: 0;
-  left: 8.225%;
-  width: 83.55%;
-  height: 100%;
+  mask-image: var(--room-opening-mask);
+  mask-mode: alpha;
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  -webkit-mask-image: var(--room-opening-mask);
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
 }
 
 .scene-layer--wall-sign {
@@ -307,11 +329,6 @@
 }
 
 @media (max-width: 860px) {
-  .scene-layer--exterior {
-    left: 0;
-    width: 100%;
-  }
-
   .scene-layer--wall-sign {
     top: 1.5%;
     left: 32%;
@@ -357,4 +374,14 @@
   .scene-background[data-animations='true'][data-mascot-state] .scene-layer--map-mascot {
     animation: none;
   }
+
+  .scene-layer--exterior,
+  .scene-layer--exterior-lighting {
+    transition: none;
+  }
+}
+
+.scene-background[data-animations='false'] .scene-layer--exterior,
+.scene-background[data-animations='false'] .scene-layer--exterior-lighting {
+  transition: none;
 }

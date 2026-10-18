@@ -5,19 +5,22 @@
   [attr.data-animations]="animationsEnabled()"
   aria-hidden="true"
 >
-  <img
-    class="scene-background-image"
-    [ngSrc]="scene().background.src"
-    [width]="scene().background.width"
-    [height]="scene().background.height"
-    priority
-    alt=""
-  />
+  <!-- Scene boxes use stable intrinsic sizes so NgOptimizedImage can swap theme sources. -->
   <img
     class="scene-layer--exterior"
     [ngSrc]="scene().exterior.src"
-    [width]="scene().exterior.width"
-    [height]="scene().exterior.height"
+    width="1832"
+    height="860"
+    priority
+    alt=""
+  />
+  <div class="scene-layer--exterior-lighting"></div>
+  <img
+    class="scene-layer--room"
+    [ngSrc]="scene().room.src"
+    width="1832"
+    height="860"
+    [style.--room-opening-mask]="'url(/' + scene().roomMask.src + ')'"
     priority
     alt=""
   />
@@ -30,20 +33,8 @@
       alt=""
     />
   </div>
-  <img
-    class="scene-layer--washer"
-    [ngSrc]="scene().washer.src"
-    [width]="scene().washer.width"
-    [height]="scene().washer.height"
-    alt=""
-  />
-  <img
-    class="scene-layer--board"
-    [ngSrc]="scene().board.src"
-    [width]="scene().board.width"
-    [height]="scene().board.height"
-    alt=""
-  />
+  <img class="scene-layer--washer" [ngSrc]="scene().washer.src" width="1373" height="1222" alt="" />
+  <img class="scene-layer--board" [ngSrc]="scene().board.src" width="1402" height="1122" alt="" />
   @if (animationsEnabled()) {
     <img
       class="scene-layer--washer-mascot"
@@ -56,24 +47,24 @@
     <img
       class="scene-layer--washer-mascot"
       [ngSrc]="scene().washerMascot.src"
-      [width]="scene().washerMascot.width"
-      [height]="scene().washerMascot.height"
+      width="1388"
+      height="1208"
       alt=""
     />
   }
   <img
     class="scene-layer--map-mascot"
     [ngSrc]="scene().mapMascot.src"
-    [width]="scene().mapMascot.width"
-    [height]="scene().mapMascot.height"
+    width="1388"
+    height="1222"
     alt=""
   />
   <div class="scene-layer--foreground">
     <img
       class="scene-layer--foreground-image"
       [ngSrc]="scene().foreground.src"
-      [width]="scene().foreground.width"
-      [height]="scene().foreground.height"
+      width="664"
+      height="374"
       alt=""
     />
   </div>

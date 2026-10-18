@@ -6,9 +6,15 @@ interface ProjectScreenImageAsset {
   readonly height: number;
 }
 
+interface ProjectScreenImageDimensions {
+  readonly width: number;
+  readonly height: number;
+}
+
 interface ProjectScreenSceneAssets {
-  readonly background: ProjectScreenImageAsset;
+  readonly room: ProjectScreenImageAsset;
   readonly exterior: ProjectScreenImageAsset;
+  readonly roomMask: ProjectScreenImageAsset;
   readonly washer: ProjectScreenImageAsset;
   readonly board: ProjectScreenImageAsset;
   readonly foreground: ProjectScreenImageAsset;
@@ -30,6 +36,26 @@ const roomLayer = (name: string, width: number, height: number): ProjectScreenIm
   height,
 });
 
+export const PROJECT_SCREEN_EXTERIOR_PANORAMA = roomLayer('exterior-panorama.jpg', 1828, 860);
+
+function splitRoomBackdrop(
+  theme: Theme,
+  dimensions: {
+    readonly room: ProjectScreenImageDimensions;
+    readonly roomMask: ProjectScreenImageDimensions;
+  },
+): Pick<ProjectScreenSceneAssets, 'room' | 'exterior' | 'roomMask'> {
+  return {
+    room: ref4Layer(`scene-${theme}.jpg`, dimensions.room.width, dimensions.room.height),
+    exterior: PROJECT_SCREEN_EXTERIOR_PANORAMA,
+    roomMask: roomLayer(
+      `room-mask-${theme}.png`,
+      dimensions.roomMask.width,
+      dimensions.roomMask.height,
+    ),
+  };
+}
+
 export const PROJECT_SCREEN_WASHER_MASCOT_STATES: Record<
   ProjectScreenMascotState,
   ProjectScreenImageAsset
@@ -42,8 +68,10 @@ export const PROJECT_SCREEN_WASHER_MASCOT_STATES: Record<
 
 export const PROJECT_SCREEN_SCENE_ASSETS: Record<Theme, ProjectScreenSceneAssets> = {
   craft: {
-    background: ref4Layer('scene-craft.jpg', 1828, 860),
-    exterior: roomLayer('exterior-craft.webp', 1672, 941),
+    ...splitRoomBackdrop('craft', {
+      room: { width: 1828, height: 860 },
+      roomMask: { width: 1825, height: 862 },
+    }),
     washer: ref4Layer('washer-craft.webp', 1324, 1188),
     board: ref4Layer('board-craft.webp', 1402, 1122),
     foreground: roomLayer('laundry-foreground.webp', 664, 374),
@@ -51,8 +79,10 @@ export const PROJECT_SCREEN_SCENE_ASSETS: Record<Theme, ProjectScreenSceneAssets
     mapMascot: ref4Layer('map-mascot-craft.webp', 1388, 1133),
   },
   light: {
-    background: ref4Layer('scene-light.jpg', 1831, 859),
-    exterior: roomLayer('exterior-light.webp', 1672, 941),
+    ...splitRoomBackdrop('light', {
+      room: { width: 1831, height: 859 },
+      roomMask: { width: 1831, height: 859 },
+    }),
     washer: ref4Layer('washer-light.webp', 1307, 1203),
     board: ref4Layer('board-light.webp', 1402, 1122),
     foreground: roomLayer('laundry-foreground.webp', 664, 374),
@@ -60,8 +90,10 @@ export const PROJECT_SCREEN_SCENE_ASSETS: Record<Theme, ProjectScreenSceneAssets
     mapMascot: ref4Layer('map-mascot-light.webp', 1302, 1208),
   },
   raccoon: {
-    background: ref4Layer('scene-raccoon.jpg', 1832, 858),
-    exterior: roomLayer('exterior-raccoon.webp', 1672, 941),
+    ...splitRoomBackdrop('raccoon', {
+      room: { width: 1832, height: 858 },
+      roomMask: { width: 1832, height: 859 },
+    }),
     washer: ref4Layer('washer-raccoon.webp', 1287, 1222),
     board: ref4Layer('board-raccoon.webp', 1402, 1122),
     foreground: roomLayer('laundry-foreground.webp', 664, 374),
@@ -69,8 +101,10 @@ export const PROJECT_SCREEN_SCENE_ASSETS: Record<Theme, ProjectScreenSceneAssets
     mapMascot: ref4Layer('map-mascot-raccoon.webp', 1287, 1222),
   },
   dark: {
-    background: ref4Layer('scene-dark.jpg', 1829, 860),
-    exterior: roomLayer('exterior-dark.webp', 1672, 941),
+    ...splitRoomBackdrop('dark', {
+      room: { width: 1829, height: 860 },
+      roomMask: { width: 1828, height: 860 },
+    }),
     washer: ref4Layer('washer-dark.webp', 1373, 1146),
     board: ref4Layer('board-dark.webp', 1402, 1122),
     foreground: roomLayer('laundry-foreground.webp', 664, 374),

@@ -5,11 +5,15 @@ remaining scope; it is not a full application acceptance report.
 
 ## Implemented Project Screen
 
-- The Homepage scene uses four theme-specific wide room backdrops, exterior
-  cutouts, washer, board, mascot, and foreground layers based on the approved
-  Minecraft, Light, Raccoon, and Dark references. The layers share the same
-  camera angle and placement. The official logo asset stays unchanged as a
-  separate wall sign, with a restrained glow adapted to each theme.
+- The Homepage scene uses four distinct theme-specific wide room backdrops,
+  one shared exterior panorama, alpha masks for the window and doorway
+  openings, and independent washer, board, mascot, and foreground layers based
+  on the approved Minecraft, Light, Raccoon, and Dark references. The shared
+  panorama sits behind each room backdrop, whose masked openings keep the room
+  frames visible and preserve the same outdoor landmarks across themes. A
+  theme-specific lighting layer changes the time-of-day appearance without
+  moving the scenery. The official logo asset stays unchanged as a separate
+  wall sign, with a restrained glow adapted to each theme.
   Language/theme/settings controls and local status remain real DOM outside
   the illustrated room.
 - Recent projects appear as real selectable entries on the wooden board. The
@@ -44,13 +48,19 @@ remaining scope; it is not a full application acceptance report.
 
 `Frontend/public/assets/project-screen/layers/ref4/` owns the four wide room
 backdrops and each theme's transparent washer, board, and mascot layers. The
-original theme layer PNGs remain source masters; the runtime manifest uses
-their WebP derivatives, and Angular excludes the source PNGs from production
-asset copying. The parent `layers/` directory owns four theme-specific
-exterior cutouts and the shared transparent foreground props. The desktop
-canvas follows the generated backdrops' approximately 2.13:1 ratio and fills
-wide displays; narrower desktop
-ratios crop the outer edges while preserving the reference composition. At
+parent `layers/` directory owns one shared exterior panorama, the four
+alpha-channel room masks, and the shared transparent foreground props. The
+panorama fills the scene canvas below each room backdrop. The mask keeps the
+interior and window frames opaque while the outdoor openings reveal the same
+fixed landscape in every theme. A tint and brightness layer provides the
+time-of-day transition without swapping or moving landmarks. The old detached
+exterior cutouts are not used or copied into production. The original theme
+layer PNGs remain source masters; the runtime manifest uses their WebP
+derivatives, and Angular excludes the source PNGs from production asset
+copying while explicitly including the four room masks. The desktop canvas
+follows the generated backdrops' approximately 2.13:1 ratio and fills wide
+displays; narrower desktop ratios crop the outer edges while preserving the
+reference composition. At
 mobile widths, the artwork becomes a 16:9 room header and the real project
 board moves below it. The logo, actual project previews, pinned project note,
 controls, and metadata stay in independent DOM/image layers, so generated room

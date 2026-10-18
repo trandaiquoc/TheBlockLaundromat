@@ -59,8 +59,11 @@ describe('ProjectScreenComponent', () => {
     expect(template).toContain("i18n.t('minecraftJavaVersion')");
     expect(template).toContain("i18n.t('structureSize')");
     expect(template).toContain('class="washer-actions"');
-    expect(sceneTemplate).toContain('[ngSrc]="scene().background.src"');
+    expect(sceneTemplate).toContain('[ngSrc]="scene().room.src"');
+    expect(sceneTemplate).toContain('[ngSrc]="scene().exterior.src"');
+    expect(sceneTemplate).toContain('scene().roomMask.src');
     expect(sceneTemplate).toContain('class="scene-layer--exterior"');
+    expect(sceneTemplate).toContain('class="scene-layer--exterior-lighting"');
     expect(sceneTemplate).toContain('scene-layer--wall-sign');
     expect(sceneTemplate).toContain('scene-layer--washer');
     expect(sceneTemplate).toContain('scene-layer--board');
