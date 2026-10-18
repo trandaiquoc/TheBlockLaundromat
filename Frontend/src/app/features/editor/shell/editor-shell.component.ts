@@ -505,13 +505,7 @@ export class EditorShellComponent implements OnDestroy {
     const capture = this.threeDViewport()?.captureProjectPreview(project);
     if (!capture) return;
     const preview = await capture;
-    if (
-      !preview ||
-      this.mode.mode() !== '3d' ||
-      this.workspace.project() !== project ||
-      this.autosave.isUnsafeDirty
-    )
-      return;
+    if (!preview) return;
     await this.projectPreviews.savePreview(project.id, project.metadata.updatedAt, preview);
   }
   protected async saveProject(): Promise<void> {

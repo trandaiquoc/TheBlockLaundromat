@@ -346,6 +346,7 @@ export function viewportRenderSize(
 }
 
 interface PendingProjectPreviewReadback {
+  readonly project: ProjectDocument;
   cancel(): void;
   disposeTarget(): void;
 }
@@ -576,6 +577,7 @@ export class ThreeViewportEngine {
     this.decorationGhostPresenter.currentKey = value;
   }
   private renderer?: THREE.WebGLRenderer;
+  private rendererAwaitingPreviewDisposal?: THREE.WebGLRenderer;
   private readonly pendingProjectPreviewReadbacks = new Set<PendingProjectPreviewReadback>();
   private controls?: OrbitControls;
   private ground?: THREE.Mesh;
@@ -2223,6 +2225,11 @@ export class ThreeViewportEngine {
     }
     const previousProject = this.project;
     const previousActive = this.activeBlock;
+    if (project !== previousProject && project?.id === previousProject?.id) {
+      for (const readback of this.pendingProjectPreviewReadbacks) {
+        if (readback.project !== project) readback.cancel();
+      }
+    }
     const hadDirectPresentation = this.yLayerProjection.hasDirectPresentation;
     if (project?.blocks !== previousProject?.blocks) this.yLayerPrewarm.cancel();
     const previousOptions = this.renderOptions;
@@ -3657,12 +3664,11 @@ export class ThreeViewportEngine {
     this.renderer = undefined;
     renderer?.domElement.remove();
     if (renderer) {
-      const pendingReadbacks = [...this.pendingProjectPreviewReadbacks];
-      for (const readback of pendingReadbacks) {
-        readback.cancel();
-        readback.disposeTarget();
+      if (this.pendingProjectPreviewReadbacks.size > 0) {
+        this.rendererAwaitingPreviewDisposal = renderer;
+      } else {
+        renderer.dispose();
       }
-      renderer.dispose();
     }
     this.terrainPipeline.dispose();
     this.blockRepresentationCommit.dispose();
@@ -4292,6 +4298,7 @@ export class ThreeViewportEngine {
     const readbackController = new AbortController();
     let targetDisposed = false;
     const pendingReadback: PendingProjectPreviewReadback = {
+      project,
       cancel: () => readbackController.abort(),
       disposeTarget: () => {
         if (targetDisposed) return;
@@ -4301,6 +4308,8 @@ export class ThreeViewportEngine {
     };
     this.pendingProjectPreviewReadbacks.add(pendingReadback);
     let readbackCompleted = false;
+    let readback: Promise<void> | undefined;
+    let captureError: unknown;
 
     try {
       for (const [child] of visibleStates) {
@@ -4314,13 +4323,12 @@ export class ThreeViewportEngine {
       renderer.setClearColor(0x000000, 0);
       renderer.clear(true, true, true);
       renderer.render(this.scene, camera);
-      await readProjectPreviewPixels(renderer, target, pixels, readbackController.signal);
-      readbackCompleted = true;
+      readback = readProjectPreviewPixels(renderer, target, pixels, readbackController.signal);
     } catch (error) {
-      if (!readbackController.signal.aborted && !this.disposed) throw error;
+      captureError = error;
     } finally {
-      try {
-        if (!this.disposed && this.renderer === renderer) {
+      if (!this.disposed && this.renderer === renderer) {
+        try {
           for (const [child, visible] of visibleStates) child.visible = visible;
           this.scene.background = previousBackground;
           if (renderer.getContext().isContextLost()) {
@@ -4332,15 +4340,49 @@ export class ThreeViewportEngine {
             renderer.setScissorTest(previousScissorTest);
             renderer.setClearColor(previousClearColor, previousClearAlpha);
           }
+        } catch (error) {
+          captureError ??= error;
+          try {
+            renderer.resetState();
+          } catch {
+            // A lost or disposed context cannot restore cached renderer state.
+          }
         }
-      } finally {
-        pendingReadback.disposeTarget();
-        this.pendingProjectPreviewReadbacks.delete(pendingReadback);
       }
     }
 
-    if (!readbackCompleted || this.disposed) return undefined;
+    if (!readback) {
+      this.releaseProjectPreviewReadback(pendingReadback);
+      if (!readbackController.signal.aborted && !this.disposed && captureError !== undefined)
+        throw captureError;
+      return undefined;
+    }
+
+    try {
+      await readback;
+      readbackCompleted = true;
+    } catch (error) {
+      if (!readbackController.signal.aborted && !this.disposed) captureError ??= error;
+    } finally {
+      this.releaseProjectPreviewReadback(pendingReadback);
+    }
+
+    if (!readbackCompleted) {
+      if (!readbackController.signal.aborted && !this.disposed && captureError !== undefined)
+        throw captureError;
+      return undefined;
+    }
+    if (captureError !== undefined) throw captureError;
     return renderTargetPixelsToBlob(pixels, width, height);
+  }
+
+  private releaseProjectPreviewReadback(readback: PendingProjectPreviewReadback): void {
+    readback.disposeTarget();
+    this.pendingProjectPreviewReadbacks.delete(readback);
+    if (this.pendingProjectPreviewReadbacks.size !== 0) return;
+    const renderer = this.rendererAwaitingPreviewDisposal;
+    this.rendererAwaitingPreviewDisposal = undefined;
+    renderer?.dispose();
   }
 
   setCameraPreset(preset: CameraPreset): void {

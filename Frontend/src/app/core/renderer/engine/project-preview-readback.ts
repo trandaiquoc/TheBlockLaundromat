@@ -3,7 +3,7 @@ import * as THREE from 'three';
 const READBACK_POLL_INTERVAL_MS = 4;
 export const PROJECT_PREVIEW_READBACK_TIMEOUT_MS = 5000;
 
-/** Uses a cancellable WebGL2 PBO readback so preview teardown can release GPU handles. */
+/** Owns PBO/fence cleanup; the caller retains the renderer and target until this settles. */
 export function readProjectPreviewPixels(
   renderer: THREE.WebGLRenderer,
   target: THREE.WebGLRenderTarget,

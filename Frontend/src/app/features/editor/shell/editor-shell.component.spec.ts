@@ -19,6 +19,7 @@ import { EditorLayoutPreferencesService } from '../../../core/ui/preferences/edi
 import { IndexedDbProjectStore } from '../../../core/persistence/project-store/indexeddb-project-store';
 import { PROJECT_STORE } from '../../../core/persistence/project-store/project-store.token';
 import { ProjectAutosaveService } from '../../../core/persistence/autosave/project-autosave.service';
+import { ProjectPreviewService } from '../../../core/persistence/project-preview.service';
 import { DialogService } from '../../../core/ui/dialog/dialog.service';
 import { ProjectDeletionService } from '../../../core/persistence/project-deletion.service';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
@@ -1255,7 +1256,7 @@ describe('editor shell retained viewport lifecycle', () => {
     fixture.destroy();
   });
 
-  it('does not save a preview if the workspace project changes during image encoding', async () => {
+  it('keeps the captured project revision when the active workspace changes during encoding', async () => {
     const fixture = TestBed.createComponent(EditorShellComponent);
     const workspace = TestBed.inject(WorkspaceStateService);
     workspace.activate(project, undefined);
@@ -1281,7 +1282,9 @@ describe('editor shell retained viewport lifecycle', () => {
     TestBed.inject(EditorModeService).setMode('3d');
     const autosave = TestBed.inject(ProjectAutosaveService);
     vi.spyOn(autosave, 'isUnsafeDirty', 'get').mockReturnValue(false);
-    const savePreview = vi.spyOn(TestBed.inject(PROJECT_STORE), 'savePreview');
+    const savePreview = vi
+      .spyOn(TestBed.inject(ProjectPreviewService), 'savePreview')
+      .mockResolvedValue(true);
 
     const captureTask = shell.captureProjectPreviewBeforeLeaving();
     expect(capture).toHaveBeenCalledWith(project);
@@ -1291,10 +1294,15 @@ describe('editor shell retained viewport lifecycle', () => {
       metadata: { ...project.metadata, updatedAt: '2026-10-18T00:00:00.001Z' },
     });
     fixture.detectChanges();
-    finishCapture(new Blob(['stale capture'], { type: 'image/webp' }));
+    const capturedPreview = new Blob(['captured revision'], { type: 'image/webp' });
+    finishCapture(capturedPreview);
     await captureTask;
 
-    expect(savePreview).not.toHaveBeenCalled();
+    expect(savePreview).toHaveBeenCalledWith(
+      project.id,
+      project.metadata.updatedAt,
+      capturedPreview,
+    );
     fixture.destroy();
   });
 

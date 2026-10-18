@@ -47,15 +47,20 @@ The project board reads lightweight summary records while full structure data
 stays in separate project records. Once route checks approve leaving the 3D
 workspace, the mounted viewport submits a 256 x 144 capture and starts async GPU
 pixel readback through a cancellable WebGL2 buffer and fence with a bounded
-wait. Navigation does not wait for readback, image encoding, or the IndexedDB
-write; viewport disposal cancels readback and releases its GPU resources. The
-capture is saved only while its exact workspace snapshot remains active, and
-the store checks the matching project timestamp transactionally. A committed
-preview update notifies any matching card already on Home so it can reload that
-image without a page reload. Home loads only the selected project's preview for
-the washer and lazily loads near-visible project-card previews through one
-shared visibility observer. Object URLs are released when a preview leaves the
-near viewport or its component is destroyed.
+wait. The viewport restores renderer state immediately after submitting the
+readback. Navigation does not wait for readback, image encoding, or the
+IndexedDB write; if the viewport is disposed, the bounded readback temporarily
+owns the renderer and target until it completes or times out. Project changes
+within the same project cancel an obsolete readback; switching projects keeps
+the task bound to its captured project. Route teardown does not cancel a valid
+readback. The save remains bound to the captured project ID and timestamp, and
+the store checks that revision transactionally before saving, so a stale result
+is rejected even after the workspace changes. A committed preview update notifies
+any matching card already on Home so it can reload that image without a page
+reload. Home loads only the selected project's preview for the washer and
+lazily loads near-visible project-card previews through one shared visibility
+observer. Object URLs are released when a preview leaves the near viewport or
+its component is destroyed.
 Saving the canonical project invalidates its preview in the same transaction;
 previews do not enter project JSON, backups, exports, or summary records. Empty
 projects, Y-Layer exits, stale captures, and unavailable captures show no image.
