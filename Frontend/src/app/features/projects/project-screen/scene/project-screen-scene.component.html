@@ -66,11 +66,13 @@
     [height]="scene().mapMascot.height"
     alt=""
   />
-  <img
-    class="scene-layer--foreground"
-    [ngSrc]="scene().foreground.src"
-    [width]="scene().foreground.width"
-    [height]="scene().foreground.height"
-    alt=""
-  />
+  <div class="scene-layer--foreground">
+    <img
+      class="scene-layer--foreground-image"
+      [ngSrc]="scene().foreground.src"
+      [width]="scene().foreground.width"
+      [height]="scene().foreground.height"
+      alt=""
+    />
+  </div>
 </div>

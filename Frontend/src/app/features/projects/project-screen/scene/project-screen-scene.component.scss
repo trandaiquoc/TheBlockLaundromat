@@ -18,6 +18,23 @@
 
 .scene-background {
   isolation: isolate;
+  --wall-sign-glow: drop-shadow(0 0 0.38rem rgb(255 209 116 / 0.72))
+    drop-shadow(0 0 1.1rem rgb(255 169 75 / 0.36));
+}
+
+.scene-background[data-theme='light'] {
+  --wall-sign-glow: drop-shadow(0 0 0.28rem rgb(255 239 194 / 0.58))
+    drop-shadow(0 0 0.75rem rgb(255 218 159 / 0.24));
+}
+
+.scene-background[data-theme='raccoon'] {
+  --wall-sign-glow: drop-shadow(0 0 0.34rem rgb(255 203 145 / 0.62))
+    drop-shadow(0 0 0.95rem rgb(246 159 95 / 0.3));
+}
+
+.scene-background[data-theme='dark'] {
+  --wall-sign-glow: drop-shadow(0 0 0.4rem rgb(255 216 165 / 0.68))
+    drop-shadow(0 0 1.05rem rgb(225 149 83 / 0.34));
 }
 
 .scene-background-image {
@@ -46,8 +63,7 @@
   left: 34.5%;
   width: 27.5%;
   height: auto;
-  filter: drop-shadow(0 0 0.38rem rgb(255 209 116 / 0.72))
-    drop-shadow(0 0 1.1rem rgb(255 169 75 / 0.36));
+  filter: var(--wall-sign-glow);
 }
 
 .scene-layer--washer {
@@ -140,11 +156,25 @@
 }
 
 .scene-layer--foreground {
+  position: absolute;
   z-index: 4;
   top: 81%;
   left: 46.5%;
+  display: block;
   width: 26%;
   height: 19%;
+}
+
+.scene-layer--foreground-image {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: translateX(-50%);
 }
 
 .scene-background[data-theme='light'] .scene-layer--foreground {

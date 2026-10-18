@@ -9,7 +9,7 @@ remaining scope; it is not a full application acceptance report.
   cutouts, washer, board, mascot, and foreground layers based on the approved
   Minecraft, Light, Raccoon, and Dark references. The layers share the same
   camera angle and placement. The official logo asset stays unchanged as a
-  separate wall sign.
+  separate wall sign, with a restrained glow adapted to each theme.
   Language/theme/settings controls and local status remain real DOM outside
   the illustrated room.
 - Recent projects appear as real selectable entries on the wooden board. The
