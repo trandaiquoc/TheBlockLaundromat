@@ -338,9 +338,6 @@ export class EditorShellComponent implements OnDestroy {
       case 'open-about':
         this.showAbout();
         break;
-      case 'unavailable-feature':
-        this.showUnavailableFeature();
-        break;
       case 'set-tool':
         this.tool.select(action.tool);
         break;
@@ -579,9 +576,6 @@ export class EditorShellComponent implements OnDestroy {
   }
   protected closeStructureJsonImport(): void {
     this.structureJsonImportOpen.set(false);
-  }
-  protected showUnavailableFeature(): void {
-    void this.dialogs.info(this.i18n.t('featureUnavailable'), this.i18n.t('featureUnavailable'));
   }
   protected openStructureNbtExport(): void {
     this.structureNbtExportOpen.set(true);

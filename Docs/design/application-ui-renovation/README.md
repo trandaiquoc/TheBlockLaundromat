@@ -27,7 +27,7 @@ An inventory entry or green build alone is not visual acceptance.
 | ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------- |
 | A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; targeted/browser checks passed |
 | B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed |
-| C          | Header command/navigation ownership, discoverability and duplicate options                   | Pending                                     |
+| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed |
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Pending                                     |
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Pending                                     |
 | F          | Every supported import/export workflow and its nested decisions                              | Pending                                     |

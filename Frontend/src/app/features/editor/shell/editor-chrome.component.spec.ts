@@ -66,6 +66,29 @@ describe('EditorChromeComponent menu keyboard navigation', () => {
     vi.restoreAllMocks();
   });
 
+  it('offers one Projects entry for the shared project navigator', () => {
+    const fixture = TestBed.createComponent(EditorChromeComponent);
+    fixture.componentRef.setInput('state', state);
+    fixture.detectChanges();
+    const actions: unknown[] = [];
+    fixture.componentInstance.action.subscribe((action) => actions.push(action));
+    const root = fixture.nativeElement as HTMLElement;
+    const fileTrigger = [...root.querySelectorAll<HTMLButtonElement>('.app-menu-trigger')].find(
+      (button) => button.textContent?.trim() === 'fileMenu',
+    )!;
+    fileTrigger.click();
+    fixture.detectChanges();
+
+    const items = [...root.querySelectorAll<HTMLButtonElement>('.menu-popover [role="menuitem"]')];
+    expect(items.filter((item) => item.textContent?.includes('projectsMenu'))).toHaveLength(1);
+    expect(items.map((item) => item.textContent?.trim())).not.toContain('newProjectMenu');
+    expect(items.map((item) => item.textContent?.trim())).not.toContain('openProjectMenu');
+
+    items.find((item) => item.textContent?.includes('projectsMenu'))?.click();
+    expect(actions).toEqual([{ type: 'navigate-projects' }]);
+    fixture.destroy();
+  });
+
   it('uses the same application commands in the compact Menu and returns keyboard focus on Escape', () => {
     const fixture = TestBed.createComponent(EditorChromeComponent);
     fixture.componentRef.setInput('state', state);

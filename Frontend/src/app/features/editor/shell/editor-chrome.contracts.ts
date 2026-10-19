@@ -54,7 +54,6 @@ export type EditorChromeAction =
   | { readonly type: 'set-background'; readonly background: EditorBackgroundMode }
   | { readonly type: 'open-controls-help' }
   | { readonly type: 'open-about' }
-  | { readonly type: 'unavailable-feature' }
   | { readonly type: 'set-tool'; readonly tool: 'place' | 'select' }
   | { readonly type: 'camera-preset'; readonly preset: CameraPreset }
   | { readonly type: 'reset-camera' };
