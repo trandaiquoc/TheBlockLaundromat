@@ -124,8 +124,10 @@ describe('ProjectScreenComponent', () => {
     expect(layoutStyles).toContain('transform: translate(-4.2%, 3.8%)');
     expect(layoutStyles).toContain('margin-left: 2rem');
     expect(layoutStyles).toContain(".project-page[data-theme='craft'] .scene-canvas");
-    expect(layoutStyles).toContain('width: max(100vw, 177.68svh)');
-    expect(layoutStyles).toContain('height: max(100svh, 56.28vw)');
+    expect(layoutStyles).toContain('width: min(100vw, 212.67svh)');
+    expect(layoutStyles).toContain('height: min(100svh, 47.02vw)');
+    expect(layoutStyles).toContain('width: min(100vw, 177.68svh)');
+    expect(layoutStyles).toContain('height: min(100svh, 56.28vw)');
     expect(layoutStyles).toContain('color: transparent');
   });
 
@@ -208,6 +210,9 @@ describe('ProjectScreenComponent', () => {
     const fixture = TestBed.createComponent(ProjectScreenComponent);
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('.local-account-unavailable')?.textContent).toContain(
+      'Account sign-in is not available.',
+    );
     const i18n = TestBed.inject(I18nService);
     i18n.setLocale('en');
     fixture.detectChanges();
@@ -319,6 +324,13 @@ describe('ProjectScreenComponent', () => {
 
     preferences.setAppearance({ preset: 'craft' });
     fixture.detectChanges();
+    const localAccountStatus = root.querySelector('.local-account-status');
+    expect(localAccountStatus?.classList.contains('local-account-status--craft')).toBe(true);
+    expect(localAccountStatus?.getAttribute('aria-label')).toBe(
+      'Local account status. Account sign-in is not available.',
+    );
+    expect(root.querySelector('.local-account-icon--craft')).not.toBeNull();
+    expect(root.querySelector('.local-account-unavailable')).toBeNull();
     expect(root.querySelector('.board-actions .project-create-trigger')).toBeNull();
     expect(root.querySelector('.project-list .project-create-trigger--tile')).not.toBeNull();
     expect(root.querySelector('.project-list-controls')).not.toBeNull();
