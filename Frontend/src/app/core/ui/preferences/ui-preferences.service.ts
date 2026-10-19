@@ -83,6 +83,7 @@ export interface UiPreferences {
 export const UI_PREFERENCES_KEY = 'the-block-laundromat.ui-preferences';
 export const LEGACY_UI_PREFERENCES_KEY = 'minecraft-builder.ui-preferences';
 export const LEGACY_LAYOUT_KEY = 'minecraft-builder.editor-layout';
+export const DEFAULT_EDITOR_SIDEBAR_WIDTH = 340;
 const defaults: UiPreferences = {
   version: 1,
   locale: 'en',
@@ -121,8 +122,8 @@ const defaults: UiPreferences = {
     rightSidebarVisible: true,
     quickBarVisible: true,
     statusBarVisible: true,
-    leftSidebarWidth: 360,
-    rightSidebarWidth: 400,
+    leftSidebarWidth: DEFAULT_EDITOR_SIDEBAR_WIDTH,
+    rightSidebarWidth: DEFAULT_EDITOR_SIDEBAR_WIDTH,
   },
 };
 

@@ -2,6 +2,13 @@
 
 ## Current status
 
+The 2026-10-19 Workspace redesign follow-up gives the 3D viewport more default
+space, increases catalog density and Quick Add reach, and removes repeated card
+framing from the Selection Inspector summary. These presentation changes use
+the existing four-theme tokens and leave saved sidebar sizes and editor
+workflows intact; current browser verification is summarized in the acceptance
+inventory below.
+
 Workspace visual acceptance remains open for unreviewed dialog and async states,
 including Mod JAR workflows that need a compatible external fixture. The
 [2026-10-19 Workspace UI audit](evidence/20261019-workspace-full-audit/README.md)

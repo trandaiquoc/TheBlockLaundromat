@@ -37,8 +37,8 @@ describe('UiPreferencesService', () => {
       skyPreset: 'overworld-day',
     });
     expect(preferences.preferences().layout).toMatchObject({
-      leftSidebarWidth: 360,
-      rightSidebarWidth: 400,
+      leftSidebarWidth: 340,
+      rightSidebarWidth: 340,
     });
     expect(preferences.preferences().controls.zoomSensitivity).toBe(2);
     expect(preferences.preferences().controls.cameraMoveSpeed).toBe(15);

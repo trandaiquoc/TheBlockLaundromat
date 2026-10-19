@@ -1,5 +1,5 @@
 import { Injectable, computed, inject } from '@angular/core';
-import { UiPreferencesService } from './ui-preferences.service';
+import { DEFAULT_EDITOR_SIDEBAR_WIDTH, UiPreferencesService } from './ui-preferences.service';
 
 export interface EditorLayoutPreferences {
   editorToolbarVisible: boolean;
@@ -18,8 +18,8 @@ const defaults: EditorLayoutPreferences = {
   rightSidebarVisible: true,
   quickBarVisible: true,
   statusBarVisible: true,
-  leftSidebarWidth: 360,
-  rightSidebarWidth: 400,
+  leftSidebarWidth: DEFAULT_EDITOR_SIDEBAR_WIDTH,
+  rightSidebarWidth: DEFAULT_EDITOR_SIDEBAR_WIDTH,
 };
 
 @Injectable({ providedIn: 'root' })

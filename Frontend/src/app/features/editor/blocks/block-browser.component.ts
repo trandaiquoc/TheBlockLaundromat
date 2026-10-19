@@ -27,7 +27,7 @@ import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrollin
 import type { ThumbnailTaskPriority } from '../../../core/assets/vanilla/thumbnails/thumbnail-task-queue';
 
 const COMPACT_BLOCK_LIST_WIDTH = 240;
-export const BLOCK_CATALOG_ROW_HEIGHT = 68;
+export const BLOCK_CATALOG_ROW_HEIGHT = 60;
 
 @Component({
   selector: 'app-block-browser',
