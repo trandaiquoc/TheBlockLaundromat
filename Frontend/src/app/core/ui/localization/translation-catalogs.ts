@@ -311,9 +311,6 @@ export const translations = {
     showStructureBlockGuide: 'Show Structure Block guide',
     showStructureBlockGuideDescription:
       'Show a real Structure Block helper directly below the structure origin (Relative Position 0 1 0).',
-    homeSpaceAnimations: 'Home Space Animations',
-    homeSpaceAnimationsDescription:
-      'Animate the mascots on the Home screen. Turn this off to keep them still.',
     hugeStructureBlocks: 'Huge Structure Blocks',
     hugeStructureBlocksHint:
       'For projects up to 512 blocks on every axis with the Huge Structure Blocks mod.',
@@ -1131,9 +1128,6 @@ export const translations = {
     showStructureBlockGuide: 'Hiện hướng dẫn Structure Block',
     showStructureBlockGuideDescription:
       'Hiện Structure Block thật ngay bên dưới gốc cấu trúc (Relative Position 0 1 0).',
-    homeSpaceAnimations: 'Chuyển động linh vật Trang chủ',
-    homeSpaceAnimationsDescription:
-      'Bật chuyển động cho các linh vật trên Trang chủ. Tắt mục này để giữ chúng đứng yên.',
     hugeStructureBlocks: 'Huge Structure Blocks',
     hugeStructureBlocksHint:
       'Dành cho dự án tối đa 512 khối trên mỗi trục khi dùng mod Huge Structure Blocks.',

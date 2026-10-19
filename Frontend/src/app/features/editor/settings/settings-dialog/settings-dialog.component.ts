@@ -223,9 +223,6 @@ export class SettingsDialogComponent implements OnDestroy {
   protected setShowStructureBlockGuide(enabled: boolean): void {
     this.session.setShowStructureBlockGuide(enabled);
   }
-  protected setHomeSpaceAnimations(enabled: boolean): void {
-    this.session.setHomeSpaceAnimations(enabled);
-  }
   protected setPreset(preset: ThemePreset): void {
     this.session.setPreset(preset);
   }

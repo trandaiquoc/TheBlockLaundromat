@@ -73,18 +73,6 @@
                 [attr.aria-label]="i18n.t('showStructureBlockGuide')"
               />
             </label>
-            <label class="preference-toggle">
-              <span class="preference-toggle-copy"
-                ><strong>{{ i18n.t('homeSpaceAnimations') }}</strong
-                ><small>{{ i18n.t('homeSpaceAnimationsDescription') }}</small></span
-              >
-              <input
-                type="checkbox"
-                [checked]="draft().homeSpaceAnimations"
-                (change)="setHomeSpaceAnimations($any($event.target).checked)"
-                [attr.aria-label]="i18n.t('homeSpaceAnimations')"
-              />
-            </label>
             <button
               type="button"
               class="section-reset ui-button ui-button--ghost ui-button--sm"

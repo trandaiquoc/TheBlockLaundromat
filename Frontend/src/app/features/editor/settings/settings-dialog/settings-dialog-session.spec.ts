@@ -32,24 +32,6 @@ describe('SettingsDialogSession', () => {
     expect(session.dirty()).toBe(false);
   });
 
-  it('persists Home Space Animations and restores its default through General settings', () => {
-    expect(preferences.preferences().homeSpaceAnimations).toBe(true);
-    session.setHomeSpaceAnimations(false);
-    expect(session.draft().homeSpaceAnimations).toBe(false);
-    expect(session.dirty()).toBe(true);
-    expect(preferences.preferences().homeSpaceAnimations).toBe(true);
-
-    expect(session.apply()).toBe(true);
-    expect(preferences.preferences().homeSpaceAnimations).toBe(false);
-    expect(new UiPreferencesService().preferences().homeSpaceAnimations).toBe(false);
-
-    session.restoreGeneralDefaults();
-    expect(session.draft().homeSpaceAnimations).toBe(true);
-    expect(preferences.preferences().homeSpaceAnimations).toBe(false);
-    expect(session.apply()).toBe(true);
-    expect(preferences.preferences().homeSpaceAnimations).toBe(true);
-  });
-
   it('applies independent theme, font, size, and workspace choices; cancel discards later edits', async () => {
     session.setPreset('raccoon');
     session.setFont('pangolin');

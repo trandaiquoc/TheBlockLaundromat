@@ -1,6 +1,5 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { CdkMenuModule } from '@angular/cdk/menu';
 import { Component, computed, inject, signal } from '@angular/core';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
 import {
@@ -16,7 +15,6 @@ import {
 } from '../../../core/domain/structure-size-policy';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
-import { ThemeService } from '../../../core/ui/theme/theme.service';
 import {
   LucideFileUp,
   LucideHardDrive,
@@ -24,6 +22,7 @@ import {
   LucideTrash2,
   LucideX,
 } from '@lucide/angular';
+import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import {
   SearchableDropdownComponent,
   SearchableDropdownOption,
@@ -40,31 +39,27 @@ import type {
 import { StructureJsonProjectImportWorkflow } from './structure-json-project-import-workflow';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
 import { ProjectScreenControlsComponent } from './project-screen-controls.component';
-import { ProjectScreenPreviewComponent } from './project-screen-preview.component';
 import {
   filterAndSortProjectSummaries,
   isProjectScreenProjectOrder,
 } from './project-screen-project-list';
 import type { ProjectScreenProjectOrder } from './project-screen-project-list';
-import { ProjectScreenSceneComponent } from './scene/project-screen-scene.component';
-import type { ProjectScreenMascotState } from './scene/project-screen-scene-assets';
 
 @Component({
   selector: 'app-project-screen',
   providers: [ProjectScreenWorkflow],
   imports: [
     CdkTrapFocus,
-    CdkMenuModule,
     DatePipe,
+    NgOptimizedImage,
     LucideFileUp,
     LucideHardDrive,
     LucideSearch,
     LucideTrash2,
     LucideX,
+    UiTooltipDirective,
     SearchableDropdownComponent,
     ProjectScreenControlsComponent,
-    ProjectScreenPreviewComponent,
-    ProjectScreenSceneComponent,
     SettingsDialogComponent,
   ],
   templateUrl: './project-screen.component.html',
@@ -73,30 +68,8 @@ import type { ProjectScreenMascotState } from './scene/project-screen-scene-asse
 export class ProjectScreenComponent {
   protected readonly i18n = inject(I18nService);
   private readonly preferences = inject(UiPreferencesService);
-  protected readonly theme = inject(ThemeService);
   protected readonly workflow = inject(ProjectScreenWorkflow);
-  protected readonly selectedProjectId = signal<string | undefined>(undefined);
-  protected readonly selectedProject = computed(() => {
-    const projects = this.projects();
-    return (
-      projects.find((project) => project.id === this.selectedProjectId()) ?? projects[0] ?? null
-    );
-  });
-  protected readonly mascotState = computed<ProjectScreenMascotState>(() => {
-    if (this.openingId()) return 'opening';
-    if (this.creating() || this.createDialogOpen() || this.structureJsonImport.open())
-      return 'create';
-    return this.selectedProject() ? 'selected' : 'idle';
-  });
-  protected readonly homeSpaceAnimationsEnabled = computed(
-    () => this.preferences.preferences().homeSpaceAnimations,
-  );
-  protected readonly createDialogOpen = signal(false);
   protected readonly name = signal(this.i18n.t('untitledStructure'));
-  private readonly projectNameEdited = signal(false);
-  protected readonly projectNameValue = computed(() =>
-    this.projectNameEdited() ? this.name() : this.i18n.t('untitledStructure'),
-  );
   protected readonly defaultMinecraftVersion = DEFAULT_MINECRAFT_VERSION;
   protected readonly sizeX = signal('16');
   protected readonly sizeY = signal('16');
@@ -151,7 +124,6 @@ export class ProjectScreenComponent {
     ),
   );
   protected readonly error = this.workflow.error;
-  protected readonly listError = this.workflow.listError;
   protected readonly loadStatus = this.workflow.loadStatus;
   protected readonly creating = this.workflow.creating;
   protected readonly openingId = this.workflow.openingId;
@@ -169,7 +141,6 @@ export class ProjectScreenComponent {
 
   protected updateName(value: string): void {
     this.name.set(value);
-    this.projectNameEdited.set(true);
   }
   protected updateSize(axis: 'x' | 'y' | 'z', value: string): void {
     ({
@@ -203,15 +174,6 @@ export class ProjectScreenComponent {
   }
   protected closeSettingsDialog(): void {
     this.settingsDialogOpen.set(false);
-  }
-  protected openCreateDialog(): void {
-    this.createDialogOpen.set(true);
-  }
-  protected closeCreateDialog(): void {
-    if (!this.creating()) this.createDialogOpen.set(false);
-  }
-  protected selectProject(id: string): void {
-    this.selectedProjectId.set(id);
   }
   protected updateProjectSearch(event: Event): void {
     if (event.target instanceof HTMLInputElement) this.projectSearch.set(event.target.value);
@@ -263,8 +225,10 @@ export class ProjectScreenComponent {
         : 'vanillaStructureBlock',
     );
   }
-  protected hasIncompleteVersionBehavior(): boolean {
-    return this.minecraftVersion() !== DEFAULT_MINECRAFT_VERSION;
+  protected versionSupportLabel(): string {
+    return this.minecraftVersion() === DEFAULT_MINECRAFT_VERSION
+      ? this.i18n.t('verifiedSupport')
+      : this.i18n.t('resourceCompatibility');
   }
   protected summaryModeFullLabel(mode: StructureMode): string {
     return this.i18n.t(
@@ -283,7 +247,7 @@ export class ProjectScreenComponent {
 
   protected async createProject(): Promise<void> {
     await this.workflow.createProject({
-      name: this.projectNameValue(),
+      name: this.name(),
       minecraftVersion: this.minecraftVersion(),
       size: this.enteredSize(),
       structureMode: this.effectiveStructureMode(),
@@ -291,7 +255,6 @@ export class ProjectScreenComponent {
   }
 
   protected async openProject(id: string): Promise<void> {
-    this.selectProject(id);
     await this.workflow.openProject(id);
   }
 

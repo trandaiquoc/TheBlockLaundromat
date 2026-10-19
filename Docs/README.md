@@ -12,8 +12,8 @@ historical evidence, and reproducible local audit output.
 - [Workspace renovation status](design/workspace-renovation/README.md) and
   [active acceptance inventory](design/workspace-renovation/WORKSPACE-UI-ACCEPTANCE-INVENTORY.md)
   — current status and only unresolved visual acceptance gaps.
-- [Homepage and Project Screen status](design/homepage-renovation/README.md) —
-  implemented local controls, approved concept scope, and visual acceptance.
+- [Homepage and Project Screen](design/homepage-renovation/README.md) — current
+  traditional screen contract and retained historical scene evidence.
 - [Requirements baseline](MinecraftBuilder_Requirements_VI.docx) — version 0.2
   local-first MVP requirements; this is intended scope, not implementation
   status.

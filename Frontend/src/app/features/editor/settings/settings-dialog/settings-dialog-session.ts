@@ -33,7 +33,7 @@ import {
 
 export type SettingsDraft = Pick<
   UiPreferences,
-  'locale' | 'autoUseHugeStructureBlocks' | 'showStructureBlockGuide' | 'homeSpaceAnimations'
+  'locale' | 'autoUseHugeStructureBlocks' | 'showStructureBlockGuide'
 > & {
   readonly appearance: UiPreferences['appearance'];
   readonly accessibility: UiPreferences['accessibility'];
@@ -78,10 +78,6 @@ export class SettingsDialogSession {
   setShowStructureBlockGuide(enabled: boolean): void {
     this.updateDraft({ showStructureBlockGuide: enabled });
   }
-  setHomeSpaceAnimations(enabled: boolean): void {
-    this.updateDraft({ homeSpaceAnimations: enabled });
-  }
-
   setPreset(preset: ThemePreset): void {
     const base: BaseTheme = preset === 'light' ? 'light' : 'dark';
     this.updateDraft({ appearance: { ...this.draft().appearance, preset, base } });
@@ -230,7 +226,6 @@ export class SettingsDialogSession {
       locale: defaults.locale,
       autoUseHugeStructureBlocks: defaults.autoUseHugeStructureBlocks,
       showStructureBlockGuide: defaults.showStructureBlockGuide,
-      homeSpaceAnimations: defaults.homeSpaceAnimations,
     });
   }
   restoreInterfaceDefaults(): void {
@@ -304,7 +299,6 @@ export class SettingsDialogSession {
       locale: draft.locale,
       autoUseHugeStructureBlocks: draft.autoUseHugeStructureBlocks,
       showStructureBlockGuide: draft.showStructureBlockGuide,
-      homeSpaceAnimations: draft.homeSpaceAnimations,
       appearance: {
         ...this.preferences.preferences().appearance,
         ...draft.appearance,
@@ -382,7 +376,6 @@ export class SettingsDialogSession {
       locale: current.locale,
       autoUseHugeStructureBlocks: current.autoUseHugeStructureBlocks,
       showStructureBlockGuide: current.showStructureBlockGuide,
-      homeSpaceAnimations: current.homeSpaceAnimations,
       appearance: { ...current.appearance, reality: { ...current.appearance.reality } },
       accessibility: { ...current.accessibility },
       controls: { ...current.controls },

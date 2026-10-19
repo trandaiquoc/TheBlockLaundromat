@@ -30,7 +30,6 @@ describe('UiPreferencesService', () => {
     expect(preferences.preferences().locale).toBe('en');
     expect(preferences.preferences().autoUseHugeStructureBlocks).toBe(false);
     expect(preferences.preferences().showStructureBlockGuide).toBe(true);
-    expect(preferences.preferences().homeSpaceAnimations).toBe(true);
     expect(preferences.preferences().accessibility.blockBrightness).toBe(3);
     expect(preferences.preferences().appearance.font).toBe('comfortaa');
     expect(preferences.preferences().appearance.reality).toEqual({
@@ -48,14 +47,11 @@ describe('UiPreferencesService', () => {
     preferences.setAppearance({ preset: 'craft', base: 'dark' });
     preferences.setAppearance({ editorBackground: 'light' });
     preferences.setLocale('vi');
-    preferences.update({ homeSpaceAnimations: false });
     expect(preferences.preferences().appearance.editorBackground).toBe('light');
     expect(JSON.parse(localStorage.getItem(key) ?? '{}')).toMatchObject({
       locale: 'vi',
-      homeSpaceAnimations: false,
       appearance: { preset: 'craft', editorBackground: 'light' },
     });
-    expect(new UiPreferencesService().preferences().homeSpaceAnimations).toBe(false);
   });
 
   it('preserves legacy editor backgrounds and normalizes Reality presets independently', () => {

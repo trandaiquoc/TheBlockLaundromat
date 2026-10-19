@@ -3,8 +3,7 @@
 This is the current product-facing brand and visual-direction reference. The
 four approved Workspace designs establish visual treatment only; Angular
 components and current application behavior remain authoritative. The
-Project Screen/Homepage is now part of the active application renovation, with
-its own approved concept references and local-first workflow contract.
+Project Screen uses the traditional project-management presentation.
 
 ## Brand
 
@@ -73,32 +72,19 @@ both. Reality sky preset colors are shared through the editor background
 contract so the renderer and Settings previews agree; ground previews use the
 corresponding texture resource.
 
-## Homepage Concept and Current Controls
+## Project Screen
 
-The future homepage direction is a layered 2D/2.5D laundromat: a large outdoor
-door and daylight on the left, a central washer that can display a project
-thumbnail, project-management board and large rectangular window on the right,
-two independently animated gray raccoons, wood flooring, and laundromat props.
-Account status belongs at bottom left; language, theme, and settings stay
-independent of the artwork at top right. The Project Screen currently renders
-real English/Vietnamese and four-theme controls at the top, opens the existing
-Settings dialog, and shows an honest local guest status at the bottom. Theme
-and locale changes use the existing persisted preference services. No sign-in,
-profile, subscription, or cloud-sync behavior is implied.
+The Project Screen presents a branded header with English/Vietnamese, theme,
+and Settings controls, a project introduction, inline project creation, and a
+recent-project list with Open and Delete actions. Structure JSON import uses
+the validated import workflow. The screen preserves the local guest/account
+status and does not imply sign-in, profile, subscription, or cloud-sync
+behavior. Current implementation and historical records are documented in
+[Homepage and Project Screen](design/homepage-renovation/README.md).
 
-Layered, reusable artwork could later support seasonal events. The laundromat
-artwork, project board composition, creation dialog, and independent raccoon
-animations are implemented. After route approval, the mounted renderer submits
-the current project snapshot and starts asynchronous GPU readback before
-teardown. Navigation does not wait for readback, image encoding, or the separate
-IndexedDB preview write; renderer disposal waits until readback finishes. A
-preview is kept only while that same workspace snapshot remains active and the
-stored project timestamp matches. Project saves invalidate the preview in the
-same transaction. The washer and near-visible cards load previews lazily through
-one shared observer, and object URLs are released when they leave the near
-viewport. Empty projects, Y-Layer exits, and failed or stale captures show no
-image. Project list cards remain metadata-only, and no sample account or
-fabricated project preview data is shown.
+The four approved Homepage concepts below remain documentation-only historical
+references. The laundromat scene, project board artwork, washer presentation,
+and raccoon animation were discontinued and are not active product direction.
 
 ## References
 

@@ -16,8 +16,6 @@ import { ProjectPreviewService } from './project-preview.service';
 import { ProjectAutosaveService } from './autosave/project-autosave.service';
 import { DialogService } from '../ui/dialog/dialog.service';
 import { I18nService } from '../ui/localization/i18n.service';
-import { ProjectScreenPreviewComponent } from '../../features/projects/project-screen/project-screen-preview.component';
-import { ProjectScreenWorkflow } from '../../features/projects/project-screen/project-screen-workflow';
 import { ViewportComponent } from '../../features/editor/viewport/three-d-viewport/viewport.component';
 import { WorkspaceStateService } from '../workspace/workspace-state.service';
 
@@ -45,36 +43,6 @@ const project: ProjectDocument = {
   decorations: [],
   editorSettings: { currentY: 0, layerVisibility: 'current-only', referenceLayerOpacity: 0.5 },
 };
-let homepageProject = { id: project.id, updatedAt: project.metadata.updatedAt };
-
-class ManualIntersectionObserver implements IntersectionObserver {
-  readonly root = null;
-  readonly rootMargin = '160px';
-  readonly scrollMargin = '0px';
-  readonly thresholds = [0];
-  private static current?: ManualIntersectionObserver;
-
-  constructor(private readonly callback: IntersectionObserverCallback) {
-    ManualIntersectionObserver.current = this;
-  }
-
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {
-    if (ManualIntersectionObserver.current === this) ManualIntersectionObserver.current = undefined;
-  }
-  takeRecords(): IntersectionObserverEntry[] {
-    return [];
-  }
-
-  static intersect(element: Element): void {
-    this.current?.callback(
-      [{ target: element, isIntersecting: true } as IntersectionObserverEntry],
-      this.current,
-    );
-  }
-}
-
 @Component({
   imports: [ViewportComponent],
   template: '<app-viewport />',
@@ -108,12 +76,9 @@ class PreviewEditorRouteComponent implements OnDestroy {
 }
 
 @Component({
-  imports: [ProjectScreenPreviewComponent],
-  template: '<app-project-screen-preview [project]="project" />',
+  template: '<main>Projects</main>',
 })
-class PreviewHomepageRouteComponent {
-  readonly project = homepageProject;
-}
+class ProjectListRouteComponent {}
 
 function createReadbackRenderer(
   pixels: Uint8Array,
@@ -181,12 +146,10 @@ describe('project preview route and viewport teardown integration', () => {
     vi.useRealTimers();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
-    homepageProject = { id: project.id, updatedAt: project.metadata.updatedAt };
   });
 
   it('persists a completed GPU readback after router teardown and updates the loaded Homepage card', async () => {
     vi.stubGlobal('indexedDB', new IDBFactory());
-    vi.stubGlobal('IntersectionObserver', ManualIntersectionObserver);
     const imagePixels = new Uint8Array(256 * 144 * 4).fill(20);
     imagePixels.set([1, 2, 3, 255], 0);
     imagePixels.set([7, 8, 9, 255], 143 * 256 * 4);
@@ -224,15 +187,8 @@ describe('project preview route and viewport teardown integration', () => {
 
     const store = new IndexedDbProjectStore('preview-route-teardown-integration');
     await store.create(project);
-    const loadPreview = vi.fn((id: string, updatedAt: string) => store.openPreview(id, updatedAt));
-    let objectUrlCount = 0;
-    vi.spyOn(URL, 'createObjectURL').mockImplementation(
-      () => `blob:captured-project-preview-${++objectUrlCount}`,
-    );
-    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
-
     await TestBed.configureTestingModule({
-      imports: [PreviewEditorRouteComponent, PreviewHomepageRouteComponent],
+      imports: [PreviewEditorRouteComponent, ProjectListRouteComponent],
       providers: [
         provideRouter([
           {
@@ -240,7 +196,7 @@ describe('project preview route and viewport teardown integration', () => {
             component: PreviewEditorRouteComponent,
             canDeactivate: [editorCanDeactivate],
           },
-          { path: '', component: PreviewHomepageRouteComponent },
+          { path: '', component: ProjectListRouteComponent },
         ]),
         { provide: PROJECT_STORE, useValue: store },
         {
@@ -262,7 +218,6 @@ describe('project preview route and viewport teardown integration', () => {
         },
         { provide: DialogService, useValue: { confirm: vi.fn(async () => false) } },
         { provide: I18nService, useValue: { t: (key: string) => key } },
-        { provide: ProjectScreenWorkflow, useValue: { loadProjectPreview: loadPreview } },
       ],
     })
       .overrideComponent(ViewportComponent, { set: { template: '<div #host></div>' } })
@@ -299,22 +254,13 @@ describe('project preview route and viewport teardown integration', () => {
 
     await harness.navigateByUrl('/');
     expect(renderer.domElement.remove).toHaveBeenCalledOnce();
-    const previewHost = harness.routeNativeElement?.querySelector('app-project-screen-preview');
-    expect(previewHost).not.toBeNull();
-    ManualIntersectionObserver.intersect(previewHost!);
-    await harness.fixture.whenStable();
-    expect(previewHost?.querySelector('img')).toBeNull();
+    expect(harness.routeNativeElement?.textContent).toContain('Projects');
     expect(renderer.dispose).not.toHaveBeenCalled();
     expect(targetDispose).not.toHaveBeenCalled();
 
     gpuReady = true;
     await editor.captureCompletion;
     const update = await savedUpdate;
-    await harness.fixture.whenStable();
-    await Promise.all(loadPreview.mock.results.map(({ value }) => value));
-    await Promise.resolve();
-    harness.detectChanges();
-
     const storedPreview = await store.openPreview(project.id, project.metadata.updatedAt);
     expect(editor.captureResult?.type).toBe('image/webp');
     expect(editor.captureResult?.size).toBeGreaterThan(0);
@@ -327,9 +273,6 @@ describe('project preview route and viewport teardown integration', () => {
     expect(encodedPixels).toHaveLength(1);
     expect([...encodedPixels[0].slice(0, 4)]).toEqual([7, 8, 9, 255]);
     expect([...encodedPixels[0].slice(143 * 256 * 4, 143 * 256 * 4 + 4)]).toEqual([1, 2, 3, 255]);
-    expect(loadPreview).toHaveBeenCalledTimes(2);
-    expect(URL.createObjectURL).toHaveBeenCalledWith(storedPreview);
-    expect(previewHost?.innerHTML).toContain('blob:captured-project-preview-1');
     expect(targetDispose).toHaveBeenCalledOnce();
     expect(renderer.dispose).toHaveBeenCalledOnce();
 
@@ -350,10 +293,6 @@ describe('project preview route and viewport teardown integration', () => {
     if (!reopenedProject) throw new Error('Updated project did not reopen from IndexedDB');
 
     workspace.activate(reopenedProject, undefined);
-    homepageProject = {
-      id: reopenedProject.id,
-      updatedAt: reopenedProject.metadata.updatedAt,
-    };
     const updatedPixels = new Uint8Array(256 * 144 * 4).fill(30);
     updatedPixels.set([11, 12, 13, 255], 0);
     updatedPixels.set([17, 18, 19, 255], 143 * 256 * 4);
@@ -382,25 +321,13 @@ describe('project preview route and viewport teardown integration', () => {
       ),
     );
 
-    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:captured-project-preview-1');
     await harness.navigateByUrl('/');
-    const updatedPreviewHost = harness.routeNativeElement?.querySelector(
-      'app-project-screen-preview',
-    );
-    expect(updatedPreviewHost).not.toBeNull();
-    ManualIntersectionObserver.intersect(updatedPreviewHost!);
-    await harness.fixture.whenStable();
-    expect(updatedPreviewHost?.querySelector('img')).toBeNull();
+    expect(harness.routeNativeElement?.textContent).toContain('Projects');
     expect(updatedReadback.renderer.domElement.remove).toHaveBeenCalledOnce();
 
     updatedGpuReady = true;
     await updatedEditor.captureCompletion;
     await updatedPreviewSaved;
-    await harness.fixture.whenStable();
-    await Promise.all(loadPreview.mock.results.map(({ value }) => value));
-    await Promise.resolve();
-    harness.detectChanges();
-
     const replacementPreview = await store.openPreview(
       reopenedProject.id,
       reopenedProject.metadata.updatedAt,
@@ -418,14 +345,10 @@ describe('project preview route and viewport teardown integration', () => {
     expect([...encodedPixels[1].slice(143 * 256 * 4, 143 * 256 * 4 + 4)]).toEqual([
       11, 12, 13, 255,
     ]);
-    expect(loadPreview).toHaveBeenCalledTimes(4);
-    expect(URL.createObjectURL).toHaveBeenCalledTimes(2);
-    expect(updatedPreviewHost?.innerHTML).toContain('blob:captured-project-preview-2');
     expect(targetDispose).toHaveBeenCalledTimes(2);
     expect(renderer.dispose).toHaveBeenCalledOnce();
     expect(updatedReadback.renderer.dispose).toHaveBeenCalledOnce();
 
     harness.fixture.destroy();
-    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:captured-project-preview-2');
   });
 });
