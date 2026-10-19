@@ -58,6 +58,20 @@ export class SettingsDialogComponent implements OnDestroy {
   protected readonly mouseSearch = signal('');
   protected readonly shortcutTab = signal<'keyboard' | 'mouse'>('keyboard');
   protected readonly draft = this.session.draft;
+  protected readonly workspaceBackgroundSnapshot = computed(() => {
+    const saved = this.preferences.preferences().appearance;
+    const draft = this.draft().appearance;
+    return {
+      savedMode: saved.editorBackground,
+      draftMode: draft.editorBackground,
+      savedReality: saved.reality,
+      draftReality: draft.reality,
+      hasDraftChanges:
+        saved.editorBackground !== draft.editorBackground ||
+        saved.reality.groundPreset !== draft.reality.groundPreset ||
+        saved.reality.skyPreset !== draft.reality.skyPreset,
+    };
+  });
   private readonly syncRealityFallback = effect(() =>
     this.session.syncPersistedReality(this.preferences.preferences().appearance.reality),
   );
@@ -244,6 +258,24 @@ export class SettingsDialogComponent implements OnDestroy {
   }
   protected setEditorBackground(editorBackground: EditorBackgroundMode): void {
     this.session.setEditorBackground(editorBackground);
+  }
+  protected backgroundLabel(mode: EditorBackgroundMode): string {
+    return this.i18n.t(
+      (
+        {
+          dark: 'editorBackgroundDark',
+          light: 'editorBackgroundLight',
+          reality: 'editorBackgroundReality',
+        } as const
+      )[mode],
+    );
+  }
+  protected realityPresetLabel(preset: RealityGroundPreset | RealitySkyPreset): string {
+    return this.i18n.t(
+      preset in groundLabels
+        ? groundLabels[preset as RealityGroundPreset]
+        : skyLabels[preset as RealitySkyPreset],
+    );
   }
   protected setRealityGroundPreset(preset: RealityGroundPreset): void {
     if (

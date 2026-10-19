@@ -7,11 +7,15 @@ import {
   REALITY_SKY_PRESETS,
 } from '../../../../core/editor/appearance/editor-background-contract';
 import { UiPreferencesService } from '../../../../core/ui/preferences/ui-preferences.service';
+import { DialogService } from '../../../../core/ui/dialog/dialog.service';
 import { SettingsDialogComponent } from './settings-dialog.component';
 import { SettingsDialogSession } from './settings-dialog-session';
 
 interface SettingsAppearanceView {
   setSection(section: 'appearance'): void;
+  appearanceTab: { set(value: 'interface' | 'workspace-background'): void };
+  setEditorBackground(mode: 'dark' | 'light' | 'reality'): void;
+  setRealitySkyPreset(preset: 'overworld-day' | 'overworld-night' | 'nether' | 'end'): void;
   groundOptions(): readonly {
     id: string;
     availability: string;
@@ -83,6 +87,90 @@ describe('SettingsDialogComponent Reality previews', () => {
     expect(lastSection.getAttribute('aria-current')).toBe('page');
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' });
 
+    fixture.destroy();
+  });
+
+  it('shows Reality controls while Dark is applied and separates saved preferences from a draft', async () => {
+    localStorage.removeItem('the-block-laundromat.ui-preferences');
+    await TestBed.configureTestingModule({
+      imports: [SettingsDialogComponent],
+      providers: [
+        {
+          provide: ContentAssetRuntimeService,
+          useValue: {
+            generation: signal(0),
+            resourceAvailabilitySettled: signal(true),
+            sources: { resources: { textureUrl: () => undefined } },
+          },
+        },
+      ],
+    }).compileComponents();
+
+    const preferences = TestBed.inject(UiPreferencesService);
+    const fixture = TestBed.createComponent(SettingsDialogComponent);
+    const component = fixture.componentInstance as unknown as SettingsAppearanceView;
+    component.setSection('appearance');
+    component.appearanceTab.set('workspace-background');
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.reality-settings')).not.toBeNull();
+    expect(
+      fixture.nativeElement.querySelector('.reality-ground-grid .selected')?.textContent,
+    ).toContain('Plains grass');
+    expect(
+      fixture.nativeElement.querySelector('.reality-sky-grid .selected')?.textContent,
+    ).toContain('Overworld day');
+    expect(
+      fixture.nativeElement.querySelector('.workspace-background-status').textContent,
+    ).toContain('Applied and saved: Dark workspace');
+    expect(
+      fixture.nativeElement.querySelector('.workspace-background-status').textContent,
+    ).toContain('Draft matches the applied settings.');
+    expect(preferences.preferences().appearance).toMatchObject({
+      editorBackground: 'dark',
+      reality: { groundPreset: 'plains-grass', skyPreset: 'overworld-day' },
+    });
+
+    component.setEditorBackground('reality');
+    component.setRealitySkyPreset('overworld-night');
+    fixture.detectChanges();
+    const status = fixture.nativeElement.querySelector('.workspace-background-status').textContent;
+    expect(status).toContain('Applied and saved: Dark workspace');
+    expect(status).toContain('Draft: Reality');
+    expect(status).toContain('Overworld night');
+    expect(status).toContain('This draft is not applied');
+    expect(preferences.preferences().appearance).toMatchObject({
+      editorBackground: 'dark',
+      reality: { groundPreset: 'plains-grass', skyPreset: 'overworld-day' },
+    });
+
+    const session = fixture.debugElement.injector.get(SettingsDialogSession);
+    expect(session.apply()).toBe(true);
+    fixture.detectChanges();
+    expect(preferences.preferences().appearance).toMatchObject({
+      editorBackground: 'reality',
+      reality: { groundPreset: 'plains-grass', skyPreset: 'overworld-night' },
+    });
+    expect(
+      fixture.nativeElement.querySelector('.workspace-background-status').textContent,
+    ).toContain('Applied and saved: Reality');
+    expect(
+      fixture.nativeElement.querySelector('.workspace-background-status').textContent,
+    ).toContain('Draft matches the applied settings.');
+
+    const confirm = vi.spyOn(TestBed.inject(DialogService), 'confirm').mockResolvedValue(true);
+    component.setEditorBackground('dark');
+    component.setRealitySkyPreset('end');
+    fixture.detectChanges();
+    (
+      fixture.nativeElement.querySelector('.settings-dialog-footer .secondary') as HTMLButtonElement
+    ).click();
+    await fixture.whenStable();
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(preferences.preferences().appearance).toMatchObject({
+      editorBackground: 'reality',
+      reality: { groundPreset: 'plains-grass', skyPreset: 'overworld-night' },
+    });
     fixture.destroy();
   });
 

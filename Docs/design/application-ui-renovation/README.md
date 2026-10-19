@@ -26,7 +26,7 @@ An inventory entry or green build alone is not visual acceptance.
 | Checkpoint | Boundary                                                                                     | Status                                      |
 | ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------- |
 | A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; targeted/browser checks passed |
-| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Pending                                     |
+| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed |
 | C          | Header command/navigation ownership, discoverability and duplicate options                   | Pending                                     |
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Pending                                     |
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Pending                                     |
