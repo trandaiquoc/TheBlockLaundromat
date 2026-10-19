@@ -91,6 +91,11 @@ which need a real compatible fixture. Automated tests, keyboard checks, and
 contrast checks do not establish that the full interface matches the approved
 compositions.
 
+The [Block Browser density review](evidence/20261019-block-browser-density/README.md)
+reduces virtual rows from 80 px to 68 px, wraps long registry IDs, and keeps a
+32 px Quick Add target visible across themes. Search, virtualization, asset
+thumbnail scheduling, and editor behavior remain unchanged.
+
 The [inventory item thumbnail review](evidence/20261017-inventory-item-thumbnails/README.md)
 shows real Diamond, Apple, and Oak Planks previews in the compact chest slot
 grid, with counts, slot numbers, and accessible item names preserved.

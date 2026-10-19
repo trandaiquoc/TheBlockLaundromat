@@ -29,8 +29,8 @@ function createAssetRuntimeStub() {
 }
 
 describe('BlockBrowser list sizing', () => {
-  it('uses a consistent virtual row height for full-width block rows', () => {
-    expect(BLOCK_CATALOG_ROW_HEIGHT).toBe(80);
+  it('uses a compact consistent virtual row height for full-width block rows', () => {
+    expect(BLOCK_CATALOG_ROW_HEIGHT).toBe(68);
   });
 });
 

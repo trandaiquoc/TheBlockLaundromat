@@ -32,8 +32,8 @@ import { ThumbnailVisibilityDirective } from '../../../shared/ui/thumbnail-visib
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import type { ThumbnailTaskPriority } from '../../../core/assets/vanilla/thumbnails/thumbnail-task-queue';
 
-const COMPACT_BLOCK_GRID_WIDTH = 240;
-export const BLOCK_CATALOG_ROW_HEIGHT = 80;
+const COMPACT_BLOCK_LIST_WIDTH = 240;
+export const BLOCK_CATALOG_ROW_HEIGHT = 68;
 
 @Component({
   selector: 'app-block-browser',
@@ -83,13 +83,13 @@ export class BlockBrowserComponent {
     this.library.searchPlaceableItems(this.library.query(), this.activeSource()),
   );
   protected readonly panelWidth = signal(0);
-  protected readonly isCompact = computed(() => this.panelWidth() < COMPACT_BLOCK_GRID_WIDTH);
+  protected readonly isCompact = computed(() => this.panelWidth() < COMPACT_BLOCK_LIST_WIDTH);
   protected readonly rowHeight = BLOCK_CATALOG_ROW_HEIGHT;
-  private readonly catalogGridHost = viewChild<ElementRef<HTMLElement>>('catalogGridHost');
+  private readonly catalogListHost = viewChild<ElementRef<HTMLElement>>('catalogListHost');
   private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
   private readonly catalogViewport = viewChild<CdkVirtualScrollViewport>('catalogViewport');
   private readonly viewportSizing = effect((onCleanup) => {
-    const host = this.catalogGridHost()?.nativeElement;
+    const host = this.catalogListHost()?.nativeElement;
     if (!host) return;
     const update = (): void => {
       const nextWidth = host.clientWidth;

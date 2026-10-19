@@ -20,6 +20,10 @@ The [2026-10-19 Workspace cleanup review](20261019-workspace-cleanup/README.md)
 records the four-theme empty viewport check, the Y-Layer and narrow checks,
 and the current dialog, locale, keyboard, and reduced-motion behavior.
 
+The [2026-10-19 Block Browser density review](20261019-block-browser-density/README.md)
+checks the compact rows in all four themes, a long registry ID in the 320 px
+Vietnamese drawer, Quick Add, keyboard selection, and reduced motion.
+
 The current desktop sidebar composition has a focused before/after capture in
 [the 2026-10-17 comparison](20261017-sidebar-composition/README.md). The Block
 Browser list composition has its own [four-theme and narrow viewport evidence](20261017-block-browser-list/README.md).
