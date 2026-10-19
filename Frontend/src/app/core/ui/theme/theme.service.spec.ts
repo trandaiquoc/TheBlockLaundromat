@@ -288,13 +288,11 @@ describe('Workspace color palette contract', () => {
       readFileSync('src/app/features/editor/groups/groups-panel.component.scss', 'utf8'),
     );
     const removeTarget = quickBarStyles.match(/\.slot-remove \{[\s\S]*?\}/)?.[0] ?? '';
-    const clearTarget =
-      groupStyles.match(/\.group-search-field \.group-search-clear \{[\s\S]*?\}/)?.[0] ?? '';
-
-    for (const rule of [removeTarget, clearTarget]) {
-      expect(rule).toContain('width: 1.5rem;');
-      expect(rule).toContain('height: 1.5rem;');
-    }
+    const clearTarget = groupStyles.match(/\.group-search-clear \{[\s\S]*?\}/)?.[0] ?? '';
+    expect(removeTarget).toContain('width: 1.5rem;');
+    expect(removeTarget).toContain('height: 1.5rem;');
+    expect(clearTarget).toContain('width: 44px;');
+    expect(clearTarget).toContain('height: 44px;');
   });
 
   it('keeps menu triggers and floating-surface content in separate color scopes', () => {

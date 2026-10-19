@@ -2,6 +2,9 @@
 
 ## Current status
 
+The [P3 Groups Panel contract](GROUPS-PANEL.md) defines compact rows, direct
+visibility/lock, contextual selection actions, inline naming and row menus.
+
 The [P2 Block Browser Grid/List contract](BLOCK-BROWSER-GRID-LIST.md) defines the
 responsive virtual grid, compact list, counted source dropdown, Quick Add and
 explicit full-ID inspection. Both views retain one catalog and thumbnail pipeline.

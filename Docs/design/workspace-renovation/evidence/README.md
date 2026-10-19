@@ -11,6 +11,10 @@ acceptance for later changes.
 
 ## Current acceptance
 
+The [2026-10-20 P3 Groups Panel review](20261020-groups-panel/README.md) checks
+compact rows, inline naming, row menus, direct toggles, selection and Move,
+history/persistence, 22 groups, themes, fonts and narrow keyboard interactions.
+
 The [2026-10-19 P2 Block Browser review](20261019-block-browser-grid-list/README.md)
 checks Grid/List, quieter actions, real Vanilla/Cobblemon sources, a 10,001-item
 test source, four themes, EN/VI, fonts, resize, keyboard and thumbnail reuse.

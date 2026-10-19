@@ -603,6 +603,73 @@ describe('editor shell movement/delete routing', () => {
     }
   });
 
+  it.each([1600, 390])(
+    'opens Group Move from Groups with reachable focus at %i px',
+    async (width) => {
+      const widthDescriptor = Object.getOwnPropertyDescriptor(window, 'innerWidth');
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: width });
+      vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
+      const fixture = TestBed.createComponent(EditorShellComponent);
+      try {
+        const workspace = TestBed.inject(WorkspaceStateService);
+        await workspace.restore(TestBed.inject(PROJECT_STORE), undefined);
+        workspace.activate(project, undefined);
+        document.body.append(fixture.nativeElement);
+        fixture.detectChanges();
+        const shell = fixture.componentInstance,
+          root = fixture.nativeElement as HTMLElement;
+        shell['groups'].create('Roof');
+        TestBed.inject(SelectionService).select(project.blocks[0].position);
+        shell['groups'].addSelectionToActive();
+        fixture.detectChanges();
+        const opener = root.querySelector<HTMLButtonElement>(
+          '[aria-controls="workspace-browser"]',
+        )!;
+        if (width < 850) {
+          opener.click();
+          fixture.detectChanges();
+        }
+        root.querySelector<HTMLButtonElement>('#sidebar-tab-groups')!.click();
+        fixture.detectChanges();
+        const move = root.querySelector<HTMLButtonElement>('[data-action="move"]')!;
+        move.focus();
+        move.click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(shell['leftDrawerOpen']()).toBe(false);
+        expect(document.activeElement).toBe(root.querySelector('.move-offsets input'));
+        shell['groups'].setMoveOffset('x', 1);
+        fixture.detectChanges();
+        root.querySelector<HTMLButtonElement>('.move-actions button:last-child')!.click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(shell['movePanelVisible']()).toBe(false);
+        expect(shell['groups'].moveOffset().x).toBe(0);
+        expect(document.activeElement).toBe(width < 850 ? opener : move);
+        if (width < 850) {
+          opener.click();
+          fixture.detectChanges();
+          move.focus();
+          move.click();
+          fixture.detectChanges();
+          await fixture.whenStable();
+          opener.click();
+          fixture.detectChanges();
+          move.focus();
+          move.click();
+          fixture.detectChanges();
+          await fixture.whenStable();
+          expect(shell['leftDrawerOpen']()).toBe(true);
+          expect(shell['movePanelVisible']()).toBe(false);
+          expect(document.activeElement).toBe(move);
+        }
+      } finally {
+        fixture.destroy();
+        if (widthDescriptor) Object.defineProperty(window, 'innerWidth', widthDescriptor);
+      }
+    },
+  );
+
   it('traps responsive sidebar focus and restores the opener on close', async () => {
     const mount = vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
     const fixture = TestBed.createComponent(EditorShellComponent);

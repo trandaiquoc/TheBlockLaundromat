@@ -1,10 +1,12 @@
 import {
   Component,
+  afterNextRender,
   ElementRef,
   OnDestroy,
   computed,
   effect,
   inject,
+  Injector,
   signal,
   viewChild,
 } from '@angular/core';
@@ -205,6 +207,8 @@ export class EditorShellComponent implements OnDestroy {
   private drawerOpener?: HTMLElement;
   private focusedResizeSide?: 'left' | 'right';
   private readonly document = inject(DOCUMENT);
+  private readonly injector = inject(Injector);
+  private groupMoveReturnFocus?: HTMLElement;
   private readonly contextualInspector = viewChild(ContextualInspectorComponent);
   private readonly narrowViewport = signal((this.document.defaultView?.innerWidth ?? 0) <= 850);
   protected readonly placementInspectorVisible = computed(
@@ -234,7 +238,10 @@ export class EditorShellComponent implements OnDestroy {
       if (activeGroupId === this.previousActiveGroupId) return;
       this.previousActiveGroupId = activeGroupId;
       this.groups.resetMove();
-      if (!activeGroupId) this.movePanelVisible.set(false);
+      if (!activeGroupId) {
+        this.movePanelVisible.set(false);
+        this.groupMoveReturnFocus = undefined;
+      }
     });
   }
   ngOnDestroy(): void {
@@ -620,9 +627,46 @@ export class EditorShellComponent implements OnDestroy {
       this.movePanelVisible.set(true);
     }
   }
+  protected toggleMoveFromGroups(): void {
+    if (this.movePanelVisible()) {
+      this.hideMovePanel();
+      return;
+    }
+    if (!this.groups.activeGroup()) return;
+    this.groupMoveReturnFocus =
+      this.document.activeElement instanceof HTMLElement ? this.document.activeElement : undefined;
+    this.showMovePanel();
+    this.closeDrawers(false);
+    afterNextRender(
+      () => {
+        const target =
+          this.document.querySelector<HTMLElement>('.group-move-panel input') ??
+          this.document.querySelector<HTMLElement>('.group-move-close');
+        target?.focus();
+      },
+      { injector: this.injector },
+    );
+  }
   protected hideMovePanel(): void {
     this.groups.resetMove();
     this.movePanelVisible.set(false);
+    const trigger = this.groupMoveReturnFocus;
+    this.groupMoveReturnFocus = undefined;
+    if (trigger)
+      afterNextRender(
+        () => {
+          const target =
+            this.narrowViewport() && !this.leftDrawerOpen()
+              ? this.document.querySelector<HTMLElement>(
+                  '.responsive-drawer-actions button[aria-controls="workspace-browser"]',
+                )
+              : trigger.isConnected
+                ? trigger
+                : undefined;
+          target?.focus();
+        },
+        { injector: this.injector },
+      );
   }
   protected handleEditorShortcut(event: KeyboardEvent): void {
     if (event.defaultPrevented) return;

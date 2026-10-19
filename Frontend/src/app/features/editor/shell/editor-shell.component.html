@@ -250,7 +250,7 @@
             >
               <app-groups-panel
                 [movePanelVisible]="movePanelVisible()"
-                (movePanelToggle)="movePanelVisible() ? hideMovePanel() : showMovePanel()"
+                (movePanelToggle)="toggleMoveFromGroups()"
               ></app-groups-panel>
             </section>
           }

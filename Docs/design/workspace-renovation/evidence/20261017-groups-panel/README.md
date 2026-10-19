@@ -1,6 +1,7 @@
 # Groups Panel Review
 
-Current browser evidence for the Groups panel redesign. The review uses an
+Historical browser evidence predating the [P3 Groups redesign](../../GROUPS-PANEL.md).
+The review uses an
 isolated local browser profile and a temporary two-block project; no sample
 project or group is shipped with the application.
 
