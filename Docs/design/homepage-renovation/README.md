@@ -27,8 +27,10 @@ IndexedDB, preferences, or editor state. The shared top controls continue to
 use the existing locale and theme workflows. Both outer groups use the same
 theme surface, border, text, and selected-state tokens as the inner Project
 Screen, with shared translucent floating surfaces and a softly raised account
-menu. The references guide those controls' placement and material only; no
-illustrated scene artwork is loaded.
+menu. Project Screen cards, Settings dialogs, and Editor shared controls resolve
+the same semantic theme tokens, while the Editor keeps its separate header,
+toolbar, and sidebar roles. The references guide those controls' placement and
+material only; no illustrated scene artwork is loaded.
 
 For interaction research, the [LucianLabs UX/UI gallery](https://lucianlabs.dev/uxui-prompt/)
 account switcher 037 informed the upward-opening account menu, item focus, and

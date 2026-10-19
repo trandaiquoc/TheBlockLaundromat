@@ -99,7 +99,7 @@ describe('Workspace color palette contract', () => {
     expect(tabStyles).toContain('background: var(--control-selected);');
   });
 
-  it('matches the approved 100 colors and keeps generic tokens workspace-scoped', () => {
+  it('matches the approved 100 colors and maps shared semantic tokens globally', () => {
     const stylesheet = String(readFileSync('src/styles.scss', 'utf8'));
     const designContract = String(
       readFileSync('../Docs/design/workspace-color-palette.md', 'utf8'),
@@ -137,12 +137,37 @@ describe('Workspace color palette contract', () => {
       }
     }
 
-    expect(paletteStyles).toContain(':root[data-theme] app-editor-shell');
-    expect(paletteStyles).toContain(
-      ':root[data-theme]:has(app-editor-shell) .cdk-overlay-container',
-    );
-    expect(paletteStyles).toContain('--button-secondary-bg: var(--workspace-muted);');
-    expect(paletteStyles).toContain('--secondary-accent: var(--workspace-secondary-accent);');
+    const sharedTokens = paletteStyles.match(/:root\[data-theme\]\s*\{([^}]+)\}/)?.[1];
+    expect(sharedTokens).toBeDefined();
+    for (const [token, value] of [
+      ['--app-bg', 'var(--workspace-app-bg)'],
+      ['--surface', 'var(--workspace-panel-bg)'],
+      ['--surface-raised', 'var(--workspace-raised)'],
+      ['--surface-muted', 'var(--workspace-muted)'],
+      ['--surface-hover', 'var(--workspace-hover)'],
+      ['--surface-selected', 'var(--workspace-selected)'],
+      ['--text', 'var(--workspace-text-primary)'],
+      ['--text-muted', 'var(--workspace-text-secondary)'],
+      ['--border', 'var(--workspace-border)'],
+      ['--border-strong', 'var(--workspace-border)'],
+      ['--accent', 'var(--workspace-primary)'],
+      ['--focus-color', 'var(--workspace-focus)'],
+      ['--control-selected', 'var(--workspace-selected)'],
+      ['--button-primary-bg', 'var(--workspace-primary)'],
+      ['--button-secondary-bg', 'var(--workspace-muted)'],
+      ['--button-danger-bg', 'var(--workspace-danger-button-surface)'],
+      ['--surface-modal', 'var(--surface)'],
+      ['--surface-modal-raised', 'var(--surface-raised)'],
+      ['--divider', 'var(--border)'],
+      ['--shadow-panel', 'var(--workspace-shadow-control-raised)'],
+      ['--shadow-dialog', 'var(--workspace-shadow-dialog)'],
+      ['--secondary-accent', 'var(--workspace-secondary-accent)'],
+    ] as const) {
+      expect(sharedTokens, token).toContain(`${token}: ${value};`);
+    }
+    expect(sharedTokens).toContain('--overlay-scrim: rgb(0 0 0 / 0.48);');
+    expect(sharedTokens).toContain('color-scheme: var(--workspace-color-scheme);');
+    expect(sharedTokens).not.toContain('app-editor-shell');
     const shellStyles = String(
       readFileSync('src/app/features/editor/shell/editor-shell.component.scss', 'utf8'),
     );
@@ -151,8 +176,6 @@ describe('Workspace color palette contract', () => {
     );
     expect(chromeStyles).toContain('background: var(--workspace-header-bg);');
     expect(chromeStyles).toContain('color: var(--workspace-header-text);');
-    expect(stylesheet).toContain('--app-bg: #101318;');
-    expect(stylesheet).toContain('--app-bg: #f4f6f8;');
     expect(
       String(readFileSync('src/app/features/editor/shell/editor-shell.component.scss', 'utf8')),
     ).toContain('background: var(--workspace-sidebar-bg);');
@@ -200,6 +223,46 @@ describe('Workspace color palette contract', () => {
       expect(start, `${path} ${selector}`).toBeGreaterThanOrEqual(0);
       expect(componentStyles.slice(start, end)).toContain('color: var(--workspace-sidebar-text);');
     }
+  });
+
+  it('uses shared surfaces and focus semantics on Homepage and in Settings', () => {
+    const projectStyles = String(
+      readFileSync(
+        'src/app/features/projects/project-screen/project-screen.component.scss',
+        'utf8',
+      ),
+    );
+    const controlsStyles = String(
+      readFileSync(
+        'src/app/features/projects/project-screen/project-screen-controls.component.scss',
+        'utf8',
+      ),
+    );
+    const accountStyles = String(
+      readFileSync(
+        'src/app/features/projects/project-screen/project-screen-account.component.scss',
+        'utf8',
+      ),
+    );
+    const settingsStyles = String(
+      readFileSync(
+        'src/app/features/editor/settings/settings-dialog/settings-dialog.component.scss',
+        'utf8',
+      ),
+    );
+
+    expect(projectStyles).toContain('box-shadow: var(--shadow-panel);');
+    expect(projectStyles).toContain('background: var(--surface-modal);');
+    expect(projectStyles).toContain('background: var(--overlay-scrim);');
+    expect(controlsStyles).toContain('background: var(--surface-floating);');
+    expect(controlsStyles).toContain('outline: 2px solid var(--focus-color);');
+    expect(accountStyles).toContain('background: var(--surface-floating);');
+    expect(accountStyles).toContain('background: var(--surface-floating-raised);');
+    expect(accountStyles).toContain('outline: 2px solid var(--focus-color);');
+    expect(settingsStyles).toContain('background: var(--surface-modal);');
+    expect(settingsStyles).toContain('background: var(--surface-modal-raised);');
+    expect(settingsStyles).toContain('border-bottom: 1px solid var(--divider);');
+    expect(settingsStyles).toContain('background: var(--overlay-scrim);');
   });
 
   it('keeps menu triggers and floating-surface content in separate color scopes', () => {

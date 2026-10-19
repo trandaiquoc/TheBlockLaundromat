@@ -11,7 +11,7 @@
   height: 100%;
   padding: 1rem;
   box-sizing: border-box;
-  background: rgb(0 0 0 / 0.48);
+  background: var(--overlay-scrim);
 }
 .settings-dialog {
   display: grid;
@@ -21,7 +21,7 @@
   overflow: hidden;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
-  background: var(--surface);
+  background: var(--surface-modal);
   color: var(--text);
   box-shadow: var(--shadow-dialog);
 }
@@ -31,11 +31,11 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.8rem 1rem;
-  background: var(--surface-raised);
+  background: var(--surface-modal-raised);
 }
 .settings-dialog-header {
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--divider);
 }
 .settings-dialog-header h2 {
   margin: 0;
@@ -52,7 +52,7 @@
   align-content: start;
   gap: 0.25rem;
   padding: 0.75rem;
-  border-right: 1px solid var(--border);
+  border-right: 1px solid var(--divider);
   background: var(--surface-muted);
 }
 .settings-nav button {
@@ -420,7 +420,7 @@
   line-height: 1.45;
 }
 .settings-dialog-footer {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--divider);
 }
 .settings-footer-spacer {
   flex: 1;
@@ -678,7 +678,7 @@
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     border-right: 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--divider);
   }
   .settings-nav button {
     min-width: 0;

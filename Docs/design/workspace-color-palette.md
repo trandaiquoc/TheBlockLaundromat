@@ -1,11 +1,11 @@
 # Workspace Color Palette — V2
 
-> Status: canonical, implemented Workspace visual contract. `Frontend/src/styles.scss` owns the four theme palettes and maps them to existing component tokens only while the editor Workspace is active.
+> Status: canonical, implemented four-theme UI palette. `Frontend/src/styles.scss` owns the palette values and maps shared semantic tokens for the Project Screen, Settings, and Editor UI.
 
 ## Scope
 
-- Applies to the editor Workspace: application chrome, toolbars, sidebars, browsers, inspectors, dialogs, menus, controls, status UI, and overlays opened from the Workspace.
-- The Project Screen/Homepage retains its independent visual system and root tokens.
+- Applies to shared application UI across the Project Screen/Homepage, Settings dialogs, editor chrome, browsers, inspectors, menus, controls, status UI, and overlays.
+- Editor-only header, toolbar, and sidebar roles remain available as Workspace-specific tokens; shared semantic surfaces and controls resolve to the same theme palette everywhere.
 - Theme keys and persistence remain `craft`, `light`, `raccoon`, and `dark`; the product labels are Minecraft, Light, Raccoon, and Dark.
 - All themes share the same Angular components, layout, spacing, behavior, content previews, and state. Theme-specific treatment is expressed through semantic tokens and a small set of shape/elevation tokens.
 - The selected font remains one of Comfortaa, Chakra Petch, or Pangolin. System monospace is allowed only for technical code and identifiers; no additional UI font is introduced.
@@ -53,10 +53,10 @@ All 25 roles in the table are exact palette values. Additional toolbar, pixel-pa
 
 ## Token ownership and boundaries
 
-- `Frontend/src/styles.scss` owns the canonical values and Workspace-scoped aliases. Root application tokens remain owned by the Project Screen; `app-editor-shell` and the CDK overlay container only while it is present receive the Workspace mapping.
+- `Frontend/src/styles.scss` owns the canonical values and shared semantic aliases. Workspace-specific header, toolbar, sidebar, shape, and renderer roles stay scoped to the editor where those roles exist.
 - Components use semantic tokens such as `--surface`, `--text`, `--control-selected`, `--button-primary-*`, `--danger`, `--focus-color`, `--radius-*`, and `--shadow-control-*`. Component styles may define geometry and state, but must not copy theme palettes.
 - Header and sidebar foregrounds use their paired tokens. Open popovers/dialogs keep the foreground paired to their own surface instead of inheriting menu or sidebar text colors.
-- Minecraft native selects use the same stone fill, compact frame, bottom edge, and text color as buttons; the browser-default arrow is replaced by a matching chevron. Focus remains grass green, while resting borders stay stone-neutral.
+- Minecraft native selects use the same stone fill, compact frame, bottom edge, and text color as buttons; the browser-default arrow is replaced by a matching chevron. Focus uses the canonical Focus / Outline token, while resting borders use the stone-neutral border token.
 - Minecraft status colors are brightened for readable use against the dark grass header and stone panel. Raccoon's header status colors retain their existing `color-mix` treatment; the other themes use their canonical status colors directly.
 - All functional controls must preserve normal, hover, selected, disabled, destructive, and keyboard-focus states. Focus and selection must remain visibly distinguishable in all four themes.
 - `ThemeService` continues to set `--editor-viewport-bg` from the independent Dark/Light/Reality preference. Reality sky colors are shared by `editor-background-contract.ts`; Reality ground previews use the corresponding bundled or loaded texture. Neither is coupled to the UI theme.
@@ -75,4 +75,4 @@ All 25 roles in the table are exact palette values. Additional toolbar, pixel-pa
 
 The four approved Workspace compositions are preserved separately from browser captures under `Docs/design/workspace-renovation/references/`. The similarly named images in `Docs/design/references/` are the four Homepage concepts, not Workspace substitutes. Selected historical browser captures are indexed under `Docs/design/workspace-renovation/evidence/archive/`; they predate commit `ed7b1a5` and do not establish current visual acceptance.
 
-`Frontend/src/app/core/ui/theme/theme.service.spec.ts` verifies that the 25 canonical values match this table, checks text and control contrast, and verifies that generic aliases remain scoped to the active Workspace. Visual review must include Minecraft, Light, Raccoon, and Dark, with both EN and VI where text is visible.
+`Frontend/src/app/core/ui/theme/theme.service.spec.ts` verifies that the 25 canonical values match this table, checks text and control contrast, and verifies that shared semantic aliases use this palette across the Project Screen, Settings, and Editor. Visual review must include Minecraft, Light, Raccoon, and Dark, with both EN and VI where text is visible.

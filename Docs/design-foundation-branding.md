@@ -64,13 +64,14 @@ Create with AI, the active content tab owns scrolling on regular viewports, whil
 short or narrow viewports scroll the workspace host so all five tabs remain
 reachable without nested clipped panels.
 
-Workspace application colors follow the canonical four-theme [Workspace Color
-Palette V2](design/workspace-color-palette.md). That palette is scoped to the
-editor workspace and its overlays; the Project Screen keeps its existing color
-tokens. The renderer's Dark/Light/Reality environment remains independent of
-both. Reality sky preset colors are shared through the editor background
-contract so the renderer and Settings previews agree; ground previews use the
-corresponding texture resource.
+Application UI colors follow the canonical four-theme [Workspace Color Palette
+V2](design/workspace-color-palette.md) through shared semantic tokens. The
+Project Screen, both Settings entry points, and Editor surfaces use the same
+theme mapping; Workspace-specific header, toolbar, and sidebar roles remain
+scoped to the Editor. The renderer's Dark/Light/Reality environment remains
+independent of the UI theme. Reality sky preset colors are shared through the
+editor background contract so the renderer and Settings previews agree; ground
+previews use the corresponding texture resource.
 
 ## Project Screen
 

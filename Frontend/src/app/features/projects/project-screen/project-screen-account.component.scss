@@ -46,7 +46,7 @@
 .account-card:focus-visible,
 .account-menu-action:focus-visible,
 .account-popover:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-color);
   outline-offset: 3px;
 }
 

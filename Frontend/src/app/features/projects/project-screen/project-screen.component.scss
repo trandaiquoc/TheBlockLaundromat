@@ -89,10 +89,10 @@
 .project-form,
 .recent-projects {
   min-width: 0;
-  border: 0;
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.14);
+  box-shadow: var(--shadow-panel);
 }
 .project-form {
   display: grid;
@@ -146,7 +146,7 @@
 }
 .project-search-field:focus-within,
 .project-sort:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--focus-color);
   outline-offset: 2px;
 }
 .project-sort {
@@ -179,7 +179,7 @@
 }
 .project-text-input:focus,
 .size-input:focus {
-  border-color: var(--accent);
+  border-color: var(--focus-color);
 }
 .version-support {
   display: flex;
@@ -507,7 +507,7 @@
   display: grid;
   place-items: center;
   padding: 1rem;
-  background: rgb(0 0 0 / 0.56);
+  background: var(--overlay-scrim);
 }
 .project-import-dialog {
   display: grid;
@@ -517,7 +517,7 @@
   overflow: hidden;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-lg);
-  background: var(--surface);
+  background: var(--surface-modal);
   color: var(--text);
   box-shadow: var(--shadow-dialog);
 }
@@ -527,11 +527,11 @@
   align-items: center;
   gap: 0.7rem;
   padding: 0.85rem 1rem;
-  background: var(--surface-raised);
+  background: var(--surface-modal-raised);
 }
 .project-import-header {
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--divider);
 }
 .project-import-header h2 {
   margin: 0.25rem 0 0.35rem;
@@ -629,7 +629,7 @@
 }
 .project-import-footer {
   justify-content: flex-end;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--divider);
 }
 @media (max-width: 860px) {
   .project-grid {
