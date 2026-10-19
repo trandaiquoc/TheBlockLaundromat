@@ -2,17 +2,20 @@
 
 - **Snapshot:** 2026-10-19
 - **Repository:** `TheBlockLaundromat`
-- **Checkpoint before this report:** `cf2e2fe279b2053cee6eb348bfdc17d3f40c7ea6` (`feat(project-screen): extract Minecraft layers and hand off goal`)
-- **Branch/status before this report:** `main`, clean, equal to `origin/main`. This report is documentation-only and is committed separately; it is not pushed.
+- **Active artwork-goal code checkpoint:** `6b32b1c3e7fa9c03ceb9653501286b4e731a9b5a` (`fix(project-screen): align craft create tile`)
+- **Branch:** `main`; commits remain local and are not pushed. Check Git status before continuing.
+- **Goal status:** active and incomplete. This report is a handoff, not a request to close the Goal.
+
+This folder is a self-contained reading package for the next ChatGPT/Codex session. It contains duplicate prompt, reference, and evidence copies only; the application does not load runtime code or assets from `Trash docx`.
 
 ## What This Handoff Covers
 
 This report deliberately separates two related workstreams so the next ChatGPT/Codex session does not mistake an in-progress artwork task for a finished UI renovation:
 
 1. The Workspace UI renovation and its follow-up behavior/accessibility fixes, recorded across the October 13-18 commit history.
-2. The active, still-in-progress pixel-faithful Homepage/Project Screen artwork reconstruction, whose full acceptance criteria are in `empt docx/source-current-goal-objective.txt`.
+2. The active, still-in-progress pixel-faithful Homepage/Project Screen artwork reconstruction, whose full acceptance criteria are in [`source-current-goal-objective.txt`](source-current-goal-objective.txt).
 
-The full commit ledger from the four-theme foundation through the checkpoint is in [`commit-ledger.log`](commit-ledger.log). It is a navigation aid: the range contains adjacent maintenance and verification commits too, so do not assume every commit is exclusively visual UI work. An earlier focused ledger remains at `Trash docx/TheBlockLaundromat-Workspace-Handoff-20261016/commits/theme-foundation-to-current.log`.
+The original 206-commit ledger from the four-theme foundation through `cf2e2fe`, followed by the four later checkpoint commits, is in [`commit-ledger.log`](commit-ledger.log). It is a navigation aid: it includes adjacent maintenance and verification commits too, so do not assume every commit is exclusively visual UI work. An earlier focused ledger remains at `Trash docx/TheBlockLaundromat-Workspace-Handoff-20261016/commits/theme-foundation-to-current.log`.
 
 ## Workspace UI Work Recorded
 
@@ -28,6 +31,8 @@ The implementation history covers these delivered changes and follow-up correcti
 - Included dependency/toolchain and documentation corrections in the broader commit history, including the October 14 advisory remediation and exact Node.js compatibility wording.
 
 The current code and historical browser/test evidence remain the authority for individual acceptance details. This report does **not** claim that the broad Workspace redesign has been re-audited in this reporting turn. In particular, the user's request to make Project Diagnostics an on-demand collapsible section was explicitly retracted; do not reintroduce that behavior as unfinished work.
+
+Other directly requested Workspace follow-ups recorded in the commits include the compact in-place mode/tool choice, refinements to quick actions and block previews, Block Usage hierarchy changes, and Structure JSON scrolling work. These are shared UI behaviors, not four independent theme implementations. Preserve the current code rather than inferring its state from an older screenshot. The Diagnostics collapse experiment was reverted at the user's request.
 
 ## Active Homepage / Project Screen Goal
 
@@ -58,6 +63,12 @@ Milestone commits to orient source review: `3161ae6` (theme-aware Project Screen
 - The selected project's real renderer thumbnail was not proven by the latest checkpoint screenshot; that capture showed a placeholder. Do not claim populated-preview visual acceptance from it.
 - No final source-sized visual comparison has passed for all four themes. Do not close the active Goal or mark visual acceptance PASS.
 
+### Latest Tile Checkpoint
+
+Commit `6b32b1c3e7fa9c03ceb9653501286b4e731a9b5a` corrects the live Craft Create Project tile position after the board perspective transform. It adds a deterministic crop extraction/verification script, records the measured source rectangle in the manifest, and stores a 1672 × 941 browser screenshot in `evidence/20261019-craft-tile-alignment/`. At that browser size, `translate(-4.2%, 3.8%)` moves the button by approximately `(-5.95px, +5.91px)`. Clicking opened the real Angular menu; Escape closed it. The crop is pixel-identical to the approved reference.
+
+This fixes only the live tile hit-area/art alignment. The baked source tile remains beneath the live scene, and the full static Minecraft scene is incomplete.
+
 ## Verification Evidence and Limits
 
 The existing checkpoint notes report these results; they were not rerun merely to write this report:
@@ -70,7 +81,7 @@ The existing checkpoint notes report these results; they were not rerun merely t
 - Headless Chrome/CDP inspection at 1672 × 941 reported the Craft scene images loaded, no image failures, and no browser console/runtime errors for that inspected run. It inspected a disposable local project and is only a checkpoint, not final visual acceptance.
 - The exterior layer script's saved/reloaded recomposition reported zero differing pixels (maximum channel difference 0). This proves only that measured visible opening pixels were split without loss; it does not prove the complete scene.
 
-The detailed commands, failure history, screenshot caveats, extraction provenance and remaining task order are in [`empt docx/handoff-notes.md`](../../empt%20docx/handoff-notes.md). The screenshot `empt docx/minecraft-layer-check-1672x941.png` is explicitly a checkpoint sample, not a final reference match.
+The detailed commands, failure history, screenshot caveats, extraction provenance and remaining task order are in [`handoff-notes.md`](handoff-notes.md). Older screenshot references in that historical note are checkpoint samples, not final visual matches; the selected current screenshots are copied under `evidence/`.
 
 ### Latest Follow-Up Verification
 
@@ -87,23 +98,29 @@ These checks were rerun after restoring the lockfile dependencies with `npm ci`:
 
 The newly added empty-state screenshot is `Docs/design/homepage-renovation/evidence/20261019-minecraft-display-cleanup/craft-empty-preview-browser-1672x941.png`. It is an independent browser artifact, not an automated-test substitute. Real populated GPU thumbnail rendering remains unverified in this follow-up.
 
+For the tile checkpoint, the extractor ran to `/tmp` and was verified against both the source image and checked-in runtime PNG (142 × 156; exact RGBA pixel equality). The targeted Project Screen component suite passed 7/7 after the final CSS change. Production build passed; `project-screen.component.scss` compiled to 29.99 KB, below the 30 KB hard error budget but 9.99 KB above the 20 KB warning budget. No budget was changed. Prettier passed for changed TypeScript/SCSS/Markdown/JSON, encoding passed, and `git diff --check` passed. The Python extractor was validated by actual execution; Prettier has no Python parser configured in this frontend.
+
+The full suite was not rerun for this tile-only checkpoint. The last recorded full run had one reproducible Block Usage keyboard-navigation failure (2,060 passed, 1 failed, 11 skipped across 329 passed files, 1 failed file, and 7 skipped files). It was not changed here, and no pre-change baseline was captured.
+
 ## Read These Files First on the Next Machine
 
 1. This report.
-2. [`empt docx/source-current-goal-objective.txt`](../../empt%20docx/source-current-goal-objective.txt) — extracted active objective text.
-3. [`empt docx/continuation-prompt.md`](../../empt%20docx/continuation-prompt.md) — continuation instructions and a byte-for-byte copy of the full attached prompt (SHA-256 `2904cfad94f1612b781a917832f65c4faf19520f17c1466f9b2aa52553dae902`).
-4. [`empt docx/handoff-notes.md`](../../empt%20docx/handoff-notes.md) — exact checkpoint, verification history, risks and prioritized remaining work.
-5. [`Docs/design/homepage-renovation/README.md`](../../Docs/design/homepage-renovation/README.md), [`asset-inventory.md`](../../Docs/design/homepage-renovation/asset-inventory.md), and [`asset-manifest.json`](../../Docs/design/homepage-renovation/asset-manifest.json).
-6. [`Docs/design/homepage-renovation/evidence/README.md`](../../Docs/design/homepage-renovation/evidence/README.md) and the linked focused browser-evidence READMEs.
-7. All four immutable references listed above. Open and inspect them visually before editing.
-8. Current implementation under `Frontend/src/app/features/projects/project-screen/`, source assets under `Frontend/public/assets/project-screen/`, and deterministic extraction tools under `Frontend/tools/project-screen-assets/`.
-9. Root `AGENTS.md` and `Frontend/AGENTS.md`.
+2. [`source-current-goal-objective.txt`](source-current-goal-objective.txt) — full active objective.
+3. [`continuation-prompt.md`](continuation-prompt.md) — handoff instructions and full objective copy.
+4. [`handoff-notes.md`](handoff-notes.md) — checkpoint, verification history, risks, and prioritized continuation steps.
+5. [`commit-ledger.log`](commit-ledger.log) — 206 earlier commits; use Git log for newer commits listed above.
+6. [`reference-images/`](reference-images/) — all four immutable 1672 × 941 approved references.
+7. [`renovation-docs/`](renovation-docs/) and [`evidence/`](evidence/) — copied asset manifest, inventory, implementation note, and selected browser proof.
+8. Repository source under `Frontend/src/app/features/projects/project-screen/`, assets under `Frontend/public/assets/project-screen/`, and tools under `Frontend/tools/project-screen-assets/`.
+9. Root `AGENTS.md` and `Frontend/AGENTS.md` in the repository.
 
-`empt docx/source-initial-goal-objective.md` preserves the older broad UI-renovation request for context. It is not a replacement for the current Homepage objective. Keep the complete handoff package until the next machine has read it; the user may delete the `Trash docx` folder after that.
+[`source-initial-goal-objective.md`](source-initial-goal-objective.md) preserves the older broad UI-renovation request for context; it does not override the active Homepage objective.
+
+The handoff package can be deleted without breaking application runtime: it contains reports and copies, not imported app assets. Deleting it permanently removes these prompt copies, reference duplicates, ledger, and selected evidence from this checkout, so let the next ChatGPT/Codex read it first. Canonical references and app assets remain under `Docs/` and `Frontend/`.
 
 ## Continue Safely
 
-- Start from the actual current `git status` and HEAD; do not assume this report's pre-report SHA is still HEAD after its documentation commit.
+- Start from the actual current `git status` and HEAD; the report package itself may have a newer documentation-only commit.
 - Continue the existing Goal. Do not create another Goal, push, or declare completion.
 - Inspect all four source references and current consumers before changing scene assets.
 - Finish and visually inspect the full static Minecraft scene first; only then continue Light, Raccoon, Dark, DOM replacement of baked UI, and motion.

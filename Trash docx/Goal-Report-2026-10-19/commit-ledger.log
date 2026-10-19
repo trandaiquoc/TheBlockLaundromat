@@ -204,3 +204,7 @@ ef5def8459e5f7747dd7bcbfb20792e25049cfdb	2026-10-18T15:18:54+07:00	Add project s
 9d012b8f795a0ea785f0f76d258767d4c3eec799	2026-10-18T17:21:07+07:00	Share exterior scenery across Project Screen themes
 5dc1989d003f3f3587dba12560a7da78799196e0	2026-10-18T22:42:47+07:00	feat(project-screen): use Minecraft reference artwork
 cf2e2fe279b2053cee6eb348bfdc17d3f40c7ea6	2026-10-19T06:38:06+07:00	feat(project-screen): extract Minecraft layers and hand off goal
+8127b1e6e6d5fab8d67b9c90c70ae07aa5c84061	2026-10-19T08:08:31+07:00	docs(handoff): report goal progress
+85fed50eb07ead3d20278850c956e5603df82ae9	2026-10-19T08:48:18+07:00	fix(project-screen): mask empty washer sample
+83de07c974bcc43c7b1ae991f3d5fd32c0e796d8	2026-10-19T08:50:14+07:00	docs(handoff): update homepage goal evidence
+6b32b1c3e7fa9c03ceb9653501286b4e731a9b5a	2026-10-19T09:16:28+07:00	fix(project-screen): align craft create tile

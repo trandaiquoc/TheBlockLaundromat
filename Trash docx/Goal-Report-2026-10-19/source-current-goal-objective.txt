@@ -1,0 +1,2099 @@
+THE BLOCK LAUNDROMAT
+PIXEL-FAITHFUL HOMEPAGE ASSET RECONSTRUCTION
+
+EXECUTION MODE: CONTINUOUS GOAL
+PRIMARY LANGUAGE FOR TECHNICAL SPECIFICATION: ENGLISH
+MANDATORY REPORTING LANGUAGE: VIETNAMESE
+
+============================================================
+0. MANDATORY COMMUNICATION LANGUAGE
+============================================================
+
+All user-facing communication MUST be in Vietnamese.
+
+This includes:
+- Initial source audit.
+- Visual reference analysis.
+- Asset inventory.
+- Technical reasoning and architecture decisions.
+- Root-cause explanations.
+- Progress reports.
+- Checkpoint summaries.
+- Missing asset reports.
+- Test results.
+- Final acceptance reports.
+
+Keep technical identifiers, filenames, code symbols and
+asset names in English.
+
+Code naming must follow existing project conventions.
+
+Do not respond with long English progress reports.
+
+Do not ask the user to explain where the four approved
+Homepage references are located.
+
+============================================================
+1. GOAL OBJECTIVE
+============================================================
+
+Reconstruct the complete Homepage / Project Screen
+as a pixel-faithful, layered, maintainable,
+interactive 2D/2.5D illustrated environment.
+
+The four approved images define the intended result.
+
+The goal is NOT to produce a visually similar illustration.
+
+The goal is to preserve the ORIGINAL visual composition,
+object identities, proportions, drawing style,
+perspective, lighting and spatial relationships
+as accurately as possible.
+
+The current implementation has repeatedly failed
+because independently generated assets do not match
+the original illustrations.
+
+This Goal changes the production method fundamentally.
+
+MANDATORY PRODUCTION ORDER:
+
+1. Analyze the four source images.
+2. Build a complete spatial asset inventory.
+3. Extract original pixels from the source images.
+4. Identify occlusion and missing pixels.
+5. Reconstruct ONLY the missing portions.
+6. Produce clean transparent assets.
+7. Recompose the static scene.
+8. Verify static fidelity.
+9. Repeat and validate all four themes.
+10. Integrate functional Angular UI.
+11. Refine the washing-machine project preview.
+12. Implement character animation.
+13. Implement environmental animation and transitions.
+14. Perform final verification.
+
+Do not skip stages.
+
+Do not begin animation while the static composition
+is incomplete.
+
+Do not replace the entire image with AI-generated
+artwork.
+
+============================================================
+2. SOURCE OF TRUTH
+============================================================
+
+AUTHORITATIVE REFERENCE IMAGES:
+
+Docs/design/references/01-minecraft.png
+Docs/design/references/02-light.png
+Docs/design/references/03-raccoon.png
+Docs/design/references/04-dark.png
+
+Each reference has the dimensions:
+
+WIDTH: 1672 px
+HEIGHT: 941 px
+
+The images are separate approved visual masters.
+
+They are NOT interchangeable recolored versions.
+
+The images may contain slightly different decorative
+details and lighting conditions.
+
+Preserve each theme's distinctive artwork.
+
+CURRENT IMPLEMENTATION:
+
+Frontend/src/app/features/projects/project-screen/
+
+CURRENT SCENE COMPONENTS:
+
+Frontend/src/app/features/projects/project-screen/scene/
+
+CURRENT RUNTIME ARTWORK:
+
+Frontend/public/assets/project-screen/
+
+OFFICIAL BRAND LOGO:
+
+Frontend/public/assets/brand/the-block-laundromat-logo.svg
+
+Before changing code, inspect current HEAD,
+the relevant components, dependencies, consumers,
+asset files and implementation contracts.
+
+Preserve all functional work that is already correct.
+
+Do not reread Git history from the beginning.
+
+Do not follow old historical QA task lists.
+
+============================================================
+3. NON-NEGOTIABLE IMAGE PRODUCTION RULES
+============================================================
+
+RULE 1 — EXTRACT FIRST, GENERATE SECOND
+
+For every object:
+
+First try to extract the original artwork directly
+from the approved reference image.
+
+Retain:
+- Original visible pixels.
+- Shape.
+- Outline.
+- Texture.
+- Color.
+- Perspective.
+- Lighting.
+- Proportions.
+- Relative placement.
+
+Only generate or repaint the parts that cannot be
+recovered from the original source.
+
+Never replace an accurately extractable object
+with a newly imagined version.
+
+RULE 2 — LOCALIZED RECONSTRUCTION
+
+When an object is partially hidden behind another:
+
+1. Extract the visible portion.
+2. Identify the occluded region.
+3. Construct a precise missing-region mask.
+4. Reconstruct the missing pixels using the surrounding
+   image, object geometry and original illustration.
+5. Preserve the source pixels outside the missing region.
+6. Blend the reconstructed region with the original.
+7. Verify that seams and lighting remain coherent.
+
+Use localized inpainting, cloning, texture
+reconstruction or other suitable techniques.
+
+Do not regenerate the entire object when only
+a small hidden region is missing.
+
+RULE 3 — NO INDEPENDENT REINTERPRETATION
+
+Do not generate a new washing machine, project board,
+raccoon or room simply from a text description.
+
+Such independently generated objects frequently have
+incorrect perspective, anatomy, geometry and scale.
+
+The existing concept artwork must remain the source.
+
+RULE 4 — TRANSPARENT ASSET OUTPUT
+
+Every extracted movable object must have a correct
+alpha channel.
+
+The transparent regions must not contain:
+- Black backgrounds.
+- White backgrounds.
+- Residual silhouettes.
+- Yellow/red extraction halos.
+- Jagged segmentation artifacts.
+- Unwanted shadows from removed objects.
+
+Retain intentional contact shadows where necessary,
+or isolate them into a separate shadow layer.
+
+RULE 5 — COMPLETE OCCLUDED GEOMETRY
+
+A removed object must not leave a visible hole
+in the background.
+
+If a washing machine is extracted, reconstruct the
+wall and floor behind it.
+
+If the board is extracted, reconstruct the wall
+behind it.
+
+If a raccoon is extracted, reconstruct the hidden
+floor or nearby objects behind it.
+
+If a foreground basket is extracted, reconstruct
+the floor and anything partially occluded.
+
+RULE 6 — NO FAKE DATA IN STATIC ARTWORK
+
+Do not retain baked project cards, sample project
+names, sample thumbnails, fake buttons or fake
+interactive UI in the final static room artwork.
+
+All project-related dynamic content must come from
+real application data.
+
+============================================================
+4. MASTER COORDINATE SYSTEM
+============================================================
+
+Use the original 1672 x 941 image as the master
+coordinate system.
+
+All artwork must share this coordinate space.
+
+For every extracted asset record:
+
+- Unique asset ID.
+- Source theme.
+- Source image filename.
+- Original bounding rectangle.
+- Canvas X coordinate.
+- Canvas Y coordinate.
+- Original width and height.
+- Alpha bounds.
+- Layer order.
+- Occlusion relationships.
+- Anchor point.
+- Reconstruction status.
+- Intended animation capability.
+- Output filename.
+
+Coordinates must be measured from the actual images.
+
+Do not guess coordinates from visual intuition.
+
+During asset preparation, allow full-canvas transparent
+layers for exact compositing and alignment.
+
+For runtime optimization, assets may be tightly cropped
+as long as their original canvas offsets and anchors
+remain recorded in the manifest.
+
+Do not stretch tightly cropped artwork to fit
+arbitrary CSS boxes.
+
+Do not use object-fit: fill to hide geometry mismatches.
+
+Use a uniform 16:9 master scene transformation.
+
+Prioritize accurate desktop composition before
+introducing responsive adaptations.
+
+============================================================
+5. PHYSICAL SCENE INVENTORY
+============================================================
+
+The following inventory describes the objects that
+must be accounted for in the four approved concepts.
+
+The spatial locations refer to the original image.
+
+Each theme requires a complete inventory.
+
+Every listed object must be explicitly classified as:
+
+- Static room artwork.
+- Extracted independent asset.
+- Grouped decorative asset.
+- Interactive DOM region.
+- Animation-capable asset.
+- Lighting or mask layer.
+
+Do not silently omit small but visually important
+objects.
+
+============================================================
+6. EXTERIOR BACKGROUND — FOUR COMPLETE PANORAMAS
+============================================================
+
+POSITION:
+Behind the room, visible through the left entrance
+and the large right-side window.
+
+Create ONE COMPLETE EXTERIOR IMAGE PER THEME.
+
+The exterior may contain multiple visual elements,
+but it must be exported as one large coherent panorama
+for each theme.
+
+Do not split the exterior into dozens of small assets.
+
+The panorama must cover every outdoor opening
+with consistent perspective and lighting.
+
+EXTERIOR CONTENT:
+
+A. SKY
+- Distant sky gradient and atmospheric color.
+- Clouds and sky details.
+- Horizon atmosphere.
+- Stars and moon where present.
+
+B. DISTANT ARCHITECTURE
+- Fantasy castle towers.
+- Tall castle silhouettes.
+- Village buildings.
+- Roofs and distant structures.
+- Windows with appropriate illumination.
+- Architectural reflections where visible.
+
+C. LANDSCAPE
+- Trees.
+- Bushes.
+- Flowers.
+- Distant greenery.
+- Hills or raised terrain.
+- Vegetation along the exterior paths.
+
+D. WATER
+- River, canal, lake or waterfront scenery.
+- Water reflections.
+- Reflections of buildings or outdoor lamps.
+- Correct horizon and perspective.
+
+E. OUTDOOR DETAILS
+- Paths and exterior ground surfaces.
+- Lamp posts.
+- Exterior lanterns.
+- Small decorative objects.
+- Minecraft-inspired decorative structures.
+
+F. LEFT ENTRANCE VIEW
+- Outdoor scenery visible through the entrance.
+- Correct horizon perspective.
+- Correct lighting at the doorway.
+- No interior walls painted into the outdoor panorama.
+
+G. RIGHT WINDOW VIEW
+- Large scenic view through the rectangular window.
+- Castle or village architecture.
+- Trees, plants and waterfront details.
+- Theme-appropriate time of day.
+
+RECONSTRUCTION REQUIREMENT:
+
+The four reference images reveal only partial views
+of the exterior.
+
+The remainder is hidden behind:
+- Interior walls.
+- Window framing.
+- Wooden beams.
+- Furniture.
+- Plants.
+- Project board.
+- Other foreground objects.
+
+Generate the missing regions to create a complete,
+continuous exterior panorama.
+
+Use the source image's visible portions as strict
+visual constraints.
+
+Do not invent conflicting architecture or horizons
+between the two visible openings.
+
+THEME REQUIREMENTS:
+
+LIGHT:
+Early morning atmosphere.
+Bright blue sky, fresh daylight, soft shadows,
+clear outdoor architecture and gentle reflections.
+
+MINECRAFT:
+Golden-hour or sunset atmosphere.
+Warm orange sunlight, glowing architecture,
+long shadows and warm waterfront reflections.
+
+RACCOON:
+Dusk or early evening atmosphere.
+Purple/pink evening sky, warm building lights,
+cozy environmental contrast.
+
+DARK:
+Late-night atmosphere.
+Deep blue night sky, moonlight, distant illuminated
+castle windows, subtle stars and dark water.
+
+Do not make Dark look like a bright daytime scene
+with a blue filter applied.
+
+============================================================
+7. INTERIOR ROOM BASE — FOUR COMPLETE ROOM SHELLS
+============================================================
+
+POSITION:
+The entire indoor architectural environment,
+covering the image except transparent outdoor openings.
+
+This is the structural foundation of the laundromat.
+
+Produce a cleaned room background for EACH theme.
+
+MANDATORY:
+
+The door and window openings must be transparent
+where the exterior panorama should appear.
+
+The interior room must not permanently contain
+the exterior landscape.
+
+INTERIOR CONTENT:
+
+A. CEILING — TOP REGION
+- Wooden ceiling planks.
+- Exposed structural beams.
+- Angled timber surfaces.
+- Ceiling-wall joints.
+- Supporting wooden construction.
+- Ambient shadows under beams.
+
+B. BACK WALL — UPPER CENTER
+- Light-colored wall surfaces.
+- Plaster or panel texture.
+- Wall joints and architectural details.
+- The area behind the illuminated logo.
+- Wall shadows and reflected room lighting.
+
+C. LEFT WALL / ENTRANCE STRUCTURE
+- Wooden door frame.
+- Green striped awning or decorative trim above door.
+- Door panels and handles.
+- Threshold structure.
+- Interior trim.
+- Door hinges and architectural joints.
+
+D. RIGHT WALL / WINDOW STRUCTURE
+- Large rectangular wooden window.
+- Window frame and crossbars.
+- Sill and surrounding timber.
+- Glass treatment if present.
+- Structural wood surrounding the opening.
+
+The transparent opening must reveal the exterior.
+
+Do not leave outdoor scenery baked into the window
+glass or room wall.
+
+E. FLOOR — LOWER REGION
+- Wooden floorboards.
+- Floorboard joints.
+- Illustrated floor perspective.
+- Reflected light and shadows.
+- Floor near the washing machine.
+- Floor near the project board.
+- Floor beneath both raccoons.
+- Floor previously hidden behind foreground props.
+
+F. FIXED STRUCTURAL FURNITURE
+- Large wooden shelves on the left wall.
+- Shelf supports and wooden brackets.
+- Fixed cabinets and large wooden fixtures.
+- Upper-right wooden decorative ledges.
+- Permanent wall-mounted structures.
+
+G. SHADOW BASE
+- General ambient occlusion.
+- Shadows cast by permanent beams.
+- Wall contact shadows.
+- Structural depth.
+
+These shadows must remain coherent with the intended
+theme lighting.
+
+CLEAN ROOM REQUIREMENT:
+
+Remove from the room shell any object intended
+to become an independent foreground or interactive
+asset.
+
+Reconstruct the hidden room surface behind that object.
+
+The result should be a complete empty illustrated room,
+not a heavily damaged photograph with cutout holes.
+
+============================================================
+8. LEFT-SIDE ROOM DECORATION
+============================================================
+
+POSITION:
+Left and upper-left side of the room, surrounding
+the entrance and tall wooden shelves.
+
+ACCOUNT FOR ALL VISIBLE ELEMENTS:
+
+1. Green striped awning above the door.
+2. Wooden door panels.
+3. Metal door handle and hinges.
+4. Small hanging Minecraft grass block near entrance.
+5. Hanging metal support or bracket.
+6. Tall wooden shelving.
+7. Folded white towels.
+8. Folded green towels.
+9. Blue, green and neutral-colored detergent bottles.
+10. Small containers and cleaning products.
+11. Small decorative flowerpots.
+12. Potted leafy plants.
+13. Hanging vines.
+14. Creeper-themed decorative cube/head.
+15. Wooden signboard reading:
+    "Good Worlds Start Fresh!"
+16. Small decorative heart below the sign text.
+17. Decorative lanterns or small light fixtures.
+18. Small plants near the floor.
+19. Wooden threshold and doorway decorations.
+20. Wall/furniture contact shadows.
+
+Do not automatically create a separate runtime image
+for every bottle or towel.
+
+Small permanently static decorations may remain grouped.
+
+Separate only elements whose independent ownership
+helps with:
+- Accurate layering.
+- Occlusion.
+- Animation.
+- Theme lighting.
+- Seasonal replacement.
+- Visual depth.
+
+The wooden signboard can retain its existing static
+illustrated text because it is room decoration,
+not application data.
+
+============================================================
+9. CEILING LIGHTS AND HANGING PLANTS
+============================================================
+
+POSITION:
+Top-left, upper-center and top-right regions.
+
+VISIBLE ELEMENTS:
+
+- Large green pendant lamps.
+- Dark or metallic lamp holders.
+- Hanging lamp cables.
+- Lightbulbs.
+- Lamp interiors and bright rims.
+- Ceiling-contact shadows.
+- Climbing vines around beams.
+- Hanging leaves and branches.
+- Plant pots or wooden plant containers.
+
+Separate light emission from lamp body artwork
+where necessary.
+
+The lamp geometry should remain static.
+
+Lighting effects may change independently.
+
+DARK THEME:
+
+The interior pendant lamps should appear switched off
+or nearly unlit according to the approved night scene.
+
+Do not brighten the entire room artificially.
+
+The night scene should primarily communicate
+moonlight and carefully controlled local illumination.
+
+============================================================
+10. OFFICIAL WALL LOGO
+============================================================
+
+POSITION:
+Upper-center wall, above the washing machine.
+
+The illustrated logo is one of the most important
+visual features.
+
+SOURCE:
+Existing official brand artwork.
+
+CURRENT PROBLEM:
+The SVG used directly in the browser looks flat
+and disconnected from the illustrated wall.
+
+REQUIRED SOLUTION:
+
+Study the original concept carefully.
+
+Extract the visible logo appearance from the source
+image when useful for analyzing shape, perspective,
+edge treatment, depth and lighting.
+
+Preserve the identity of the original brand:
+
+- Lettering.
+- Colors.
+- Character artwork.
+- Washing machine symbol.
+- Block shapes.
+- Overall silhouette.
+- Relative proportions.
+
+Build the wall-sign presentation using:
+- Original logo artwork.
+- Proper scene perspective.
+- Mounting/contact shadows.
+- Edge depth where appropriate.
+- Wall illumination.
+- Backlighting or reflected light.
+- Theme-aware emission.
+
+The finished result must feel attached to the wall.
+
+It should resemble an illustrated physical sign,
+not a flat SVG floating in front of a photograph.
+
+Do not regenerate or redesign the brand logo.
+
+If depth or highlight details are missing,
+generate only supporting treatment layers.
+
+Keep the original artwork independently replaceable.
+
+============================================================
+11. WASHING MACHINE ASSET GROUP
+============================================================
+
+POSITION:
+Large central object occupying the middle and lower
+central area of the image.
+
+The machine is the main functional focal point.
+
+Extract the ORIGINAL washing machine from each theme.
+
+Do not replace it with a newly generated generic
+washing machine.
+
+REQUIRED SUB-ASSETS / REGIONS:
+
+A. MACHINE MAIN BODY
+- Cream-colored illustrated casing.
+- Green or theme-specific trim.
+- Rounded edges.
+- Corner bevels.
+- Feet and lower support.
+- Side-panel details.
+- Contact shadow on the floor.
+
+B. UPPER CONTROL AREA
+- Small green indicator lights.
+- Rotary control knob.
+- Circular control outline.
+- Small secondary buttons.
+- Embedded labels and decorative elements.
+- Control panel shadows and highlights.
+
+C. SELECTED PROJECT INFORMATION PLATE
+- Dark angled plate near the upper-left portion
+  of the machine.
+- Illustrated border and background.
+- Pencil/edit decoration.
+- Space for actual selected-project information.
+
+The information is text-only.
+
+Do not place a project image inside this information
+plate.
+
+The project name, version, dimensions and relevant
+metadata must be real DOM content.
+
+D. LARGE CIRCULAR WASHER DOOR
+- Outer circular frame.
+- Metallic or green trim.
+- Inner reflective rim.
+- Glass surface.
+- Depth and inner shadows.
+- Circular mask geometry.
+- Highlights and reflections.
+
+E. WASHER DRUM INTERIOR
+- Clean interior background.
+- Independent project preview surface.
+- Circular clipping region.
+- Optional glass highlights.
+- Optional subtle lighting overlays.
+
+Remove any baked sample project illustration from
+the final active preview area.
+
+F. RIGHT-SIDE ACTION PANEL
+- Green Open control area.
+- Gray Delete control area.
+- Shared panel housing.
+- Button borders and inset effects.
+- Button shadows.
+- Appropriate decorative icon space.
+
+The actual Open and Delete interactions must remain
+Angular DOM buttons.
+
+Do not use an image-only clickable surface.
+
+G. UPPER WASHER DECORATION
+- Folded green towels.
+- Folded white/cream towels.
+- Small lantern.
+- Creeping plants or leaves.
+- Decorative objects near the top edge.
+
+Extract top decorations separately if their overlap
+with the machine needs correct depth.
+
+H. CONTACT SHADOWS
+- Under-machine shadow.
+- Side contact with adjacent props.
+- Reflected lighting on floor.
+
+IMPORTANT OCCLUSION RECONSTRUCTION:
+
+The machine is partly overlapped by:
+- The left raccoon.
+- Plants.
+- Basket and foreground decorations.
+- Possibly towels and other objects.
+
+Recover the missing portions of the machine
+only where required for independent composition.
+
+Preserve the original visible surfaces.
+
+============================================================
+12. WASHER PREVIEW AREA
+============================================================
+
+POSITION:
+Inside the circular glass door of the washing machine.
+
+For the STATIC ASSET stage:
+
+- Extract the glass border.
+- Extract highlights/reflections separately.
+- Define the exact inner circular viewport.
+- Remove the baked sample structure artwork.
+- Create a clean inner background.
+- Store the correct circular mask.
+- Preserve the glass perspective and framing.
+
+Do not modify the working thumbnail capture pipeline
+during initial asset extraction.
+
+AFTER static composition is complete:
+
+Integrate the existing real project preview.
+
+REQUIREMENTS:
+
+- Display actual project structure.
+- Preserve the verified capture/persistence behavior.
+- Use a canonical Reset Camera-like framing.
+- Show the full structure clearly.
+- Show the Minecraft grid clearly when appropriate.
+- Avoid fake fantasy thumbnails.
+- Avoid heavy dark overlays obscuring blocks.
+- Ensure correct circular clipping.
+- Preserve navigation and GPU lifecycle correctness.
+
+Do not begin complex preview work before the physical
+washer artwork and mask have been validated.
+
+============================================================
+13. RIGHT-SIDE PROJECT BOARD
+============================================================
+
+POSITION:
+Large wooden display board occupying the middle-right
+portion of the room, below the right-side window area.
+
+Extract the ORIGINAL wooden board artwork.
+
+REQUIRED ELEMENTS:
+
+A. OUTER FRAME
+- Thick illustrated wooden frame.
+- Upper wooden beam.
+- Left/right wooden frame edges.
+- Lower wooden support.
+- Metal bolts or nails.
+- Decorative wood grain.
+- Perspective and corner shading.
+- Board contact shadows.
+
+B. INNER BOARD SURFACE
+- Clean paper/cork/wooden mounting surface.
+- Appropriate texture.
+- Board perspective.
+- Correct highlights and shadows.
+
+C. BOARD HEADER REGION
+- "My Projects" display area.
+- Small Minecraft grass-block icon.
+- Search input placement.
+- Sort dropdown placement.
+
+The actual title, search and sort controls must be
+real accessible Angular DOM content.
+
+D. NEW PROJECT CARD
+- Bright green paper/card design.
+- Large + symbol region.
+- Pin or thumbtack.
+- Card shadow and paper texture.
+
+The + interaction must be a real Angular button.
+
+E. PROJECT CARD TEMPLATE
+- Paper-like rectangular card.
+- Illustrated pin at the top.
+- Thumbnail region.
+- Project title region.
+- Optional three-dot menu.
+- Correct surface shadow.
+- Correct spacing.
+
+F. PROJECT GRID
+- Approximately three columns at the master desktop
+  composition, following the original image.
+- Two visible rows in the reference layout.
+- Additional real projects must scroll or be handled
+  without overflowing the illustrated frame.
+
+Do not keep reference sample cards baked into
+the static board.
+
+Do not keep fake project thumbnails or names.
+
+Do not create a new generic dashboard panel
+on top of the wooden artwork.
+
+G. BOARD DECORATION
+- Leaves draped over the upper edge.
+- Greenery.
+- Decorative Minecraft grass blocks.
+- Creeper head near the upper-right area.
+- Nearby small plants.
+- Wooden shelf elements above the board.
+
+Separate overlapping plants/props when needed.
+
+RECONSTRUCTION REQUIREMENT:
+
+Generate a CLEAN EMPTY BOARD surface after removing
+the sample project cards and baked interactive content.
+
+Use localized inpainting to reconstruct the surface
+behind those cards.
+
+Extract the original paper/card style as templates
+before removing them.
+
+The finished board must support arbitrary real projects
+without leaving ghost cards in the image.
+
+============================================================
+14. RACCOON LEFT — WASHER ASSISTANT
+============================================================
+
+POSITION:
+Lower-left of the washing machine, partly overlapping
+its front edge and the floor.
+
+CHARACTER DESCRIPTION:
+
+- Small gray/brown cartoon raccoon.
+- White facial areas.
+- Large dark eye patches.
+- Big expressive eyes.
+- Rounded ears.
+- Dark outlines.
+- Fluffy body and tail.
+- Dark paws.
+- Green or theme-specific apron/strap.
+- Small fabric bag or cloth with Minecraft grass-block
+  decoration.
+- Arms raised toward the washer.
+- Curious and friendly expression.
+
+EXTRACT:
+
+- Complete character silhouette.
+- Head.
+- Ears.
+- Face.
+- Eyes.
+- Front paws/arms.
+- Torso.
+- Tail.
+- Legs and feet.
+- Apron/bag.
+- Contact shadow.
+- Any small expressive accent marks.
+
+For the initial static composition, one clean,
+pixel-faithful character image is acceptable.
+
+For later animation preparation, identify regions
+that can become articulated layers:
+
+- Head.
+- Eyes/eyelids.
+- Ears.
+- Arms.
+- Tail.
+- Body.
+
+When a body part is partially hidden, reconstruct
+only the necessary missing portion.
+
+Do not regenerate an entirely different raccoon.
+
+============================================================
+15. RACCOON RIGHT — NOTE / MAP ASSISTANT
+============================================================
+
+POSITION:
+Lower-right side of the Project Board, seated near
+or on a low wooden bench.
+
+CHARACTER DESCRIPTION:
+
+- Small fluffy cartoon raccoon.
+- Rounded ears.
+- Gray/brown fur.
+- White face.
+- Dark eye patches.
+- Expressive large eyes.
+- Striped tail.
+- Sitting posture.
+- Holding paper or a small map/blueprint.
+- Holding or interacting with a pencil.
+- Friendly, focused expression.
+
+EXTRACT:
+
+- Full character silhouette.
+- Head and face.
+- Ears.
+- Eyes.
+- Paws.
+- Torso.
+- Seated legs.
+- Striped tail.
+- Paper/blueprint.
+- Pencil.
+- Contact shadow.
+- Nearby expressive marks.
+
+The paper and pencil should be separable if required
+for create-flow animation.
+
+Preserve the character's original visual identity.
+
+Do not generate a new raccoon with different anatomy.
+
+============================================================
+16. FLOOR AND FOREGROUND PROPS
+============================================================
+
+POSITION:
+Lower-center, lower-left and lower-right regions.
+
+ACCOUNT FOR:
+
+A. LAUNDRY BASKET
+- White/cream basket.
+- Basket grid openings.
+- Fabric lining.
+- Hanging white towel.
+- Minecraft grass blocks inside.
+- Basket contact shadow.
+
+B. SMALL WOODEN STOOL
+- Wooden seat.
+- Four legs.
+- Perspective and underside.
+- Contact shadow.
+
+C. MINECRAFT BLOCK PROPS
+- Grass blocks.
+- Dirt sides.
+- Stone blocks.
+- Gray stone cubes.
+- Stacked decorative blocks.
+- Individual visible cube outlines.
+
+D. FLOOR RUG
+- Soft woven rug.
+- Green/cream or gray pattern.
+- Fabric texture.
+- Perspective.
+- Cast/contact shadows.
+
+E. LOWER-RIGHT BENCH
+- Wooden seat.
+- Supporting legs.
+- Perspective.
+- Contact with right raccoon.
+
+F. SMALL MUG / CUP
+- Illustrated cup or mug.
+- Handle.
+- Small Minecraft-inspired surface decoration.
+- Surface shadow.
+
+G. FLOOR LANTERNS
+- Lantern bodies.
+- Glass.
+- Local glow.
+- Light spill on nearby floor.
+
+H. LOWER CORNER PLANTS
+- Leaves.
+- Small pots.
+- Foreground branches.
+- Correct occlusion of nearby objects.
+
+Group props when they naturally function as one
+decorative cluster.
+
+Do not unnecessarily create hundreds of tiny files.
+
+However, objects that overlap the washer, board
+or characters must have correct compositing depth.
+
+============================================================
+17. ADDITIONAL WALL AND SHELF DETAILS
+============================================================
+
+Ensure these details are not lost during extraction:
+
+- Small bottles on wooden shelves.
+- Folded laundry.
+- Green cleaning products.
+- Cream-colored containers.
+- Creeper-themed cubes.
+- Hanging grass block near entrance.
+- Small wall lanterns.
+- Wooden crates.
+- Hanging vines.
+- Shelf plants.
+- Warm light reflections.
+- Wood knots.
+- Decorative panels.
+- Small wall-mounted objects.
+- Floor-level vegetation.
+- Wooden floor highlights.
+
+These details make the room feel richly illustrated.
+
+Do not simplify the environment into large flat
+colored shapes.
+
+Do not regenerate the whole scene merely to recover
+minor decorative details.
+
+============================================================
+18. WHAT MUST NOT BECOME IMAGE ASSETS
+============================================================
+
+The following must remain Angular HTML/CSS:
+
+TOP-RIGHT GLOBAL CONTROLS:
+- Language icon.
+- EN / VI selector.
+- Minecraft / Raccoon / Light / Dark selector.
+- Settings icon and action.
+- Control container and dividers.
+
+BOTTOM-LEFT ACCOUNT:
+- Avatar display.
+- User/local guest identity.
+- Status or account description.
+- Dropdown interaction.
+- Control container.
+
+PROJECT APPLICATION UI:
+- Real project names.
+- Real thumbnails.
+- Search field.
+- Sort dropdown.
+- Project selection.
+- Open action.
+- Delete action.
+- Create Project.
+- Create from Structure JSON.
+- Modal dialogs.
+- Focus handling.
+- Keyboard interactions.
+- Loading/error states.
+
+These may visually sit on illustrated surfaces,
+but they must not be permanently baked into artwork.
+
+Create the appropriate clean underlying surfaces
+for these controls.
+
+Do not duplicate their visible labels in the image.
+
+============================================================
+19. LIGHTING ASSET INVENTORY
+============================================================
+
+Prepare lighting as independently controlled visual
+layers where necessary.
+
+Do not flatten all lighting into the room image.
+
+LIGHTING LAYERS MAY INCLUDE:
+
+1. Exterior daylight.
+2. Window light projection.
+3. Doorway light spill.
+4. Ceiling lamp emission.
+5. Small lantern glow.
+6. Wall logo backlight.
+7. Floor sunlight or moonlight.
+8. Washer glass reflections.
+9. Project board local illumination.
+10. Character rim lighting.
+11. Ambient room color wash.
+12. Localized contact shadows.
+
+THEME-SPECIFIC LOOK:
+
+MINECRAFT:
+Warm golden sunlight, sunset glow,
+soft warm shadows, cozy wood reflections.
+
+LIGHT:
+Clean morning illumination,
+white/cream wall materials, gentle shadows.
+
+RACCOON:
+Evening sky, warm local lamps,
+soft purple/orange ambient contrast.
+
+DARK:
+Deep moonlight, near-dark interior,
+mostly unlit ceiling lamps,
+limited warm points from distant architecture,
+subtle wall-logo illumination.
+
+Do not achieve these themes merely by applying
+one global CSS brightness/color filter.
+
+Preserve actual theme-specific reference appearance.
+
+============================================================
+20. ASSET FOLDER STRUCTURE
+============================================================
+
+All generated and extracted assets must be SAVED
+inside the repository.
+
+Use a clear, maintainable structure under:
+
+Frontend/public/assets/project-screen/
+
+Recommended structure:
+
+project-screen/
+  exterior/
+    minecraft/
+    light/
+    raccoon/
+    dark/
+
+  interior/
+    minecraft/
+    light/
+    raccoon/
+    dark/
+
+  architecture/
+    doors/
+    windows/
+    shelves/
+
+  logo/
+    mounting/
+    shadows/
+    lighting/
+
+  washer/
+    minecraft/
+    light/
+    raccoon/
+    dark/
+    shared/
+
+  project-board/
+    minecraft/
+    light/
+    raccoon/
+    dark/
+    shared/
+
+  characters/
+    washer-raccoon/
+      base/
+      poses/
+      parts/
+    note-raccoon/
+      base/
+      poses/
+      parts/
+
+  decor/
+    laundry/
+    vegetation/
+    furniture/
+    minecraft-blocks/
+    lighting/
+
+  masks/
+    openings/
+    washer-drum/
+    occlusion/
+
+  overlays/
+    daylight/
+    dusk/
+    night/
+    shadows/
+
+  manifests/
+
+This is a responsibility-based example.
+
+Adapt folders to real ownership and existing conventions.
+
+Do not create empty folders simply to match the example.
+
+Every exported asset must have a clear owner and
+a real consumer or documented preparation purpose.
+
+Avoid duplicated theme assets when the artwork is
+genuinely identical.
+
+Do not falsely share assets that differ significantly
+between the four approved references.
+
+Do not store all cutouts in a single miscellaneous
+folder with unclear filenames.
+
+============================================================
+21. SOURCE ARTWORK AND WORKING FILES
+============================================================
+
+Preserve the approved originals without modification.
+
+Store useful intermediate artwork separately from
+optimized runtime assets.
+
+Useful intermediate material includes:
+
+- Extraction masks.
+- Alpha masks.
+- Reconstructed background patches.
+- Original crop coordinates.
+- Layered master-composition files.
+- Source image provenance.
+- Asset generation/editing scripts when applicable.
+
+Use a dedicated design-source location under the
+existing design documentation structure when needed.
+
+Keep runtime asset loading separate from working files.
+
+Do not put large unoptimized PSD-like working material
+into the public runtime asset directory.
+
+Do not retain unlimited temporary generations.
+
+Keep the final chosen asset and useful reproducible
+source material.
+
+============================================================
+22. ASSET MANIFEST CONTRACT
+============================================================
+
+Create or update a maintainable asset manifest.
+
+For each asset define relevant metadata:
+
+- id
+- theme
+- source
+- file path
+- original canvas width/height
+- crop bounds
+- placement X/Y
+- rendered width/height
+- anchor
+- z/layer order
+- clipping/mask reference
+- animation role
+- extraction or reconstruction provenance
+
+Keep the manifest aligned with the exact reference
+coordinate system.
+
+Use measured coordinates.
+
+Do not maintain duplicated placement values scattered
+across unrelated TypeScript and SCSS files.
+
+Do not unnecessarily force all assets to full-canvas
+runtime dimensions.
+
+During authoring, full-canvas transparent layers are
+acceptable for validation.
+
+During runtime, prefer optimized transparent assets
+with recorded placement metadata.
+
+============================================================
+23. LAYER COMPOSITING ORDER
+============================================================
+
+Build the final static room in a controlled order.
+
+Recommended composition:
+
+LAYER 0:
+Exterior panorama for the selected theme.
+
+LAYER 1:
+Interior shell with transparent outdoor openings.
+
+LAYER 2:
+Permanent architecture, window frames, shelves,
+ceiling beams and fixed wall fixtures.
+
+LAYER 3:
+Behind-object details and shadows.
+
+LAYER 4:
+Wall logo and mounting treatment.
+
+LAYER 5:
+Large furniture and washing machine body.
+
+LAYER 6:
+Washing machine drum background and live preview area.
+
+LAYER 7:
+Machine rims, glass reflections and control face.
+
+LAYER 8:
+Wooden Project Board and clean board surface.
+
+LAYER 9:
+Board pins, cards and real DOM content.
+
+LAYER 10:
+Towels, plants and midground decorative objects.
+
+LAYER 11:
+Left and right raccoon characters.
+
+LAYER 12:
+Laundry baskets, stools, cubes, floor props
+and other foreground objects.
+
+LAYER 13:
+Localized lighting, reflections and appropriate
+foreground atmospheric effects.
+
+LAYER 14:
+Independent global HTML/CSS controls.
+
+The exact depth of an object must reflect the source.
+
+For example:
+- A vine may hang in front of the board.
+- A machine may hide part of a wall shadow.
+- A raccoon may stand in front of the washer.
+- A basket may stand in front of machine edges.
+
+Do not rigidly put all objects of one category
+in the same z-index if the source shows a more
+complex overlap.
+
+Use finer layering only when required.
+
+============================================================
+24. MANDATORY STATIC RECOMPOSITION VALIDATION
+============================================================
+
+This is a critical acceptance gate.
+
+Before functional overlays or animation are added,
+reconstruct the original static reference scene
+using the extracted layers.
+
+Render the composition at exactly:
+
+1672 x 941 pixels.
+
+For each theme:
+
+- Render the reconstructed composition.
+- Compare it against the approved reference.
+- Check object silhouettes.
+- Check alignment.
+- Check scale.
+- Check perspective.
+- Check outlines.
+- Check lighting.
+- Check missing details.
+- Check transparency holes.
+- Check unwanted duplicate objects.
+- Check residual extraction halos.
+
+Use visual overlays, difference images or
+region-based comparisons where useful.
+
+A global pixel-difference metric may be informative,
+but it is not sufficient because reconstructed
+hidden areas and dynamic UI placeholders differ
+intentionally from the reference.
+
+Evaluate the regions that should remain identical.
+
+Mask out intentional dynamic-content differences.
+
+If the machine, board, logo or characters visibly
+shift relative to their approved positions,
+the phase is NOT complete.
+
+Do not fix major extraction geometry errors with
+arbitrary CSS transformations.
+
+Correct the asset and its metadata.
+
+============================================================
+25. EXECUTION PHASE A — FULL INVENTORY
+============================================================
+
+Before generating any additional artwork:
+
+1. Inspect all four approved references.
+2. Inspect current assets and their consumers.
+3. Identify existing reusable accurate assets.
+4. Identify inaccurate independently regenerated assets.
+5. Identify missing layers.
+6. Identify duplicated imagery.
+7. Identify permanently baked UI.
+8. Determine the exact master coordinates.
+9. Determine extraction and occlusion dependencies.
+
+Create one concise asset inventory.
+
+Each inventory item must state:
+
+- Object/group name.
+- Position in the reference.
+- Theme coverage.
+- Extraction source.
+- Output folder.
+- Required reconstruction.
+- Layer order.
+- Completion status.
+
+Present the analysis to the user IN VIETNAMESE.
+
+Do not treat this inventory as a reason to stop.
+
+Proceed into asset production.
+
+============================================================
+26. EXECUTION PHASE B — EXTERIOR FIRST
+============================================================
+
+Produce all four complete outdoor panoramas first.
+
+Order:
+
+1. Minecraft.
+2. Light.
+3. Raccoon.
+4. Dark.
+
+For each theme:
+
+- Extract visible outdoor pixels.
+- Preserve the original perspective.
+- Reconstruct hidden exterior regions.
+- Align the door and window views.
+- Export one complete panorama.
+- Save it in the correct theme folder.
+- Record its source and metadata.
+- Validate against the original visible regions.
+
+Do not begin the interior until the panoramas are
+usable.
+
+============================================================
+27. EXECUTION PHASE C — CLEAN INTERIOR
+============================================================
+
+Produce all four clean room shells.
+
+For each theme:
+
+- Remove exterior pixels from openings.
+- Preserve interior structure.
+- Extract large removable furniture.
+- Extract character artwork.
+- Extract board and machine artwork.
+- Reconstruct wall and floor behind removed objects.
+- Keep the door/window transparency accurate.
+- Preserve all permanent architectural details.
+
+Deliver a complete room shell with correct alpha
+at the door and window openings.
+
+Do not accept unexplained transparency holes.
+
+============================================================
+28. EXECUTION PHASE D — ORIGINAL OBJECT EXTRACTION
+============================================================
+
+Extract the original major objects for all four themes.
+
+Required groups:
+
+- Logo presentation.
+- Washing machine.
+- Washing machine circular frame and glass.
+- Project Board.
+- Selected-project plate/note.
+- Left raccoon.
+- Right raccoon.
+- Upper decorative plants and towels.
+- Left shelves and decorative contents where needed.
+- Foreground basket and laundry.
+- Stool.
+- Minecraft block props.
+- Rug.
+- Lanterns.
+- Other visible foreground details.
+
+Each asset must be saved in its final folder.
+
+Do not mark the phase complete if important objects
+are missing or incorrect.
+
+For missing hidden parts, reconstruct only the
+necessary region.
+
+============================================================
+29. EXECUTION PHASE E — STATIC SCENE ASSEMBLY
+============================================================
+
+Use the extracted original artwork and asset manifest
+to reconstruct Minecraft at 1672 x 941.
+
+Do not move to the other theme's final assembly
+until Minecraft is compositionally accurate.
+
+Once Minecraft is accepted at the static composition
+level, repeat using the correct theme-specific assets:
+
+- Light.
+- Raccoon.
+- Dark.
+
+All four scenes must independently pass the same
+static reconstruction criteria.
+
+Do not use the Minecraft complete image as an opaque
+background for the final implementation.
+
+Do not use the Light complete image as the shared
+background for all other themes.
+
+Do not generate four unrelated replacement rooms.
+
+============================================================
+30. EXECUTION PHASE F — FUNCTIONAL UI
+============================================================
+
+Only after the static composition is accurate,
+integrate the real Angular controls.
+
+Preserve existing business logic.
+
+PROJECT BOARD:
+
+- Real project list.
+- Real project thumbnails.
+- Real selected state.
+- Search.
+- Sort.
+- New Project + action.
+- Create Project workflow.
+- Create from Structure JSON workflow.
+
+WASHING MACHINE:
+
+- Real Open action.
+- Real Delete action.
+- Real selected-project note.
+- Real preview region.
+
+GLOBAL CONTROLS:
+
+- EN/VI and theme selector in the top-right.
+- Settings.
+- Account/local guest widget in the bottom-left.
+
+The top-right and bottom-left elements remain
+HTML/CSS and are NOT asset images.
+
+Use correct anchor coordinates.
+
+Preserve keyboard accessibility and focus behavior.
+
+No transparent hit targets should sit over visible
+fake controls baked into artwork.
+
+The scene must render genuine user data only.
+
+============================================================
+31. EXECUTION PHASE G — REAL WASHER PREVIEW
+============================================================
+
+After the four static scenes and functional controls
+have been aligned, refine the washer preview.
+
+Use the existing verified capture and persistence
+implementation.
+
+Maintain non-blocking navigation and resource cleanup.
+
+The preview must appear naturally inside the circular
+washer drum.
+
+The structure should be:
+- Correctly centered.
+- Properly framed.
+- Sharp.
+- Large enough to recognize.
+- Accompanied by a visible grid where appropriate.
+
+Match the reference's drum placement and glass effects.
+
+Do not modify canonical project data to improve preview.
+
+Do not generate fake scene illustrations instead
+of showing the actual saved structure.
+
+============================================================
+32. EXECUTION PHASE H — RACCOON ANIMATION
+============================================================
+
+Only begin after all four static compositions have
+been visually validated.
+
+LEFT RACCOON STATES:
+
+IDLE:
+- Small breathing motion.
+- Occasional blinking.
+- Natural resting pose.
+
+PROJECT SELECTED:
+- Notices the selected project.
+- Looks toward the washing machine.
+- Small curious head/ear movements.
+- Returns naturally to idle.
+
+PROJECT OPENING:
+- Brief acknowledgement if appropriate.
+- Must not delay navigation.
+
+RIGHT RACCOON STATES:
+
+IDLE:
+- Calm breathing or blinking.
+- Small pencil or head motion if appropriate.
+
+CREATE:
+- Raises or presents a note to the user.
+- Uses a credible arm/paper movement.
+- Guides attention toward the create workflow.
+
+The character must not block the functional UI.
+
+ANIMATION ASSET RULES:
+
+Extract articulation-ready parts from the original
+character whenever possible.
+
+If a limb or pose is missing, reconstruct only
+the necessary anatomy or pose variation using
+the original character as the strict reference.
+
+Do not generate a new character with a different
+face, eyes, tail, ears or fur style.
+
+Animation must preserve visual identity.
+
+============================================================
+33. EXECUTION PHASE I — ENVIRONMENTAL ANIMATION
+============================================================
+
+After characters are correctly integrated,
+add ambient environmental animation.
+
+POTENTIAL MOTION:
+
+- Subtle outdoor clouds.
+- Gentle foliage sway.
+- Small ambient light shifts.
+- Lantern glow variation.
+- Window light transitions.
+- Logo illumination.
+- Tiny localized reflections.
+- Washer glass highlights.
+
+Do not move the entire scene image as a fake
+replacement for layered animation.
+
+Avoid excessive continuous effects.
+
+Do not animate every object merely because
+it can be animated.
+
+THEME TRANSITIONS:
+
+LIGHT:
+Morning illumination.
+
+MINECRAFT:
+Golden-hour illumination.
+
+RACCOON:
+Dusk and evening warmth.
+
+DARK:
+Late-night moonlight and dark interior.
+
+The chosen UI theme determines the scene time of day.
+
+Do not automatically change the selected theme
+according to real-world time.
+
+Preserve and reuse the existing Home Space Animations
+preference.
+
+Honor prefers-reduced-motion.
+
+Do not introduce duplicated preference storage.
+
+============================================================
+34. PERFORMANCE AND RESOURCE MANAGEMENT
+============================================================
+
+Asset quality must not create unnecessary runtime cost.
+
+Optimize final artwork for the browser.
+
+Requirements:
+
+- Avoid unnecessary oversized transparent canvases
+  in runtime delivery.
+- Use suitable optimized formats.
+- Preserve alpha quality.
+- Record true intrinsic dimensions.
+- Lazy-load secondary artwork where appropriate.
+- Do not constantly recreate image elements.
+- Avoid excessive compositing layers.
+- Avoid uncontrolled CSS filters.
+- Dispose animation resources correctly.
+- Stop inactive loops and timers.
+- Respect reduced-motion settings.
+- Avoid expensive JavaScript animation per frame.
+- Preserve existing project preview cache behavior.
+
+The overall application must continue supporting
+projects exceeding 100,000 blocks.
+
+Do not alter renderer hot paths unless required
+by a verified bug.
+
+============================================================
+35. TESTING STRATEGY — REDUCE UNNECESSARY REPETITION
+============================================================
+
+The current process has spent excessive time repeating
+tests after small visual changes.
+
+For this Goal, prioritize correct visual production.
+
+DURING EXTRACTION:
+
+- Inspect generated files.
+- Check transparency.
+- Check image dimensions.
+- Check layer alignment.
+- Check compositing output.
+- Check missing objects.
+
+Do not run the full application suite after every
+crop, mask or artwork adjustment.
+
+DURING SCENE ASSEMBLY:
+
+- Use browser visual inspection when available.
+- Compare the render against the reference.
+- Fix visible composition problems.
+- Fix immediate TypeScript/build errors.
+
+AT A MEANINGFUL CHECKPOINT:
+
+- Run relevant targeted tests.
+- Run TypeScript checks.
+- Run production build.
+- Run encoding/format checks.
+- Run git diff --check.
+
+AT THE FINAL IMPLEMENTATION MILESTONE:
+
+- Run the full automated test suite.
+- Run all relevant typechecks and build verification.
+- Run persistence/preview regression tests.
+- Run performance checks only when relevant code
+  or resource hot paths were changed.
+
+Codex must perform available automated verification
+itself.
+
+Do not transfer command-line testing work to the user.
+
+Do not claim tests passed if they were not executed.
+
+The priority is to reduce redundant test frequency,
+NOT to hide regressions.
+
+============================================================
+36. BROWSER AND VISUAL ACCEPTANCE
+============================================================
+
+Browser visual checking is more important than
+repeatedly testing static CSS string values.
+
+When browser access is available:
+
+Render all four themes at the 1672 x 941 reference
+composition.
+
+Inspect:
+
+- Exact object positions.
+- Background continuity.
+- Transparent window openings.
+- Room alignment.
+- Logo integration.
+- Washing machine silhouette.
+- Circular preview area.
+- Wooden Project Board.
+- Card placement.
+- Raccoon placement.
+- Foreground layering.
+- Contact shadows.
+- Theme lighting.
+
+Use a small, useful number of comparison screenshots.
+
+Do not generate hundreds of repetitive screenshots.
+
+If browser access is blocked:
+
+- Perform static compositing comparisons.
+- Run available image validation scripts.
+- Complete independently verifiable work.
+- Mark browser-specific visual acceptance pending.
+
+Never invent screenshot evidence.
+
+============================================================
+37. ASSET QUALITY GATES
+============================================================
+
+An asset is NOT complete merely because its file exists.
+
+Each asset must satisfy:
+
+1. Extracted from the correct original theme.
+2. Retains the original visible design.
+3. Preserves the correct shape and perspective.
+4. Has clean transparency.
+5. Contains no unwanted segmentation halo.
+6. Has correctly reconstructed hidden portions
+   where independent composition requires them.
+7. Uses the correct canvas coordinate system.
+8. Has complete manifest metadata.
+9. Is saved in the correct folder.
+10. Recombines correctly with adjacent layers.
+11. Does not create duplicate objects.
+12. Is actually used or explicitly retained
+    as a reproducible design source.
+
+A theme cannot pass static acceptance if any critical
+asset is missing, visibly misaligned or replaced by
+an inaccurate new illustration.
+
+============================================================
+38. CLEAN CODE AND SCOPE
+============================================================
+
+Follow all six Clean Code principles simultaneously:
+
+- Clear architecture and data/behavior ownership.
+- Evidence-based removal of dead and obsolete code.
+- Correct feature folder placement and naming.
+- Semantic contracts instead of unnecessary hardcoding.
+- Accurate synchronized documentation and references.
+- Consistent formatting and TypeScript/Angular style.
+
+Avoid:
+- Giant mixed-responsibility components.
+- Duplicated state.
+- Duplicate renderers.
+- Circular dependencies.
+- Legacy parallel pipelines.
+- Decorative wrappers without ownership value.
+- One-off hardcoded fixes that recreate asset drift.
+
+Limit refactoring to the Homepage scene and directly
+required supporting systems.
+
+Preserve:
+- Create/Open/Delete workflows.
+- Structure JSON import.
+- Theme and localization.
+- Persistence and recovery.
+- Undo/Redo.
+- Thumbnail data integrity.
+- GPU resource lifecycle.
+- Async cancellation.
+- Existing project data.
+
+============================================================
+39. PROGRESS REPORTING
+============================================================
+
+All checkpoint reports MUST be written in Vietnamese.
+
+Report only meaningful progress.
+
+For each major checkpoint provide:
+
+1. Completed phase.
+2. Assets actually extracted.
+3. Assets reconstructed with AI/inpainting.
+4. Output folders and important filenames.
+5. Theme coverage.
+6. Visual fidelity improvements.
+7. Known mismatches or missing assets.
+8. Technical verification performed.
+9. Commit SHA.
+10. Remaining work.
+
+Do not turn every small asset edit into a separate
+commit or long documentation report.
+
+Group closely related changes into meaningful commits.
+
+Commit locally.
+
+Do not push.
+
+Do not declare a phase PASS merely because automated
+tests pass.
+
+============================================================
+40. GOAL COMPLETION CRITERIA
+============================================================
+
+This Goal is complete only when:
+
+- All four exterior panoramas exist.
+- All four room shells exist with correct transparent
+  outdoor openings.
+- Original major objects have been extracted.
+- Hidden object/background portions are reconstructed.
+- No critical asset is missing.
+- All four scenes have correct independent assets.
+- Static recompositions closely match the approved
+  references.
+- No ghost project cards or fake dynamic controls remain.
+- Logo appears naturally mounted and illuminated.
+- Washer and Project Board fit the reference composition.
+- Both raccoons match the approved character artwork.
+- Main foreground decorations are correctly layered.
+- Real Angular project UI works.
+- Real project preview works in the washing machine.
+- Character animation states work.
+- Environmental animation and theme transitions work.
+- Home Space Animations can be disabled.
+- Reduced-motion behavior works.
+- Relevant automated verification passes.
+- Visual acceptance has been reviewed by the user.
+
+Do not consider partial asset extraction sufficient.
+
+Do not treat a complete flattened concept image as
+proof of successful layered reconstruction.
+
+Do not mark this Goal complete without user approval.
+
+============================================================
+41. START EXECUTION
+============================================================
+
+Begin with the Minecraft source image.
+
+Perform the full scene inventory and source analysis.
+
+Then produce:
+
+1. Complete Minecraft exterior panorama.
+2. Clean Minecraft interior room with transparent
+   outdoor openings.
+3. Reconstructed background behind major objects.
+4. Original extracted logo presentation.
+5. Original extracted washer.
+6. Original extracted board.
+7. Original extracted left raccoon.
+8. Original extracted right raccoon.
+9. Original extracted foreground decorations.
+10. A pixel-aligned static recomposition.
+
+Validate the Minecraft static reconstruction.
+
+Then execute the same complete production pipeline
+for Light, Raccoon and Dark.
+
+Only after all four static compositions are correct
+should functional preview refinement and animation
+begin.
+
+Do not substitute additional CSS guessing for
+missing artwork.
+
+Do not regenerate an entire image when localized
+extraction and reconstruction can preserve the original.
+
+All analysis and progress reporting must be
+in Vietnamese.
+
+BEGIN NOW.
