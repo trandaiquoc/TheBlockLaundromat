@@ -58,7 +58,9 @@ text. A browser screenshot with an empty IndexedDB project confirms the card
 frame, placeholder, and title alignment; non-empty thumbnail alignment remains
 pending. `create-project-tile-craft.png` is a 142 × 156 pixel crop at `(1026,
 385)` from that same source; its button remains interactive while showing the
-original tile art.
+original tile art. A responsive percentage translation aligns that live
+button with the source tile after the board's perspective transform; the exact
+source crop remains underneath it. See the [focused alignment evidence](evidence/20261019-craft-tile-alignment/README.md).
 
 `scene-minecraft-display-cleanup.png` removes only the two baked text lines from
 the Craft washer's dark project plate. Its script masks neutral-bright glyphs,

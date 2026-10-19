@@ -121,6 +121,7 @@ describe('ProjectScreenComponent', () => {
     expect(craftBoard).not.toContain('background:');
     expect(craftBoard).not.toContain('clip-path:');
     expect(layoutStyles).toContain('create-project-tile-craft.png');
+    expect(layoutStyles).toContain('transform: translate(-4.2%, 3.8%)');
     expect(layoutStyles).toContain(".project-page[data-theme='craft'] .scene-canvas");
     expect(layoutStyles).toContain('width: max(100vw, 177.68svh)');
     expect(layoutStyles).toContain('height: max(100svh, 56.28vw)');

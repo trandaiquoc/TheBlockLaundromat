@@ -20,6 +20,25 @@
   },
   "extractions": [
     {
+      "id": "minecraft-create-project-tile",
+      "theme": "minecraft",
+      "source": "Docs/design/references/01-minecraft.png",
+      "sourceRect": {
+        "x": 1026,
+        "y": 385,
+        "width": 142,
+        "height": 156
+      },
+      "output": "Frontend/public/assets/project-screen/layers/create-project-tile-craft.png",
+      "validation": {
+        "sourceCropPixelIdentical": true,
+        "method": "Pillow extraction tool reloads the saved PNG and compares every RGBA pixel with the source crop.",
+        "runtimeAlignment": "The live Angular button receives a responsive translation after the project board perspective transform.",
+        "bakedSourceCopy": "Still present beneath the live scene; full static scene cleanup remains pending."
+      },
+      "algorithm": "Frontend/tools/project-screen-assets/extract-create-project-tile-craft.py"
+    },
+    {
       "id": "minecraft-window-views",
       "theme": "minecraft",
       "source": "Docs/design/references/01-minecraft.png",
