@@ -29,7 +29,7 @@ An inventory entry or green build alone is not visual acceptance.
 | B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed |
 | C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed |
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed |
-| E          | Settings hierarchy and real bilingual Help/documentation                                     | Pending                                     |
+| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed |
 | F          | Every supported import/export workflow and its nested decisions                              | Pending                                     |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | Pending                                     |
 | H          | Project/diagnostics and all specialized editor surfaces                                      | Pending                                     |
@@ -41,6 +41,7 @@ typecheck, production build, tool checks, scoped formatter, encoding and diff
 checks. No remote push is authorized by this work.
 
 Checkpoint evidence: [D — shared dialogs and overlays](CHECKPOINT-D.md).
+Checkpoint E evidence: [E — Settings and Help](CHECKPOINT-E.md).
 
 ## Preserved contracts
 

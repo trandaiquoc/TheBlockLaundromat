@@ -1,27 +1,21 @@
-import { Component, computed, inject, output } from '@angular/core';
-import { KEYBOARD_ACTIONS, KeyboardAction } from '../../../../core/editor/input/keyboard-bindings';
+import { Component, computed, inject } from '@angular/core';
+import { KEYBOARD_ACTIONS, KeyboardAction } from '../../../core/editor/input/keyboard-bindings';
 import {
   MOUSE_ACTIONS,
   MouseAction,
   mouseBindingTokens,
-} from '../../../../core/editor/input/mouse-bindings';
-import { KeyboardBindingService } from '../../../../core/editor/input/keyboard-binding.service';
-import { I18nService } from '../../../../core/ui/localization/i18n.service';
-import { LucideX } from '@lucide/angular';
-import { UiTooltipDirective } from '../../../../shared/ui/tooltip/ui-tooltip.directive';
-import { CdkTrapFocus } from '@angular/cdk/a11y';
+} from '../../../core/editor/input/mouse-bindings';
+import { KeyboardBindingService } from '../../../core/editor/input/keyboard-binding.service';
+import { I18nService } from '../../../core/ui/localization/i18n.service';
 
 @Component({
-  selector: 'app-shortcuts-help-dialog',
-  imports: [LucideX, UiTooltipDirective, CdkTrapFocus],
-  templateUrl: './shortcuts-help-dialog.component.html',
-  styleUrl: './shortcuts-help-dialog.component.scss',
-  host: { '(document:keydown.escape)': 'close()' },
+  selector: 'app-workspace-shortcut-reference',
+  templateUrl: './workspace-shortcut-reference.component.html',
+  styleUrl: './workspace-shortcut-reference.component.scss',
 })
-export class ShortcutsHelpDialogComponent {
+export class WorkspaceShortcutReferenceComponent {
   protected readonly i18n = inject(I18nService);
   protected readonly bindings = inject(KeyboardBindingService);
-  readonly closed = output<void>();
   protected readonly keyboardGroups = computed(() => {
     const groups = ['movement', 'tools-view', 'editing', 'quickBar'] as const;
     return groups.map((group) => ({
@@ -29,10 +23,8 @@ export class ShortcutsHelpDialogComponent {
       entries: KEYBOARD_ACTIONS.filter((entry) => entry.group === group),
     }));
   });
+  protected readonly mouseEntries = MOUSE_ACTIONS;
 
-  protected close(): void {
-    this.closed.emit();
-  }
   protected keyboardLabel(action: KeyboardAction): string {
     const key = (
       {
@@ -69,6 +61,7 @@ export class ShortcutsHelpDialogComponent {
     )[action];
     return this.i18n.t(key);
   }
+
   protected keyboardGroupLabel(group: 'movement' | 'tools-view' | 'editing' | 'quickBar'): string {
     return (
       {
@@ -79,6 +72,7 @@ export class ShortcutsHelpDialogComponent {
       } as const
     )[group];
   }
+
   protected mouseLabel(action: MouseAction): string {
     return (
       {
@@ -92,9 +86,7 @@ export class ShortcutsHelpDialogComponent {
       } as const
     )[action];
   }
-  protected mouseEntries(): readonly { readonly action: MouseAction }[] {
-    return MOUSE_ACTIONS;
-  }
+
   protected displayTokens(binding: string): readonly string[] {
     return binding
       ? binding
@@ -105,12 +97,15 @@ export class ShortcutsHelpDialogComponent {
           ])
       : [this.i18n.t('unassigned')];
   }
-  protected displayMouseBinding(action: MouseAction): string {
-    return this.displayBinding(this.bindings.mouseBindings()[action]);
-  }
+
   protected displayKeyboardBinding(action: KeyboardAction): string {
     return this.displayBinding(this.bindings.bindings()[action]);
   }
+
+  protected displayMouseBinding(action: MouseAction): string {
+    return this.displayBinding(this.bindings.mouseBindings()[action]);
+  }
+
   private displayBinding(binding: string): string {
     return binding
       ? binding
@@ -122,6 +117,7 @@ export class ShortcutsHelpDialogComponent {
           .replaceAll('WheelDown', this.i18n.t('mouseWheelDown'))
       : this.i18n.t('unassigned');
   }
+
   private displayToken(token: string): string {
     return (
       (

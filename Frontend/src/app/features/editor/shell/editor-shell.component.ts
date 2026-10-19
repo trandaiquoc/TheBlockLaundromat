@@ -12,7 +12,8 @@ import {
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { ThemeService } from '../../../core/ui/theme/theme.service';
 import { EditorBackgroundMode } from '../../../core/editor/appearance/editor-background-contract';
@@ -63,7 +64,9 @@ import { GroupsPanelComponent } from '../groups/groups-panel.component';
 import { ContextualInspectorComponent } from '../inspector/contextual-inspector/contextual-inspector.component';
 import { BlockUsagePanelComponent } from '../inspector/block-usage/block-usage-panel.component';
 import { EditorStatusBarComponent } from './editor-status-bar/editor-status-bar.component';
-import { ShortcutsHelpDialogComponent } from '../settings/shortcuts-help/shortcuts-help-dialog.component';
+import { WorkspaceHelpDialogComponent } from '../help/workspace-help-dialog.component';
+import { workspaceHelpTopic } from '../help/workspace-help-content';
+import type { WorkspaceHelpTopicId } from '../help/workspace-help-content';
 import { AssetManagerDialogComponent } from '../tools/asset-manager/asset-manager-dialog.component';
 import { ProjectDiagnosticsDialogComponent } from '../tools/diagnostics/project-diagnostics-dialog.component';
 import { StructureJsonExportDialogComponent } from '../structure-json/export/structure-json-export-dialog.component';
@@ -99,7 +102,7 @@ type AssetManagerInitialTab = 'vanilla' | 'mods';
     ViewportComponent,
     YLayerComponent,
     SettingsDialogComponent,
-    ShortcutsHelpDialogComponent,
+    WorkspaceHelpDialogComponent,
     AssetManagerDialogComponent,
     ProjectDiagnosticsDialogComponent,
     StructureJsonExportDialogComponent,
@@ -150,6 +153,10 @@ export class EditorShellComponent implements OnDestroy {
   private readonly dialogs = inject(DialogService);
   private readonly editor = inject(StructureEditorService);
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly queryParamMap = toSignal(this.activatedRoute.queryParamMap, {
+    initialValue: this.activatedRoute.snapshot.queryParamMap,
+  });
   private readonly leaveCoordinator = inject(EditorLeaveCoordinator);
   private readonly library = inject(BlockLibraryService);
   private readonly projectDeletion = inject(ProjectDeletionService);
@@ -192,7 +199,10 @@ export class EditorShellComponent implements OnDestroy {
   protected readonly leftSidebarTab = signal<'blocks' | 'decorations' | 'groups'>('blocks');
   protected readonly deletingProject = signal(false);
   protected readonly settingsDialogOpen = signal(false);
-  protected readonly controlsHelpOpen = signal(false);
+  protected readonly workspaceHelpOpen = computed(() => this.queryParamMap().has('help'));
+  protected readonly workspaceHelpTopic = computed(() =>
+    workspaceHelpTopic(this.queryParamMap().get('help')),
+  );
   protected readonly assetManagerOpen = signal(false);
   protected readonly assetManagerInitialTab = signal<AssetManagerInitialTab>('vanilla');
   protected readonly diagnosticsOpen = signal(false);
@@ -334,6 +344,9 @@ export class EditorShellComponent implements OnDestroy {
         break;
       case 'open-controls-help':
         this.showControlsHelp();
+        break;
+      case 'open-workspace-help':
+        this.openWorkspaceHelp('getting-started');
         break;
       case 'open-about':
         this.showAbout();
@@ -590,7 +603,22 @@ export class EditorShellComponent implements OnDestroy {
     this.structureJsonExportOpen.set(false);
   }
   protected showControlsHelp(): void {
-    this.controlsHelpOpen.set(true);
+    this.openWorkspaceHelp('keyboard-mouse');
+  }
+  protected openWorkspaceHelp(topic: WorkspaceHelpTopicId): void {
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { help: topic },
+      queryParamsHandling: 'merge',
+    });
+  }
+  protected closeWorkspaceHelp(): void {
+    void this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { help: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
   protected showAbout(): void {
     void this.dialogs.info(this.i18n.t('about'), this.i18n.t('aboutText'));
@@ -666,7 +694,7 @@ export class EditorShellComponent implements OnDestroy {
     if (event.defaultPrevented) return;
     if (
       this.settingsDialogOpen() ||
-      this.controlsHelpOpen() ||
+      this.workspaceHelpOpen() ||
       this.assetManagerOpen() ||
       this.diagnosticsOpen() ||
       this.structureJsonImportOpen() ||

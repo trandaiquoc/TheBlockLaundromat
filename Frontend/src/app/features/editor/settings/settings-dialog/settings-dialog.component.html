@@ -10,7 +10,10 @@
     tabindex="-1"
   >
     <header class="settings-dialog-header">
-      <h2>{{ i18n.t('settingsDialogTitle') }}</h2>
+      <div class="settings-dialog-heading">
+        <h2>{{ i18n.t('settingsDialogTitle') }}</h2>
+        <p>{{ i18n.t('settingsDialogDescription') }}</p>
+      </div>
       <button
         type="button"
         class="settings-close ui-close-button"
@@ -23,23 +26,45 @@
     </header>
     <div class="settings-dialog-body">
       <nav class="settings-nav" [attr.aria-label]="i18n.t('settingsSections')">
-        @for (item of sections; track item) {
-          <button
-            #sectionButton
-            type="button"
-            [class.active]="section() === item"
-            [attr.aria-current]="section() === item ? 'page' : null"
-            [attr.cdkFocusInitial]="item === 'general' ? '' : null"
-            (click)="setSection(item, sectionButton)"
-          >
-            {{ sectionLabel(item) }}
-          </button>
-        }
+        <select
+          class="settings-nav-select"
+          [value]="section()"
+          [attr.aria-label]="i18n.t('settingsSections')"
+          (change)="selectSection($event)"
+        >
+          @for (group of sectionGroups; track group.id) {
+            <optgroup [label]="sectionGroupLabel(group.id)">
+              @for (item of group.sections; track item) {
+                <option [value]="item">{{ sectionLabel(item) }}</option>
+              }
+            </optgroup>
+          }
+        </select>
+        <div class="settings-nav-groups">
+          @for (group of sectionGroups; track group.id) {
+            <div class="settings-nav-group">
+              <h3 class="settings-nav-group-label">{{ sectionGroupLabel(group.id) }}</h3>
+              @for (item of group.sections; track item) {
+                <button
+                  #sectionButton
+                  type="button"
+                  [class.active]="section() === item"
+                  [attr.aria-current]="section() === item ? 'page' : null"
+                  [attr.cdkFocusInitial]="item === 'general' ? '' : null"
+                  (click)="setSection(item, sectionButton)"
+                >
+                  {{ sectionLabel(item) }}
+                </button>
+              }
+            </div>
+          }
+        </div>
       </nav>
       <div class="settings-content">
         @if (section() === 'general') {
           <section>
             <h3>{{ i18n.t('generalSettings') }}</h3>
+            <p class="settings-section-description">{{ sectionDescription('general') }}</p>
             <label
               >{{ i18n.t('language') }}
               <app-themed-select
@@ -84,6 +109,7 @@
         } @else if (section() === 'appearance') {
           <section class="appearance-settings">
             <h3>{{ i18n.t('appearanceSettings') }}</h3>
+            <p class="settings-section-description">{{ sectionDescription('appearance') }}</p>
             <nav
               class="appearance-tabs ui-tab-strip"
               role="tablist"
@@ -354,6 +380,7 @@
         } @else if (section() === 'controls') {
           <section>
             <h3>{{ i18n.t('controlsSettings') }}</h3>
+            <p class="settings-section-description">{{ sectionDescription('controls') }}</p>
             @for (field of controlFields; track field.key) {
               <label class="range-setting">
                 <span
@@ -387,6 +414,7 @@
         } @else if (section() === 'shortcuts') {
           <section class="shortcuts-settings" (keydown)="handleShortcutKeydown($event)">
             <h3>{{ i18n.t('shortcutsSettings') }}</h3>
+            <p class="settings-section-description">{{ sectionDescription('shortcuts') }}</p>
             <div
               class="shortcut-tabs ui-tab-strip"
               role="tablist"
@@ -542,6 +570,7 @@
         } @else if (section() === 'accessibility') {
           <section class="accessibility-settings">
             <h3>{{ sectionLabel(section()) }}</h3>
+            <p class="settings-section-description">{{ sectionDescription('accessibility') }}</p>
             <label class="range-setting brightness-setting">
               <span
                 ><span>{{ i18n.t('blockBrightness') }}</span
@@ -579,6 +608,10 @@
       </div>
     </div>
     <footer class="settings-dialog-footer">
+      <span class="settings-save-status" [class.pending]="dirty()" role="status" aria-live="polite">
+        <span class="settings-save-status-indicator" aria-hidden="true"></span>
+        {{ i18n.t(dirty() ? 'settingsUnsavedChanges' : 'settingsAllSaved') }}
+      </span>
       <span class="settings-footer-spacer"></span>
       <button
         type="button"

@@ -1,0 +1,94 @@
+<div class="workspace-help-backdrop" role="presentation">
+  <section
+    class="workspace-help-dialog"
+    animate.enter="workspace-dialog-enter"
+    cdkTrapFocus
+    [cdkTrapFocusAutoCapture]="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="workspace-help-title"
+    aria-describedby="workspace-help-description"
+    tabindex="-1"
+  >
+    <header class="workspace-help-header">
+      <div class="workspace-help-heading">
+        <h2 id="workspace-help-title">{{ i18n.t('workspaceHelpTitle') }}</h2>
+        <p id="workspace-help-description">{{ i18n.t('workspaceHelpDescription') }}</p>
+      </div>
+      <label class="workspace-help-search">
+        <span class="visually-hidden">{{ i18n.t('workspaceHelpSearch') }}</span>
+        <input
+          type="search"
+          [value]="searchQuery()"
+          [placeholder]="i18n.t('workspaceHelpSearch')"
+          [attr.aria-label]="i18n.t('workspaceHelpSearch')"
+          (input)="setSearchQuery($event)"
+        />
+      </label>
+      <button
+        type="button"
+        class="workspace-help-close ui-close-button"
+        [attr.aria-label]="i18n.t('workspaceHelpClose')"
+        (click)="close()"
+      >
+        <svg lucideX aria-hidden="true"></svg>
+      </button>
+    </header>
+    <div class="workspace-help-layout">
+      <nav class="workspace-help-navigation" [attr.aria-label]="i18n.t('workspaceHelpTopics')">
+        @for (group of filteredGroups(); track group.group) {
+          <section class="workspace-help-nav-group">
+            <h3>{{ groupLabel(group.group) }}</h3>
+            @for (item of group.articles; track item.id) {
+              <button
+                type="button"
+                [class.active]="topic() === item.id"
+                [attr.aria-current]="topic() === item.id ? 'page' : null"
+                [attr.aria-controls]="
+                  topic() === item.id ? 'workspace-help-article-' + item.id : null
+                "
+                (click)="topicChange.emit(item.id)"
+              >
+                {{ topicTitle(item) }}
+              </button>
+            }
+          </section>
+        } @empty {
+          <p class="workspace-help-no-results">{{ i18n.t('workspaceHelpNoResults') }}</p>
+        }
+      </nav>
+      <label class="workspace-help-mobile-topic">
+        <span>{{ i18n.t('workspaceHelpTopics') }}</span>
+        <select [value]="topic()" (change)="selectTopicFromEvent($event)">
+          @for (item of articles; track item.id) {
+            <option [value]="item.id">{{ topicTitle(item) }}</option>
+          }
+        </select>
+      </label>
+      <main class="workspace-help-article-scroll" tabindex="-1">
+        <article
+          class="workspace-help-article"
+          [id]="'workspace-help-article-' + article().id"
+          [attr.aria-labelledby]="'workspace-help-heading-' + article().id"
+        >
+          <p class="workspace-help-breadcrumb">
+            {{ groupLabel(article().group) }}
+          </p>
+          <h1 [id]="'workspace-help-heading-' + article().id">{{ i18n.t(article().titleKey) }}</h1>
+          <p class="workspace-help-summary">{{ i18n.t(article().summaryKey) }}</p>
+          <ul>
+            @for (point of article().points; track point) {
+              <li>{{ i18n.t(point) }}</li>
+            }
+          </ul>
+          @if (article().noteKey) {
+            <aside class="workspace-help-note">{{ i18n.t(article().noteKey!) }}</aside>
+          }
+          @if (article().id === 'keyboard-mouse') {
+            <app-workspace-shortcut-reference></app-workspace-shortcut-reference>
+          }
+        </article>
+      </main>
+    </div>
+  </section>
+</div>

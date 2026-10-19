@@ -41,6 +41,17 @@
   margin: 0;
   font-size: 1rem;
 }
+.settings-dialog-heading {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.settings-dialog-heading p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  line-height: 1.3;
+}
 .settings-dialog-body {
   display: grid;
   grid-template-columns: 184px minmax(0, 1fr);
@@ -50,14 +61,35 @@
 .settings-nav {
   display: grid;
   align-content: start;
-  gap: 0.25rem;
+  gap: 0.9rem;
   padding: 0.75rem;
   border-right: 1px solid var(--divider);
   background: var(--surface-muted);
 }
+.settings-nav-groups {
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+}
+.settings-nav-group {
+  display: grid;
+  align-content: start;
+  gap: 0.15rem;
+}
+.settings-nav-group-label {
+  margin: 0 0 0.15rem;
+  padding: 0 0.5rem;
+  color: var(--text-muted);
+  font: 650 0.62rem/1.3 var(--font-ui);
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+.settings-nav-select {
+  display: none;
+}
 .settings-nav button {
   position: relative;
-  min-height: 2.3rem;
+  min-height: 2.5rem;
   border: 0;
   border-radius: var(--radius-sm);
   padding: 0.55rem 0.65rem 0.55rem 1.05rem;
@@ -162,6 +194,12 @@
 .settings-content h3 {
   margin: 0;
   font: 1rem/1.2 var(--font-ui);
+}
+.settings-section-description {
+  margin: -0.45rem 0 0.1rem;
+  color: var(--text-muted);
+  font-size: 0.73rem;
+  line-height: 1.4;
 }
 .reality-settings {
   display: grid;
@@ -442,6 +480,25 @@
 .settings-dialog-footer {
   border-top: 1px solid var(--divider);
 }
+.settings-save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.settings-save-status-indicator {
+  width: 0.45rem;
+  height: 0.45rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--success);
+}
+.settings-save-status.pending .settings-save-status-indicator {
+  background: var(--warning);
+}
 .settings-footer-spacer {
   flex: 1;
 }
@@ -695,16 +752,22 @@
     grid-template-rows: auto minmax(0, 1fr);
   }
   .settings-nav {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: block;
     border-right: 0;
     border-bottom: 1px solid var(--divider);
   }
-  .settings-nav button {
-    min-width: 0;
-    padding-inline: 0.4rem;
-    text-align: center;
-    white-space: normal;
+  .settings-nav-groups {
+    display: none;
+  }
+  .settings-dialog .settings-nav-select {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--control-normal);
+    color: var(--text);
   }
   .settings-dialog-footer {
     flex-wrap: wrap;
@@ -714,12 +777,12 @@
   }
 }
 @media (max-width: 360px) {
-  .settings-nav {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .settings-dialog-footer {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .settings-save-status {
+    grid-column: 1 / -1;
   }
   .settings-dialog-footer button.primary {
     grid-column: 1 / -1;

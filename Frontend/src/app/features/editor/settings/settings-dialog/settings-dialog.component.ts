@@ -31,6 +31,7 @@ import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { SettingsDialogSession } from './settings-dialog-session';
 
 type SettingsSection = 'general' | 'appearance' | 'controls' | 'shortcuts' | 'accessibility';
+type SettingsSectionGroup = 'workspace' | 'input' | 'accessibility';
 type AppearanceTab = 'interface' | 'workspace-background';
 
 @Component({
@@ -86,6 +87,14 @@ export class SettingsDialogComponent implements OnDestroy {
     'controls',
     'shortcuts',
     'accessibility',
+  ];
+  protected readonly sectionGroups: readonly {
+    readonly id: SettingsSectionGroup;
+    readonly sections: readonly SettingsSection[];
+  }[] = [
+    { id: 'workspace', sections: ['general', 'appearance'] },
+    { id: 'input', sections: ['controls', 'shortcuts'] },
+    { id: 'accessibility', sections: ['accessibility'] },
   ];
   protected readonly languageOptions = computed<readonly ThemedSelectOption[]>(() => [
     { id: 'en', label: this.i18n.t('english') },
@@ -446,6 +455,30 @@ export class SettingsDialogComponent implements OnDestroy {
         accessibility: this.i18n.t('accessibilitySettings'),
       } as const
     )[section];
+  }
+  protected sectionGroupLabel(group: SettingsSectionGroup): string {
+    return (
+      {
+        workspace: this.i18n.t('settingsWorkspaceGroup'),
+        input: this.i18n.t('settingsInputGroup'),
+        accessibility: this.i18n.t('settingsAccessibilityGroup'),
+      } as const
+    )[group];
+  }
+  protected sectionDescription(section: SettingsSection): string {
+    return (
+      {
+        general: this.i18n.t('settingsGeneralDescription'),
+        appearance: this.i18n.t('settingsAppearanceDescription'),
+        controls: this.i18n.t('settingsControlsDescription'),
+        shortcuts: this.i18n.t('settingsShortcutsDescription'),
+        accessibility: this.i18n.t('settingsAccessibilityDescription'),
+      } as const
+    )[section];
+  }
+  protected selectSection(event: Event): void {
+    const section = (event.currentTarget as HTMLSelectElement).value as SettingsSection;
+    if (this.sections.includes(section)) this.section.set(section);
   }
 
   ngOnDestroy(): void {

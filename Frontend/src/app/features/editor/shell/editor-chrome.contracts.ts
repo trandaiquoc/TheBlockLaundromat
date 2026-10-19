@@ -52,6 +52,7 @@ export type EditorChromeAction =
   | { readonly type: 'set-locale'; readonly locale: UiLocale }
   | { readonly type: 'set-theme'; readonly theme: EditorChromeState['theme'] }
   | { readonly type: 'set-background'; readonly background: EditorBackgroundMode }
+  | { readonly type: 'open-workspace-help' }
   | { readonly type: 'open-controls-help' }
   | { readonly type: 'open-about' }
   | { readonly type: 'set-tool'; readonly tool: 'place' | 'select' }

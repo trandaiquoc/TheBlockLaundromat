@@ -89,6 +89,30 @@ describe('EditorChromeComponent menu keyboard navigation', () => {
     fixture.destroy();
   });
 
+  it('offers the workspace guide without removing the shortcut reference or About', () => {
+    const fixture = TestBed.createComponent(EditorChromeComponent);
+    fixture.componentRef.setInput('state', state);
+    fixture.detectChanges();
+    const actions: unknown[] = [];
+    fixture.componentInstance.action.subscribe((action) => actions.push(action));
+    const root = fixture.nativeElement as HTMLElement;
+    const helpTrigger = [...root.querySelectorAll<HTMLButtonElement>('.app-menu-trigger')].find(
+      (button) => button.textContent?.trim() === 'helpMenu',
+    )!;
+    helpTrigger.click();
+    fixture.detectChanges();
+
+    const items = [...root.querySelectorAll<HTMLButtonElement>('.menu-popover [role="menuitem"]')];
+    expect(items.map((item) => item.textContent?.trim())).toEqual([
+      'workspaceHelpTitle',
+      'controlsShortcuts',
+      'about',
+    ]);
+    items[0].click();
+    expect(actions).toEqual([{ type: 'open-workspace-help' }]);
+    fixture.destroy();
+  });
+
   it('uses the same application commands in the compact Menu and returns keyboard focus on Escape', () => {
     const fixture = TestBed.createComponent(EditorChromeComponent);
     fixture.componentRef.setInput('state', state);
@@ -205,7 +229,7 @@ describe('EditorChromeComponent menu keyboard navigation', () => {
     const root = fixture.nativeElement as HTMLElement;
     const menu = root.querySelector<HTMLElement>('[role="menu"]');
     let items = menu?.querySelectorAll<HTMLButtonElement>('button[role^="menuitem"]');
-    expect(items?.length).toBe(2);
+    expect(items?.length).toBe(3);
     expect([...items!].every((item) => item.tabIndex === -1)).toBe(true);
     expect(document.activeElement).toBe(items?.[0]);
     const scrollIntoView = [...items!].map(() => vi.fn());
@@ -219,16 +243,18 @@ describe('EditorChromeComponent menu keyboard navigation', () => {
     press(items![0], 'ArrowDown');
     expect(document.activeElement).toBe(items?.[1]);
     press(items![1], 'ArrowDown');
+    expect(document.activeElement).toBe(items?.[2]);
+    press(items![2], 'ArrowDown');
     expect(document.activeElement).toBe(items?.[0]);
     press(items![0], 'ArrowUp');
-    expect(document.activeElement).toBe(items?.[1]);
+    expect(document.activeElement).toBe(items?.[2]);
     press(items![1], 'Home');
     expect(document.activeElement).toBe(items?.[0]);
     press(items![0], 'End');
-    expect(document.activeElement).toBe(items?.[1]);
-    expect(scrollIntoView[1]).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' });
+    expect(document.activeElement).toBe(items?.[2]);
+    expect(scrollIntoView[2]).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest' });
 
-    press(items![1], 'Escape');
+    press(items![2], 'Escape');
     fixture.detectChanges();
     expect(root.querySelector('[role="menu"]')).toBeNull();
     expect(document.activeElement).toBe(helpTrigger);

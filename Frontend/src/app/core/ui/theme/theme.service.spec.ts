@@ -267,7 +267,7 @@ describe('Workspace color palette contract', () => {
 
   it('uses the shared overlay scrim and 24px Workspace icon targets', () => {
     const dialogStyles = [
-      'src/app/features/editor/settings/shortcuts-help/shortcuts-help-dialog.component.scss',
+      'src/app/features/editor/help/workspace-help-dialog.component.scss',
       'src/app/features/editor/minecraft-structure-export/structure-nbt-export-dialog.component.scss',
       'src/app/features/editor/shell/editor-status-bar/missing-assets-dialog.component.scss',
       'src/app/features/editor/tools/asset-manager/asset-manager-dialog.component.scss',

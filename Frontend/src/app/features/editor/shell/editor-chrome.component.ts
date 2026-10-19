@@ -6,6 +6,7 @@ import type { EditorChromeAction, EditorChromeState } from './editor-chrome.cont
 import {
   LucideCamera,
   LucideActivity,
+  LucideBookOpen,
   LucideCheck,
   LucideChevronDown,
   LucideCuboid,
@@ -40,6 +41,7 @@ type SegmentControl = 'mode' | 'tool';
   selector: 'app-editor-chrome',
   imports: [
     LucideActivity,
+    LucideBookOpen,
     LucideCamera,
     LucideCheck,
     RouterLink,

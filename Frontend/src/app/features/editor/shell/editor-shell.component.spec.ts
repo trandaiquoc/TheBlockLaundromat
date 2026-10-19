@@ -13,7 +13,8 @@ import { HistoryService } from '../../../core/editor/history/history.service';
 import { ProjectDocument } from '../../../core/domain/project.types';
 import { EditorModeService } from '../../../core/editor/state/editor-mode.service';
 import { EditorToolService } from '../../../core/editor/state/tool.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, convertToParamMap } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
 import { EditorLayoutPreferencesService } from '../../../core/ui/preferences/editor-layout-preferences.service';
 import { IndexedDbProjectStore } from '../../../core/persistence/project-store/indexeddb-project-store';
@@ -50,6 +51,19 @@ const project: ProjectDocument = {
   groups: [],
   editorSettings: { currentY: 1, layerVisibility: 'current-only', referenceLayerOpacity: 0.5 },
 };
+
+let routeQueryParamMap: BehaviorSubject<ParamMap>;
+
+function activatedRouteStub(): Pick<ActivatedRoute, 'queryParamMap' | 'snapshot'> {
+  routeQueryParamMap = new BehaviorSubject(convertToParamMap({}));
+  return {
+    queryParamMap: routeQueryParamMap.asObservable(),
+    snapshot: {
+      queryParamMap: routeQueryParamMap.value,
+      queryParams: {},
+    } as ActivatedRoute['snapshot'],
+  };
+}
 
 @Component({ selector: 'test-viewport', template: '' })
 class TestViewportStub {
@@ -94,7 +108,7 @@ describe('editor shell movement/delete routing', () => {
     await TestBed.configureTestingModule({
       imports: [EditorShellComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: {} },
+        { provide: ActivatedRoute, useValue: activatedRouteStub() },
         { provide: PROJECT_STORE, useFactory: () => new IndexedDbProjectStore() },
       ],
     }).compileComponents();
@@ -133,6 +147,28 @@ describe('editor shell movement/delete routing', () => {
     );
     expect(emptyCard?.querySelectorAll('button')).toHaveLength(1);
 
+    fixture.destroy();
+  });
+
+  it('opens the query-linked help topic without replacing the active editor project', async () => {
+    vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
+    const fixture = TestBed.createComponent(EditorShellComponent);
+    const workspace = TestBed.inject(WorkspaceStateService);
+    workspace.activate(project, undefined);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const shell = fixture.componentInstance as unknown as {
+      workspaceHelpOpen: () => boolean;
+      workspaceHelpTopic: () => string;
+    };
+
+    routeQueryParamMap.next(convertToParamMap({ help: 'undo-redo' }));
+    fixture.detectChanges();
+
+    expect(shell.workspaceHelpOpen()).toBe(true);
+    expect(shell.workspaceHelpTopic()).toBe('undo-redo');
+    expect(fixture.nativeElement.querySelector('app-workspace-help-dialog')).not.toBeNull();
+    expect(workspace.project()?.id).toBe(project.id);
     fixture.destroy();
   });
 
@@ -1336,7 +1372,7 @@ describe('editor shell retained viewport lifecycle', () => {
     await TestBed.configureTestingModule({
       imports: [EditorShellComponent],
       providers: [
-        { provide: ActivatedRoute, useValue: {} },
+        { provide: ActivatedRoute, useValue: activatedRouteStub() },
         { provide: PROJECT_STORE, useFactory: () => new IndexedDbProjectStore() },
       ],
     })

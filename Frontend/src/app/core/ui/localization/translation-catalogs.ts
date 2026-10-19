@@ -659,13 +659,26 @@ export const translations = {
     saveProjectSuccess: 'Project saved',
     openSettings: 'Open Settings…',
     settingsDialogTitle: 'Settings',
+    settingsDialogDescription: 'Change editor behavior, appearance, and input in one place.',
+    settingsWorkspaceGroup: 'Workspace',
+    settingsInputGroup: 'Input',
+    settingsAccessibilityGroup: 'Accessibility',
     generalSettings: 'General',
+    settingsGeneralDescription:
+      'Choose the language and project helpers used while building structures.',
     appearanceSettings: 'Appearance',
+    settingsAppearanceDescription:
+      'Set the interface theme and type, plus the separate 3D workspace background.',
     appearanceInterface: 'Interface',
     workspaceBackgroundTab: 'Workspace Background',
     controlsSettings: 'Controls',
+    settingsControlsDescription: 'Adjust camera movement and pointer response.',
     shortcutsSettings: 'Shortcuts',
+    settingsShortcutsDescription: 'Review and change keyboard and mouse bindings.',
     accessibilitySettings: 'Accessibility',
+    settingsAccessibilityDescription: 'Tune block brightness for clearer visibility.',
+    settingsUnsavedChanges: 'Unapplied changes',
+    settingsAllSaved: 'All changes saved',
     unavailableSettings: 'Not available in this version.',
     unavailableAdvancedSettings: 'Accessibility is not available yet.',
     apply: 'Apply',
@@ -712,9 +725,134 @@ export const translations = {
     assetManager: 'Asset Manager',
     projectDiagnostics: 'Project Diagnostics',
     modJarImport: 'Mod JAR Import',
+    workspaceHelpTitle: 'Workspace guide',
+    workspaceHelpDescription: 'Learn the editor and find a workflow by topic.',
+    workspaceHelpClose: 'Close workspace guide',
+    workspaceHelpSearch: 'Search help topics',
+    workspaceHelpTopics: 'Help topics',
+    workspaceHelpNoResults: 'No topics match this search.',
+    workspaceHelpGroupStart: 'Start here',
+    workspaceHelpGroupEditing: 'Build and edit',
+    workspaceHelpGroupInspect: 'Inspect and view',
+    workspaceHelpGroupManage: 'Manage and learn',
+    helpGettingStartedTitle: 'Getting started',
+    helpGettingStartedSummary: 'Create or open a project, then add blocks in the editor.',
+    helpGettingStartedPointOne:
+      'Choose a recent project on the project screen, or create one with a name, Minecraft version, and size.',
+    helpGettingStartedPointTwo:
+      'In the workspace, choose Place and select a material from the Block Browser or Quick Bar.',
+    helpGettingStartedPointThree:
+      'Click a valid target to place a block. Changes are saved locally as you work.',
+    helpWorkspaceOverviewTitle: 'Workspace overview',
+    helpWorkspaceOverviewSummary:
+      'The editor keeps project content, editing tools, and context close together.',
+    helpWorkspaceOverviewPointOne: 'Use the left browser to find blocks, decorations, and groups.',
+    helpWorkspaceOverviewPointTwo:
+      'The center viewport shows the structure; switch between 3D and Y-Layer from the view controls.',
+    helpWorkspaceOverviewPointThree:
+      'The Contextual Inspector and Status Bar show information for the active task and project.',
+    helpCameraTitle: 'Camera navigation',
+    helpCameraSummary: 'Move around the 3D view with the mouse, keyboard, or camera menu.',
+    helpCameraPointOne:
+      'Use the configured orbit, pan, and zoom mouse bindings to change the view.',
+    helpCameraPointTwo:
+      'Use the camera menu for Perspective, Top, Front, Back, Left, Right, or Reset.',
+    helpCameraPointThree:
+      'Adjust movement keys and pointer response in Settings; bindings shown here update with your preferences.',
+    helpPlacementTitle: 'Place, delete, pick, and select',
+    helpPlacementSummary:
+      'Choose a tool and use the configured mouse bindings on the target voxel.',
+    helpPlacementPointOne:
+      'Place uses the active material and shows a preview before a valid placement is committed.',
+    helpPlacementPointTwo:
+      'Delete removes the targeted block; use the configured delete binding or the Delete Selection command.',
+    helpPlacementPointThree:
+      'Pick copies a block from the structure into the active material selection when available.',
+    helpPlacementPointFour:
+      'Select lets you select blocks or a region for inspection, grouping, movement, or deletion.',
+    helpUndoRedoTitle: 'Undo and redo',
+    helpUndoRedoSummary: 'History commands reverse or restore completed editing operations.',
+    helpUndoRedoPointOne: 'Use Undo and Redo in the Edit menu or the toolbar when available.',
+    helpUndoRedoPointTwo: 'Keyboard bindings can be reviewed and changed in Settings → Shortcuts.',
+    helpUndoRedoPointThree:
+      'A single placement or grouped action is recorded as an undoable change.',
+    helpBlockBrowserTitle: 'Block Browser and Quick Bar',
+    helpBlockBrowserSummary:
+      'Find materials in the catalog and keep frequently used choices close at hand.',
+    helpBlockBrowserPointOne: 'Search by a block name or registry ID in the Block Browser.',
+    helpBlockBrowserPointTwo:
+      'Use the add action on a catalog item to put it in the Quick Bar, then choose its slot to make it active.',
+    helpBlockBrowserPointThree:
+      'The Quick Bar stores editing choices; it does not add blocks to the project by itself.',
+    helpDecorationsGroupsTitle: 'Decorations and groups',
+    helpDecorationsGroupsSummary:
+      'Manage item decorations and named collections of selected blocks.',
+    helpDecorationsGroupsPointOne:
+      'Use Decorations to place and manage item displays supported by the editor.',
+    helpDecorationsGroupsPointTwo:
+      'Select blocks and create a group to keep related project blocks together.',
+    helpDecorationsGroupsPointThree:
+      'Group actions operate on project selections and can be undone where history supports them.',
+    helpInspectorTitle: 'BlockState and Inspector',
+    helpInspectorSummary:
+      'The Contextual Inspector changes with the current selection or placement task.',
+    helpInspectorPointOne:
+      'Select a block to inspect its registry ID, coordinates, and supported BlockState properties.',
+    helpInspectorPointTwo:
+      'Use the placement section to review the active material and placement status.',
+    helpInspectorPointThree:
+      'Picking an existing block updates the active material without changing the project.',
+    helpViewsTitle: '3D and Y-Layer views',
+    helpViewsSummary:
+      'Use the 3D viewport to navigate the full structure and Y-Layer to work at a chosen height.',
+    helpViewsPointOne: 'Change the current Y value to move between horizontal layers.',
+    helpViewsPointTwo:
+      'Layer visibility controls can show the current layer, references, or other supported layer combinations.',
+    helpViewsPointThree:
+      'Reference opacity is adjustable in the layer controls and saved with the project.',
+    helpAssetsTitle: 'Assets and mods',
+    helpAssetsSummary:
+      'The Asset Manager loads supported Minecraft resources for previews and block details.',
+    helpAssetsPointOne:
+      'Open Asset Manager to download or restore resources for the selected Minecraft version.',
+    helpAssetsPointTwo:
+      'Import a mod JAR to read supported resource files and add them to the local catalog.',
+    helpAssetsPointThree:
+      'Asset status and missing-resource recovery are available from the Status Bar and Asset Manager.',
+    helpAssetsNote:
+      'Mod JAR bytecode is not executed. Unsupported resources may remain unavailable for preview.',
+    helpImportExportTitle: 'Import and export',
+    helpImportExportSummary:
+      'Structure JSON workflows preview and validate content before applying it to a project.',
+    helpImportExportPointOne:
+      'Use File → Import Structure JSON to select or paste a structure and review validation results.',
+    helpImportExportPointTwo:
+      'Choose the available import mode, review any size or coordinate changes, then confirm Apply.',
+    helpImportExportPointThree:
+      'Use File → Export Structure JSON to save the current structure in the app format.',
+    helpImportExportNote:
+      'Minecraft Structure NBT export is not implemented yet; it is separate from Structure JSON.',
+    helpKeyboardMouseTitle: 'Keyboard and mouse',
+    helpKeyboardMouseSummary: 'The reference below uses your current saved bindings.',
+    helpKeyboardMousePointOne: 'Change keyboard or mouse bindings in Settings → Shortcuts.',
+    helpKeyboardMousePointTwo: 'Use the current values below; unassigned actions have no binding.',
+    helpSettingsTitle: 'Settings',
+    helpSettingsSummary: 'Settings are shared by the project screen and the editor workspace.',
+    helpSettingsPointOne:
+      'General controls language and project helpers; Appearance controls theme, font, and workspace background.',
+    helpSettingsPointTwo: 'Controls and Shortcuts configure camera response and input bindings.',
+    helpSettingsPointThree:
+      'Unapplied changes are shown in Settings. Apply or save them, or discard the draft when closing.',
+    helpTroubleshootingTitle: 'Troubleshooting',
+    helpTroubleshootingSummary:
+      'Use the status and diagnostics tools to understand recoverable project or resource issues.',
+    helpTroubleshootingPointOne:
+      'Check the Status Bar for save errors, missing assets, or the current project state.',
+    helpTroubleshootingPointTwo:
+      'Open Project Diagnostics for project validation and actionable findings.',
+    helpTroubleshootingPointThree:
+      'If a resource is missing, use Asset Manager recovery. Reopen a saved project from the project screen.',
     controlsShortcuts: 'Controls & Shortcuts',
-    controlsShortcutsText:
-      'LMB place/select · Ctrl+LMB delete · Alt+LMB pick · RMB orbit · MMB pan · wheel zoom · WASD move · Space/Shift vertical movement · Ctrl+Z undo · Ctrl+Y / Ctrl+Shift+Z redo · Ctrl+A select all · Delete/Backspace delete selection.',
     about: 'About The Block Laundromat',
     aboutText: 'The Block Laundromat · Local browser-based Minecraft Java structure editor.',
     leftSidebar: 'Left Sidebar',
@@ -1498,13 +1636,25 @@ export const translations = {
     saveProjectSuccess: 'Đã lưu dự án',
     openSettings: 'Mở Cài đặt…',
     settingsDialogTitle: 'Cài đặt',
+    settingsDialogDescription:
+      'Điều chỉnh cách dùng, giao diện và thao tác của trình chỉnh sửa tại đây.',
+    settingsWorkspaceGroup: 'Vùng làm việc',
+    settingsInputGroup: 'Thao tác',
+    settingsAccessibilityGroup: 'Trợ năng',
     generalSettings: 'Chung',
+    settingsGeneralDescription: 'Chọn ngôn ngữ và các trợ giúp khi tạo structure.',
     appearanceSettings: 'Giao diện',
+    settingsAppearanceDescription: 'Chọn theme, font và nền 3D độc lập với giao diện ứng dụng.',
     appearanceInterface: 'Giao diện',
     workspaceBackgroundTab: 'Nền vùng làm việc',
     controlsSettings: 'Điều khiển',
+    settingsControlsDescription: 'Điều chỉnh chuyển động camera và phản hồi con trỏ.',
     shortcutsSettings: 'Phím tắt',
+    settingsShortcutsDescription: 'Xem và thay đổi các thao tác bằng bàn phím và chuột.',
     accessibilitySettings: 'Trợ năng',
+    settingsAccessibilityDescription: 'Điều chỉnh độ sáng khối để dễ quan sát hơn.',
+    settingsUnsavedChanges: 'Thay đổi chưa áp dụng',
+    settingsAllSaved: 'Mọi thay đổi đã được lưu',
     unavailableSettings: 'Chưa khả dụng trong phiên bản này.',
     unavailableAdvancedSettings: 'Trợ năng chưa khả dụng.',
     apply: 'Áp dụng',
@@ -1551,9 +1701,131 @@ export const translations = {
     assetManager: 'Quản lý tài nguyên',
     projectDiagnostics: 'Chẩn đoán dự án',
     modJarImport: 'Nhập Mod JAR',
+    workspaceHelpTitle: 'Hướng dẫn vùng làm việc',
+    workspaceHelpDescription: 'Tìm hiểu trình chỉnh sửa và tra cứu quy trình theo chủ đề.',
+    workspaceHelpClose: 'Đóng hướng dẫn vùng làm việc',
+    workspaceHelpSearch: 'Tìm chủ đề trợ giúp',
+    workspaceHelpTopics: 'Chủ đề trợ giúp',
+    workspaceHelpNoResults: 'Không có chủ đề phù hợp.',
+    workspaceHelpGroupStart: 'Bắt đầu',
+    workspaceHelpGroupEditing: 'Xây dựng và chỉnh sửa',
+    workspaceHelpGroupInspect: 'Kiểm tra và chế độ xem',
+    workspaceHelpGroupManage: 'Quản lý và tìm hiểu',
+    helpGettingStartedTitle: 'Bắt đầu',
+    helpGettingStartedSummary: 'Tạo hoặc mở dự án, sau đó thêm khối trong trình chỉnh sửa.',
+    helpGettingStartedPointOne:
+      'Chọn dự án gần đây trên màn hình dự án hoặc tạo dự án với tên, phiên bản Minecraft và kích thước.',
+    helpGettingStartedPointTwo:
+      'Trong vùng làm việc, chọn Đặt và chọn vật liệu từ Trình duyệt khối hoặc Thanh chọn nhanh.',
+    helpGettingStartedPointThree:
+      'Nhấp vào vị trí hợp lệ để đặt khối. Thay đổi được lưu cục bộ khi bạn làm việc.',
+    helpWorkspaceOverviewTitle: 'Tổng quan vùng làm việc',
+    helpWorkspaceOverviewSummary:
+      'Trình chỉnh sửa đặt nội dung dự án, công cụ và thông tin theo ngữ cảnh cạnh nhau.',
+    helpWorkspaceOverviewPointOne: 'Dùng trình duyệt bên trái để tìm khối, vật trang trí và nhóm.',
+    helpWorkspaceOverviewPointTwo:
+      'Khung nhìn ở giữa hiển thị cấu trúc; chuyển giữa 3D và Lớp Y bằng điều khiển chế độ xem.',
+    helpWorkspaceOverviewPointThree:
+      'Bộ kiểm tra theo ngữ cảnh và Thanh trạng thái hiển thị thông tin cho thao tác và dự án hiện tại.',
+    helpCameraTitle: 'Điều khiển camera',
+    helpCameraSummary: 'Di chuyển trong khung nhìn 3D bằng chuột, bàn phím hoặc menu camera.',
+    helpCameraPointOne: 'Dùng các phím chuột xoay, kéo và thu phóng đã cấu hình để đổi góc nhìn.',
+    helpCameraPointTwo:
+      'Dùng menu camera để chọn Phối cảnh, Trên, Trước, Sau, Trái, Phải hoặc Đặt lại.',
+    helpCameraPointThree:
+      'Điều chỉnh phím di chuyển và phản hồi con trỏ trong Cài đặt; danh sách bên dưới cập nhật theo lựa chọn của bạn.',
+    helpPlacementTitle: 'Đặt, xóa, lấy mẫu và chọn',
+    helpPlacementSummary: 'Chọn công cụ rồi dùng thao tác chuột đã cấu hình lên khối mục tiêu.',
+    helpPlacementPointOne:
+      'Công cụ Đặt dùng vật liệu đang chọn và hiển thị xem trước trước khi xác nhận vị trí hợp lệ.',
+    helpPlacementPointTwo:
+      'Xóa loại bỏ khối mục tiêu; dùng thao tác xóa đã cấu hình hoặc lệnh Xóa vùng chọn.',
+    helpPlacementPointThree:
+      'Lấy mẫu sao chép khối trong cấu trúc thành vật liệu đang chọn nếu có thể.',
+    helpPlacementPointFour:
+      'Chọn cho phép chọn khối hoặc vùng để kiểm tra, nhóm, di chuyển hoặc xóa.',
+    helpUndoRedoTitle: 'Hoàn tác và làm lại',
+    helpUndoRedoSummary:
+      'Lệnh lịch sử đảo ngược hoặc khôi phục các thao tác chỉnh sửa đã hoàn tất.',
+    helpUndoRedoPointOne:
+      'Dùng Hoàn tác và Làm lại trong menu Chỉnh sửa hoặc trên thanh công cụ khi có.',
+    helpUndoRedoPointTwo: 'Có thể xem và đổi phím tắt trong Cài đặt → Phím tắt.',
+    helpUndoRedoPointThree:
+      'Một lần đặt khối hoặc thao tác nhóm được ghi thành thay đổi có thể hoàn tác.',
+    helpBlockBrowserTitle: 'Trình duyệt khối và Thanh chọn nhanh',
+    helpBlockBrowserSummary:
+      'Tìm vật liệu trong danh mục và giữ các lựa chọn thường dùng trong tầm tay.',
+    helpBlockBrowserPointOne: 'Tìm theo tên khối hoặc mã registry trong Trình duyệt khối.',
+    helpBlockBrowserPointTwo:
+      'Dùng nút thêm trên vật liệu để đưa vào Thanh chọn nhanh, rồi chọn ô để đặt làm vật liệu hiện tại.',
+    helpBlockBrowserPointThree:
+      'Thanh chọn nhanh lưu lựa chọn chỉnh sửa; tự nó không thêm khối vào dự án.',
+    helpDecorationsGroupsTitle: 'Vật trang trí và nhóm',
+    helpDecorationsGroupsSummary: 'Quản lý vật phẩm trang trí và các tập hợp khối có tên.',
+    helpDecorationsGroupsPointOne:
+      'Dùng mục Vật trang trí để đặt và quản lý các hiển thị vật phẩm được hỗ trợ.',
+    helpDecorationsGroupsPointTwo: 'Chọn khối rồi tạo nhóm để gom các khối liên quan trong dự án.',
+    helpDecorationsGroupsPointThree:
+      'Thao tác nhóm tác động lên vùng chọn dự án và có thể hoàn tác khi lịch sử hỗ trợ.',
+    helpInspectorTitle: 'BlockState và Bộ kiểm tra',
+    helpInspectorSummary:
+      'Bộ kiểm tra theo ngữ cảnh thay đổi theo vùng chọn hoặc thao tác đặt hiện tại.',
+    helpInspectorPointOne:
+      'Chọn khối để xem mã registry, tọa độ và thuộc tính BlockState được hỗ trợ.',
+    helpInspectorPointTwo: 'Dùng mục đặt khối để xem vật liệu đang chọn và trạng thái đặt.',
+    helpInspectorPointThree:
+      'Lấy mẫu khối có sẵn sẽ cập nhật vật liệu đang chọn mà không đổi dự án.',
+    helpViewsTitle: 'Chế độ xem 3D và Lớp Y',
+    helpViewsSummary:
+      'Dùng khung nhìn 3D để điều hướng cấu trúc và Lớp Y để làm việc ở độ cao đã chọn.',
+    helpViewsPointOne: 'Đổi giá trị Y hiện tại để chuyển giữa các lớp ngang.',
+    helpViewsPointTwo:
+      'Điều khiển hiển thị lớp có thể hiện lớp hiện tại, lớp tham chiếu hoặc các tổ hợp lớp được hỗ trợ.',
+    helpViewsPointThree:
+      'Có thể chỉnh độ mờ lớp tham chiếu trong điều khiển lớp; giá trị được lưu cùng dự án.',
+    helpAssetsTitle: 'Tài nguyên và mod',
+    helpAssetsSummary:
+      'Trình quản lý tài nguyên tải dữ liệu Minecraft được hỗ trợ cho bản xem trước và chi tiết khối.',
+    helpAssetsPointOne:
+      'Mở Trình quản lý tài nguyên để tải hoặc khôi phục tài nguyên cho phiên bản Minecraft đã chọn.',
+    helpAssetsPointTwo:
+      'Nhập tệp JAR của mod để đọc các tài nguyên được hỗ trợ và thêm chúng vào danh mục cục bộ.',
+    helpAssetsPointThree:
+      'Trạng thái tài nguyên và khôi phục nội dung bị thiếu có trong Thanh trạng thái và Trình quản lý tài nguyên.',
+    helpAssetsNote:
+      'Mã bytecode trong JAR của mod không được thực thi. Một số tài nguyên không hỗ trợ có thể không xem trước được.',
+    helpImportExportTitle: 'Nhập và xuất',
+    helpImportExportSummary:
+      'Quy trình Structure JSON xem trước và kiểm tra nội dung trước khi áp dụng vào dự án.',
+    helpImportExportPointOne:
+      'Dùng Tệp → Nhập Structure JSON để chọn hoặc dán cấu trúc và xem kết quả kiểm tra.',
+    helpImportExportPointTwo:
+      'Chọn chế độ nhập khả dụng, xem lại thay đổi kích thước hoặc tọa độ rồi xác nhận Áp dụng.',
+    helpImportExportPointThree:
+      'Dùng Tệp → Xuất Structure JSON để lưu cấu trúc hiện tại theo định dạng của ứng dụng.',
+    helpImportExportNote:
+      'Chưa hỗ trợ xuất Minecraft Structure NBT; định dạng này khác với Structure JSON.',
+    helpKeyboardMouseTitle: 'Bàn phím và chuột',
+    helpKeyboardMouseSummary: 'Danh sách bên dưới sử dụng các phím tắt đã lưu hiện tại của bạn.',
+    helpKeyboardMousePointOne: 'Đổi thao tác bàn phím hoặc chuột trong Cài đặt → Phím tắt.',
+    helpKeyboardMousePointTwo:
+      'Dùng các giá trị hiện tại bên dưới; thao tác chưa gán sẽ không có phím tắt.',
+    helpSettingsTitle: 'Cài đặt',
+    helpSettingsSummary: 'Màn hình dự án và vùng làm việc dùng chung một cửa sổ Cài đặt.',
+    helpSettingsPointOne:
+      'Chung quản lý ngôn ngữ và trợ giúp dự án; Giao diện quản lý theme, font và nền vùng làm việc.',
+    helpSettingsPointTwo: 'Điều khiển và Phím tắt cấu hình camera và thao tác nhập.',
+    helpSettingsPointThree:
+      'Thay đổi chưa áp dụng được hiển thị trong Cài đặt. Hãy áp dụng, lưu hoặc bỏ bản nháp khi đóng.',
+    helpTroubleshootingTitle: 'Khắc phục sự cố',
+    helpTroubleshootingSummary:
+      'Dùng trạng thái và công cụ chẩn đoán để hiểu vấn đề có thể khôi phục của dự án hoặc tài nguyên.',
+    helpTroubleshootingPointOne:
+      'Kiểm tra Thanh trạng thái để biết lỗi lưu, tài nguyên thiếu hoặc trạng thái dự án hiện tại.',
+    helpTroubleshootingPointTwo: 'Mở Chẩn đoán dự án để kiểm tra dự án và xem gợi ý xử lý.',
+    helpTroubleshootingPointThree:
+      'Nếu thiếu tài nguyên, dùng Trình quản lý tài nguyên để khôi phục. Mở lại dự án đã lưu từ màn hình dự án.',
     controlsShortcuts: 'Điều khiển & Phím tắt',
-    controlsShortcutsText:
-      'Chuột trái đặt/chọn · Ctrl+chuột trái xóa · Alt+chuột trái lấy khối · chuột phải xoay · chuột giữa kéo · con lăn thu phóng · WASD di chuyển · Space/Shift di chuyển dọc · Ctrl+Z hoàn tác · Ctrl+Y / Ctrl+Shift+Z làm lại · Ctrl+A chọn tất cả · Delete/Backspace xóa vùng chọn.',
     about: 'Giới thiệu The Block Laundromat',
     aboutText:
       'The Block Laundromat · Trình chỉnh sửa structure Minecraft Java cục bộ trên trình duyệt.',

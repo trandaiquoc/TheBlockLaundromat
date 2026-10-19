@@ -413,12 +413,14 @@
         (closed)="closeSettingsDialog()"
       ></app-settings-dialog>
     }
-    @if (controlsHelpOpen()) {
-      <app-shortcuts-help-dialog
+    @if (workspaceHelpOpen()) {
+      <app-workspace-help-dialog
         animate.enter="workspace-dialog-overlay-enter"
         animate.leave="workspace-dialog-overlay-exit"
-        (closed)="controlsHelpOpen.set(false)"
-      ></app-shortcuts-help-dialog>
+        [topic]="workspaceHelpTopic()"
+        (topicChange)="openWorkspaceHelp($event)"
+        (closed)="closeWorkspaceHelp()"
+      ></app-workspace-help-dialog>
     }
     @if (assetManagerOpen()) {
       <app-asset-manager-dialog

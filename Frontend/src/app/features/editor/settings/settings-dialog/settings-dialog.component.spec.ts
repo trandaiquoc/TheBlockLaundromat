@@ -57,6 +57,76 @@ describe('SettingsDialogComponent Reality previews', () => {
     fixture.destroy();
   });
 
+  it('groups sections and reports the existing draft state in the footer', async () => {
+    localStorage.removeItem('the-block-laundromat.ui-preferences');
+    await TestBed.configureTestingModule({
+      imports: [SettingsDialogComponent],
+      providers: [
+        {
+          provide: ContentAssetRuntimeService,
+          useValue: {
+            generation: signal(0),
+            resourceAvailabilitySettled: signal(true),
+            sources: { resources: { textureUrl: () => undefined } },
+          },
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(SettingsDialogComponent);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(
+      [...root.querySelectorAll('.settings-nav-group-label')].map((node) =>
+        node.textContent?.trim(),
+      ),
+    ).toEqual(['Workspace', 'Input', 'Accessibility']);
+    expect(root.querySelector('.settings-save-status')?.textContent).toContain('All changes saved');
+
+    const setting = root.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    setting.checked = !setting.checked;
+    setting.dispatchEvent(new Event('change', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(root.querySelector('.settings-save-status')?.textContent).toContain('Unapplied changes');
+    expect(TestBed.inject(UiPreferencesService).preferences().autoUseHugeStructureBlocks).not.toBe(
+      setting.checked,
+    );
+    fixture.destroy();
+  });
+
+  it('changes sections through the compact selector used on narrow screens', async () => {
+    localStorage.removeItem('the-block-laundromat.ui-preferences');
+    await TestBed.configureTestingModule({
+      imports: [SettingsDialogComponent],
+      providers: [
+        {
+          provide: ContentAssetRuntimeService,
+          useValue: {
+            generation: signal(0),
+            resourceAvailabilitySettled: signal(true),
+            sources: { resources: { textureUrl: () => undefined } },
+          },
+        },
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(SettingsDialogComponent);
+    fixture.detectChanges();
+    const selector = fixture.nativeElement.querySelector(
+      '.settings-nav-select',
+    ) as HTMLSelectElement;
+    selector.value = 'shortcuts';
+    selector.dispatchEvent(new Event('change', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(selector.value).toBe('shortcuts');
+    expect(fixture.nativeElement.querySelector('.settings-content h3')?.textContent).toContain(
+      'Shortcuts',
+    );
+    fixture.destroy();
+  });
+
   it('keeps the selected section visible in the horizontally scrolling navigation', async () => {
     localStorage.removeItem('the-block-laundromat.ui-preferences');
     await TestBed.configureTestingModule({

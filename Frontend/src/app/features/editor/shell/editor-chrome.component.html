@@ -553,6 +553,15 @@
               type="button"
               role="menuitem"
               tabindex="-1"
+              (click)="emit({ type: 'open-workspace-help' })"
+            >
+              <svg lucideBookOpen aria-hidden="true"></svg>
+              {{ i18n.t('workspaceHelpTitle') }}
+            </button>
+            <button
+              type="button"
+              role="menuitem"
+              tabindex="-1"
               (click)="emit({ type: 'open-controls-help' })"
             >
               <svg lucideKeyboard aria-hidden="true"></svg>
