@@ -8,20 +8,20 @@ require a compatible external fixture.
 
 ## Keep / Refine / Redesign inventory
 
-| Workspace surface                                                                | Classification       | Evidence and decision                                                                                                                                                                                                                      |
-| -------------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Header, application menus, project context, and shared toolbar                   | Keep                 | Their information order and controls match the approved compositions. Existing keyboard, menu, and four-theme reviews cover the interaction states.                                                                                        |
-| 3D and Y-Layer mode controls, camera and layer controls                          | Keep                 | The shared controls remain readable and responsive. Renderer background and scene behavior stay separate from theme colors.                                                                                                                |
-| Empty viewport starter card                                                      | Redesign: remove     | The card duplicated the left Block Browser and Place instructions while occupying the canvas in both modes. It is removed for empty projects; viewport placement feedback remains independent.                                             |
-| Placement status and target feedback                                             | Keep                 | The shared feedback component still reports status, reason, and coordinates without adding an empty-state overlay.                                                                                                                         |
-| Sidebars, resize handles, tabs, and narrow drawers                               | Refine defaults      | Keep the three-region layout and resizing; balance the default sidebars at 340 px each to give the viewport more room. Valid saved widths are preserved.                                                                                   |
-| Block Browser and Decorations picker                                             | Refine Block Browser | Keep virtualized search, source filtering, thumbnails, selected state, and drawer behavior. Use 60 px rows, 40 px previews, two-line registry IDs, and a visible 36 px Quick Add target. Decorations picker remains unchanged.             |
-| Groups panel and Quick Bar                                                       | Refine               | Increase the Groups search-clear and Quick Bar remove targets to 24 CSS px. Their actions and state contracts are unchanged.                                                                                                               |
-| Selection Inspector, BlockState editors, specialized inspectors, and Block Usage | Refine summary       | Present the empty selection, Quick Actions, and structure overview as open sections with quiet dividers instead of stacked cards. Keep selection details, state editors, and specialized inspectors intact. Block Usage remains unchanged. |
-| Status Bar                                                                       | Keep                 | The compact two-row hierarchy and translated narrow labels already have current responsive evidence.                                                                                                                                       |
-| Settings, Help, and shared Workspace dialogs                                     | Refine               | Use the canonical `--overlay-scrim` token for modal backdrops; one NBT backdrop previously used a different hardcoded opacity. Keep the lighter drawer scrim because it is a separate surface.                                             |
-| Asset Manager, Diagnostics, JSON/NBT workflows, Datapack export, and AI dialogs  | Keep                 | Existing browser evidence covers the available states and responsive layouts. No workflow or data contract changes are needed for this visual audit.                                                                                       |
-| Workspace-wide layout and established workflows                                  | Refine hierarchy     | Retain the established editor, toolbar, dialogs, and responsive drawers; spend less default width on sidebars and reduce nested surfaces in the inspector. No workflow or data contract changes.                                           |
+| Workspace surface                                                                | Classification       | Evidence and decision                                                                                                                                                                                                                                 |
+| -------------------------------------------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Header, application menus, project context, and shared toolbar                   | Keep                 | Their information order and controls match the approved compositions. Existing keyboard, menu, and four-theme reviews cover the interaction states.                                                                                                   |
+| 3D and Y-Layer mode controls, camera and layer controls                          | Keep                 | The shared controls remain readable and responsive. Renderer background and scene behavior stay separate from theme colors.                                                                                                                           |
+| Empty viewport starter card                                                      | Redesign: remove     | The card duplicated the left Block Browser and Place instructions while occupying the canvas in both modes. It is removed for empty projects; viewport placement feedback remains independent.                                                        |
+| Placement status and target feedback                                             | Keep                 | The shared feedback component still reports status, reason, and coordinates without adding an empty-state overlay.                                                                                                                                    |
+| Sidebars, resize handles, tabs, and narrow drawers                               | Refine defaults      | Keep the three-region layout and resizing; balance the default sidebars at 340 px each to give the viewport more room. Valid saved widths are preserved.                                                                                              |
+| Block Browser and Decorations picker                                             | Refine Block Browser | Keep virtualized search, source filtering, thumbnails, selected state, and drawer behavior. Use 56 px catalog rows, 40 px previews, delimiter-aware registry ID wrapping, and a visible 44 px Quick Add target. Decorations picker remains unchanged. |
+| Groups panel and Quick Bar                                                       | Refine               | Increase the Groups search-clear and Quick Bar remove targets to 24 CSS px. Their actions and state contracts are unchanged.                                                                                                                          |
+| Selection Inspector, BlockState editors, specialized inspectors, and Block Usage | Refine summary       | Present the empty selection, Quick Actions, and structure overview as open sections with quiet dividers instead of stacked cards. Keep selection details, state editors, and specialized inspectors intact. Block Usage remains unchanged.            |
+| Status Bar                                                                       | Keep                 | The compact two-row hierarchy and translated narrow labels already have current responsive evidence.                                                                                                                                                  |
+| Settings, Help, and shared Workspace dialogs                                     | Refine               | Use the canonical `--overlay-scrim` token for modal backdrops; one NBT backdrop previously used a different hardcoded opacity. Keep the lighter drawer scrim because it is a separate surface.                                                        |
+| Asset Manager, Diagnostics, JSON/NBT workflows, Datapack export, and AI dialogs  | Keep                 | Existing browser evidence covers the available states and responsive layouts. No workflow or data contract changes are needed for this visual audit.                                                                                                  |
+| Workspace-wide layout and established workflows                                  | Refine hierarchy     | Retain the established editor, toolbar, dialogs, and responsive drawers; spend less default width on sidebars and reduce nested surfaces in the inspector. No workflow or data contract changes.                                                      |
 
 ## Root causes and changes
 
@@ -35,10 +35,12 @@ require a compatible external fixture.
 - The Quick Bar remove target was 19.2 px and the Groups search-clear target was
   21.6 px. Both now measure 24 x 24 CSS px while preserving their icon size and
   placement.
-- The Block Browser's fixed 80 px result rows previously left fewer blocks
-  visible. Rows are now 60 px with 40 px previews; registry IDs retain up to two
-  lines and Quick Add has a visible 36 px target. Virtualization, filtering,
-  selection, and thumbnail lifecycle are unchanged.
+- The Block Browser's framed result cards added repeated borders and shadows
+  between adjacent items, while long registry IDs could break mid-token.
+  Results now use compact, separated rows, preserve break opportunities after
+  `:` and `_`, and keep the full identifier available on hover and in the
+  accessible button name. The 44 px Quick Add target remains visible.
+  Virtualization, filtering, selection, and thumbnail lifecycle are unchanged.
 - The default sidebars previously used 360 px left and 400 px right. They now
   default to 340 px each, adding 80 px to the canvas at the same desktop width.
   Existing valid saved dimensions and resize controls are unchanged.
@@ -46,6 +48,10 @@ require a compatible external fixture.
   summary previously appeared as stacked framed cards. They now use shared theme
   surface/text tokens with open spacing and dividers, while selected-block
   details, editors, and specialized inspectors keep their existing structure.
+- Selection Quick Actions now appear only when an action is available: an empty
+  project shows neither disabled Select All nor Clear Selection controls, and
+  Clear Selection appears only while a selection exists. The empty-state summary
+  therefore keeps attention on the selection hint and project metrics.
 - Workspace modal backdrops had repeated literal colors, including a 0.52 NBT
   value alongside the shared 0.48 token. All seven modal backdrops now consume
   `--overlay-scrim`; the separate 0.38 drawer overlay remains unchanged.

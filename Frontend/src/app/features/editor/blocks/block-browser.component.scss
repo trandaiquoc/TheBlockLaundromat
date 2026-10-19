@@ -98,29 +98,25 @@
   display: block;
   box-sizing: border-box;
   width: 100%;
-  height: var(--block-row-height, 60px);
-  padding: 0.2rem 0;
+  height: var(--block-row-height, 56px);
+  padding: 0.08rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
 }
 .block-item {
   position: relative;
   display: block;
   box-sizing: border-box;
   width: 100%;
-  height: calc(var(--block-row-height, 60px) - 6px);
+  height: calc(var(--block-row-height, 56px) - 2px);
   min-width: 0;
-  padding: 0.3rem;
+  padding: 0.15rem 0.25rem;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  background: var(--surface-muted);
+  background: transparent;
   color: var(--text);
   text-align: left;
   cursor: pointer;
-  box-shadow: var(--shadow-control);
-  transition:
-    background-color var(--motion-duration-fast) var(--motion-easing-standard),
-    border-color var(--motion-duration-fast) var(--motion-easing-standard),
-    box-shadow var(--motion-duration-fast) var(--motion-easing-standard),
-    transform var(--motion-duration-fast) var(--motion-easing-standard);
+  transition: background-color var(--motion-duration-fast) var(--motion-easing-standard);
 }
 .block-select-action {
   display: grid;
@@ -132,7 +128,7 @@
   box-sizing: border-box;
   min-width: 0;
   min-height: 100%;
-  padding: 0 2.5rem 0 0;
+  padding: 0 3rem 0 0;
   border: 0;
   background: transparent;
   color: inherit;
@@ -141,26 +137,16 @@
 }
 .block-item:hover:not(.active),
 .block-item:focus-within:not(.active) {
-  border-color: var(--border-strong);
   background: var(--surface-hover);
-  box-shadow: var(--shadow-control-raised);
-  transform: translateY(-1px);
 }
 .block-item.active {
-  border-color: color-mix(in srgb, var(--control-selected-text) 42%, var(--control-selected));
   background: var(--control-selected);
   color: var(--control-selected-text);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--control-selected-text) 18%, transparent),
-    var(--shadow-control-raised);
+  box-shadow: inset 2px 0 0 var(--control-selected-text);
 }
 
 :host-context([data-theme='raccoon']) .block-item {
-  border: 1px solid color-mix(in srgb, var(--workspace-border) 72%, white);
-  border-radius: 1rem;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.08),
-    var(--shadow-control-raised);
+  border-radius: var(--workspace-radius-lg);
 }
 
 :host-context([data-theme='raccoon']) .block-item:hover:not(.active),
@@ -177,16 +163,12 @@
   outline-offset: -3px;
 }
 .quick-add-action {
-  position: absolute;
-  top: 0.3rem;
-  left: 0.3rem;
-  z-index: 1;
   display: grid;
   place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  min-width: 36px;
-  min-height: 36px;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0;
   border: 0;
   border-radius: var(--radius-sm);
@@ -204,6 +186,8 @@
 .block-item:focus-within .quick-add-action,
 .quick-add-action:focus-visible {
   opacity: 1;
+  outline: 2px solid var(--focus-color, var(--accent));
+  outline-offset: 1px;
 }
 .quick-add-action:hover {
   background: var(--accent);
@@ -239,14 +223,11 @@
 .preview.fallback {
   background: var(--border-strong);
 }
-.preview.special {
-  background: #745c34;
-}
 .block-copy {
   min-width: 0;
   display: grid;
   align-content: start;
-  gap: 0.12rem;
+  gap: 0.08rem;
 }
 .block-copy strong {
   display: -webkit-box;
@@ -258,41 +239,27 @@
   font-size: 0.78rem;
   line-height: 1.05;
 }
-.block-copy small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.block-copy small {
-  color: var(--text-muted);
-  font-size: 0.68rem;
-}
 .block-copy .block-copy-id {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow-wrap: anywhere;
+  -webkit-line-clamp: 3;
+  overflow-wrap: break-word;
   text-overflow: clip;
   white-space: normal;
   color: var(--text-muted);
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 0.6rem;
-  line-height: 1.15;
+  font-size: 0.58rem;
+  line-height: 1.05;
 }
 
 :host-context([data-theme='craft']) .block-item {
-  border: 1px solid var(--workspace-control-frame);
-  border-bottom-width: 2px;
   border-radius: var(--workspace-radius-sm);
 }
 
 :host-context([data-theme='craft']) .block-item.active {
-  border-color: var(--workspace-primary);
   background: var(--workspace-selected);
-  box-shadow:
-    inset 3px 0 0 var(--workspace-primary),
-    var(--shadow-control-raised);
+  box-shadow: inset 3px 0 0 var(--workspace-primary);
 }
 
 .block-empty-state {
@@ -317,22 +284,14 @@
 .block-item.active .block-copy small {
   color: color-mix(in srgb, var(--control-selected-text) 86%, transparent);
 }
-.block-copy small {
-  font-family: var(--font-ui);
-}
-
 :host-context([data-font='chakra-petch']) .block-copy strong {
   font-size: 0.84rem;
   line-height: 1.05;
   font-weight: 400;
 }
-:host-context([data-font='chakra-petch']) .block-copy small {
-  font-size: 0.72rem;
-  line-height: 1.1;
-}
 .quick-add-action svg {
-  width: 0.85rem;
-  height: 0.85rem;
+  width: 1rem;
+  height: 1rem;
 }
 .results .block-row:last-child .quick-add-action::after {
   top: auto;
@@ -340,19 +299,11 @@
 }
 .quick-add-wrapper {
   position: absolute;
-  top: calc(50% + 0.2rem);
+  top: 50%;
   right: 0.25rem;
   z-index: 1;
   opacity: 1;
   transform: translateY(-50%);
-}
-.block-item:hover .quick-add-wrapper,
-.block-item:focus-within .quick-add-wrapper,
-.quick-add-wrapper:focus-visible {
-  opacity: 1;
-}
-.quick-add-wrapper .quick-add-action {
-  position: static;
 }
 .quick-add-action:disabled {
   cursor: not-allowed;
@@ -360,34 +311,7 @@
 }
 
 .catalog-list-host.compact .block-copy strong {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow-wrap: anywhere;
-  font-size: 0.66rem;
-  line-height: 1;
-}
-
-.catalog-list-host.compact .block-copy small {
-  font-size: 0.62rem;
-  line-height: 1.05;
-}
-.catalog-list-host.compact .block-copy .block-copy-id {
-  font-size: 0.6rem;
-}
-
-.catalog-list-host.compact .quick-add-wrapper {
-  opacity: 1;
-}
-
-.catalog-list-host.compact .quick-add-action {
-  width: 2.25rem;
-  height: 2.25rem;
-}
-
-.catalog-list-host.compact .quick-add-action:not(:disabled) {
-  opacity: 1;
+  font-size: 0.72rem;
 }
 
 @media (hover: none), (pointer: coarse) {

@@ -24,6 +24,11 @@ The [2026-10-19 Block Browser density review](20261019-block-browser-density/REA
 checks the compact rows in all four themes, a long registry ID in the 320 px
 Vietnamese drawer, Quick Add, keyboard selection, and reduced motion.
 
+The [2026-10-19 Workspace scanning follow-up](20261019-workspace-scanning/README.md)
+checks the current four-theme and three-font browser pass, Vietnamese at 320 px,
+full registry ID text, 44 px Quick Add, keyboard selection and addition, and
+contextual empty Inspector actions.
+
 The current desktop sidebar composition has a focused before/after capture in
 [the 2026-10-17 comparison](20261017-sidebar-composition/README.md). The Block
 Browser list composition has its own [four-theme and narrow viewport evidence](20261017-block-browser-list/README.md).

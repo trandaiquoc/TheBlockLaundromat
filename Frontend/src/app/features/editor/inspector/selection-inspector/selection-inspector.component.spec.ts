@@ -118,15 +118,32 @@ describe('SelectionInspectorComponent', () => {
       i18n.t('quickActions'),
     );
     expect(selectAllButton.disabled).toBe(false);
-    expect(clearButton.disabled).toBe(true);
+    expect(clearButton).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-action="fit-structure"]')).toBeNull();
     expect(fixture.nativeElement.querySelector('[data-action="focus-selection"]')).toBeNull();
 
     selectAllButton.click();
-    clearButton.click();
 
     expect(selectAllRequests).toBe(1);
     expect(clearSelectionRequests).toBe(0);
+    fixture.destroy();
+  });
+
+  it('hides unavailable quick actions when the project and selection are empty', async () => {
+    const base = rendererBenchmarkProject('small');
+    await TestBed.configureTestingModule({
+      imports: [SelectionInspectorComponent],
+      providers: [{ provide: ProjectBlockRuntimeIndex, useValue: new ProjectBlockRuntimeIndex() }],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(SelectionInspectorComponent);
+    const workspace = TestBed.inject(WorkspaceStateService);
+    workspace.publishProject({ ...base, blocks: [] });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[data-empty-selection]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.overview-actions')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-action="select-all"]')).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-action="clear-selection"]')).toBeNull();
     fixture.destroy();
   });
 

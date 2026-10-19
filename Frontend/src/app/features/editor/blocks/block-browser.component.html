@@ -77,15 +77,15 @@
                 } @else {
                   <svg lucideBox aria-hidden="true"></svg>
                 }</span
-              ><span class="block-copy"
-                ><strong>{{ block.displayName }}</strong
-                ><small class="block-copy-id" [attr.title]="block.displayBlockId">{{
-                  block.displayBlockId
-                }}</small></span
-              >
+              ><span class="block-copy">
+                <strong>{{ block.displayName }}</strong>
+                <!-- Adjacent segments prevent formatting whitespace from changing the registry ID. -->
+                <!-- prettier-ignore -->
+                <small class="block-copy-id" [attr.title]="block.displayBlockId">@for (part of registryIdDisplayParts(block.displayBlockId); track $index) {<span>{{ part }}</span>@if (!$last) {<wbr />}}</small>
+              </span>
             </button>
-            <span class="quick-add-wrapper"
-              ><button
+            <div class="quick-add-wrapper">
+              <button
                 type="button"
                 class="quick-add-action"
                 [class.ui-tooltip-align-end]="isCompact()"
@@ -94,8 +94,9 @@
                 [disabled]="!canAddToQuickBar(block)"
                 [attr.aria-label]="quickAddLabel(block)"
               >
-                <svg lucidePlus aria-hidden="true"></svg></button
-            ></span>
+                <svg lucidePlus aria-hidden="true"></svg>
+              </button>
+            </div>
           </div>
         </div>
       </cdk-virtual-scroll-viewport>

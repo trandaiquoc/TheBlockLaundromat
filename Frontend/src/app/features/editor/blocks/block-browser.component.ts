@@ -27,7 +27,22 @@ import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrollin
 import type { ThumbnailTaskPriority } from '../../../core/assets/vanilla/thumbnails/thumbnail-task-queue';
 
 const COMPACT_BLOCK_LIST_WIDTH = 240;
-export const BLOCK_CATALOG_ROW_HEIGHT = 60;
+export const BLOCK_CATALOG_ROW_HEIGHT = 56;
+
+export function registryIdDisplayParts(registryId: string): readonly string[] {
+  const parts: string[] = [];
+  let segmentStart = 0;
+
+  for (let index = 0; index < registryId.length; index += 1) {
+    const character = registryId[index];
+    if (character !== ':' && character !== '_') continue;
+    parts.push(registryId.slice(segmentStart, index + 1));
+    segmentStart = index + 1;
+  }
+
+  if (segmentStart < registryId.length) parts.push(registryId.slice(segmentStart));
+  return parts;
+}
 
 @Component({
   selector: 'app-block-browser',
@@ -102,6 +117,9 @@ export class BlockBrowserComponent {
   protected clearSearch(): void {
     this.library.setQuery('');
     this.searchInput()?.nativeElement.focus();
+  }
+  protected registryIdDisplayParts(registryId: string): readonly string[] {
+    return registryIdDisplayParts(registryId);
   }
   protected openAssetManager(): void {
     this.assetManagerRequested.emit();

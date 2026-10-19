@@ -8,7 +8,11 @@ import type {
   ContentRestoreState,
   VanillaAssetStatus,
 } from '../../../core/assets/content-asset-runtime.service';
-import { BLOCK_CATALOG_ROW_HEIGHT, BlockBrowserComponent } from './block-browser.component';
+import {
+  BLOCK_CATALOG_ROW_HEIGHT,
+  BlockBrowserComponent,
+  registryIdDisplayParts,
+} from './block-browser.component';
 
 function createAssetRuntimeStub() {
   return {
@@ -30,7 +34,15 @@ function createAssetRuntimeStub() {
 
 describe('BlockBrowser list sizing', () => {
   it('uses a compact consistent virtual row height for full-width block rows', () => {
-    expect(BLOCK_CATALOG_ROW_HEIGHT).toBe(60);
+    expect(BLOCK_CATALOG_ROW_HEIGHT).toBe(56);
+  });
+
+  it('adds registry ID break opportunities without changing its text', () => {
+    const registryId = 'minecraft:polished_blackstone_brick_stairs';
+    const parts = registryIdDisplayParts(registryId);
+
+    expect(parts).toEqual(['minecraft:', 'polished_', 'blackstone_', 'brick_', 'stairs']);
+    expect(parts.join('')).toBe(registryId);
   });
 });
 

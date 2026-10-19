@@ -167,29 +167,33 @@
   </div>
 }
 @if (workspace.project(); as project) {
-  <section class="overview-actions" aria-labelledby="quick-actions-title">
-    <h3 id="quick-actions-title">{{ i18n.t('quickActions') }}</h3>
-    <div class="overview-action-grid">
-      <button
-        type="button"
-        class="ui-button ui-button--secondary ui-button--sm"
-        data-action="select-all"
-        [disabled]="project.blocks.length === 0"
-        (click)="selectAllRequested.emit()"
-      >
-        <svg lucideCheck aria-hidden="true"></svg>{{ i18n.t('selectAll') }}
-      </button>
-      <button
-        type="button"
-        class="ui-button ui-button--secondary ui-button--sm"
-        data-action="clear-selection"
-        [disabled]="!hasAnySelection()"
-        (click)="clearSelectionRequested.emit()"
-      >
-        <svg lucideX aria-hidden="true"></svg>{{ i18n.t('clearSelection') }}
-      </button>
-    </div>
-  </section>
+  @if (project.blocks.length > 0 || hasAnySelection()) {
+    <section class="overview-actions" aria-labelledby="quick-actions-title">
+      <h3 id="quick-actions-title">{{ i18n.t('quickActions') }}</h3>
+      <div class="overview-action-grid">
+        @if (project.blocks.length > 0) {
+          <button
+            type="button"
+            class="ui-button ui-button--secondary ui-button--sm"
+            data-action="select-all"
+            (click)="selectAllRequested.emit()"
+          >
+            <svg lucideCheck aria-hidden="true"></svg>{{ i18n.t('selectAll') }}
+          </button>
+        }
+        @if (hasAnySelection()) {
+          <button
+            type="button"
+            class="ui-button ui-button--secondary ui-button--sm"
+            data-action="clear-selection"
+            (click)="clearSelectionRequested.emit()"
+          >
+            <svg lucideX aria-hidden="true"></svg>{{ i18n.t('clearSelection') }}
+          </button>
+        }
+      </div>
+    </section>
+  }
   <section class="structure-overview" aria-labelledby="structure-overview-title">
     <div class="overview-heading">
       <div>

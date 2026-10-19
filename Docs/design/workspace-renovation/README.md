@@ -99,9 +99,16 @@ contrast checks do not establish that the full interface matches the approved
 compositions.
 
 The [Block Browser density review](evidence/20261019-block-browser-density/README.md)
-reduces virtual rows from 80 px to 68 px, wraps long registry IDs, and keeps a
-32 px Quick Add target visible across themes. Search, virtualization, asset
-thumbnail scheduling, and editor behavior remain unchanged.
+records the earlier 68 px row and 32 px Quick Add checkpoint. The current
+catalog follow-up uses compact separated rows, delimiter-aware registry ID
+wrapping, and a 44 px Quick Add target. Search, virtualization, asset thumbnail
+scheduling, and editor behavior remain unchanged.
+
+The [2026-10-19 Workspace scanning follow-up](evidence/20261019-workspace-scanning/README.md)
+records the current four-theme and three-font browser pass, English and
+Vietnamese responsive checks, keyboard activation, and contextual Selection
+Inspector actions. It refines catalog hierarchy and preserves the existing
+editor layout and workflows.
 
 The [inventory item thumbnail review](evidence/20261017-inventory-item-thumbnails/README.md)
 shows real Diamond, Apple, and Oak Planks previews in the compact chest slot

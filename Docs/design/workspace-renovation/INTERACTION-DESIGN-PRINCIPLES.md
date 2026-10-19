@@ -74,5 +74,27 @@ no demo code or assets were copied.
 - Keep theme-aware hover, pressed, selected, and focus states distinct.
 - Keep the primary action near its workflow; keep destructive or secondary
   actions visually quieter until needed.
+- In dense catalogs, use steady list rows and quiet separators; reserve filled
+  surfaces for hover and selection. Wrap technical identifiers at syntax
+  separators, and keep the primary row action visible with a 44 px target.
+- Show contextual actions only when they can run. Empty states should explain
+  the next step without presenting unavailable controls.
 - Honor reduced motion, and keep animations out of the renderer, pointer
   handling, and virtualized-list hot paths.
+
+### Current catalog and workspace layout choices
+
+- [Figma's navigation and sidebar layout](https://help.figma.com/hc/en-us/articles/360039831974-Explore-the-navigation-bar-and-left-sidebar)
+  keeps essential work areas stable and allows sidebars to resize or collapse
+  when more canvas space is useful. The Workspace keeps its existing catalog,
+  viewport, and inspector regions.
+- [Blender editor guidelines](https://developer.blender.org/docs/features/interface/human_interface_guidelines/editors/)
+  organize editor controls by region and keep common controls in predictable
+  headers. The Workspace keeps its current toolbar and camera-control grouping.
+- [Linear's interface refresh](https://linear.app/now/behind-the-latest-design-refresh)
+  emphasizes predictable action placement and quieter borders. The catalog now
+  uses list-row hierarchy so selection stands out without a full card frame on
+  every result.
+- [Lucian UX/UI Prompt](https://lucianlabs.dev/uxui-prompt/) remains an idea
+  source for small interaction feedback; examples are adapted to the existing
+  theme, keyboard, and reduced-motion contracts rather than copied.
