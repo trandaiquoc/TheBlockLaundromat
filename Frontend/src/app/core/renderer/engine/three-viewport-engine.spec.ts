@@ -5865,7 +5865,7 @@ describe('selection visualization scalability', () => {
     engine.update(project, undefined, { ...whole, layerY: 11, visibility: 'all-below' });
     expect(lowerMesh.visible).toBe(true);
     expect(upperMesh.visible).toBe(true);
-    expect((lowerMesh.material as THREE.Material).opacity).toBe(0.28);
+    expect((lowerMesh.material as THREE.Material).opacity).toBe(0.15);
     expect((upperMesh.material as THREE.Material).opacity).toBe(1);
     engine.update(project, undefined, { ...whole, visibility: 'whole-structure' });
     expect(fluidMeshes().find((mesh) => mesh.userData['fluidLayer'] === 10)).toBe(lowerMesh);
@@ -6327,6 +6327,32 @@ describe('selection visualization scalability', () => {
     expect(after.regularHydrationStarted).toBe(before.regularHydrationStarted);
     engine.dispose();
   });
+
+  it.each([
+    'current-only',
+    'current-previous',
+    'current-next',
+    'previous-current-next',
+    'all-below',
+    'whole-structure',
+  ] as const)(
+    'uses fifteen percent fallback opacity in %s and preserves explicit opacity',
+    (visibility) => {
+      const engine = new ThreeViewportEngine();
+      const project = rendererBenchmarkProject('small');
+      engine.update(project, undefined, { layerY: 0, visibility });
+      const internals = engine as unknown as {
+        fallbackMaterials: { reference: THREE.Material };
+        placeholderMaterials: { reference: THREE.Material };
+      };
+      expect(internals.fallbackMaterials.reference.opacity).toBe(0.15);
+      expect(internals.placeholderMaterials.reference.opacity).toBe(0.15);
+      engine.update(project, undefined, { layerY: 0, visibility, referenceOpacity: 0.6 });
+      expect(internals.fallbackMaterials.reference.opacity).toBe(0.6);
+      expect(internals.placeholderMaterials.reference.opacity).toBe(0.6);
+      engine.dispose();
+    },
+  );
 
   it('updates reference opacity without structural or hydration work', () => {
     const engine = new ThreeViewportEngine();

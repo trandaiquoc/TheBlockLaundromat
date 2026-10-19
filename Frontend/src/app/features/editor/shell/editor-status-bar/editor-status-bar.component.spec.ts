@@ -392,6 +392,18 @@ describe('EditorStatusBarComponent asset bootstrap status', () => {
 });
 
 describe('EditorStatusBarComponent active placement status', () => {
+  it('suppresses only duplicate material while Placement is visible and restores it when hidden', async () => {
+    const { fixture, library } = await createFixture();
+    library.activeBlock.select(library.allItems()[0]);
+    fixture.componentRef.setInput('placementInspectorVisible', true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.active-placement-status')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.status-save').textContent).toContain('Saved');
+    expect(fixture.nativeElement.querySelector('.asset-status')).not.toBeNull();
+    fixture.componentRef.setInput('placementInspectorVisible', false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.active-placement-status')).not.toBeNull();
+  });
   async function createFixture(): Promise<{
     fixture: ReturnType<typeof TestBed.createComponent<EditorStatusBarComponent>>;
     library: BlockLibraryService;

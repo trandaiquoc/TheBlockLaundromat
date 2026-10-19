@@ -1,3 +1,4 @@
+import { DEFAULT_EDITOR_SETTINGS } from '../../../core/domain/editor-settings';
 import { ErrorHandler, Inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectDocument, ProjectSize, StructureMode } from '../../../core/domain/project.types';
@@ -106,7 +107,7 @@ export class ProjectScreenWorkflow {
       blocks: [],
       groups: [],
       decorations: [],
-      editorSettings: { currentY: 0, layerVisibility: 'current-only', referenceLayerOpacity: 0.5 },
+      editorSettings: { ...DEFAULT_EDITOR_SETTINGS },
     };
     const validation = validateProject(project);
     if (!validation.valid) {

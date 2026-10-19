@@ -371,7 +371,7 @@ describe('InstanceBatchRenderer', () => {
     const reference = [...renderer.batches.values()].find(
       (batch) => batch.renderRole === 'reference',
     );
-    expect(reference?.parts[0].material).toMatchObject({ transparent: true, opacity: 0.28 });
+    expect(reference?.parts[0].material).toMatchObject({ transparent: true, opacity: 0.15 });
     renderer.setReferenceOpacity(0.5);
     expect(reference?.parts[0].material).toMatchObject({ opacity: 0.5 });
     renderer.clear();

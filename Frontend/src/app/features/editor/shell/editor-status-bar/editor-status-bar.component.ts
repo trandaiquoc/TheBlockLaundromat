@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { BlockLibraryService } from '../../../../core/blocks/catalog/block-library.service';
 import { DecorationService } from '../../../../core/decorations/decoration.service';
 import { humanizeDecorationName } from '../../../../core/decorations/decoration-display';
@@ -28,6 +28,7 @@ import { UiProgressComponent } from '../../../../shared/ui/progress/ui-progress.
   styleUrl: './editor-status-bar.component.scss',
 })
 export class EditorStatusBarComponent {
+  readonly placementInspectorVisible = input(false);
   readonly assetManagerRequested = output<void>();
   protected readonly i18n = inject(I18nService);
   protected readonly mode = inject(EditorModeService);

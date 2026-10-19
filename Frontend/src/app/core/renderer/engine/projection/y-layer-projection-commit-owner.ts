@@ -1,3 +1,4 @@
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../../domain/editor-settings';
 import type { ProjectDocument } from '../../../domain/project.types';
 import type { HydrationBlockScopeDelta } from '../../scheduling/hydration/hydration-progress-tracker';
 import type { BlockHydrationJob } from '../../visuals/block-representation-contracts';
@@ -332,7 +333,7 @@ export class YLayerProjectionCommitOwner {
     options: ViewportRenderOptions,
   ): boolean {
     const role = next.role === 'reference' ? 'reference' : 'normal';
-    const opacity = options.referenceOpacity ?? 0.28;
+    const opacity = options.referenceOpacity ?? DEFAULT_REFERENCE_LAYER_OPACITY;
     if (current.terrainChunkKey !== undefined || this.terrain.has(key)) {
       if (!this.terrain.setRecordRole(key, role)) return false;
     } else if (current.fluidChunkKey !== undefined) return false;

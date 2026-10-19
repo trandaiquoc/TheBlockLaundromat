@@ -1,3 +1,4 @@
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../domain/editor-settings';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { ActiveBlock } from '../../blocks/placement-palette/active-block.service';
@@ -264,6 +265,7 @@ import {
 import { ViewportCameraMotionController } from '../scheduling/camera/viewport-camera-motion-controller';
 import {
   blockCoordinateFromHit,
+  preciseFaceNormal,
   surfaceFaceDirectionFromHit,
 } from '../interaction/viewport-hit-ownership';
 import {
@@ -489,7 +491,11 @@ export class ThreeViewportEngine {
       userData: { sharedFallbackMaterial: true },
     }),
     reference: Object.assign(
-      new THREE.MeshLambertMaterial({ color: 0x9aa5b5, transparent: true }),
+      new THREE.MeshLambertMaterial({
+        color: 0x9aa5b5,
+        transparent: true,
+        opacity: DEFAULT_REFERENCE_LAYER_OPACITY,
+      }),
       { userData: { sharedFallbackMaterial: true } },
     ),
     missing: Object.assign(new THREE.MeshLambertMaterial({ color: 0xff5a67 }), {
@@ -509,7 +515,7 @@ export class ThreeViewportEngine {
       new THREE.MeshLambertMaterial({
         color: 0x65717e,
         transparent: true,
-        opacity: 0.24,
+        opacity: DEFAULT_REFERENCE_LAYER_OPACITY,
         depthWrite: false,
       }),
       { userData: { sharedPlaceholderMaterial: true } },
@@ -2481,7 +2487,7 @@ export class ThreeViewportEngine {
       }
     }
     if (referenceOpacityOnly && project) {
-      this.setReferenceOpacity(options.referenceOpacity ?? 0.28);
+      this.setReferenceOpacity(options.referenceOpacity ?? DEFAULT_REFERENCE_LAYER_OPACITY);
       this.yLayerProjection.setCommitted(project, {
         ...(this.yLayerProjection.committedOptionsFor(project) ?? previousOptions),
         referenceOpacity: options.referenceOpacity,
@@ -2500,7 +2506,7 @@ export class ThreeViewportEngine {
     }
     if (layerProjectionOnly) {
       if (previousOptions.referenceOpacity !== options.referenceOpacity)
-        this.setReferenceOpacity(options.referenceOpacity ?? 0.28);
+        this.setReferenceOpacity(options.referenceOpacity ?? DEFAULT_REFERENCE_LAYER_OPACITY);
     }
     if (decorationInputChanged) {
       if (metadataMutation && mutationHint?.kind === 'metadata-delta' && project && previousProject)
@@ -3226,7 +3232,10 @@ export class ThreeViewportEngine {
     }
   }
 
-  private ensureFallbackVisual(entry: RenderedBlockEntry, referenceOpacity = 0.28): THREE.Mesh {
+  private ensureFallbackVisual(
+    entry: RenderedBlockEntry,
+    referenceOpacity = DEFAULT_REFERENCE_LAYER_OPACITY,
+  ): THREE.Mesh {
     return this.blockRepresentationCommit.ensureFallback(entry, referenceOpacity);
   }
 
@@ -3245,7 +3254,7 @@ export class ThreeViewportEngine {
       templates,
       new Set(exposedFaceDirections(visibleEntry, visible)),
       role,
-      this.renderOptions.referenceOpacity ?? 0.28,
+      this.renderOptions.referenceOpacity ?? DEFAULT_REFERENCE_LAYER_OPACITY,
     );
   }
 
@@ -3486,9 +3495,8 @@ export class ThreeViewportEngine {
         const surfaceDirection = surfaceFaceDirectionFromHit(blockHit);
         const normal = surfaceDirection
           ? surfaceFaceNormal(surfaceDirection)
-          : (blockHit.face?.normal ?? new THREE.Vector3(0, 1, 0))
-              .clone()
-              .transformDirection(blockHit.object.matrixWorld);
+          : (preciseFaceNormal(blockHit, this.raycaster.ray.direction) ??
+            new THREE.Vector3(0, 1, 0));
         faceNormal = { x: normal.x, y: normal.y, z: normal.z };
         hitPoint = blockHit.point;
       }

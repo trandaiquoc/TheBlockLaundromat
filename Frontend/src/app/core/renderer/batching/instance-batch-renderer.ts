@@ -1,3 +1,4 @@
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../domain/editor-settings';
 import * as THREE from 'three';
 import type { VoxelCoordinate } from '../../domain/project.types';
 import {
@@ -200,7 +201,7 @@ export class InstanceBatchRenderer {
     return { batchKey, index };
   }
 
-  private referenceOpacity = 0.28;
+  private referenceOpacity = DEFAULT_REFERENCE_LAYER_OPACITY;
 
   setReferenceOpacity(opacity: number): void {
     this.referenceOpacity = Math.max(0, Math.min(1, opacity));

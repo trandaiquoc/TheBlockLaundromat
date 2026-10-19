@@ -97,6 +97,120 @@ function attachedFaceProject(id: string, supports: readonly PlacedBlock[]): Proj
 }
 
 describe('StructureEditorService mutations', () => {
+  it.each(['minecraft:dandelion', 'minecraft:torch', 'minecraft:oak_sign'])(
+    'keeps %s on the same virtual floor contract without allowing elevated unsupported placement',
+    (id) => {
+      const setup = makeEditor({ ...project, blocks: [] });
+      if (id === 'minecraft:oak_sign') {
+        setup.library.replaceSource({
+          minecraftVersion: '1.21.1',
+          sourceId: 'minecraft',
+          sourceName: 'Sign fixture',
+          blocks: [
+            {
+              id,
+              displayName: 'Oak Sign',
+              defaultState: { rotation: '0', waterlogged: 'false' },
+              stateDefinitions: [
+                { name: 'rotation', values: Array.from({ length: 16 }, (_, n) => String(n)) },
+                { name: 'waterlogged', values: ['false', 'true'] },
+              ],
+              resources: { textures: [] },
+              support: 'full',
+              behavior: {
+                kind: 'standing-sign',
+                rotationProperty: 'rotation',
+                wallBlockId: 'minecraft:oak_wall_sign',
+              },
+            },
+          ],
+        });
+      }
+      setup.active.select(setup.library.get(id)!);
+      const context = { faceNormal: { x: 0, y: 1, z: 0 } };
+      expect(setup.editor.planPlacement({ x: 2, y: 0, z: 2 }, context)?.validation.status).toBe(
+        'valid',
+      );
+      expect(setup.editor.planPlacement({ x: 2, y: 1, z: 2 }, context)?.validation.status).toBe(
+        'invalid',
+      );
+      expect(setup.editor.place({ x: 2, y: 0, z: 2 }, context)).toBe(true);
+      expect(setup.workspace.project()?.blocks.every((b) => b.position.y >= 0)).toBe(true);
+    },
+  );
+  it.each([
+    { name: 'virtual floor', y: 0, support: undefined, hanging: false, valid: true },
+    { name: 'solid block', y: 1, support: 'minecraft:stone', hanging: false, valid: true },
+    { name: 'vertical chain', y: 1, support: 'minecraft:chain', hanging: true, valid: true },
+    { name: 'unsupported elevated', y: 1, support: undefined, hanging: false, valid: false },
+    { name: 'unsupported hanging at floor', y: 0, support: undefined, hanging: true, valid: false },
+  ])(
+    'keeps Lantern preview, commit and atomic history consistent on $name',
+    ({ y, support, hanging, valid }) => {
+      const blocks: PlacedBlock[] = support
+        ? [
+            {
+              kind: 'resolved',
+              id: support,
+              namespace: 'minecraft',
+              position: { x: 2, y: hanging ? y + 1 : y - 1, z: 2 },
+              state: support.endsWith('chain') ? { axis: 'y', waterlogged: 'false' } : {},
+            },
+          ]
+        : [];
+      const setup = makeEditor({ ...project, blocks });
+      setup.active.select(setup.library.get('minecraft:lantern')!);
+      const position = { x: 2, y, z: 2 };
+      const context = { faceNormal: { x: 0, y: hanging ? -1 : 1, z: 0 } };
+      const plan = setup.editor.planPlacement(position, context)!;
+      expect(plan.validation.status).toBe(valid ? 'valid' : 'invalid');
+      expect(setup.editor.place(position, context)).toBe(valid);
+      if (!valid) {
+        expect(setup.workspace.project()?.blocks).toEqual(blocks);
+        expect(setup.history.canUndo()).toBe(false);
+        return;
+      }
+      const placed = setup.workspace.project()!.blocks;
+      expect(placed).toHaveLength(blocks.length + 1);
+      expect(placed.at(-1)).toMatchObject({ position, state: { hanging: String(hanging) } });
+      expect(placed.every((b) => b.position.y >= 0)).toBe(true);
+      setup.history.undo();
+      expect(setup.workspace.project()?.blocks).toEqual(blocks);
+      expect(setup.history.canUndo()).toBe(false);
+      setup.history.redo();
+      expect(setup.workspace.project()?.blocks).toEqual(placed);
+    },
+  );
+
+  it('stacks bars vertically without horizontal connections and commits connected neighbours atomically', () => {
+    const setup = makeEditor({ ...project, blocks: [] });
+    setup.active.select(setup.library.get('minecraft:iron_bars')!);
+    const context = { faceNormal: { x: 0, y: 1, z: 0 } };
+    for (const y of [0, 1, 2]) {
+      const position = { x: 2, y, z: 2 };
+      expect(setup.editor.planPlacement(position, context)?.validation.status).toBe('valid');
+      expect(setup.editor.place(position, context)).toBe(true);
+      expect(setup.workspace.project()!.blocks.at(-1)?.state).toMatchObject({
+        north: 'false',
+        east: 'false',
+        south: 'false',
+        west: 'false',
+      });
+    }
+    const stack = setup.workspace.project()!.blocks;
+    expect(setup.editor.place({ x: 3, y: 1, z: 2 }, { faceNormal: { x: 1, y: 0, z: 0 } })).toBe(
+      true,
+    );
+    const connected = setup.workspace.project()!.blocks;
+    expect(connected.find((b) => b.position.x === 2 && b.position.y === 1)?.state['east']).toBe(
+      'true',
+    );
+    expect(connected.find((b) => b.position.x === 3)?.state['west']).toBe('true');
+    setup.history.undo();
+    expect(setup.workspace.project()!.blocks).toEqual(stack);
+    setup.history.redo();
+    expect(setup.workspace.project()!.blocks).toEqual(connected);
+  });
   it('uses the active/project supplied by the viewport provider for preview planning', () => {
     const setup = makeEditor({ ...project, blocks: [] });
     setup.active.select(setup.library.get('minecraft:oak_stairs')!);

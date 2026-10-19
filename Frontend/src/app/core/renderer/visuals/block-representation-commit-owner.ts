@@ -1,3 +1,4 @@
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../domain/editor-settings';
 import * as THREE from 'three';
 import type {
   CompiledInstanceTemplates,
@@ -206,7 +207,10 @@ export class BlockRepresentationCommitOwner {
     this.ports.store.setInstanceMembership(key, { batchKey, index, object });
   }
 
-  ensureFallback(entry: RenderedBlockEntry, referenceOpacity = 0.28): THREE.Mesh {
+  ensureFallback(
+    entry: RenderedBlockEntry,
+    referenceOpacity = DEFAULT_REFERENCE_LAYER_OPACITY,
+  ): THREE.Mesh {
     const fallback = this.ports.resources.createFallback(entry, referenceOpacity);
     this.ports.store.setFallback(entry.key, fallback);
     return fallback;
@@ -519,7 +523,7 @@ export class BlockRepresentationCommitOwner {
       if (job.role === 'reference')
         this.ports.targets.object.applyReferenceOpacity(
           object,
-          job.options.referenceOpacity ?? 0.28,
+          job.options.referenceOpacity ?? DEFAULT_REFERENCE_LAYER_OPACITY,
         );
       (
         this.ports.targets.object.parentFor?.(job.block) ?? this.ports.targets.object.blocksGroup
@@ -649,7 +653,7 @@ export class BlockRepresentationCommitOwner {
       if (job.role === 'reference')
         this.ports.targets.object.applyReferenceOpacity(
           object,
-          job.options.referenceOpacity ?? 0.28,
+          job.options.referenceOpacity ?? DEFAULT_REFERENCE_LAYER_OPACITY,
         );
       (
         this.ports.targets.object.parentFor?.(job.block) ?? this.ports.targets.object.blocksGroup

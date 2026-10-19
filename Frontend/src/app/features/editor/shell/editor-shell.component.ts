@@ -205,6 +205,15 @@ export class EditorShellComponent implements OnDestroy {
   private drawerOpener?: HTMLElement;
   private focusedResizeSide?: 'left' | 'right';
   private readonly document = inject(DOCUMENT);
+  private readonly contextualInspector = viewChild(ContextualInspectorComponent);
+  private readonly narrowViewport = signal((this.document.defaultView?.innerWidth ?? 0) <= 850);
+  protected readonly placementInspectorVisible = computed(
+    () =>
+      this.layout.preferences().rightSidebarVisible &&
+      this.rightSidebarTab() === 'selection' &&
+      (!this.narrowViewport() || this.inspectorExpanded()) &&
+      this.contextualInspector()?.showingPlacement() === true,
+  );
   private readonly editorBody = viewChild<ElementRef<HTMLElement>>('editorBody');
   protected readonly sidebarResize = new EditorSidebarResizeSession(
     this.layout,
@@ -670,6 +679,7 @@ export class EditorShellComponent implements OnDestroy {
     this.clearPressedMovementActions();
   }
   protected handleViewportResize(): void {
+    this.narrowViewport.set((this.document.defaultView?.innerWidth ?? 0) <= 850);
     this.sidebarResize.clampToViewport();
     const focusedPanel =
       this.document.activeElement instanceof HTMLElement

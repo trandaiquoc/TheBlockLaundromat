@@ -91,18 +91,12 @@ export function validateBlockSupport(
   if (behavior.kind === 'lantern-placement') {
     const hanging = block.state[behavior.hangingProperty] === 'true';
     supportPosition = add(block.position, hanging ? { x: 0, y: 1, z: 0 } : { x: 0, y: -1, z: 0 });
-    const support = find(source, supportPosition);
-    if (!support)
-      return {
-        status: 'invalid',
-        reason: 'missing-support',
-        affectedPositions: [block.position, supportPosition],
-      };
-    const supportBehavior = definitions(support.id)?.behavior;
-    if (hanging)
+    if (hanging) {
+      const support = find(source, supportPosition);
+      const supportBehavior = support && definitions(support.id)?.behavior;
       return isVerticalChain(support, definitions)
         ? { status: 'valid', reason: 'ok', affectedPositions: [block.position, supportPosition] }
-        : supportBehavior
+        : !support || supportBehavior
           ? {
               status: 'invalid',
               reason: 'missing-support',
@@ -113,6 +107,7 @@ export function validateBlockSupport(
               reason: 'unknown-behavior',
               affectedPositions: [block.position, supportPosition],
             };
+    }
   }
   if (behavior.kind === 'hanging-sign') {
     const support = find(source, supportPosition!);
@@ -278,6 +273,7 @@ function requiresSupportBelow(behavior: NonNullable<BlockDefinition['behavior']>
     behavior.kind === 'floor-supported' ||
     behavior.kind === 'torch-placement' ||
     behavior.kind === 'standing-sign' ||
+    behavior.kind === 'lantern-placement' ||
     (behavior.kind === 'double-height' && behavior.requiresFloor)
   );
 }

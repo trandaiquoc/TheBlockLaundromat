@@ -1,3 +1,4 @@
+import { DEFAULT_EDITOR_SETTINGS } from '../../../domain/editor-settings';
 import type { BlockDefinition } from '../../../blocks/catalog/block-definition.types';
 import {
   CURRENT_PROJECT_SCHEMA_VERSION,
@@ -95,7 +96,7 @@ export async function prepareStructureJsonProjectImport(
     blocks: [],
     groups: [],
     decorations: [],
-    editorSettings: { currentY: 0, layerVisibility: 'current-only', referenceLayerOpacity: 0.5 },
+    editorSettings: { ...DEFAULT_EDITOR_SETTINGS },
   };
   const validation = await validateParsedStructureJsonPreviewAsync(
     source,

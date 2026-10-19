@@ -13,6 +13,13 @@ only viewport-scoped visual revision and special-visual identity state; they
 do not build a second coordinate map. Standalone engine instances without an
 editor lookup use a local spatial index for isolated renderer tests and tools.
 
+Precise double-sided model hits orient their geometric normal against the
+incoming ray, including coincident opposite faces in thin model elements.
+3D and Y-Layer share this resolution while retaining exact geometry hit tests;
+surface-batch metadata and the full-cube DDA path keep their existing ownership.
+Reference representations use the domain's 15% default only when no explicit
+opacity is supplied. Persisted opacity and manual adjustments take precedence.
+
 ### 3D Empty-Space Marquee Selection
 
 An empty-space drag is retained as a screen-space rectangle in viewport CSS

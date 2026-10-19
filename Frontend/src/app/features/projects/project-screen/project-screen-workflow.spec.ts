@@ -147,6 +147,7 @@ describe('ProjectScreenWorkflow', () => {
     const created = (store.create as ReturnType<typeof vi.fn>).mock
       .calls[0]?.[0] as ProjectDocument;
     expect(created.metadata.name).toBe('New build');
+    expect(created.editorSettings.referenceLayerOpacity).toBe(0.15);
     expect(session.resetForProjectChange).toHaveBeenCalledWith(created.id);
     expect(workspace.activate).toHaveBeenCalledWith(created);
     expect(router.navigateByUrl).toHaveBeenCalledWith('/editor');

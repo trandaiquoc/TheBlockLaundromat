@@ -1,3 +1,4 @@
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../../domain/editor-settings';
 import type { ProjectDocument, VoxelCoordinate } from '../../../domain/project.types';
 import type { ProjectMutationHint } from '../../../editor/mutations/project-mutation-hint';
 import { visibleLayerSet } from '../../../editor/viewport/y-layer';
@@ -118,7 +119,7 @@ export class YLayerPresentationLifecycleOwner {
     const hiddenGroupIds = new Set(
       project.groups.filter((group) => group.visible === false).map((group) => group.id),
     );
-    const referenceOpacity = options.referenceOpacity ?? 0.28;
+    const referenceOpacity = options.referenceOpacity ?? DEFAULT_REFERENCE_LAYER_OPACITY;
     this.resources.fluids.setLayerPresentation({
       visibleLayers: layers,
       currentY: options.layerY,

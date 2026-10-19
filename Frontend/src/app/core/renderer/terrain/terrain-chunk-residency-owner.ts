@@ -1,3 +1,4 @@
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../domain/editor-settings';
 import * as THREE from 'three';
 import type { TerrainChunkCoordinate } from './chunks/chunk-coordinate';
 import { terrainChunkBounds } from './chunks/chunk-coordinate';
@@ -61,7 +62,7 @@ export class TerrainChunkResidencyOwner {
   private blocksCompiledValue = 0;
   private facesEmittedValue = 0;
   private facesCulledValue = 0;
-  private referenceOpacity = 0.28;
+  private referenceOpacity = DEFAULT_REFERENCE_LAYER_OPACITY;
 
   constructor(private readonly options: TerrainChunkResidencyOptions) {}
 

@@ -1,3 +1,4 @@
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../domain/editor-settings';
 import * as THREE from 'three';
 import type { VoxelCoordinate } from '../../domain/project.types';
 import { groupIdsOf } from '../../editor/groups/group-membership';
@@ -134,7 +135,7 @@ export class SurfaceFaceBatchRenderer {
     templates: readonly SurfaceFaceTemplate[],
     exposed: ReadonlySet<SurfaceFaceDirection>,
     role: 'normal' | 'reference' = 'normal',
-    referenceOpacity = 0.28,
+    referenceOpacity = DEFAULT_REFERENCE_LAYER_OPACITY,
   ): readonly SurfaceFaceMembership[] | undefined {
     if (templates.length !== 6) return undefined;
     const memberships: SurfaceFaceMembership[] = [];
@@ -241,7 +242,11 @@ export class SurfaceFaceBatchRenderer {
     return memberships;
   }
 
-  setMemberRole(key: string, role: 'normal' | 'reference', referenceOpacity = 0.28): boolean {
+  setMemberRole(
+    key: string,
+    role: 'normal' | 'reference',
+    referenceOpacity = DEFAULT_REFERENCE_LAYER_OPACITY,
+  ): boolean {
     const memberships = this.ownershipStore.get(key);
     const templates = this.templatesByKey.get(key);
     if (!memberships?.length || !templates) return false;

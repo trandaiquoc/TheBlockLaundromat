@@ -24,7 +24,7 @@
         [attr.title]="autosave.error()"
         >{{ saveStatusLabel() }}</span
       >
-      @if (activePlacement(); as active) {
+      @if (!placementInspectorVisible() && activePlacement(); as active) {
         <span
           class="active-placement-status"
           [attr.data-placement-kind]="active.kind"

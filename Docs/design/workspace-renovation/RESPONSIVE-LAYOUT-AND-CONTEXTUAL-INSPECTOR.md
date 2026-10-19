@@ -46,9 +46,27 @@ Properties distinguishes Placement and Selection. Its default follows the tool;
 the user can explicitly inspect the other context until the tool changes.
 Changing this context never clears or replaces the real selection.
 
+One Quick actions row sits directly below the context controls, before either
+context's details. Select all is enabled when the project has blocks; Clear
+selection is enabled for a real block or decoration selection. These buttons
+dispatch the existing shell commands and are not duplicated in SelectionInspector.
+
 Placement presents the active block's real inventory thumbnail, name, registry
 ID, and read-only state details, or the active decoration identity. Its empty
 state points to the browser and Quick Bar. It does not edit placed blocks.
+
+The Status Bar omits its active-material label while this Placement context is
+visible in the Properties tab. It restores the label for Selection, Block Usage,
+a hidden sidebar, or a closed/collapsed narrow sheet. The shell derives visibility
+from its layout and the Inspector's context; material state remains with the
+existing block/decorations services. Save status, coordinates, current Y, block
+count, and assets retain their existing presentation.
+
+New projects, new Structure JSON projects, missing stored preferences, and
+renderer fallbacks use 15% reference-layer opacity. Explicit stored values,
+including zero, take precedence; the slider and persistence remain available.
+Visibility modes share this default without changing renderer backgrounds or
+block colors.
 
 Selection keeps the existing single, logical set, box, decoration, sign,
 inventory, item-display, decorated-pot, membership, and selection-action paths.
@@ -90,3 +108,16 @@ chrome surfaces only and honors `prefers-reduced-motion`.
 The [focused browser evidence](evidence/20261019-responsive-context-inspector/README.md)
 records the four-theme/locale/viewport matrix and retained before/after captures.
 This is UI verification, not a Minecraft or benchmark claim.
+
+## Placement consistency
+
+The editor's virtual floor below Y=0 supports standing Lanterns through the same
+support-below rule as standing signs, torches, and floor-supported blocks. It
+does not create project blocks or support floating placements above Y=0.
+Chain-hanging Lanterns still require the existing verified attachment support.
+
+Precise picking of double-sided model faces reports the side approached by the
+pointer ray. This handles the coincident up/down caps in the official 1.21.1
+`iron_bars_post_ends` model without changing geometry or widening hitboxes.
+Both the 3D DDA precise fallback and the Y-Layer precise path use this normal
+resolver. Preview and commit retain the shared placement plan and atomic history.

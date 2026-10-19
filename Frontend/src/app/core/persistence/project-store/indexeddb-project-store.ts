@@ -1,3 +1,4 @@
+import { DEFAULT_EDITOR_SETTINGS } from '../../domain/editor-settings';
 import { migrateProject } from '../../domain/migrations';
 import {
   DEFAULT_MINECRAFT_VERSION,
@@ -433,12 +434,6 @@ function stripEditorSettings(project: ProjectDocument): StoredProjectDocument {
   const { editorSettings: _editorSettings, ...document } = project;
   return document;
 }
-
-const DEFAULT_EDITOR_SETTINGS: EditorSettings = {
-  currentY: 0,
-  layerVisibility: 'current-only',
-  referenceLayerOpacity: 0.5,
-};
 
 function runRequest<T>(
   database: IDBDatabase,

@@ -315,6 +315,56 @@ describe('editor shell movement/delete routing', () => {
     mount.mockRestore();
   });
 
+  it('derives duplicate-material suppression from context, visible tab and sheet state', async () => {
+    const widthDescriptor = Object.getOwnPropertyDescriptor(window, 'innerWidth');
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1600 });
+    const mount = vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
+    const fixture = TestBed.createComponent(EditorShellComponent);
+    try {
+      const workspace = TestBed.inject(WorkspaceStateService);
+      await workspace.restore(TestBed.inject(PROJECT_STORE), undefined);
+      workspace.activate(project, undefined);
+      TestBed.inject(EditorToolService).select('place');
+      fixture.detectChanges();
+      const root = fixture.nativeElement as HTMLElement;
+      const status = fixture.debugElement.query(By.directive(EditorStatusBarComponent))
+        .componentInstance as EditorStatusBarComponent;
+      expect(status.placementInspectorVisible()).toBe(true);
+      root.querySelectorAll<HTMLButtonElement>('.inspector-context button')[1].click();
+      fixture.detectChanges();
+      expect(status.placementInspectorVisible()).toBe(false);
+      root.querySelectorAll<HTMLButtonElement>('.inspector-context button')[0].click();
+      fixture.detectChanges();
+      root.querySelector<HTMLButtonElement>('#right-sidebar-tab-usage')!.click();
+      fixture.detectChanges();
+      expect(status.placementInspectorVisible()).toBe(false);
+      root.querySelector<HTMLButtonElement>('#right-sidebar-tab-selection')!.click();
+      fixture.detectChanges();
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 390 });
+      (
+        fixture.componentInstance as unknown as { handleViewportResize(): void }
+      ).handleViewportResize();
+      fixture.detectChanges();
+      expect(status.placementInspectorVisible()).toBe(false);
+      root.querySelectorAll<HTMLButtonElement>('.responsive-drawer-actions button')[1].click();
+      fixture.detectChanges();
+      expect(status.placementInspectorVisible()).toBe(true);
+      root.querySelector<HTMLButtonElement>('.sheet-toggle')!.click();
+      fixture.detectChanges();
+      expect(status.placementInspectorVisible()).toBe(false);
+      root.querySelector<HTMLButtonElement>('.sheet-toggle')!.click();
+      fixture.detectChanges();
+      expect(status.placementInspectorVisible()).toBe(true);
+      root.querySelector<HTMLButtonElement>('.right-panel .drawer-close')!.click();
+      fixture.detectChanges();
+      expect(status.placementInspectorVisible()).toBe(false);
+    } finally {
+      if (widthDescriptor) Object.defineProperty(window, 'innerWidth', widthDescriptor);
+      fixture.destroy();
+      mount.mockRestore();
+    }
+  });
+
   it('opens Asset Manager on Mods when requested from missing-assets details', async () => {
     const mount = vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
     const fixture = TestBed.createComponent(EditorShellComponent);

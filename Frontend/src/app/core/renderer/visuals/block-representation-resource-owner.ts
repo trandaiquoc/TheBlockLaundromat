@@ -1,3 +1,4 @@
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../domain/editor-settings';
 import * as THREE from 'three';
 import type { PlaceholderRole } from '../batching/placeholder-batch-renderer';
 import type { RenderedBlockEntry } from '../engine/viewport-block-representation-store';
@@ -177,7 +178,10 @@ export class BlockRepresentationResourceOwner {
     this.ports.placeholders.clear();
   }
 
-  createFallback(entry: RenderedBlockEntry, referenceOpacity = 0.28): THREE.Mesh {
+  createFallback(
+    entry: RenderedBlockEntry,
+    referenceOpacity = DEFAULT_REFERENCE_LAYER_OPACITY,
+  ): THREE.Mesh {
     if (entry.fallback) return entry.fallback;
     if (!this.fallbackGeometryCounted) {
       this.ports.record('fallbackGeometryConstructions');

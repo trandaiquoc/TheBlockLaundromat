@@ -119,88 +119,16 @@ describe('SelectionInspectorComponent', () => {
     fixture.destroy();
   });
 
-  it('leads with selection context, followed by quick actions and the structure summary', async () => {
-    const base = rendererBenchmarkProject('small');
-    const project = {
-      ...base,
-      size: { x: 16, y: 32, z: 24 },
-      blocks: [base.blocks[0], { ...base.blocks[0], position: { x: 2, y: 0, z: 0 } }],
-    };
-    await TestBed.configureTestingModule({
-      imports: [SelectionInspectorComponent],
+  it('keeps the structure summary below selection without owning contextual actions', () => {
+    TestBed.configureTestingModule({
       providers: [{ provide: ProjectBlockRuntimeIndex, useValue: new ProjectBlockRuntimeIndex() }],
-    }).compileComponents();
+    });
+    TestBed.inject(WorkspaceStateService).publishProject(rendererBenchmarkProject('small'));
     const fixture = TestBed.createComponent(SelectionInspectorComponent);
-    const workspace = TestBed.inject(WorkspaceStateService);
-    const i18n = TestBed.inject(I18nService);
-    workspace.publishProject(project);
     fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelector('[data-overview-size]').textContent).toContain(
-      '16 × 32 × 24',
-    );
-    expect(fixture.nativeElement.querySelector('.overview-metrics').textContent).toContain('2');
-    const emptySelection = fixture.nativeElement.querySelector(
-      '[data-empty-selection]',
-    ) as HTMLElement | null;
-    const quickActions = fixture.nativeElement.querySelector(
-      '.overview-actions',
-    ) as HTMLElement | null;
-    const structureOverview = fixture.nativeElement.querySelector(
-      '.structure-overview',
-    ) as HTMLElement | null;
-    if (!emptySelection || !quickActions || !structureOverview)
-      throw new Error('Selection inspector summary is missing.');
-    expect(quickActions?.closest('.structure-overview')).toBeNull();
-    expect(
-      (emptySelection.compareDocumentPosition(quickActions) & Node.DOCUMENT_POSITION_FOLLOWING) !==
-        0,
-    ).toBe(true);
-    expect(
-      (quickActions.compareDocumentPosition(structureOverview) &
-        Node.DOCUMENT_POSITION_FOLLOWING) !==
-        0,
-    ).toBe(true);
-
-    let selectAllRequests = 0;
-    let clearSelectionRequests = 0;
-    fixture.componentInstance.selectAllRequested.subscribe(() => selectAllRequests++);
-    fixture.componentInstance.clearSelectionRequested.subscribe(() => clearSelectionRequests++);
-    const selectAllButton = fixture.nativeElement.querySelector('[data-action="select-all"]');
-    const clearButton = fixture.nativeElement.querySelector('[data-action="clear-selection"]');
     expect(fixture.nativeElement.querySelector('[data-empty-selection]')).not.toBeNull();
-    expect(fixture.nativeElement.textContent).toContain(i18n.t('selectionEmptyHint'));
-    expect(fixture.nativeElement.querySelector('#quick-actions-title').textContent).toContain(
-      i18n.t('quickActions'),
-    );
-    expect(selectAllButton.disabled).toBe(false);
-    expect(clearButton).toBeNull();
-    expect(fixture.nativeElement.querySelector('[data-action="fit-structure"]')).toBeNull();
-    expect(fixture.nativeElement.querySelector('[data-action="focus-selection"]')).toBeNull();
-
-    selectAllButton.click();
-
-    expect(selectAllRequests).toBe(1);
-    expect(clearSelectionRequests).toBe(0);
-    fixture.destroy();
-  });
-
-  it('hides unavailable quick actions when the project and selection are empty', async () => {
-    const base = rendererBenchmarkProject('small');
-    await TestBed.configureTestingModule({
-      imports: [SelectionInspectorComponent],
-      providers: [{ provide: ProjectBlockRuntimeIndex, useValue: new ProjectBlockRuntimeIndex() }],
-    }).compileComponents();
-    const fixture = TestBed.createComponent(SelectionInspectorComponent);
-    const workspace = TestBed.inject(WorkspaceStateService);
-    workspace.publishProject({ ...base, blocks: [] });
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelector('[data-empty-selection]')).not.toBeNull();
-    expect(fixture.nativeElement.querySelector('.overview-actions')).toBeNull();
-    expect(fixture.nativeElement.querySelector('[data-action="select-all"]')).toBeNull();
-    expect(fixture.nativeElement.querySelector('[data-action="clear-selection"]')).toBeNull();
-    fixture.destroy();
+    expect(fixture.nativeElement.querySelector('[data-overview-size]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-action]')).toBeNull();
   });
 
   it('keeps the auto-derived marker separate from property effect labels', async () => {

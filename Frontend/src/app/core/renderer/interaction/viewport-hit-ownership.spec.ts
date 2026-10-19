@@ -1,8 +1,35 @@
 import { describe, expect, it } from 'vitest';
 import * as THREE from 'three';
-import { blockCoordinateFromHit, surfaceFaceDirectionFromHit } from './viewport-hit-ownership';
+import {
+  blockCoordinateFromHit,
+  surfaceFaceDirectionFromHit,
+  preciseFaceNormal,
+} from './viewport-hit-ownership';
 
 describe('viewport hit ownership', () => {
+  it.each(['x', 'y', 'z'] as const)(
+    'orients double-sided precise %s faces toward the incoming ray',
+    (axis) => {
+      const mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(),
+        new THREE.MeshBasicMaterial({ side: THREE.DoubleSide }),
+      );
+      const normal = new THREE.Vector3();
+      normal[axis] = 1;
+      const hit: THREE.Intersection = {
+        object: mesh,
+        face: { a: 0, b: 1, c: 2, normal, materialIndex: 0 },
+        point: new THREE.Vector3(),
+        distance: 1,
+      };
+      expect(preciseFaceNormal(hit, normal)).toEqual(normal.clone().negate());
+      expect(preciseFaceNormal(hit, normal.clone().negate())).toEqual(normal);
+      mesh.material.side = THREE.FrontSide;
+      expect(preciseFaceNormal(hit, normal)).toEqual(normal);
+      mesh.geometry.dispose();
+      mesh.material.dispose();
+    },
+  );
   it('resolves instanced hits through the authoritative voxel table', () => {
     const mesh = new THREE.InstancedMesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial(), 3);
     const voxels = [

@@ -116,6 +116,31 @@ function seedVersionSevenDatabase(
 describe('IndexedDbProjectStore integration', () => {
   afterEach(() => vi.unstubAllGlobals());
 
+  it('preserves stored opacity and uses fifteen percent only when preferences are missing', async () => {
+    const factory = new IDBFactory();
+    vi.stubGlobal('indexedDB', factory);
+    const name = 'opacity-default-regression';
+    const store = new IndexedDbProjectStore(name);
+    const original = project('opacity', '2026-10-19T00:00:00.000Z');
+    await store.create(original);
+    expect((await store.open(original.id))?.editorSettings.referenceLayerOpacity).toBe(0.7);
+    await new Promise<void>((resolve, reject) => {
+      const request = factory.open(name);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const database = request.result;
+        const transaction = database.transaction('project-editor-settings', 'readwrite');
+        transaction.objectStore('project-editor-settings').delete(original.id);
+        transaction.oncomplete = () => {
+          database.close();
+          resolve();
+        };
+        transaction.onerror = () => reject(transaction.error);
+      };
+    });
+    expect((await store.open(original.id))?.editorSettings.referenceLayerOpacity).toBe(0.15);
+  });
+
   it('migrates schema version 6 project and recovery data without losing editor settings', async () => {
     const factory = new IDBFactory();
     vi.stubGlobal('indexedDB', factory);

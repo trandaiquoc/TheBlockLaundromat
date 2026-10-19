@@ -402,6 +402,7 @@
     </div>
     @if (layout.preferences().statusBarVisible) {
       <app-editor-status-bar
+        [placementInspectorVisible]="placementInspectorVisible()"
         (assetManagerRequested)="openAssetManager('mods')"
       ></app-editor-status-bar>
     }

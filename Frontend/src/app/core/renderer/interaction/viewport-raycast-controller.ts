@@ -3,6 +3,7 @@ import type { FaceNormal } from '../../editor/placement/placement';
 import type { ProjectSize, VoxelCoordinate } from '../../domain/project.types';
 import { coordinateKey } from '../../domain/coordinates';
 import { ddaVoxelCandidates, type VoxelRaycastCandidate } from './voxel-raycast';
+import { preciseFaceNormal } from './viewport-hit-ownership';
 
 export interface ViewportRayHit {
   readonly position: VoxelCoordinate;
@@ -80,10 +81,7 @@ export class ViewportRaycastController {
         : undefined;
       if (!intersection) continue;
       const normal =
-        intersection.face?.normal
-          .clone()
-          .transformDirection(intersection.object.matrixWorld)
-          .normalize() ??
+        preciseFaceNormal(intersection, this.raycaster.ray.direction) ??
         new THREE.Vector3(candidate.normal.x, candidate.normal.y, candidate.normal.z);
       return {
         position: candidate.position,
