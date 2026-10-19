@@ -417,8 +417,9 @@
 }
 
 .project-page[data-theme='craft'] .board-heading h1 {
+  margin-left: 2rem;
   font-size: clamp(0.98rem, 1.16vw, 1.14rem);
-  color: transparent;
+  color: #392717;
   white-space: nowrap;
 }
 
@@ -431,14 +432,12 @@
 
 .project-page[data-theme='craft'] .project-search-field,
 .project-page[data-theme='craft'] .project-sort {
-  opacity: 0;
+  border-color: transparent;
+  background: transparent;
 }
 
-.project-page[data-theme='craft'] .project-search-field:focus-within,
-.project-page[data-theme='craft'] .project-search-field--active,
-.project-page[data-theme='craft'] .project-sort:focus,
-.project-page[data-theme='craft'] .project-sort--changed {
-  opacity: 1;
+.project-page[data-theme='craft'] .project-sort {
+  color: #392717;
 }
 
 .project-page[data-theme='craft'] .project-list {

@@ -126,6 +126,52 @@
       }
     },
     {
+      "id": "minecraft-project-board-header-cleanup",
+      "theme": "minecraft",
+      "source": "Docs/design/references/01-minecraft.png",
+      "canvas": {
+        "width": 1672,
+        "height": 941
+      },
+      "regions": [
+        {
+          "id": "baked-board-title",
+          "rect": {
+            "x": 1066,
+            "y": 338,
+            "width": 143,
+            "height": 36
+          }
+        },
+        {
+          "id": "baked-search-icon-and-placeholder",
+          "rect": {
+            "x": 1238,
+            "y": 336,
+            "width": 112,
+            "height": 22
+          }
+        },
+        {
+          "id": "baked-sort-label-and-caret",
+          "rect": {
+            "x": 1410,
+            "y": 328,
+            "width": 80,
+            "height": 27
+          }
+        }
+      ],
+      "output": "Frontend/public/assets/project-screen/layers/scene-minecraft-board-header-cleanup.png",
+      "algorithm": "Frontend/tools/project-screen-assets/extract-minecraft-board-header-cleanup.py",
+      "validation": {
+        "method": "Each text area is replaced using a clean same-column source row; the extractor validates dark source glyph pixels, saved RGBA dimensions, and composited output.",
+        "alphaScope": "Opaque only inside the measured title, search, and sort text regions; source paper and control frames remain unchanged.",
+        "runtimeText": "Localized Angular heading, search input, and sort select remain live DOM controls.",
+        "browserEvidence": "Docs/design/homepage-renovation/evidence/20261019-board-header-live/README.md"
+      }
+    },
+    {
       "id": "minecraft-washer-display-cleanup",
       "theme": "minecraft",
       "source": "Docs/design/references/01-minecraft.png",

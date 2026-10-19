@@ -11,6 +11,7 @@
 .scene-layer--exterior,
 .scene-layer--room,
 .scene-layer--reference-board-cleanup,
+.scene-layer--reference-header-cleanup,
 .scene-layer--reference-display-cleanup {
   position: absolute;
   inset: 0;
@@ -96,6 +97,11 @@
 
 .scene-layer--reference-display-cleanup {
   z-index: 3;
+  pointer-events: none;
+}
+
+.scene-layer--reference-header-cleanup {
+  z-index: 4;
   pointer-events: none;
 }
 

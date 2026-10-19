@@ -58,6 +58,16 @@
       alt=""
     />
   }
+  @if (scene().referenceHeaderCleanup; as headerCleanup) {
+    <img
+      class="scene-layer--reference-header-cleanup"
+      [ngSrc]="headerCleanup.src"
+      [width]="headerCleanup.width"
+      [height]="headerCleanup.height"
+      priority
+      alt=""
+    />
+  }
   @if (scene().referenceDisplayCleanup; as displayCleanup) {
     <img
       class="scene-layer--reference-display-cleanup"

@@ -48,8 +48,8 @@ same 1672 × 941 canvas. Their measured mask regions are recorded in the
 [asset manifest](asset-manifest.json); the extraction script verifies that
 compositing both layers reproduces every source pixel. Only the visible view
 groups are isolated so far; unseen outdoor regions are not generated. The split
-does not yet remove the baked logo, washer, board, controls, or mascots. Those
-still form the source artwork under their live DOM layers.
+does not yet remove the baked logo, washer, or mascots. Those still form the
+source artwork under their live DOM layers.
 `scene-minecraft-board-cleanup.png` covers the five static sample project cards
 while preserving the original New Project tile. The source-derived
 `project-card-craft.png` crop at `(1176, 385)` preserves its pin and paper frame,
@@ -61,6 +61,13 @@ pending. `create-project-tile-craft.png` is a 142 × 156 pixel crop at `(1026,
 original tile art. A responsive percentage translation aligns that live
 button with the source tile after the board's perspective transform; the exact
 source crop remains underneath it. See the [focused alignment evidence](evidence/20261019-craft-tile-alignment/README.md).
+
+`scene-minecraft-board-header-cleanup.png` removes the baked Craft board title,
+search icon/placeholder, and sort label/caret while preserving the parchment
+surface and original control frames. The Angular heading, search input, and sort
+select are now visible in the same positions instead of being hidden behind the
+screenshot. The live controls remain present for an empty project list so the
+source frames never appear as non-functional decoration.
 
 `scene-minecraft-display-cleanup.png` removes only the two baked text lines from
 the Craft washer's dark project plate. Its script masks neutral-bright glyphs,
@@ -119,13 +126,15 @@ The captures linked below document earlier implementations and remain
 historical workflow evidence. The exact Minecraft scene asset is covered by a
 byte-comparison test. Browser inspection confirmed the background uses the
 reference at its native composition and the original toolbar no longer doubles
-under its interactive hit areas. The original board surface is visible without
-an opaque replacement layer; transparent search/sort hit targets preserve the
-baked controls until focus. Dynamic project rows replace matching sample cards,
+under its interactive hit areas. Dynamic project rows replace matching sample cards,
 while sample cards in unused positions remain visible, so board data has not
 reached visual acceptance. The selected washer preview was inspected with a
 temporary test project rather than the user's Cresselia project. Visual parity
 for the other three themes also remains pending.
+
+The [Craft board header live-control check](evidence/20261019-board-header-live/README.md)
+captures the cleaned title/search/sort area in English and Vietnamese at
+1672 × 941, with no browser runtime or network diagnostics.
 
 The [2026-10-17 laundromat scene review](evidence/20261017-laundromat-scene/README.md)
 contains captures of the empty state, project selection, four themes, creation

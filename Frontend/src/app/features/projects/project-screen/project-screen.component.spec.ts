@@ -122,6 +122,7 @@ describe('ProjectScreenComponent', () => {
     expect(craftBoard).not.toContain('clip-path:');
     expect(layoutStyles).toContain('create-project-tile-craft.png');
     expect(layoutStyles).toContain('transform: translate(-4.2%, 3.8%)');
+    expect(layoutStyles).toContain('margin-left: 2rem');
     expect(layoutStyles).toContain(".project-page[data-theme='craft'] .scene-canvas");
     expect(layoutStyles).toContain('width: max(100vw, 177.68svh)');
     expect(layoutStyles).toContain('height: max(100svh, 56.28vw)');
@@ -313,13 +314,18 @@ describe('ProjectScreenComponent', () => {
     expect(scene().getAttribute('data-mascot-state')).toBe('idle');
     expect(washerMascot().getAttribute('src')).toContain('raccoon-washer-idle.webp');
     expect(root.querySelector('.board-actions .project-create-trigger')).not.toBeNull();
-    expect(root.querySelector('.project-list-controls')).toBeNull();
     expect(root.querySelector('.project-note')?.textContent).toContain('Start a new project');
+    expect(root.querySelector('.project-list-controls')).toBeNull();
 
     preferences.setAppearance({ preset: 'craft' });
     fixture.detectChanges();
     expect(root.querySelector('.board-actions .project-create-trigger')).toBeNull();
     expect(root.querySelector('.project-list .project-create-trigger--tile')).not.toBeNull();
+    expect(root.querySelector('.project-list-controls')).not.toBeNull();
+    expect(root.querySelector('.project-search-field input')?.getAttribute('placeholder')).toBe(
+      'Search projects…',
+    );
+    expect(root.querySelector('.project-sort')).not.toBeNull();
     fixture.destroy();
   });
 });

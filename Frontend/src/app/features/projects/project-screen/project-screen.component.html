@@ -117,12 +117,9 @@
                 </button>
               }
             </div>
-            @if (loadStatus() === 'ready' && projects().length > 0) {
+            @if (loadStatus() === 'ready' && (projects().length > 0 || theme.theme() === 'craft')) {
               <div class="project-list-controls">
-                <label
-                  class="project-search-field"
-                  [class.project-search-field--active]="projectSearch().length > 0"
-                >
+                <label class="project-search-field">
                   <svg lucideSearch aria-hidden="true"></svg>
                   <input
                     type="search"
@@ -134,7 +131,6 @@
                 </label>
                 <select
                   class="project-sort"
-                  [class.project-sort--changed]="projectOrder() !== 'newest'"
                   [value]="projectOrder()"
                   [attr.aria-label]="i18n.t('sortProjects')"
                   (change)="updateProjectOrder($event)"
