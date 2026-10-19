@@ -12,6 +12,12 @@
     "raccoon": "Docs/design/references/03-raccoon.png",
     "dark": "Docs/design/references/04-dark.png"
   },
+  "sourceChecksums": {
+    "minecraft": "028ba427b4fc30898ac5dbdfaaf293265ddadd922de9604f1a461fa5845240cf",
+    "light": "976789bedf4e73908d20c265b92ebf85ce9fa7dcddf02a577e1927184dff3f53",
+    "raccoon": "1ba6e1e81b6bb14726c9f9be578e74a7580ea27e6fe98ba4f3dadef61636b982",
+    "dark": "efe4b326d893ddb7738a95aac704b2fc41749572597e908434ad0c2fb109b924"
+  },
   "extractions": [
     {
       "id": "minecraft-window-views",
@@ -98,6 +104,51 @@
         "sourceCropInspected": true,
         "browserScreenshot": "1672 by 941 with an empty IndexedDB project; frame, transparent preview opening, and live title alignment inspected",
         "realThumbnail": "pending"
+      }
+    },
+    {
+      "id": "minecraft-washer-display-cleanup",
+      "theme": "minecraft",
+      "source": "Docs/design/references/01-minecraft.png",
+      "canvas": {
+        "width": 1672,
+        "height": 941
+      },
+      "regions": [
+        {
+          "id": "baked-selected-project-label",
+          "rect": {
+            "x": 500,
+            "y": 396,
+            "width": 120,
+            "height": 18
+          }
+        },
+        {
+          "id": "baked-sample-project-name",
+          "rect": {
+            "x": 500,
+            "y": 417,
+            "width": 135,
+            "height": 21
+          }
+        }
+      ],
+      "alphaBounds": {
+        "x": 506,
+        "y": 395,
+        "width": 119,
+        "height": 43
+      },
+      "output": "Frontend/public/assets/project-screen/layers/scene-minecraft-display-cleanup.png",
+      "maskMethod": "Neutral-bright glyph threshold, 2px dilation, and local harmonic interpolation of source pixels. Alpha is opaque only inside the measured text mask.",
+      "validation": {
+        "sourceResolutionOnly": true,
+        "outputSha256": "f4c27b849cd8ea18862c7664ef136037943b947b4e699e104cd5b41cc0bfb00b",
+        "preservesAllPixelsOutsideMask": true,
+        "runtimeText": "Localized selected-project label and actual project name render as DOM text over the source display plate.",
+        "browserEvidence": "Docs/design/homepage-renovation/evidence/20261019-minecraft-display-cleanup/craft-display-browser-1672x941.png",
+        "algorithm": "Frontend/tools/project-screen-assets/extract-minecraft-display-cleanup.py"
       }
     }
   ]

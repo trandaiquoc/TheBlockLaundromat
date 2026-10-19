@@ -15,9 +15,12 @@
           [mascotState]="mascotState()"
           [animationsEnabled]="homeSpaceAnimationsEnabled()"
         />
+        @if (theme.theme() === 'craft') {
+          <div class="washer-preview-surface" aria-hidden="true"></div>
+        }
         @if (selectedProject(); as project) {
           <app-project-screen-preview
-            class="washer-project-preview"
+            class="washer-preview-surface washer-project-preview"
             [project]="project"
             aria-hidden="true"
           />
@@ -26,9 +29,11 @@
           @if (selectedProject(); as project) {
             <p class="washer-display-kicker">{{ i18n.t('selectedProject') }}</p>
             <h2>{{ project.name }}</h2>
-            <p class="washer-display-meta">
-              {{ summarySizeLabel(project) }} · {{ summaryModeFullLabel(project.structureMode) }}
-            </p>
+            @if (theme.theme() !== 'craft') {
+              <p class="washer-display-meta">
+                {{ summarySizeLabel(project) }} · {{ summaryModeFullLabel(project.structureMode) }}
+              </p>
+            }
           } @else {
             <p class="washer-display-kicker">{{ i18n.t('projectTitle') }}</p>
             <h2>{{ i18n.t('newProject') }}</h2>

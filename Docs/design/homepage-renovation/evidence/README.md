@@ -23,6 +23,11 @@ The [project creation focus review](20261017-project-create-focus/README.md)
 checks the narrow Create Project dialog's initial focus target and responsive
 width.
 
+The [Minecraft washer display cleanup review](20261019-minecraft-display-cleanup/README.md)
+checks the localized project label and live project name over the source plate,
+and the empty washer preview with its baked sample hidden, at 1672 × 941. It is
+a focused asset review, not full-scene acceptance.
+
 The [project version hierarchy review](20261017-project-create-version-hierarchy/README.md)
 removes repeated version support text and checks the localized warning for a
 version whose behavior may be incomplete.

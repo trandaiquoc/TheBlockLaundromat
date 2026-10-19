@@ -58,6 +58,16 @@
       alt=""
     />
   }
+  @if (scene().referenceDisplayCleanup; as displayCleanup) {
+    <img
+      class="scene-layer--reference-display-cleanup"
+      [ngSrc]="displayCleanup.src"
+      [width]="displayCleanup.width"
+      [height]="displayCleanup.height"
+      priority
+      alt=""
+    />
+  }
   @if (scene().roomMask; as roomMask) {
     <div
       class="scene-layer--room-lighting"

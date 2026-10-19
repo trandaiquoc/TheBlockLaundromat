@@ -21,6 +21,9 @@ describe('Project Screen scene asset contract', () => {
     const boardCleanup = readFileSync(
       'public/assets/project-screen/layers/scene-minecraft-board-cleanup.png',
     );
+    const displayCleanup = readFileSync(
+      'public/assets/project-screen/layers/scene-minecraft-display-cleanup.png',
+    );
 
     expect([...reference.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
     expect(reference.readUInt32BE(16)).toBe(1672);
@@ -42,6 +45,11 @@ describe('Project Screen scene asset contract', () => {
     expect(craft.referenceBoardCleanup?.src).toMatch(/layers\/scene-minecraft-board-cleanup\.png$/);
     expect(craft.referenceBoardCleanup?.width).toBe(1672);
     expect(craft.referenceBoardCleanup?.height).toBe(941);
+    expect(craft.referenceDisplayCleanup?.src).toMatch(
+      /layers\/scene-minecraft-display-cleanup\.png$/,
+    );
+    expect(craft.referenceDisplayCleanup?.width).toBe(1672);
+    expect(craft.referenceDisplayCleanup?.height).toBe(941);
     expect(craft.roomMask).toBeUndefined();
     expect(craft.washer).toBeUndefined();
     expect(craft.board).toBeUndefined();
@@ -54,6 +62,11 @@ describe('Project Screen scene asset contract', () => {
     expect(boardCleanup.readUInt32BE(16)).toBe(1672);
     expect(boardCleanup.readUInt32BE(20)).toBe(941);
     expect(boardCleanup[25]).toBe(6);
+    expect([...displayCleanup.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+    expect(displayCleanup.readUInt32BE(16)).toBe(1672);
+    expect(displayCleanup.readUInt32BE(20)).toBe(941);
+    expect(displayCleanup[25]).toBe(6);
+    expect(displayCleanup.length).toBeLessThan(100_000);
   });
 
   it('keeps alpha-channel masks for themes with a separate outdoor layer', () => {
@@ -119,11 +132,16 @@ describe('Project Screen scene asset contract', () => {
       const boardCleanup = fixture.nativeElement.querySelector(
         '.scene-layer--reference-board-cleanup',
       ) as HTMLImageElement;
+      const displayCleanup = fixture.nativeElement.querySelector(
+        '.scene-layer--reference-display-cleanup',
+      ) as HTMLImageElement;
 
       expect(scene.dataset['theme']).toBe(themeName);
       if (themeName === 'craft') {
         expect(boardCleanup).not.toBeNull();
         expect(boardCleanup.getAttribute('src')).toContain(assets.referenceBoardCleanup!.src);
+        expect(displayCleanup).not.toBeNull();
+        expect(displayCleanup.getAttribute('src')).toContain(assets.referenceDisplayCleanup!.src);
         expect(assets.exterior).toBeDefined();
         expect(exterior.getAttribute('src')).toContain(assets.exterior!.src);
         expect(lighting).not.toBeNull();
@@ -131,6 +149,7 @@ describe('Project Screen scene asset contract', () => {
         expect(room.style.getPropertyValue('--room-opening-mask')).toBe('');
       } else {
         expect(boardCleanup).toBeNull();
+        expect(displayCleanup).toBeNull();
         expect(assets.exterior).toBeDefined();
         expect(exterior.getAttribute('src')).toContain(assets.exterior!.src);
         expect(lighting).not.toBeNull();

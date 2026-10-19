@@ -60,6 +60,17 @@ pending. `create-project-tile-craft.png` is a 142 × 156 pixel crop at `(1026,
 385)` from that same source; its button remains interactive while showing the
 original tile art.
 
+`scene-minecraft-display-cleanup.png` removes only the two baked text lines from
+the Craft washer's dark project plate. Its script masks neutral-bright glyphs,
+dilates the mask by two source pixels, and locally interpolates the surrounding
+plate pixels; every pixel outside the mask remains transparent. Run
+`python3 Frontend/tools/project-screen-assets/extract-minecraft-display-cleanup.py`
+with Pillow installed to regenerate it. The actual localized project label and
+name remain DOM content positioned over the original plate and pencil artwork.
+The [source-size browser check](evidence/20261019-minecraft-display-cleanup/README.md)
+shows a real `Lakeside Cabin` project on the cleaned plate; it does not claim
+whole-scene or real-thumbnail acceptance.
+
 `Frontend/public/assets/project-screen/layers/ref4/` still contains the earlier
 layered artwork masters used by Light, Raccoon, and Dark. Those themes, their
 geometry, and their transition lighting remain pending alignment with the
@@ -68,7 +79,9 @@ visible source pixels from the measured doorway/window groups. Its scene
 composition is pixel-identical to the source before the separate board cleanup
 overlay is applied. The empty washer preview now shows a dark glass grid while
 no saved capture exists; the cached renderer image remains the visible content
-when available.
+when available. In Craft the preview well stays mounted even when no project is
+selected, so the baked sample cottage cannot leak through the empty state. This
+is a runtime fallback, not yet a clean static washer/drum extraction.
 
 The project board reads lightweight summary records while full structure data
 stays in separate project records. Once route checks approve leaving the 3D
@@ -157,6 +170,10 @@ shows the real renderer capture on a project card, with the card actions visible
 The [real project preview review](evidence/20261017-project-preview/README.md)
 checks the selected washer preview captured from the mounted 3D workspace, its
 timestamp-matched IndexedDB record, and its desktop and narrow-screen display.
+
+The [Minecraft washer display cleanup review](evidence/20261019-minecraft-display-cleanup/README.md)
+checks the localized project label and live project name over the source plate
+at native source resolution.
 
 ## Interaction Research
 

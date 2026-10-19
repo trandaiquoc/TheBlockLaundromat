@@ -53,6 +53,12 @@ describe('ProjectScreenComponent', () => {
     );
 
     expect(template).toContain('<app-project-screen-scene');
+    expect(template).toMatch(
+      /@if \(theme\.theme\(\) === 'craft'\)\s*\{\s*<div class="washer-preview-surface" aria-hidden="true"><\/div>/,
+    );
+    expect(template.indexOf('class="washer-preview-surface"')).toBeLessThan(
+      template.indexOf('@if (selectedProject(); as project)'),
+    );
     expect(template).toContain('[project]="project"');
     expect(template).toContain('class="project-note"');
     expect(template).toContain('class="project-note-meta"');
@@ -95,7 +101,7 @@ describe('ProjectScreenComponent', () => {
       ),
     );
     const craftDisplay = layoutStyles.match(
-      /\.project-page\[data-theme='craft'\] \.washer-display\s*\{([^}]+)\}/,
+      /\[data-theme='craft'\] \.washer-display\s*\{([^}]+)\}/,
     )?.[1];
     const craftActions = layoutStyles.match(
       /\.project-page\[data-theme='craft'\] \.washer-actions\s*\{([^}]+)\}/,
@@ -104,8 +110,10 @@ describe('ProjectScreenComponent', () => {
       /\.project-page\[data-theme='craft'\] \.project-board\s*\{([^}]+)\}/,
     )?.[1];
 
-    expect(craftDisplay).toContain('left: 29.4%');
-    expect(craftDisplay).toContain('top: 39.8%');
+    expect(craftDisplay).toContain('inset: 42% auto auto 30.4%');
+    expect(craftDisplay).toContain('width: 11.5%');
+    expect(craftDisplay).toContain('transform: none');
+    expect(craftDisplay).toContain('filter: none');
     expect(craftActions).toContain('left: 52.4%');
     expect(craftActions).toContain('top: 50.1%');
     expect(craftBoard).toContain('left: 60.8%');

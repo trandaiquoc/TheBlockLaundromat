@@ -9,6 +9,7 @@ interface ProjectScreenImageAsset {
 interface ProjectScreenSceneAssets {
   readonly room: ProjectScreenImageAsset;
   readonly referenceBoardCleanup?: ProjectScreenImageAsset;
+  readonly referenceDisplayCleanup?: ProjectScreenImageAsset;
   readonly exterior?: ProjectScreenImageAsset;
   readonly roomMask?: ProjectScreenImageAsset;
   readonly washer?: ProjectScreenImageAsset;
@@ -37,6 +38,7 @@ const sharedRoomMask = roomLayer('room-mask-light.png', 1831, 859);
 const craftRoom = roomLayer('scene-minecraft-room-shell.png', 1672, 941);
 const craftExterior = roomLayer('scene-minecraft-exterior-view.png', 1672, 941);
 const craftReferenceBoardCleanup = roomLayer('scene-minecraft-board-cleanup.png', 1672, 941);
+const craftReferenceDisplayCleanup = roomLayer('scene-minecraft-display-cleanup.png', 1672, 941);
 const lightWasher = ref4Layer('washer-light.webp', 1307, 1203);
 const sharedBoard = ref4Layer('board-light.webp', 1402, 1122);
 const sharedMapMascot = ref4Layer('map-mascot-light.webp', 1302, 1208);
@@ -64,6 +66,7 @@ export const PROJECT_SCREEN_SCENE_ASSETS: Record<Theme, ProjectScreenSceneAssets
     room: craftRoom,
     exterior: craftExterior,
     referenceBoardCleanup: craftReferenceBoardCleanup,
+    referenceDisplayCleanup: craftReferenceDisplayCleanup,
   },
   light: {
     ...sharedRoomBackdrop(),
