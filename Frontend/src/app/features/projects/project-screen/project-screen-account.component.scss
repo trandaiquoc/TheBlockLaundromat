@@ -12,17 +12,18 @@
 
 .account-card {
   display: grid;
-  grid-template-columns: 2.6rem minmax(0, 1fr) 1.15rem;
+  grid-template-columns: 2.85rem minmax(0, 1fr) 1.2rem;
   align-items: center;
-  gap: 0.62rem;
-  width: min(15.5rem, calc(100vw - 2rem));
-  min-height: 3.35rem;
-  padding: 0.3rem 0.75rem 0.3rem 0.34rem;
-  border: 1px solid color-mix(in srgb, var(--border-strong) 78%, transparent);
+  gap: 0.68rem;
+  width: min(16.5rem, calc(100vw - 2rem));
+  min-height: 3.65rem;
+  padding: 0.34rem 0.82rem 0.34rem 0.4rem;
+  border: 1px solid var(--border-floating);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  background: var(--surface-floating);
   box-shadow: var(--shadow-control-raised);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--backdrop-blur-floating));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur-floating));
   color: var(--text);
   cursor: pointer;
   font: inherit;
@@ -35,7 +36,7 @@
 
 .account-card:hover {
   border-color: var(--border-strong);
-  background: color-mix(in srgb, var(--surface-hover) 88%, transparent);
+  background: var(--surface-floating-hover);
 }
 
 .account-card:active {
@@ -51,10 +52,10 @@
 
 .account-avatar {
   display: block;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.85rem;
+  height: 2.85rem;
   flex: 0 0 auto;
-  border: 1px solid color-mix(in srgb, var(--border-strong) 76%, transparent);
+  border: 1px solid var(--border-floating);
   border-radius: 50%;
   background: var(--surface-raised);
   object-fit: cover;
@@ -75,20 +76,20 @@
 
 .account-copy strong {
   color: var(--text);
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 750;
   line-height: 1.2;
 }
 
 .account-copy > span {
   color: var(--text-muted);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   line-height: 1.25;
 }
 
 .account-chevron {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.15rem;
+  height: 1.15rem;
   color: var(--text-muted);
   transition: transform var(--motion-duration-ui) var(--motion-easing-emphasized);
 }
@@ -103,13 +104,14 @@
   left: 0;
   bottom: calc(100% + 0.55rem);
   box-sizing: border-box;
-  width: min(17rem, calc(100vw - 2rem));
-  padding: 0.5rem;
-  border: 1px solid var(--border-strong);
+  width: min(18.25rem, calc(100vw - 2rem));
+  padding: 0.58rem;
+  border: 1px solid var(--border-floating);
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  background: var(--surface-floating-raised);
   box-shadow: var(--shadow-popover);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(var(--backdrop-blur-floating));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur-floating));
   opacity: 0;
   pointer-events: none;
   transform: translateY(0.4rem) scale(0.985);
@@ -135,19 +137,19 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  min-height: 3.15rem;
-  padding: 0.3rem 0.4rem;
+  min-height: 3.35rem;
+  padding: 0.34rem 0.48rem;
 }
 
 .account-avatar--menu {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.7rem;
+  height: 2.7rem;
 }
 
 .account-separator {
   height: 1px;
-  margin: 0.4rem 0.3rem;
-  background: var(--border);
+  margin: 0.45rem 0.34rem;
+  background: var(--border-floating);
 }
 
 .account-menu-action {
@@ -155,15 +157,15 @@
   align-items: center;
   gap: 0.65rem;
   width: 100%;
-  min-height: 2.65rem;
-  padding: 0.45rem 0.55rem;
+  min-height: 2.8rem;
+  padding: 0.5rem 0.6rem;
   border: 1px solid transparent;
   border-radius: calc(var(--radius-lg) - 2px);
   background: transparent;
   color: var(--danger);
   cursor: pointer;
   font: inherit;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-align: left;
   transition:
@@ -177,8 +179,8 @@
 }
 
 .account-menu-action svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.05rem;
+  height: 1.05rem;
   flex: 0 0 auto;
 }
 
@@ -186,7 +188,7 @@
   margin: 0;
   padding: 0.35rem 0.45rem 0.45rem;
   color: var(--text-muted);
-  font-size: 0.7rem;
+  font-size: 0.74rem;
   line-height: 1.45;
 }
 

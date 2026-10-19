@@ -84,10 +84,10 @@ authentication or cloud-sync behavior is implied. Current implementation and
 historical records are documented in
 [Homepage and Project Screen](design/homepage-renovation/README.md).
 
-The four approved Homepage concepts below remain documentation-only historical
-references. The laundromat scene, project board artwork, washer presentation,
-and scene-level raccoon animation were discontinued and are not active product
-direction.
+The four approved Homepage concepts below remain visual references for
+Project Screen control/account placement and panel material. Their laundromat
+scene, project board artwork, washer presentation, and scene-level raccoon
+animation were discontinued and are not active product direction.
 
 ## References
 

@@ -1,9 +1,9 @@
 # Homepage and Project Screen
 
 **Status:** traditional Project Screen restored. The laundromat scene direction
-was discontinued on 2026-10-19. The four approved concept images and dated
-browser reviews below remain historical reference material; they do not define
-active implementation work.
+was discontinued on 2026-10-19. The four approved concept images remain visual
+references for Homepage control and account placement/material; their
+illustrated scene and page composition are not active implementation work.
 
 ## Current screen
 
@@ -24,7 +24,11 @@ The bottom-left account card is a local presentation demo that starts as
 `rakoon` on the Free Plan and uses one local raccoon avatar in every theme.
 Logging out changes only this component to Guest; it does not alter projects,
 IndexedDB, preferences, or editor state. The shared top controls continue to
-use the existing locale and theme workflows.
+use the existing locale and theme workflows. Both outer groups use the same
+theme surface, border, text, and selected-state tokens as the inner Project
+Screen, with shared translucent floating surfaces and a softly raised account
+menu. The references guide those controls' placement and material only; no
+illustrated scene artwork is loaded.
 
 For interaction research, the [LucianLabs UX/UI gallery](https://lucianlabs.dev/uxui-prompt/)
 account switcher 037 informed the upward-opening account menu, item focus, and
@@ -34,11 +38,12 @@ source were reviewed for interaction ideas; no demo code, global CSS, or
 dependencies were copied. The existing Angular services and semantic theme
 tokens remain authoritative.
 
-## Historical references
+## Visual references and historical evidence
 
 The four original approved concepts remain in
 [`../references/`](../references/): Minecraft, Light, Raccoon, and Dark. They
-are documentation-only and are not loaded by the application.
+guide control/account placement and translucent panel treatment. They remain
+documentation images and are not loaded by the application.
 
 Dated captures and interaction notes are retained under
 [`evidence/`](evidence/) as historical records of the discontinued scene

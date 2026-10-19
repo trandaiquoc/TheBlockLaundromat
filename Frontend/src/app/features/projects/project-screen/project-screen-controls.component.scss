@@ -8,38 +8,39 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.25rem;
+  gap: 0.3rem;
   max-width: 100%;
-  padding: 0.3rem 0.42rem;
-  border: 1px solid color-mix(in srgb, var(--border-strong) 78%, transparent);
+  padding: 0.38rem 0.52rem;
+  border: 1px solid var(--border-floating);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  background: var(--surface-floating);
   color: var(--text);
   box-shadow: var(--shadow-control-raised);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--backdrop-blur-floating));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur-floating));
 }
 
 .screen-control-group {
   display: flex;
   align-items: center;
-  gap: 0.1rem;
+  gap: 0.14rem;
 }
 
 .screen-control-group > svg,
 .settings-button svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.05rem;
+  height: 1.05rem;
   flex: 0 0 auto;
 }
 
 .screen-control-group > svg {
-  margin-inline: 0.35rem 0.2rem;
+  margin-inline: 0.38rem 0.22rem;
   color: var(--text-muted);
 }
 
 .screen-control-inline-separator {
   color: var(--text-muted);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   line-height: 1;
   user-select: none;
 }
@@ -49,15 +50,15 @@
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  min-height: 2rem;
-  padding: 0.35rem 0.5rem;
+  min-height: 2.15rem;
+  padding: 0.38rem 0.56rem;
   border: 1px solid transparent;
   border-radius: 999px;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
   font: inherit;
-  font-size: 0.76rem;
+  font-size: 0.8rem;
   font-weight: 650;
   line-height: 1.1;
   white-space: nowrap;
@@ -68,7 +69,7 @@
 }
 
 .screen-control-button:hover:not(.selected) {
-  background: var(--surface-hover);
+  background: var(--surface-floating-hover);
   color: var(--text);
 }
 
@@ -90,18 +91,18 @@
 
 .screen-control-separator {
   width: 1px;
-  height: 1.35rem;
-  margin-inline: 0.18rem;
-  background: color-mix(in srgb, var(--text-muted) 38%, transparent);
+  height: 1.45rem;
+  margin-inline: 0.2rem;
+  background: var(--border-floating);
 }
 
 .locale-button {
-  min-width: 2.25rem;
-  padding-inline: 0.4rem;
+  min-width: 2.4rem;
+  padding-inline: 0.45rem;
 }
 
 .settings-button {
-  padding-inline: 0.58rem;
+  padding-inline: 0.64rem;
 }
 
 @media (max-width: 620px) {
@@ -112,11 +113,38 @@
 
 @media (max-width: 360px) {
   .screen-control-bar {
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    gap: 0.2rem 0.35rem;
+    padding: 0.42rem 0.55rem;
+  }
+
+  .locale-options {
+    grid-column: 1;
+    grid-row: 1;
   }
 
   .theme-options {
-    flex-wrap: wrap;
+    grid-column: 1;
+    grid-row: 2;
+    justify-content: space-between;
+    gap: 0;
+    flex-wrap: nowrap;
+  }
+
+  .screen-control-inline-separator {
+    display: none;
+  }
+
+  .screen-control-button {
+    padding-inline: 0.32rem;
+  }
+
+  .settings-button {
+    grid-column: 1;
+    grid-row: 3;
+    justify-self: end;
   }
 
   .screen-control-separator {

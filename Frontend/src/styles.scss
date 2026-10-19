@@ -13,6 +13,9 @@
   --surface-muted: #141920;
   --surface-hover: #273141;
   --surface-selected: #303947;
+  --surface-floating: color-mix(in srgb, var(--surface) 72%, transparent);
+  --surface-floating-hover: color-mix(in srgb, var(--surface-hover) 76%, transparent);
+  --surface-floating-raised: color-mix(in srgb, var(--surface-raised) 84%, transparent);
   --viewport-bg: #0c1015;
   --editor-viewport-bg: #0c1015;
   --text: #eef2f7;
@@ -20,6 +23,7 @@
   --text-disabled: #687384;
   --border: #2b3442;
   --border-strong: #435065;
+  --border-floating: color-mix(in srgb, var(--border-strong) 68%, transparent);
   --accent: #eef2f7;
   --accent-hover: #fff;
   --accent-soft: rgb(238 242 247 / 0.12);
@@ -66,6 +70,7 @@
   --shadow-dialog: 0 18px 60px rgb(0 0 0 / 0.35);
   --shadow-control: 0 2px 0 rgb(0 0 0 / 0.18);
   --shadow-control-raised: 0 4px 10px rgb(0 0 0 / 0.24);
+  --backdrop-blur-floating: 12px;
   --motion-duration-fast: 120ms;
   --motion-duration-ui: 180ms;
   --motion-duration-enter: 150ms;
