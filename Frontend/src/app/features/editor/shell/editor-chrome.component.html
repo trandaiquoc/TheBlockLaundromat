@@ -48,7 +48,21 @@
         [alt]="i18n.t('appName')"
       />
     </a>
-    <nav class="app-menus" [attr.aria-label]="i18n.t('applicationMenu')">
+    <button
+      type="button"
+      class="compact-menu-trigger app-menu-trigger"
+      aria-controls="workspace-application-menus"
+      [attr.aria-expanded]="applicationMenuOpen()"
+      (click)="toggleApplicationMenu($event)"
+    >
+      <svg lucideMenu aria-hidden="true"></svg>{{ i18n.t('workspaceMenu') }}
+    </button>
+    <nav
+      id="workspace-application-menus"
+      class="app-menus"
+      [class.compact-open]="applicationMenuOpen()"
+      [attr.aria-label]="i18n.t('applicationMenu')"
+    >
       <div class="menu-entry">
         <button
           type="button"

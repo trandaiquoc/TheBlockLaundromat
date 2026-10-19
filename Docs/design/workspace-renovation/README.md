@@ -2,6 +2,12 @@
 
 ## Current status
 
+The [responsive layout and contextual Inspector contract](RESPONSIVE-LAYOUT-AND-CONTEXTUAL-INSPECTOR.md)
+describes the P0/P1 redesign: one narrow application Menu, compact Layer options,
+an Inspector bottom sheet, explicit Placement/Selection contexts, and
+metadata-driven property controls. Desktop docked resizing and the existing
+editor, history, specialized-inspector, and renderer ownership remain intact.
+
 The 2026-10-19 Workspace redesign follow-up gives the 3D viewport more default
 space, increases catalog density and Quick Add reach, and removes repeated card
 framing from the Selection Inspector summary. These presentation changes use

@@ -11,6 +11,10 @@ acceptance for later changes.
 
 ## Current acceptance
 
+The [2026-10-19 responsive Workspace and contextual Inspector review](20261019-responsive-context-inspector/README.md)
+records the P0/P1 before/after captures, four-theme and EN/VI layout matrix,
+property editing, Layer options, and modal/collapsed bottom-sheet behavior.
+
 The [2026-10-19 Workspace UI audit](20261019-workspace-full-audit/README.md)
 contains fresh evidence for the current four-theme shell, representative editor
 states, narrow drawers, and Settings flows. It also records the current-run

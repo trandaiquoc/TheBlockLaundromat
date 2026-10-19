@@ -396,7 +396,7 @@ describe('editor shell movement/delete routing', () => {
     expect(toolSwitch?.querySelectorAll('[role="radio"][tabindex="0"]')).toHaveLength(1);
     expect(modeSwitch?.classList.contains('segment-selected-right')).toBe(false);
     expect(toolSwitch?.classList.contains('segment-selected-right')).toBe(false);
-    const fileMenu = root.querySelector<HTMLButtonElement>('.app-menu-trigger');
+    const fileMenu = root.querySelector<HTMLButtonElement>('.app-menus .app-menu-trigger');
     fileMenu?.click();
     fixture.detectChanges();
     const importAction = Array.from(
@@ -621,6 +621,16 @@ describe('editor shell movement/delete routing', () => {
 
       await clickDrawerOpener(rightOpener, rightDrawer);
       expect(document.activeElement).toBe(root.querySelector('#right-sidebar-tab-selection'));
+      const sheetToggle = root.querySelector<HTMLButtonElement>('.sheet-toggle');
+      sheetToggle?.click();
+      fixture.detectChanges();
+      expect(rightDrawer?.getAttribute('role')).toBe('region');
+      expect(rightFocusTrap.enabled).toBe(false);
+      expect(rightDrawer?.classList.contains('drawer-open')).toBe(true);
+      sheetToggle?.click();
+      fixture.detectChanges();
+      expect(rightDrawer?.getAttribute('aria-modal')).toBe('true');
+      expect(rightFocusTrap.enabled).toBe(true);
 
       root.querySelector<HTMLButtonElement>('.right-panel .drawer-close')?.click();
       fixture.detectChanges();
@@ -750,6 +760,7 @@ describe('editor shell movement/delete routing', () => {
     const fixture = TestBed.createComponent(EditorShellComponent);
     const workspace = TestBed.inject(WorkspaceStateService);
     const selection = TestBed.inject(SelectionService);
+    TestBed.inject(EditorToolService).select('select');
     workspace.activate(project, undefined);
     fixture.detectChanges();
 

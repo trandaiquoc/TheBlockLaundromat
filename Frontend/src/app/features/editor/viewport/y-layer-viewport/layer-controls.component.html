@@ -1,0 +1,104 @@
+<div class="layer-primary">
+  <button
+    type="button"
+    [disabled]="busy()"
+    [attr.aria-label]="i18n.t('previousLayer')"
+    (click)="action.emit({ type: 'step', direction: -1 })"
+  >
+    <svg lucideChevronLeft aria-hidden="true"></svg>
+  </button>
+  <label
+    >Y
+    <input
+      type="number"
+      min="0"
+      [max]="maximumY()"
+      [value]="currentY()"
+      [disabled]="busy()"
+      [attr.aria-label]="i18n.t('currentLayer')"
+      (input)="action.emit({ type: 'preview', value: $any($event.target).value })"
+      (change)="action.emit({ type: 'commit', value: $any($event.target).value })"
+      (blur)="action.emit({ type: 'commit', value: $any($event.target).value })"
+      (keydown.enter)="action.emit({ type: 'commit', value: $any($event.target).value })"
+  /></label>
+  <button
+    type="button"
+    [disabled]="busy()"
+    [attr.aria-label]="i18n.t('nextLayer')"
+    (click)="action.emit({ type: 'step', direction: 1 })"
+  >
+    <svg lucideChevronRight aria-hidden="true"></svg>
+  </button>
+</div>
+<details #options class="layer-options" (keydown.escape)="closeFromEscape($event)">
+  <summary>
+    <svg lucideSlidersHorizontal aria-hidden="true"></svg>{{ i18n.t('layerOptions') }}
+  </summary>
+  <div class="layer-options-panel" [attr.aria-label]="i18n.t('layerOptions')" role="group">
+    <label
+      >{{ i18n.t('currentLayer') }}
+      <input
+        type="range"
+        min="0"
+        [max]="maximumY()"
+        [value]="currentY()"
+        [disabled]="busy()"
+        [attr.aria-label]="i18n.t('currentLayer')"
+        (input)="action.emit({ type: 'preview', value: $any($event.target).value })"
+        (change)="action.emit({ type: 'commit', value: $any($event.target).value })"
+      />
+    </label>
+    <div class="occupied-layers">
+      <button
+        type="button"
+        [disabled]="busy()"
+        (click)="action.emit({ type: 'jump', position: 'first' })"
+      >
+        {{ i18n.t('firstOccupied') }}
+      </button>
+      <button
+        type="button"
+        [disabled]="busy()"
+        (click)="action.emit({ type: 'adjacent', direction: -1 })"
+      >
+        {{ i18n.t('previousOccupied') }}
+      </button>
+      <button
+        type="button"
+        [disabled]="busy()"
+        (click)="action.emit({ type: 'adjacent', direction: 1 })"
+      >
+        {{ i18n.t('nextOccupied') }}
+      </button>
+      <button
+        type="button"
+        [disabled]="busy()"
+        (click)="action.emit({ type: 'jump', position: 'last' })"
+      >
+        {{ i18n.t('lastOccupied') }}
+      </button>
+    </div>
+    <app-themed-select
+      [options]="visibilityOptions()"
+      [selectedId]="visibility()"
+      [ariaLabel]="i18n.t('visibility')"
+      [disabled]="busy()"
+      (selectionChange)="chooseVisibility($event)"
+    />
+    <label
+      >{{ i18n.t('referenceOpacity') }} <output>{{ (opacity() * 100).toFixed(0) }}%</output>
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.05"
+        [value]="opacity()"
+        [attr.aria-label]="i18n.t('referenceOpacity')"
+        (input)="action.emit({ type: 'opacity', value: $any($event.target).value })"
+      />
+    </label>
+  </div>
+</details>
+@if (updating()) {
+  <span class="layer-updating" role="status" aria-live="polite">{{ i18n.t('updatingLayer') }}</span>
+}

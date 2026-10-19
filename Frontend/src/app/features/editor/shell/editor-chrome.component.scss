@@ -505,154 +505,166 @@
   box-shadow: var(--shadow-control-raised);
 }
 
+.compact-menu-trigger {
+  display: none;
+}
 @media (max-width: 850px) {
   :host(.menu-open) {
     z-index: 40;
   }
-
+  .shell-header {
+    grid-template-rows: auto auto;
+  }
   .app-menu-row {
-    flex-wrap: wrap;
-    gap: 0.3rem 0.65rem;
+    flex-wrap: nowrap;
+    min-height: 3rem;
+    gap: 0.45rem;
+    padding: 0.2rem 0.5rem;
   }
-
-  .app-menus {
-    flex: 1 1 auto;
-    flex-wrap: wrap;
-  }
-
-  .chrome-project-status {
-    display: none;
-  }
-
-  .chrome-project-status.chrome-project-status--standalone {
-    position: absolute;
-    display: block;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-
-  .chrome-project-context {
-    max-width: min(15rem, 36vw);
-  }
-
-  .chrome-project-name {
-    max-width: 100%;
-  }
-
-  .camera-actions {
-    margin-left: 0;
-  }
-}
-
-@media (max-width: 560px) {
-  .app-menu-row,
-  .editor-toolbar-row {
-    padding-inline: 0.55rem;
-  }
-
   .brand {
     padding-right: 0.4rem;
   }
-
   .brand-logo {
-    width: 4rem;
+    width: 3.5rem;
   }
-
+  .compact-menu-trigger {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    padding: 0.35rem;
+    font-size: 0.8rem;
+  }
+  .compact-menu-trigger svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .app-menus {
+    display: none;
+  }
+  .app-menus.compact-open {
+    position: absolute;
+    top: 100%;
+    left: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    max-height: calc(100dvh - 4rem);
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: var(--shadow-dialog);
+  }
+  .app-menus .menu-entry {
+    display: contents;
+  }
+  .app-menus .app-menu-trigger {
+    flex: 1 0 28%;
+    min-height: 2.75rem;
+    color: var(--text);
+    background: var(--surface-muted);
+    font-size: 0.78rem;
+  }
+  .app-menus .app-menu-trigger.active {
+    background: var(--control-selected);
+    color: var(--control-selected-text);
+  }
+  .app-menus .menu-popover {
+    position: static;
+    order: 1;
+    flex: 1 0 100%;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  .menu-popover button {
+    min-height: 2.75rem;
+    white-space: normal;
+  }
   .chrome-project-context {
-    max-width: min(12rem, 42vw);
-    padding-left: 0.4rem;
+    margin-left: auto;
+    min-width: 0;
+    max-width: none;
+    flex: 1 1 auto;
+    padding: 0.2rem 0.35rem;
   }
-
   .chrome-project-name {
-    font-size: 0.68rem;
-  }
-
-  .app-menu-trigger {
-    padding-inline: 0.35rem;
-    font-size: 0.74rem;
-  }
-
-  .toolbar-group + .toolbar-group,
-  .tool-switch + .toolbar-group {
-    padding-left: 0.4rem;
-  }
-
-  .ui-button--toolbar,
-  .ui-button--segmented {
-    padding-inline: 0.42rem;
+    max-width: 100%;
     font-size: 0.72rem;
   }
-
+  .chrome-project-version {
+    display: none;
+  }
+  .chrome-project-status {
+    display: none;
+  }
+  .chrome-project-status--standalone {
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .editor-toolbar-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.25rem;
+    padding: 0.3rem 0.5rem;
+  }
+  :host-context([data-theme='craft']) .editor-toolbar-row {
+    padding-top: 0.6rem;
+  }
   .mode-switch {
-    min-width: 11.4rem;
+    grid-column: 1/-1;
+    min-width: 0;
   }
-
   .tool-switch {
-    min-width: 10.25rem;
+    min-width: 0;
   }
-
+  .history-actions,
   .camera-actions {
-    flex: 0 0 auto;
-    flex-wrap: nowrap;
-    max-width: none;
-    box-sizing: border-box;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    gap: 0;
   }
-
+  .camera-actions > .ui-button {
+    display: none;
+  }
+  .ui-button--segmented {
+    min-height: 2.75rem;
+    padding: 0.25rem;
+    font-size: 0.78rem;
+  }
+  .ui-button--toolbar {
+    justify-content: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0.35rem;
+  }
   .ui-button--toolbar .toolbar-button-label {
     display: none;
   }
-
-  .history-actions .ui-button--toolbar .toolbar-button-label {
-    display: inline;
-  }
-
-  .history-actions .ui-button--toolbar,
-  .camera-actions .ui-button--toolbar {
-    justify-content: center;
-    min-width: 2.2rem;
-    padding-inline: 0.45rem;
-  }
-
-  .camera-actions-menu .ui-button--toolbar {
-    gap: 0.2rem;
-  }
-
   .camera-actions-menu .ui-button--toolbar svg:last-child {
-    width: 0.68rem;
-    height: 0.68rem;
+    display: none;
   }
 }
-
 @media (max-width: 380px) {
-  .app-menus {
-    display: grid;
-    grid-template-columns: repeat(3, max-content);
-  }
-
-  .chrome-project-version {
-    position: absolute;
-    box-sizing: border-box;
-    width: 1px;
-    height: 1px;
-    min-height: 0;
-    overflow: hidden;
-    padding: 0;
-    border: 0;
-    clip-path: inset(50%);
-    pointer-events: none;
-    white-space: nowrap;
-  }
-
-  .menu-popover button {
-    align-items: flex-start;
-    white-space: normal;
-  }
-
-  .menu-popover button svg {
-    margin-top: 0.15rem;
+  .tool-switch svg {
+    display: none;
   }
 }
 

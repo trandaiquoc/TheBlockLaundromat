@@ -1,0 +1,11 @@
+<span class="preview">
+  @if (thumbnail(); as url) {
+    <img [src]="url" alt="" />
+  } @else {
+    <svg lucideBox aria-hidden="true"></svg>
+  }
+</span>
+<span class="identity-copy"
+  ><strong>{{ name() }}</strong
+  ><code>{{ blockId() }}</code></span
+>

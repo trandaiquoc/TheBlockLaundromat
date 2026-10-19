@@ -1,0 +1,116 @@
+:host {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  font-family: var(--font-ui);
+}
+.layer-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+button,
+summary,
+input[type='number'] {
+  box-sizing: border-box;
+  min-height: 2.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text);
+  font: 0.78rem var(--font-ui);
+}
+button {
+  cursor: pointer;
+  min-width: 2.75rem;
+  padding: 0.4rem;
+}
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+button:hover:not(:disabled),
+summary:hover {
+  background: var(--surface-hover);
+}
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 1px;
+}
+svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+}
+input[type='number'] {
+  width: 3.8rem;
+  padding: 0.3rem;
+}
+summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+.layer-options-panel {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0.5rem;
+  width: min(22rem, calc(100vw - 1rem));
+  max-height: min(28rem, calc(100cqh - 4rem));
+  overflow: auto;
+  box-sizing: border-box;
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-dialog);
+}
+.layer-options-panel label {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.layer-options-panel input[type='range'] {
+  flex: 1 1 100%;
+  width: 100%;
+  min-height: 2rem;
+  accent-color: var(--accent);
+}
+.occupied-layers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+.layer-updating {
+  position: absolute;
+  top: 100%;
+  left: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  pointer-events: none;
+}

@@ -1,0 +1,52 @@
+<div class="property-label">
+  <span>{{ i18n.stateProperty(property().name) }}</span>
+  @if (property().derived) {
+    <small>{{ i18n.t('autoDerived') }}</small>
+  }
+</div>
+@switch (kind()) {
+  @case ('boolean') {
+    <button
+      type="button"
+      class="boolean-control"
+      role="switch"
+      [attr.aria-label]="i18n.stateProperty(property().name)"
+      [attr.aria-checked]="value() === 'true'"
+      [disabled]="disabled()"
+      (click)="choose(value() === 'true' ? 'false' : 'true')"
+    >
+      <span class="switch-track" aria-hidden="true"><span></span></span>
+      <span>{{ i18n.stateValue(value()) }}</span>
+    </button>
+  }
+  @case ('segments') {
+    <div
+      class="property-segments"
+      role="radiogroup"
+      [attr.aria-label]="i18n.stateProperty(property().name)"
+    >
+      @for (option of options(); track option.id; let index = $index) {
+        <button
+          type="button"
+          role="radio"
+          [attr.aria-checked]="value() === option.id"
+          [attr.tabindex]="value() === option.id ? 0 : -1"
+          [disabled]="disabled()"
+          (keydown)="navigate($event, index)"
+          (click)="choose(option.id)"
+        >
+          {{ option.label }}
+        </button>
+      }
+    </div>
+  }
+  @default {
+    <app-themed-select
+      [options]="options()"
+      [selectedId]="value()"
+      [disabled]="disabled()"
+      [ariaLabel]="i18n.stateProperty(property().name)"
+      (selectionChange)="choose($event)"
+    />
+  }
+}

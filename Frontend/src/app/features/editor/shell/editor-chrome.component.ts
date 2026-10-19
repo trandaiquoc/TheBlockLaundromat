@@ -22,6 +22,7 @@ import {
   LucideMaximize2,
   LucideMousePointer2,
   LucideMousePointerClick,
+  LucideMenu,
   LucidePackageOpen,
   LucidePanelsTopLeft,
   LucideRedo2,
@@ -58,6 +59,7 @@ type SegmentControl = 'mode' | 'tool';
     LucideMaximize2,
     LucideMousePointer2,
     LucideMousePointerClick,
+    LucideMenu,
     LucidePackageOpen,
     LucidePanelsTopLeft,
     LucideRedo2,
@@ -71,11 +73,11 @@ type SegmentControl = 'mode' | 'tool';
   templateUrl: './editor-chrome.component.html',
   styleUrl: './editor-chrome.component.scss',
   host: {
-    '[class.menu-open]': '!!activeMenu()',
+    '[class.menu-open]': '!!activeMenu() || applicationMenuOpen()',
     '(document:click)': 'handleDocumentClick($event)',
     '(document:keydown)': 'handleDocumentKeydown($event)',
     '(document:focusin)': 'handleDocumentFocusin($event)',
-    '(window:resize)': 'alignActiveMenu()',
+    '(window:resize)': 'handleViewportResize()',
   },
 })
 export class EditorChromeComponent {
@@ -86,6 +88,7 @@ export class EditorChromeComponent {
   readonly state = input.required<EditorChromeState>();
   readonly action = output<EditorChromeAction>();
   protected readonly activeMenu = signal<EditorMenu | undefined>(undefined);
+  protected readonly applicationMenuOpen = signal(false);
   private readonly alignActiveMenuEffect = effect(() => {
     if (!this.activeMenu()) return;
     this.i18n.locale();
@@ -112,7 +115,47 @@ export class EditorChromeComponent {
       this.focusMenuItem(next, event.currentTarget, initialFocus);
   }
 
+  protected toggleApplicationMenu(event: Event): void {
+    event.stopPropagation();
+    const opening = !this.applicationMenuOpen();
+    this.closeMenus();
+    this.applicationMenuOpen.set(opening);
+    if (opening)
+      this.host.nativeElement.ownerDocument.defaultView?.requestAnimationFrame(() => {
+        this.host.nativeElement.querySelector<HTMLElement>('.app-menus .menu-trigger')?.focus();
+      });
+  }
+
+  protected handleViewportResize(): void {
+    const view = this.host.nativeElement.ownerDocument.defaultView;
+    const focused = this.host.nativeElement.ownerDocument.activeElement;
+    if (view && view.innerWidth > 850 && this.applicationMenuOpen()) {
+      this.closeMenus();
+      if (
+        focused instanceof HTMLElement &&
+        (focused.closest('.app-menus') || focused.classList.contains('compact-menu-trigger'))
+      ) {
+        this.host.nativeElement.querySelector<HTMLElement>('.app-menus .menu-trigger')?.focus();
+      }
+    } else if (
+      view &&
+      view.innerWidth <= 850 &&
+      !this.applicationMenuOpen() &&
+      focused instanceof HTMLElement &&
+      focused.closest('.app-menus')
+    ) {
+      this.closeMenus();
+      this.focusApplicationTrigger();
+    }
+    this.alignActiveMenu();
+  }
+
+  private focusApplicationTrigger(): void {
+    this.host.nativeElement.querySelector<HTMLElement>('.compact-menu-trigger')?.focus();
+  }
+
   protected alignActiveMenu(): void {
+    if (this.applicationMenuOpen()) return;
     if (!this.activeMenu()) return;
     const view = this.host.nativeElement.ownerDocument.defaultView;
     view?.requestAnimationFrame(() => {
@@ -156,9 +199,10 @@ export class EditorChromeComponent {
   }
 
   protected emit(action: EditorChromeAction): void {
-    if (this.activeMenu())
+    if (this.applicationMenuOpen()) this.focusApplicationTrigger();
+    else if (this.activeMenu())
       this.host.nativeElement.querySelector<HTMLElement>('.menu-trigger.active')?.focus();
-    this.activeMenu.set(undefined);
+    this.closeMenus();
     this.action.emit(action);
   }
 
@@ -233,10 +277,17 @@ export class EditorChromeComponent {
 
   protected closeMenus(): void {
     this.activeMenu.set(undefined);
+    this.applicationMenuOpen.set(false);
   }
 
   protected handleDocumentClick(event: MouseEvent): void {
-    if (!this.activeMenu()) return;
+    if (!this.activeMenu() && !this.applicationMenuOpen()) return;
+    if (
+      this.applicationMenuOpen() &&
+      event.target instanceof Node &&
+      this.host.nativeElement.querySelector('.app-menus')?.contains(event.target)
+    )
+      return;
     const menu = this.activeMenuPopover();
     if (event.target instanceof Node && menu?.contains(event.target)) return;
     this.closeMenus();
@@ -245,13 +296,15 @@ export class EditorChromeComponent {
   protected handleMenuKeydown(event: KeyboardEvent): void {
     const target = event.target instanceof HTMLElement ? event.target : null;
     const trigger = target?.closest<HTMLElement>('.menu-trigger') ?? null;
-    if (event.key === 'Escape' && (trigger || this.activeMenu())) {
+    if (event.key === 'Escape' && (trigger || this.activeMenu() || this.applicationMenuOpen())) {
       event.preventDefault();
       event.stopPropagation();
       const activeTrigger =
         this.host.nativeElement.querySelector<HTMLElement>('.menu-trigger.active');
+      const applicationWasOpen = this.applicationMenuOpen();
       this.closeMenus();
-      (trigger ?? activeTrigger)?.focus();
+      if (applicationWasOpen) this.focusApplicationTrigger();
+      else (trigger ?? activeTrigger)?.focus();
       return;
     }
     if (trigger && !this.activeMenu() && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) {
@@ -285,15 +338,29 @@ export class EditorChromeComponent {
   }
 
   protected handleDocumentKeydown(event: KeyboardEvent): void {
-    if (event.key !== 'Escape' || !this.activeMenu()) return;
+    if (
+      event.defaultPrevented ||
+      event.key !== 'Escape' ||
+      (!this.activeMenu() && !this.applicationMenuOpen())
+    )
+      return;
+    const applicationWasOpen = this.applicationMenuOpen();
     const activeTrigger =
       this.host.nativeElement.querySelector<HTMLElement>('.menu-trigger.active');
     this.closeMenus();
-    activeTrigger?.focus();
+    if (applicationWasOpen) this.focusApplicationTrigger();
+    else activeTrigger?.focus();
   }
 
   protected handleDocumentFocusin(event: FocusEvent): void {
-    if (!this.activeMenu()) return;
+    if (!this.activeMenu() && !this.applicationMenuOpen()) return;
+    if (
+      this.applicationMenuOpen() &&
+      event.target instanceof Node &&
+      (this.host.nativeElement.querySelector('.app-menus')?.contains(event.target) ||
+        this.host.nativeElement.querySelector('.compact-menu-trigger')?.contains(event.target))
+    )
+      return;
     const menu = this.activeMenuPopover();
     if (event.target instanceof Node && menu?.contains(event.target)) return;
     this.closeMenus();

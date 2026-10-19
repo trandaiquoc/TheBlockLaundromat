@@ -66,6 +66,30 @@ describe('EditorChromeComponent menu keyboard navigation', () => {
     vi.restoreAllMocks();
   });
 
+  it('uses the same application commands in the compact Menu and returns keyboard focus on Escape', () => {
+    const fixture = TestBed.createComponent(EditorChromeComponent);
+    fixture.componentRef.setInput('state', state);
+    document.body.append(fixture.nativeElement);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const trigger = root.querySelector<HTMLButtonElement>('.compact-menu-trigger')!;
+    trigger.click();
+    fixture.detectChanges();
+    flushAnimationFrames(fixture, frameCallbacks);
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    const file = root.querySelector<HTMLButtonElement>('.app-menus .menu-trigger')!;
+    file.click();
+    fixture.detectChanges();
+    flushAnimationFrames(fixture, frameCallbacks);
+    expect(root.querySelectorAll('.app-menus [role="menu"]')).toHaveLength(1);
+    press(document.activeElement as HTMLElement, 'Escape');
+    fixture.detectChanges();
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(trigger);
+    fixture.destroy();
+    root.remove();
+  });
+
   it('keeps the active project name visible when the save status is in the footer', () => {
     const fixture = TestBed.createComponent(EditorChromeComponent);
     fixture.componentRef.setInput('state', state);

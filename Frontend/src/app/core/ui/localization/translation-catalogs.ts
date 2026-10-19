@@ -8,6 +8,17 @@ export type TranslationKey =
 
 export const translations = {
   en: {
+    workspaceMenu: 'Menu',
+    inspectorProperties: 'Properties',
+    layerOptions: 'Layer options',
+    expandInspector: 'Expand inspector',
+    collapseInspector: 'Collapse inspector',
+    inspectorPlacement: 'Placement',
+    inspectorTechnicalDetails: 'Technical details',
+    placementInspectorHint:
+      'Ready for the Place tool. Select an existing object to edit its properties.',
+    noPlacementSelected: 'Choose a material',
+    placementChooseHint: 'Choose a block or decoration in the browser, or use the Quick Bar.',
     importReadFailed: 'Unable to read project backup',
     importSavingCurrent: 'Saving current project',
     importReadingFile: 'Reading project backup',
@@ -799,6 +810,17 @@ export const translations = {
       '{blocks} blocks and {decorations} decorations outside the current bounds were skipped.',
   },
   vi: {
+    workspaceMenu: 'Menu',
+    inspectorProperties: 'Thuộc tính',
+    layerOptions: 'Tùy chọn lớp',
+    expandInspector: 'Mở rộng bảng',
+    collapseInspector: 'Thu gọn bảng',
+    inspectorPlacement: 'Vật liệu đặt',
+    inspectorTechnicalDetails: 'Chi tiết kỹ thuật',
+    placementInspectorHint: 'Sẵn sàng cho công cụ Đặt. Chọn đối tượng đã đặt để sửa thuộc tính.',
+    noPlacementSelected: 'Chọn vật liệu',
+    placementChooseHint:
+      'Chọn khối hoặc vật trang trí trong trình duyệt, hoặc dùng Thanh chọn nhanh.',
     inventory: '\u004bho v\u1eadt ph\u1ea9m',
     inventorySlot: '\u00d4 kho',
     itemCount: 'S\u1ed1 l\u01b0\u1ee3ng',

@@ -58,7 +58,7 @@ import {
 } from '@lucide/angular';
 import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import { GroupsPanelComponent } from '../groups/groups-panel.component';
-import { SelectionInspectorComponent } from '../inspector/selection-inspector/selection-inspector.component';
+import { ContextualInspectorComponent } from '../inspector/contextual-inspector/contextual-inspector.component';
 import { BlockUsagePanelComponent } from '../inspector/block-usage/block-usage-panel.component';
 import { EditorStatusBarComponent } from './editor-status-bar/editor-status-bar.component';
 import { ShortcutsHelpDialogComponent } from '../settings/shortcuts-help/shortcuts-help-dialog.component';
@@ -90,7 +90,7 @@ type AssetManagerInitialTab = 'vanilla' | 'mods';
     BlockBrowserComponent,
     DecorationBrowserComponent,
     GroupsPanelComponent,
-    SelectionInspectorComponent,
+    ContextualInspectorComponent,
     BlockUsagePanelComponent,
     EditorStatusBarComponent,
     QuickBlockBarComponent,
@@ -198,7 +198,9 @@ export class EditorShellComponent implements OnDestroy {
   protected readonly structureJsonImportOpen = signal(false);
   protected readonly structureNbtExportOpen = signal(false);
   protected readonly leftDrawerOpen = signal(false);
-  protected readonly rightDrawerOpen = signal(false);
+  private readonly inspectorSheetState = signal<'closed' | 'collapsed' | 'expanded'>('closed');
+  protected readonly rightDrawerOpen = computed(() => this.inspectorSheetState() !== 'closed');
+  protected readonly inspectorExpanded = computed(() => this.inspectorSheetState() === 'expanded');
   protected readonly rightSidebarTab = signal<'selection' | 'block-usage'>('selection');
   private drawerOpener?: HTMLElement;
   private focusedResizeSide?: 'left' | 'right';
@@ -457,10 +459,13 @@ export class EditorShellComponent implements OnDestroy {
     this.drawerOpener = event.currentTarget as HTMLElement;
     if (side === 'left') {
       this.leftDrawerOpen.set(true);
-      this.rightDrawerOpen.set(false);
+      this.inspectorSheetState.set('closed');
     } else {
-      this.rightDrawerOpen.set(true);
+      this.inspectorSheetState.set('expanded');
       this.leftDrawerOpen.set(false);
+    }
+    if (this.document.defaultView?.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      this.document.defaultView.requestAnimationFrame(() => this.focusDrawerTab(side));
     }
   }
   protected focusDrawerAfterTransition(side: 'left' | 'right', event: TransitionEvent): void {
@@ -473,9 +478,12 @@ export class EditorShellComponent implements OnDestroy {
     event.stopPropagation();
     this.closeDrawers();
   }
+  protected toggleInspectorSheet(): void {
+    this.inspectorSheetState.set(this.inspectorExpanded() ? 'collapsed' : 'expanded');
+  }
   protected closeDrawers(returnFocus = true): void {
     this.leftDrawerOpen.set(false);
-    this.rightDrawerOpen.set(false);
+    this.inspectorSheetState.set('closed');
     if (returnFocus) {
       const opener = this.drawerOpener;
       this.drawerOpener = undefined;
@@ -608,6 +616,7 @@ export class EditorShellComponent implements OnDestroy {
     this.movePanelVisible.set(false);
   }
   protected handleEditorShortcut(event: KeyboardEvent): void {
+    if (event.defaultPrevented) return;
     if (
       this.settingsDialogOpen() ||
       this.controlsHelpOpen() ||
@@ -630,6 +639,7 @@ export class EditorShellComponent implements OnDestroy {
     if (!action) return;
     if (action === 'tool-toggle' && event.repeat) return;
     if (isMovementAction(action)) {
+      if (this.leftDrawerOpen() || this.inspectorExpanded()) return;
       this.movementInput.keyDown(action, movementPhysicalKey(event));
       event.preventDefault();
       return;
@@ -661,7 +671,17 @@ export class EditorShellComponent implements OnDestroy {
   }
   protected handleViewportResize(): void {
     this.sidebarResize.clampToViewport();
-    const side = this.focusedResizeSide;
+    const focusedPanel =
+      this.document.activeElement instanceof HTMLElement
+        ? this.document.activeElement.closest('.panel')
+        : null;
+    const side =
+      this.focusedResizeSide ??
+      (focusedPanel?.classList.contains('left-panel')
+        ? 'left'
+        : focusedPanel?.classList.contains('right-panel')
+          ? 'right'
+          : undefined);
     const view = this.document.defaultView;
     if (view && view.innerWidth > 850) {
       const openSide = this.leftDrawerOpen()
@@ -674,6 +694,7 @@ export class EditorShellComponent implements OnDestroy {
         const focusNeedsRelocation =
           activeElement instanceof HTMLElement &&
           (activeElement.classList.contains('drawer-close') ||
+            !!activeElement.closest('.inspector-sheet-header') ||
             !!activeElement.closest('.responsive-drawer-actions'));
         this.closeDrawers(false);
         if (focusNeedsRelocation) view.requestAnimationFrame(() => this.focusDrawerTab(openSide));

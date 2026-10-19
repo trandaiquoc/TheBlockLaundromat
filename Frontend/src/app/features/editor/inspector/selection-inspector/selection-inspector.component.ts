@@ -11,10 +11,8 @@ import { blockGroupNames, isBlockLocked } from '../../../../core/editor/groups/g
 import { ProjectBlockRuntimeIndex } from '../../../../core/editor/runtime/project-block-runtime-index';
 import { DecorationInspectorComponent } from '../decoration-inspector/decoration-inspector.component';
 import { SignInspectorComponent } from '../sign-inspector/sign-inspector.component';
-import {
-  ThemedSelectComponent,
-  ThemedSelectOption,
-} from '../../../../shared/ui/themed-select/themed-select.component';
+import { PropertyControlComponent } from '../property-control/property-control.component';
+import { InspectorBlockIdentityComponent } from '../block-identity/inspector-block-identity.component';
 import { ItemDisplayInspectorComponent } from '../item-display-inspector/item-display-inspector.component';
 import { blockCapability } from '../../../../core/blocks/capabilities/block-capability-resolver';
 import { verifiedInventoryContainerSchema } from '../../../../core/block-entities/item-display/inventory-storage-schema';
@@ -31,7 +29,8 @@ import { DECORATED_POT_ID } from '../../../../core/block-entities/decorated-pot/
     LucideX,
     DecorationInspectorComponent,
     SignInspectorComponent,
-    ThemedSelectComponent,
+    PropertyControlComponent,
+    InspectorBlockIdentityComponent,
     ItemDisplayInspectorComponent,
     InventoryStorageInspectorComponent,
     DecoratedPotInspectorComponent,
@@ -58,7 +57,6 @@ export class SelectionInspectorComponent {
     const project = this.workspace.project();
     const selected = this.selection.single();
     if (!project || !selected) return undefined;
-    this.blockIndex.ensure(project);
     return this.blockIndex.get(selected);
   });
   protected readonly stateEntries = computed(() =>
@@ -162,19 +160,22 @@ export class SelectionInspectorComponent {
     const project = this.workspace.project();
     return project ? this.selection.count(project) : 0;
   });
-  protected readonly selectedBounds = computed(() =>
-    this.selection.bounds(this.workspace.project()),
-  );
+  protected readonly selectedBounds = computed(() => {
+    this.workspace.project();
+    return this.selection.box() ?? this.selection.bounds();
+  });
   constructor() {
+    effect(() => {
+      const project = this.workspace.project();
+      if (project) this.blockIndex.ensure(project);
+      if (this.selection.kind() === 'all') this.selection.bounds(project);
+    });
     effect(() => {
       this.selectedBlock();
       this.selectedDecoration();
       this.selection.kind();
       this.stateFeedback.set('');
     });
-  }
-  protected stateOptions(values: readonly string[]): readonly ThemedSelectOption[] {
-    return values.map((value) => ({ id: value, label: this.i18n.stateValue(value) }));
   }
   protected propertyEffects(property: ContentPropertyDescriptor): string[] {
     const labels: string[] = [];

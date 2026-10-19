@@ -1,0 +1,92 @@
+# Responsive Workspace and Contextual Inspector
+
+Current P0/P1 contract. These changes concern Workspace presentation and UI
+interaction; they do not add project fields or Minecraft behavior.
+
+## Responsive shell
+
+At widths up to 850 CSS px, one Menu opens the existing six application command
+groups. The same command DOM and action dispatch serve desktop and narrow
+layouts. Place/Select and Undo/Redo remain directly available; camera presets
+remain in Camera, and Fit/Focus remain accessible through View. The mode pair
+stays explicitly labeled on its own compact row rather than becoming an
+unlabeled icon or a second command implementation.
+
+Blocks and Inspector open from a bottom dock above the Status Bar. Blocks keeps
+its modal drawer and its Blocks, Decorations, and Groups tabs. Desktop retains
+docked sidebars, saved widths, and pointer/keyboard resizing.
+
+The Inspector has one authoritative sheet state: closed, collapsed, or expanded.
+Expanded is a modal bottom sheet, bounded by the editor body and a maximum of
+72dvh; focus enters its selected tab, Tab stays inside, and Escape closes it and
+returns focus to the opener. Collapse leaves a 4.5rem nonmodal header; its body
+is hidden from interaction, the backdrop and focus trap are released, and the
+Quick Bar moves above that header. Expand and Close remain labeled, keyboard
+accessible touch controls. The Status Bar and bottom dock retain their space.
+Returning to desktop releases the sheet state and trap. Reduced motion skips
+the transition and moves focus on the next frame.
+
+## Y-Layer controls
+
+The primary row contains previous layer, numeric Y, next layer, and Layer
+options. Layer options contains the Y slider, all four occupied-layer navigation
+actions, visibility, and reference opacity. There is one implementation of each
+control. The panel scrolls within the available viewport height. Escape closes
+it and returns focus to its summary; outside click/focus and viewport
+deactivation close it. A nested themed select consumes its own Escape first.
+
+`LayerControlsComponent` owns control presentation and popover interaction. It
+emits typed actions to the existing Y-Layer methods; projection, cancellation,
+camera input, placement, and retained renderer ownership remain with their
+existing owners.
+
+## Inspector contexts and editing
+
+Properties distinguishes Placement and Selection. Its default follows the tool;
+the user can explicitly inspect the other context until the tool changes.
+Changing this context never clears or replaces the real selection.
+
+Placement presents the active block's real inventory thumbnail, name, registry
+ID, and read-only state details, or the active decoration identity. Its empty
+state points to the browser and Quick Bar. It does not edit placed blocks.
+
+Selection keeps the existing single, logical set, box, decoration, sign,
+inventory, item-display, decorated-pot, membership, and selection-action paths.
+Position and Group remain read-only. Identity appears once; the editable
+properties are primary, while exact raw state and effect metadata live in
+Technical details. Structure overview is collapsed when a selection exists.
+
+Property controls use descriptor values, not registry IDs:
+
+- Exactly `true` and `false`: a labeled switch.
+- Two to four short values with short localized labels: keyboard navigable
+  radio segments.
+- Other value sets: the existing themed select.
+- Derived properties: visible Auto marker and disabled controls.
+- Locked groups: all property and rotation controls remain disabled.
+
+All value changes still pass through the existing `StructureEditorService`
+validation and history transaction. Preserved unknown state values remain in
+the descriptor and raw state view. No Position editor or Duplicate command was
+introduced from the exploratory mockups.
+
+## Ownership and acceptance matrix
+
+| Boundary            | Authoritative owner and source audit                                                                                           | Protection                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| Commands            | Existing `EditorChromeAction` dispatch; compact Menu reuses the application menus                                              | Chrome keyboard/action specs; native Chrome narrow menu checks                                  |
+| Sheet               | Shell owns one state union; open/expanded flags are derived; legacy horizontal right drawer rules removed                      | Shell focus/trap/collapse/resize specs; native Chrome Escape, reduced motion and resize checks  |
+| Layer UI            | LayerControls owns the panel; Y-Layer owns state and existing action methods; old inline toolbar/schema removed                | LayerControls action/closure specs; Chrome numeric/slider/occupied/opacity/visibility workflows |
+| Context             | ContextualInspector owns only a tool-linked presentation choice; selection stays in its existing service                       | Context test with a retained real selection; Chrome Place/Select switching                      |
+| Property controls   | PropertyControl owns metadata-based presentation; SelectionInspector owns the existing edit callback                           | Boolean/enum/readonly/keyboard specs; locked, derived and Undo/Redo browser cases               |
+| Runtime lookup      | Index and compact-all bounds preparation run in an effect; selection computations read existing state without signal writes    | Deferred context mounting and explicit/compact selected-set tests                               |
+| Specialized editors | Existing components, capabilities and lock inputs retained                                                                     | Existing inspector and editor regression specs                                                  |
+| Assets and scale    | Identity requests one catalog item through the existing thumbnail scheduler; no per-block DOM, frame work or new project scans | Source audit; existing renderer/runtime regression suite, without a benchmark claim             |
+
+No dependency was added. Components continue to use canonical semantic tokens,
+the existing EN/VI catalog, and the three supported UI fonts. Motion affects
+chrome surfaces only and honors `prefers-reduced-motion`.
+
+The [focused browser evidence](evidence/20261019-responsive-context-inspector/README.md)
+records the four-theme/locale/viewport matrix and retained before/after captures.
+This is UI verification, not a Minecraft or benchmark claim.

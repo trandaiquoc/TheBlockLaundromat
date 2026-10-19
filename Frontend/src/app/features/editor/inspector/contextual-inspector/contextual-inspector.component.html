@@ -1,0 +1,61 @@
+<div class="inspector-context" role="group" [attr.aria-label]="i18n.t('inspector')">
+  <button
+    type="button"
+    [attr.aria-pressed]="context() === 'placement'"
+    (click)="context.set('placement')"
+  >
+    {{ i18n.t('inspectorPlacement') }}
+  </button>
+  <button
+    type="button"
+    [attr.aria-pressed]="context() === 'selection'"
+    (click)="context.set('selection')"
+  >
+    {{ i18n.t('selection') }}
+  </button>
+</div>
+@if (context() === 'selection') {
+  <app-selection-inspector
+    (selectAllRequested)="selectAllRequested.emit()"
+    (clearSelectionRequested)="clearSelectionRequested.emit()"
+  />
+} @else {
+  <section class="placement-context">
+    @if (active.active(); as block) {
+      <app-inspector-block-identity [blockId]="block.id" [itemId]="block.itemId" />
+      <p>{{ i18n.t('placementInspectorHint') }}</p>
+      @if (stateEntries().length) {
+        <details>
+          <summary>{{ i18n.t('inspectorTechnicalDetails') }}</summary>
+          <dl>
+            @for (entry of stateEntries(); track entry[0]) {
+              <div>
+                <dt>{{ entry[0] }}</dt>
+                <dd>{{ entry[1] }}</dd>
+              </div>
+            }
+          </dl>
+        </details>
+      }
+    } @else if (decorations.active(); as decoration) {
+      <h3>
+        {{
+          i18n.t(
+            decoration.kind === 'painting'
+              ? 'painting'
+              : decoration.kind === 'glow-item-frame'
+                ? 'glowItemFrame'
+                : 'itemFrame'
+          )
+        }}
+      </h3>
+      @if (decoration.variantId) {
+        <code>{{ decoration.variantId }}</code>
+      }
+      <p>{{ i18n.t('placementInspectorHint') }}</p>
+    } @else {
+      <h3>{{ i18n.t('noPlacementSelected') }}</h3>
+      <p>{{ i18n.t('placementChooseHint') }}</p>
+    }
+  </section>
+}

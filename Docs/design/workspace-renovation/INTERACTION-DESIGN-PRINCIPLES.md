@@ -64,6 +64,10 @@ no demo code or assets were copied.
 - Responsive sidebars opened over a blocking backdrop behave as modal dialogs:
   focus enters the selected tab, Tab stays inside, Escape closes, and focus
   returns to the opener. Releasing the narrow layout also releases the trap.
+  The Inspector's collapsed bottom sheet is a nonmodal region: its body and
+  trap are inactive, and the Quick Bar remains above its header. Expanding it
+  restores modal editing. The current layout and context behavior is defined
+  in [the P0/P1 contract](RESPONSIVE-LAYOUT-AND-CONTEXTUAL-INSPECTOR.md).
 - Keep empty 3D and Y-Layer canvases unobstructed. Block discovery and placement
   actions stay in the Blocks panel and shared Place controls; placement feedback
   remains available without an onboarding overlay.

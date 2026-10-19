@@ -1,0 +1,59 @@
+.inspector-context {
+  display: flex;
+  gap: 0.2rem;
+  margin: 0.75rem 0 0.25rem;
+  padding: 0.2rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+.inspector-context button {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font: 0.8rem var(--font-ui);
+  cursor: pointer;
+}
+.inspector-context button[aria-pressed='true'] {
+  background: var(--control-selected);
+  color: var(--control-selected-text);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 currentColor;
+}
+button:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}
+.placement-context p {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+h3 {
+  font-size: 0.9rem;
+}
+code {
+  overflow-wrap: anywhere;
+}
+summary {
+  padding: 0.75rem 0;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+dl {
+  font:
+    0.75rem/1.5 ui-monospace,
+    monospace;
+}
+dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+dd {
+  margin: 0;
+}

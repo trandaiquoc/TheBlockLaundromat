@@ -51,14 +51,8 @@ import { createBlockVisibilityPredicate } from '../../../../core/editor/viewport
 import { UiPreferencesService } from '../../../../core/ui/preferences/ui-preferences.service';
 import { DecorationService } from '../../../../core/decorations/decoration.service';
 import { decorationAabb } from '../../../../core/decorations/placement/decoration-placement';
-import {
-  ThemedSelectComponent,
-  ThemedSelectOption,
-} from '../../../../shared/ui/themed-select/themed-select.component';
 import { KeyboardBindingService } from '../../../../core/editor/input/keyboard-binding.service';
 import { MouseAction } from '../../../../core/editor/input/mouse-bindings';
-import { LucideChevronLeft, LucideChevronRight } from '@lucide/angular';
-import { UiTooltipDirective } from '../../../../shared/ui/tooltip/ui-tooltip.directive';
 import { EditorSessionService } from '../../../../core/editor/state/editor-session.service';
 import {
   ViewportPreparationScheduler,
@@ -68,17 +62,13 @@ import { shouldClearInteractionFeedbackForToolChange } from '../shared/viewport-
 import { ViewportHitInteractionWorkflow } from '../shared/viewport-hit-interaction-workflow';
 import { ViewportFeedbackComponent } from '../shared/viewport-feedback.component';
 
+import { LayerControlsComponent, type LayerControlAction } from './layer-controls.component';
+
 export const Y_LAYER_PROJECTION_STATUS_DELAY_MS = 180;
 
 @Component({
   selector: 'app-y-layer',
-  imports: [
-    ThemedSelectComponent,
-    LucideChevronLeft,
-    LucideChevronRight,
-    UiTooltipDirective,
-    ViewportFeedbackComponent,
-  ],
+  imports: [LayerControlsComponent, ViewportFeedbackComponent],
   templateUrl: './y-layer.component.html',
   styleUrl: './y-layer.component.scss',
 })
@@ -107,14 +97,31 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
   protected readonly visibility = computed<YLayerVisibility>(
     () => this.workspace.project()?.editorSettings.layerVisibility ?? 'current-only',
   );
-  protected readonly visibilityOptions = computed<readonly ThemedSelectOption[]>(() => [
-    { id: 'current-only', label: this.i18n.t('visibilityCurrent') },
-    { id: 'current-previous', label: this.i18n.t('visibilityPrevious') },
-    { id: 'current-next', label: this.i18n.t('visibilityNext') },
-    { id: 'previous-current-next', label: this.i18n.t('visibilityThree') },
-    { id: 'all-below', label: this.i18n.t('visibilityBelow') },
-    { id: 'whole-structure', label: this.i18n.t('visibilityWhole') },
-  ]);
+  protected handleLayerControl(action: LayerControlAction): void {
+    switch (action.type) {
+      case 'preview':
+        this.previewLayer(action.value);
+        break;
+      case 'commit':
+        this.commitLayer(action.value);
+        break;
+      case 'step':
+        this.stepLayer(action.direction);
+        break;
+      case 'adjacent':
+        this.jumpAdjacent(action.direction);
+        break;
+      case 'jump':
+        this.jumpLayer(action.position);
+        break;
+      case 'visibility':
+        this.setVisibility(action.value);
+        break;
+      case 'opacity':
+        this.setOpacity(action.value);
+        break;
+    }
+  }
   protected readonly placementFeedback = signal<
     ReturnType<typeof placementFeedbackForHit> | undefined
   >(undefined);
@@ -549,11 +556,6 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
       ...project,
       editorSettings: { ...project.editorSettings, referenceLayerOpacity: opacity },
     });
-  }
-  protected referenceOpacityPercent(): number {
-    return Math.round(
-      (this.workspace.project()?.editorSettings.referenceLayerOpacity ?? 0.28) * 100,
-    );
   }
   protected reasonLabel(): string {
     const reason = this.decorationReason();

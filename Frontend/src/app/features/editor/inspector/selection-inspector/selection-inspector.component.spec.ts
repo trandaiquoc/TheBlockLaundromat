@@ -17,6 +17,30 @@ import { SelectionInspectorComponent } from './selection-inspector.component';
 describe('SelectionInspectorComponent', () => {
   afterEach(() => TestBed.resetTestingModule());
 
+  it('presents Select all as a selected set, retaining real bounds and count', () => {
+    TestBed.configureTestingModule({
+      providers: [{ provide: ProjectBlockRuntimeIndex, useValue: new ProjectBlockRuntimeIndex() }],
+    });
+    const base = rendererBenchmarkProject('small');
+    const project = {
+      ...base,
+      blocks: [
+        { ...base.blocks[0], position: { x: 1, y: 0, z: 2 } },
+        { ...base.blocks[0], position: { x: 3, y: 2, z: 4 } },
+      ],
+    };
+    TestBed.inject(WorkspaceStateService).publishProject(project);
+    TestBed.inject(SelectionService).selectAll(project);
+    const fixture = TestBed.createComponent(SelectionInspectorComponent);
+    fixture.detectChanges();
+    const values = [...fixture.nativeElement.querySelectorAll('.selection-details dd')].map((e) =>
+      e.textContent.trim(),
+    );
+    expect(values).toEqual(['X 1, Y 0, Z 2', 'X 3, Y 2, Z 4', '3 x 3 x 3', '2']);
+    expect(fixture.nativeElement.querySelector('[data-empty-selection]')).toBeNull();
+    fixture.destroy();
+  });
+
   function lockedProject(block: PlacedBlock): ProjectDocument {
     const base = rendererBenchmarkProject('small');
     return {
@@ -26,6 +50,38 @@ describe('SelectionInspectorComponent', () => {
       blocks: [{ ...block, groupIds: ['locked'] }],
     };
   }
+
+  it('reads compact all-selection bounds after project changes without computed signal writes', () => {
+    TestBed.configureTestingModule({
+      providers: [{ provide: ProjectBlockRuntimeIndex, useValue: new ProjectBlockRuntimeIndex() }],
+    });
+    const base = rendererBenchmarkProject('small');
+    const project = {
+      ...base,
+      size: { x: 257, y: 1, z: 1 },
+      blocks: Array.from({ length: 257 }, (_, x) => ({
+        ...base.blocks[0],
+        position: { x, y: 0, z: 0 },
+      })),
+    };
+    const workspace = TestBed.inject(WorkspaceStateService);
+    const selection = TestBed.inject(SelectionService);
+    workspace.publishProject(project);
+    selection.selectAll(project);
+    expect(selection.kind()).toBe('all');
+    const fixture = TestBed.createComponent(SelectionInspectorComponent);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.selection-details').textContent).toContain(
+      'X 256, Y 0, Z 0',
+    );
+    workspace.publishProject({ ...project, blocks: project.blocks.slice(0, -1) });
+    fixture.detectChanges();
+    const values = [...fixture.nativeElement.querySelectorAll('.selection-details dd')].map((e) =>
+      e.textContent.trim(),
+    );
+    expect(values).toEqual(['X 0, Y 0, Z 0', 'X 255, Y 0, Z 0', '256 x 1 x 1', '256']);
+    fixture.destroy();
+  });
 
   it('shows selected-set bounds and count instead of a synthetic drag volume', async () => {
     const base = rendererBenchmarkProject('small');
@@ -207,9 +263,9 @@ describe('SelectionInspectorComponent', () => {
 
     const nativeElement = fixture.nativeElement as HTMLElement;
     const stateControl = nativeElement.querySelector<HTMLButtonElement>(
-      '.state-editor app-themed-select button',
+      '.state-editor app-property-control button',
     );
-    const rotateButton = nativeElement.querySelector<HTMLButtonElement>('.state-editor button');
+    const rotateButton = nativeElement.querySelector<HTMLButtonElement>('.state-editor > button');
     if (!stateControl || !rotateButton) throw new Error('Locked block controls are missing.');
     expect(stateControl.disabled).toBe(true);
     expect(rotateButton.disabled).toBe(true);

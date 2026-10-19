@@ -146,6 +146,7 @@
       }
       @if (layout.preferences().leftSidebarVisible) {
         <aside
+          id="workspace-browser"
           class="panel left-panel"
           [class.drawer-open]="leftDrawerOpen()"
           [attr.role]="leftDrawerOpen() ? 'dialog' : null"
@@ -260,6 +261,8 @@
           <button
             type="button"
             (click)="openDrawer('left', $event)"
+            aria-controls="workspace-browser"
+            [attr.aria-expanded]="leftDrawerOpen()"
             [attr.aria-label]="i18n.t('openLeftSidebar')"
           >
             {{ i18n.t('blocksPanel') }}
@@ -269,13 +272,15 @@
           <button
             type="button"
             (click)="openDrawer('right', $event)"
+            aria-controls="workspace-inspector"
+            [attr.aria-expanded]="rightDrawerOpen()"
             [attr.aria-label]="i18n.t('openRightSidebar')"
           >
-            {{ i18n.t('selection') }}
+            {{ i18n.t('inspector') }}
           </button>
         }
       </div>
-      @if (leftDrawerOpen() || rightDrawerOpen()) {
+      @if (leftDrawerOpen() || (rightDrawerOpen() && inspectorExpanded())) {
         <button
           type="button"
           class="drawer-backdrop"
@@ -302,77 +307,92 @@
       </main>
       @if (layout.preferences().rightSidebarVisible) {
         <aside
+          id="workspace-inspector"
           class="panel right-panel"
           [class.drawer-open]="rightDrawerOpen()"
-          [attr.role]="rightDrawerOpen() ? 'dialog' : null"
-          [attr.aria-modal]="rightDrawerOpen() ? 'true' : null"
+          [class.sheet-expanded]="inspectorExpanded()"
+          [attr.role]="rightDrawerOpen() ? (inspectorExpanded() ? 'dialog' : 'region') : null"
+          [attr.aria-modal]="rightDrawerOpen() && inspectorExpanded() ? 'true' : null"
           [attr.aria-label]="i18n.t('inspector')"
-          [cdkTrapFocus]="rightDrawerOpen()"
+          [cdkTrapFocus]="rightDrawerOpen() && inspectorExpanded()"
           (keydown.escape)="closeDrawerFromEscape($event)"
           (transitionend)="focusDrawerAfterTransition('right', $event)"
         >
-          <button
-            type="button"
-            class="drawer-close ui-close-button ui-tooltip-align-end"
-            uiTooltip="{{ i18n.t('closePanel') }}"
-            (click)="closeDrawers()"
-            [attr.aria-label]="i18n.t('closePanel')"
-          >
-            <svg lucideX aria-hidden="true"></svg>
-          </button>
-          <div
-            class="sidebar-tabs right-sidebar-tabs ui-tab-strip"
-            role="tablist"
-            [attr.aria-label]="i18n.t('inspector')"
-          >
+          <div class="inspector-sheet-header">
+            <strong>{{ i18n.t('inspector') }}</strong>
             <button
               type="button"
-              role="tab"
-              id="right-sidebar-tab-selection"
-              [attr.tabindex]="rightSidebarTab() === 'selection' ? 0 : -1"
-              aria-controls="right-sidebar-panel-selection"
-              [attr.aria-selected]="rightSidebarTab() === 'selection'"
-              [class.active]="rightSidebarTab() === 'selection'"
-              (keydown)="handleRightSidebarTabKeydown($event, 0)"
-              (click)="rightSidebarTab.set('selection')"
+              class="sheet-toggle ui-button ui-button--secondary"
+              [attr.aria-expanded]="inspectorExpanded()"
+              aria-controls="inspector-sheet-content"
+              (click)="toggleInspectorSheet()"
             >
-              {{ i18n.t('selection') }}
+              {{ i18n.t(inspectorExpanded() ? 'collapseInspector' : 'expandInspector') }}
             </button>
             <button
               type="button"
-              role="tab"
-              id="right-sidebar-tab-usage"
-              [attr.tabindex]="rightSidebarTab() === 'block-usage' ? 0 : -1"
-              aria-controls="right-sidebar-panel-usage"
-              [attr.aria-selected]="rightSidebarTab() === 'block-usage'"
-              [class.active]="rightSidebarTab() === 'block-usage'"
-              (keydown)="handleRightSidebarTabKeydown($event, 1)"
-              (click)="rightSidebarTab.set('block-usage')"
+              class="drawer-close ui-close-button"
+              (click)="closeDrawers()"
+              [attr.aria-label]="i18n.t('closePanel')"
             >
-              {{ i18n.t('blockUsage') }}
+              <svg lucideX aria-hidden="true"></svg>
             </button>
           </div>
-          <div
-            id="right-sidebar-panel-selection"
-            role="tabpanel"
-            aria-labelledby="right-sidebar-tab-selection"
-            [hidden]="rightSidebarTab() !== 'selection'"
-            [attr.aria-hidden]="rightSidebarTab() !== 'selection'"
-          >
-            <app-selection-inspector
-              (selectAllRequested)="selectAll()"
-              (clearSelectionRequested)="clearSelection()"
-            ></app-selection-inspector>
-          </div>
-          <div
-            id="right-sidebar-panel-usage"
-            class="right-sidebar-usage"
-            role="tabpanel"
-            aria-labelledby="right-sidebar-tab-usage"
-            [hidden]="rightSidebarTab() !== 'block-usage'"
-            [attr.aria-hidden]="rightSidebarTab() !== 'block-usage'"
-          >
-            <app-block-usage-panel></app-block-usage-panel>
+          <div id="inspector-sheet-content" class="inspector-sheet-content">
+            <div
+              class="sidebar-tabs right-sidebar-tabs ui-tab-strip"
+              role="tablist"
+              [attr.aria-label]="i18n.t('inspector')"
+            >
+              <button
+                type="button"
+                role="tab"
+                id="right-sidebar-tab-selection"
+                [attr.tabindex]="rightSidebarTab() === 'selection' ? 0 : -1"
+                aria-controls="right-sidebar-panel-selection"
+                [attr.aria-selected]="rightSidebarTab() === 'selection'"
+                [class.active]="rightSidebarTab() === 'selection'"
+                (keydown)="handleRightSidebarTabKeydown($event, 0)"
+                (click)="rightSidebarTab.set('selection')"
+              >
+                {{ i18n.t('inspectorProperties') }}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                id="right-sidebar-tab-usage"
+                [attr.tabindex]="rightSidebarTab() === 'block-usage' ? 0 : -1"
+                aria-controls="right-sidebar-panel-usage"
+                [attr.aria-selected]="rightSidebarTab() === 'block-usage'"
+                [class.active]="rightSidebarTab() === 'block-usage'"
+                (keydown)="handleRightSidebarTabKeydown($event, 1)"
+                (click)="rightSidebarTab.set('block-usage')"
+              >
+                {{ i18n.t('blockUsage') }}
+              </button>
+            </div>
+            <div
+              id="right-sidebar-panel-selection"
+              role="tabpanel"
+              aria-labelledby="right-sidebar-tab-selection"
+              [hidden]="rightSidebarTab() !== 'selection'"
+              [attr.aria-hidden]="rightSidebarTab() !== 'selection'"
+            >
+              <app-contextual-inspector
+                (selectAllRequested)="selectAll()"
+                (clearSelectionRequested)="clearSelection()"
+              ></app-contextual-inspector>
+            </div>
+            <div
+              id="right-sidebar-panel-usage"
+              class="right-sidebar-usage"
+              role="tabpanel"
+              aria-labelledby="right-sidebar-tab-usage"
+              [hidden]="rightSidebarTab() !== 'block-usage'"
+              [attr.aria-hidden]="rightSidebarTab() !== 'block-usage'"
+            >
+              <app-block-usage-panel></app-block-usage-panel>
+            </div>
           </div>
         </aside>
       }

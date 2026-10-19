@@ -1,13 +1,8 @@
 @if (selectedDecoration()) {
   <app-decoration-inspector></app-decoration-inspector>
 } @else if (selectedBlock(); as selected) {
+  <app-inspector-block-identity [blockId]="selected.id" />
   <dl class="selection-details">
-    <div>
-      <dt>{{ i18n.t('selectedBlock') }}</dt>
-      <dd>
-        <code>{{ selected.id }}</code>
-      </dd>
-    </div>
     <div>
       <dt>{{ i18n.t('position') }}</dt>
       <dd>X {{ selected.position.x }}, Y {{ selected.position.y }}, Z {{ selected.position.z }}</dd>
@@ -16,56 +11,21 @@
       <dt>{{ i18n.t('group') }}</dt>
       <dd>{{ selectedGroupNames().join(', ') || i18n.t('none') }}</dd>
     </div>
-    @if (!selectedBlockIsSign()) {
-      <div>
-        <dt>{{ i18n.t('blockState') }}</dt>
-        <dd>
-          @if (stateEntries().length) {
-            <ul>
-              @for (entry of stateEntries(); track entry[0]) {
-                <li>
-                  <code>{{ entry[0] }}={{ entry[1] }}</code>
-                </li>
-              }
-            </ul>
-          } @else {
-            <span class="muted">{{ i18n.t('emptyState') }}</span>
-          }
-        </dd>
-      </div>
-    }
   </dl>
   @if (selectedBlockLocked()) {
     <p class="muted locked-block-hint" role="status">{{ i18n.t('lockedBlockEditHint') }}</p>
   }
-  @if (selectedDefinition(); as definition) {
+  @if (selectedDefinition()) {
     @if (!selectedBlockIsSign()) {
       <section class="state-editor">
         <h3>{{ i18n.t('editBlockState') }}</h3>
         @for (state of stateProperties(); track state.name) {
-          @let effects = propertyEffects(state);
-          <label>
-            <span class="state-editor-label">
-              <span class="state-editor-property-name">{{ i18n.stateProperty(state.name) }}</span>
-              @if (state.derived || effects.length) {
-                <span class="state-editor-effects">
-                  @if (state.derived) {
-                    <small>{{ i18n.t('autoDerived') }}</small>
-                  }
-                  @for (effect of effects; track effect) {
-                    <small>{{ effect }}</small>
-                  }
-                </span>
-              }
-            </span>
-            <app-themed-select
-              [options]="stateOptions(state.values)"
-              [selectedId]="selected.state[state.name] ?? state.defaultValue ?? state.values[0]"
-              [disabled]="selectedBlockLocked() || state.derived"
-              [ariaLabel]="i18n.stateProperty(state.name)"
-              (selectionChange)="updateSelectedStateValue(state.name, $any($event))"
-            />
-          </label>
+          <app-property-control
+            [property]="state"
+            [value]="selected.state[state.name] ?? state.defaultValue ?? state.values[0]"
+            [locked]="selectedBlockLocked()"
+            (valueChange)="updateSelectedStateValue(state.name, $event)"
+          />
         }
         <button
           type="button"
@@ -80,6 +40,27 @@
         }
       </section>
     }
+  }
+  @if (!selectedBlockIsSign()) {
+    <details class="technical-details">
+      <summary>{{ i18n.t('inspectorTechnicalDetails') }}</summary>
+      <dl>
+        @for (entry of stateEntries(); track entry[0]) {
+          <div>
+            <dt>{{ entry[0] }}</dt>
+            <dd>
+              <code>{{ entry[1] }}</code>
+            </dd>
+          </div>
+        }
+      </dl>
+      @for (property of stateProperties(); track property.name) {
+        <p>
+          <strong>{{ i18n.stateProperty(property.name) }}</strong
+          >: {{ propertyEffects(property).join(' · ') }}
+        </p>
+      }
+    </details>
   }
   <app-sign-inspector [locked]="selectedBlockLocked()"></app-sign-inspector>
   @if (selectedDecoratedPot()) {
@@ -107,30 +88,10 @@
       [locked]="selectedBlockLocked()"
     />
   }
-} @else if (selection.kind() === 'box') {
-  @if (selection.box(); as box) {
-    <dl class="selection-details">
-      <div>
-        <dt>{{ i18n.t('minPosition') }}</dt>
-        <dd>X {{ box.min.x }}, Y {{ box.min.y }}, Z {{ box.min.z }}</dd>
-      </div>
-      <div>
-        <dt>{{ i18n.t('maxPosition') }}</dt>
-        <dd>X {{ box.max.x }}, Y {{ box.max.y }}, Z {{ box.max.z }}</dd>
-      </div>
-      <div>
-        <dt>{{ i18n.t('selectionSize') }}</dt>
-        <dd>
-          {{ box.max.x - box.min.x + 1 }} x {{ box.max.y - box.min.y + 1 }} x
-          {{ box.max.z - box.min.z + 1 }}
-        </dd>
-      </div>
-      <div>
-        <dt>{{ i18n.t('blockCount') }}</dt>
-        <dd>{{ selectedBlockCount() }}</dd>
-      </div>
-    </dl>
-  } @else if (selectedBounds(); as bounds) {
+} @else if (
+  selection.kind() === 'box' || selection.kind() === 'all' || selection.kind() === 'explicit'
+) {
+  @if (selectedBounds(); as bounds) {
     <dl class="selection-details">
       <div>
         <dt>{{ i18n.t('minPosition') }}</dt>
@@ -194,26 +155,28 @@
       </div>
     </section>
   }
-  <section class="structure-overview" aria-labelledby="structure-overview-title">
-    <div class="overview-heading">
-      <div>
-        <p>{{ i18n.t('structureOverview') }}</p>
-        <h2 id="structure-overview-title">{{ project.metadata.name }}</h2>
+  <details class="structure-overview-disclosure" [open]="!hasAnySelection()">
+    <summary>{{ i18n.t('structureOverview') }}</summary>
+    <section class="structure-overview" aria-labelledby="structure-overview-title">
+      <div class="overview-heading">
+        <div>
+          <h2 id="structure-overview-title">{{ project.metadata.name }}</h2>
+        </div>
       </div>
-    </div>
-    <dl class="overview-metrics">
-      <div>
-        <dt>{{ i18n.t('structureSize') }}</dt>
-        <dd data-overview-size>
-          {{ project.size.x.toLocaleString(i18n.locale()) }} ×
-          {{ project.size.y.toLocaleString(i18n.locale()) }} ×
-          {{ project.size.z.toLocaleString(i18n.locale()) }}
-        </dd>
-      </div>
-      <div>
-        <dt>{{ i18n.t('totalBlocks') }}</dt>
-        <dd>{{ project.blocks.length.toLocaleString(i18n.locale()) }}</dd>
-      </div>
-    </dl>
-  </section>
+      <dl class="overview-metrics">
+        <div>
+          <dt>{{ i18n.t('structureSize') }}</dt>
+          <dd data-overview-size>
+            {{ project.size.x.toLocaleString(i18n.locale()) }} ×
+            {{ project.size.y.toLocaleString(i18n.locale()) }} ×
+            {{ project.size.z.toLocaleString(i18n.locale()) }}
+          </dd>
+        </div>
+        <div>
+          <dt>{{ i18n.t('totalBlocks') }}</dt>
+          <dd>{{ project.blocks.length.toLocaleString(i18n.locale()) }}</dd>
+        </div>
+      </dl>
+    </section>
+  </details>
 }
