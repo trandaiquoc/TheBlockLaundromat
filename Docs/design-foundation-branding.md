@@ -77,14 +77,17 @@ corresponding texture resource.
 The Project Screen presents a branded header with English/Vietnamese, theme,
 and Settings controls, a project introduction, inline project creation, and a
 recent-project list with Open and Delete actions. Structure JSON import uses
-the validated import workflow. The screen preserves the local guest/account
-status and does not imply sign-in, profile, subscription, or cloud-sync
-behavior. Current implementation and historical records are documented in
+the validated import workflow. Its account card is a local presentation demo
+that starts as `rakoon` on the Free Plan. Log out changes its display to Guest
+without affecting projects, IndexedDB, preferences, or editor state; no
+authentication or cloud-sync behavior is implied. Current implementation and
+historical records are documented in
 [Homepage and Project Screen](design/homepage-renovation/README.md).
 
 The four approved Homepage concepts below remain documentation-only historical
 references. The laundromat scene, project board artwork, washer presentation,
-and raccoon animation were discontinued and are not active product direction.
+and scene-level raccoon animation were discontinued and are not active product
+direction.
 
 ## References
 

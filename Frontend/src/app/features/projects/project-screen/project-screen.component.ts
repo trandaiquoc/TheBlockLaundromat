@@ -15,13 +15,7 @@ import {
 } from '../../../core/domain/structure-size-policy';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
-import {
-  LucideFileUp,
-  LucideHardDrive,
-  LucideSearch,
-  LucideTrash2,
-  LucideX,
-} from '@lucide/angular';
+import { LucideFileUp, LucideSearch, LucideTrash2, LucideX } from '@lucide/angular';
 import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import {
   SearchableDropdownComponent,
@@ -39,6 +33,7 @@ import type {
 import { StructureJsonProjectImportWorkflow } from './structure-json-project-import-workflow';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
 import { ProjectScreenControlsComponent } from './project-screen-controls.component';
+import { ProjectScreenAccountComponent } from './project-screen-account.component';
 import {
   filterAndSortProjectSummaries,
   isProjectScreenProjectOrder,
@@ -53,13 +48,13 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
     DatePipe,
     NgOptimizedImage,
     LucideFileUp,
-    LucideHardDrive,
     LucideSearch,
     LucideTrash2,
     LucideX,
     UiTooltipDirective,
     SearchableDropdownComponent,
     ProjectScreenControlsComponent,
+    ProjectScreenAccountComponent,
     SettingsDialogComponent,
   ],
   templateUrl: './project-screen.component.html',

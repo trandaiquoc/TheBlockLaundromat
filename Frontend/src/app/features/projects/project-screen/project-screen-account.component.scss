@@ -1,0 +1,200 @@
+:host {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.account-anchor {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.account-card {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr) 1.15rem;
+  align-items: center;
+  gap: 0.62rem;
+  width: min(15.5rem, calc(100vw - 2rem));
+  min-height: 3.35rem;
+  padding: 0.3rem 0.75rem 0.3rem 0.34rem;
+  border: 1px solid color-mix(in srgb, var(--border-strong) 78%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: var(--shadow-control-raised);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition:
+    border-color var(--motion-duration-ui) var(--motion-easing-standard),
+    background-color var(--motion-duration-ui) var(--motion-easing-standard),
+    transform var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.account-card:hover {
+  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--surface-hover) 88%, transparent);
+}
+
+.account-card:active {
+  transform: translateY(1px);
+}
+
+.account-card:focus-visible,
+.account-menu-action:focus-visible,
+.account-popover:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.account-avatar {
+  display: block;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--border-strong) 76%, transparent);
+  border-radius: 50%;
+  background: var(--surface-raised);
+  object-fit: cover;
+}
+
+.account-copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.12rem;
+}
+
+.account-copy strong,
+.account-copy > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-copy strong {
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.account-copy > span {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.account-chevron {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--text-muted);
+  transition: transform var(--motion-duration-ui) var(--motion-easing-emphasized);
+}
+
+.account-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.account-popover {
+  position: absolute;
+  z-index: var(--z-popover);
+  left: 0;
+  bottom: calc(100% + 0.55rem);
+  box-sizing: border-box;
+  width: min(17rem, calc(100vw - 2rem));
+  padding: 0.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: var(--shadow-popover);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.4rem) scale(0.985);
+  transform-origin: 1.65rem 100%;
+  visibility: hidden;
+  transition:
+    opacity var(--motion-duration-ui) var(--motion-easing-standard),
+    transform var(--motion-duration-ui) var(--motion-easing-emphasized),
+    visibility 0s var(--motion-duration-ui);
+}
+
+.account-popover.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity var(--motion-duration-ui) var(--motion-easing-standard),
+    transform var(--motion-duration-ui) var(--motion-easing-emphasized);
+}
+
+.account-popover-identity {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 3.15rem;
+  padding: 0.3rem 0.4rem;
+}
+
+.account-avatar--menu {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.account-separator {
+  height: 1px;
+  margin: 0.4rem 0.3rem;
+  background: var(--border);
+}
+
+.account-menu-action {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 2.65rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-lg) - 2px);
+  background: transparent;
+  color: var(--danger);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-align: left;
+  transition:
+    background-color var(--motion-duration-fast) var(--motion-easing-standard),
+    color var(--motion-duration-fast) var(--motion-easing-standard);
+}
+
+.account-menu-action:hover {
+  background: var(--surface-hover);
+  color: var(--danger);
+}
+
+.account-menu-action svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.guest-account-note {
+  margin: 0;
+  padding: 0.35rem 0.45rem 0.45rem;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .account-card,
+  .account-chevron,
+  .account-menu-action,
+  .account-popover {
+    transition: none;
+  }
+}

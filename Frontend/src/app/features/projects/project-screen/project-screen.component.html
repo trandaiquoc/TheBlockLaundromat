@@ -308,16 +308,7 @@
   </div>
 
   <footer class="project-page-footer">
-    <aside class="local-account-status" [attr.aria-label]="i18n.t('localAccountStatus')">
-      <span class="local-account-icon" aria-hidden="true">
-        <svg lucideHardDrive></svg>
-      </span>
-      <span class="local-account-copy">
-        <strong>{{ i18n.t('localGuestMode') }}</strong>
-        <span>{{ i18n.t('localProjectsDescription') }}</span>
-      </span>
-      <span class="local-account-unavailable">{{ i18n.t('accountSignInUnavailable') }}</span>
-    </aside>
+    <app-project-screen-account />
   </footer>
   @if (structureJsonImport.open()) {
     <div class="project-import-backdrop" role="presentation">

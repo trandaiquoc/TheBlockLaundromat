@@ -1,0 +1,76 @@
+<div class="account-anchor" (focusout)="closeWhenFocusLeaves($event)">
+  <button
+    #accountTrigger
+    class="account-card"
+    type="button"
+    [attr.aria-label]="i18n.t('accountMenu') + ': ' + displayName() + ', ' + accountLine()"
+    [attr.aria-haspopup]="isDemoAccount() ? 'menu' : 'dialog'"
+    [attr.aria-expanded]="popoverOpen()"
+    (click)="togglePopover()"
+  >
+    <img
+      class="account-avatar"
+      ngSrc="assets/project-screen/account/rakoon-avatar.png"
+      width="48"
+      height="48"
+      alt=""
+      aria-hidden="true"
+    />
+    <span class="account-copy">
+      <strong>{{ displayName() }}</strong>
+      <span>{{ accountLine() }}</span>
+    </span>
+    <svg
+      class="account-chevron"
+      [class.is-open]="popoverOpen()"
+      lucideChevronDown
+      aria-hidden="true"
+    ></svg>
+  </button>
+
+  <section
+    #accountPopover
+    class="account-popover"
+    [class.is-open]="popoverOpen()"
+    [attr.role]="isDemoAccount() ? 'menu' : 'dialog'"
+    [attr.aria-label]="i18n.t('accountMenu')"
+    [attr.aria-hidden]="popoverOpen() ? null : 'true'"
+    [attr.inert]="popoverOpen() ? null : ''"
+    [attr.tabindex]="-1"
+    (keydown)="keepMenuKeyboardFocus($event)"
+  >
+    <div class="account-popover-identity" role="group">
+      <img
+        class="account-avatar account-avatar--menu"
+        ngSrc="assets/project-screen/account/rakoon-avatar.png"
+        width="48"
+        height="48"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="account-copy">
+        <strong>{{ displayName() }}</strong>
+        <span>{{ accountLine() }}</span>
+      </span>
+    </div>
+
+    <div class="account-separator" role="separator"></div>
+
+    @if (isDemoAccount()) {
+      <button
+        #logoutAction
+        class="account-menu-action"
+        type="button"
+        role="menuitem"
+        (click)="logOut()"
+      >
+        <svg lucideLogOut aria-hidden="true"></svg>
+        <span>{{ i18n.t('logOut') }}</span>
+      </button>
+    } @else {
+      <p id="project-screen-guest-account-description" class="guest-account-note">
+        {{ i18n.t('localProjectsDescription') }}
+      </p>
+    }
+  </section>
+</div>

@@ -20,6 +20,20 @@ sorting are available when saved projects exist. Thumbnail capture and
 persistence remain owned by the editor/persistence workflow; the Project Screen
 does not render thumbnails.
 
+The bottom-left account card is a local presentation demo that starts as
+`rakoon` on the Free Plan and uses one local raccoon avatar in every theme.
+Logging out changes only this component to Guest; it does not alter projects,
+IndexedDB, preferences, or editor state. The shared top controls continue to
+use the existing locale and theme workflows.
+
+For interaction research, the [LucianLabs UX/UI gallery](https://lucianlabs.dev/uxui-prompt/)
+account switcher 037 informed the upward-opening account menu, item focus, and
+compact trigger. Sliding pill 039 informed selected-state feedback, and
+language switch 267 informed clear selected language feedback. Their demos and
+source were reviewed for interaction ideas; no demo code, global CSS, or
+dependencies were copied. The existing Angular services and semantic theme
+tokens remain authoritative.
+
 ## Historical references
 
 The four original approved concepts remain in
@@ -29,4 +43,5 @@ are documentation-only and are not loaded by the application.
 Dated captures and interaction notes are retained under
 [`evidence/`](evidence/) as historical records of the discontinued scene
 implementation. They are not evidence of the current screen. No scene asset
-registry, laundromat artwork, raccoon motion, or layered composition is active.
+registry, laundromat artwork, scene-level raccoon motion, or layered composition
+is active.

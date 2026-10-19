@@ -21,6 +21,7 @@ describe('ProjectScreenComponent', () => {
     expect(template).toContain('class="project-intro"');
     expect(template).toContain('class="project-form"');
     expect(template).toContain('class="recent-projects"');
+    expect(template).toContain('<app-project-screen-account');
     expect(template).toContain('projectName');
     expect(template).toContain('structureSize');
     expect(template).toContain('createFromStructureJson');
