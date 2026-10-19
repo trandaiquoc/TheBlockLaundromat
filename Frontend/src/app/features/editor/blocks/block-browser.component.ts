@@ -1,59 +1,51 @@
 import {
   Component,
   computed,
+  DestroyRef,
   effect,
   ElementRef,
   inject,
   output,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
+import {
+  LucideLayoutGrid,
+  LucideList,
+  LucideSearch,
+  LucideSettings2,
+  LucideX,
+} from '@lucide/angular';
 import type { PlaceableItemDefinition } from '../../../core/blocks/placement-palette/placeable-item.types';
 import { BlockLibraryService } from '../../../core/blocks/catalog/block-library.service';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { ContentAssetRuntimeService } from '../../../core/assets/content-asset-runtime.service';
-import { QuickBlockBarService } from '../../../core/editor/quick-bar/quick-block-bar.service';
 import { DecorationService } from '../../../core/decorations/decoration.service';
 import { ALL_CONTENT_SOURCE } from '../../../core/content/source-selection/content-source-selection';
-import { LucideBox, LucideCircleHelp, LucidePlus, LucideSearch } from '@lucide/angular';
-import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
+import { ThemedSelectComponent } from '../../../shared/ui/themed-select/themed-select.component';
+import { BlockCatalogItemComponent } from './block-catalog-item.component';
 import {
-  ContentSourceOption,
-  ContentSourceSelectorComponent,
-} from '../../../shared/ui/content-source-selector/content-source-selector.component';
-import { sourceOptions } from '../../../shared/ui/content-source-selector/content-source-filter';
-import { ThumbnailVisibilityDirective } from '../../../shared/ui/thumbnail-visibility/thumbnail-visibility.directive';
-import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import type { ThumbnailTaskPriority } from '../../../core/assets/vanilla/thumbnails/thumbnail-task-queue';
-
-const COMPACT_BLOCK_LIST_WIDTH = 240;
-export const BLOCK_CATALOG_ROW_HEIGHT = 56;
-
-export function registryIdDisplayParts(registryId: string): readonly string[] {
-  const parts: string[] = [];
-  let segmentStart = 0;
-
-  for (let index = 0; index < registryId.length; index += 1) {
-    const character = registryId[index];
-    if (character !== ':' && character !== '_') continue;
-    parts.push(registryId.slice(segmentStart, index + 1));
-    segmentStart = index + 1;
-  }
-
-  if (segmentStart < registryId.length) parts.push(registryId.slice(segmentStart));
-  return parts;
-}
+  catalogColumns,
+  catalogKeyboardTarget,
+  catalogRowHeight,
+  catalogRowIndices,
+  BLOCK_CATALOG_ROW_HEIGHT,
+  type BlockCatalogView,
+} from './block-catalog-layout';
 
 @Component({
   selector: 'app-block-browser',
   imports: [
-    LucideBox,
-    LucideCircleHelp,
-    LucidePlus,
+    LucideLayoutGrid,
+    LucideList,
     LucideSearch,
-    UiTooltipDirective,
-    ContentSourceSelectorComponent,
-    ThumbnailVisibilityDirective,
+    LucideSettings2,
+    LucideX,
+    ThemedSelectComponent,
+    BlockCatalogItemComponent,
     ScrollingModule,
   ],
   templateUrl: './block-browser.component.html',
@@ -64,53 +56,114 @@ export class BlockBrowserComponent {
   protected readonly i18n = inject(I18nService);
   protected readonly library = inject(BlockLibraryService);
   protected readonly assets = inject(ContentAssetRuntimeService);
-  private readonly quick = inject(QuickBlockBarService);
   private readonly decorations = inject(DecorationService);
+  private readonly document = inject(DOCUMENT);
+  private readonly destroyRef = inject(DestroyRef);
   protected readonly selectedSource = signal<string>(ALL_CONTENT_SOURCE);
-  protected readonly sources = computed<readonly ContentSourceOption[]>(() => {
-    const options = this.library.placeableSourceSummaries().map((source) => ({
+  protected readonly view = signal<BlockCatalogView>('grid');
+  protected readonly sources = computed(() => [
+    {
+      id: ALL_CONTENT_SOURCE,
+      label: `${this.i18n.t('allSources')} (${this.library.allPlaceableItems().length.toLocaleString(this.i18n.locale())})`,
+    },
+    ...this.library.placeableSourceSummaries().map((source) => ({
       id: source.id,
-      label: source.id === 'vanilla' ? this.i18n.t('vanillaSource') : source.label,
-      count: source.count,
-      tooltip: `${source.label} (${source.count})`,
-    }));
-    const count = this.library.allPlaceableItems().length;
-    return sourceOptions(
-      options,
-      count,
-      this.i18n.t('allSources'),
-      `${this.i18n.t('allSources')} (${count})`,
-    );
-  });
+      label: `${source.id === 'vanilla' ? this.i18n.t('vanillaSource') : source.label} (${source.count.toLocaleString(this.i18n.locale())})`,
+    })),
+  ]);
   protected readonly activeSource = computed(() =>
     this.sources().some((source) => source.id === this.selectedSource())
       ? this.selectedSource()
       : ALL_CONTENT_SOURCE,
   );
-  protected readonly results = computed(() =>
-    this.library.searchPlaceableItems(this.library.query(), this.activeSource()),
+  protected readonly results = computed(() => {
+    this.library.catalogRevision();
+    return this.library.searchPlaceableItems(this.library.query(), this.activeSource());
+  });
+  protected readonly panelWidth = signal(304);
+  private readonly fontSize = signal(16);
+  protected readonly columns = computed(() =>
+    catalogColumns(this.panelWidth(), this.fontSize(), this.view()),
   );
-  protected readonly panelWidth = signal(0);
-  protected readonly isCompact = computed(() => this.panelWidth() < COMPACT_BLOCK_LIST_WIDTH);
-  protected readonly rowHeight = BLOCK_CATALOG_ROW_HEIGHT;
-  private readonly catalogListHost = viewChild<ElementRef<HTMLElement>>('catalogListHost');
+  protected readonly rowHeight = computed(() => catalogRowHeight(this.fontSize(), this.view()));
+  protected readonly rows = computed(() =>
+    catalogRowIndices(this.results().length, this.columns()),
+  );
+  protected readonly columnSlots = computed(() =>
+    Array.from({ length: this.columns() }, (_, index) => index),
+  );
+  protected readonly focusedIndex = signal(0);
+  private readonly catalogHost = viewChild<ElementRef<HTMLElement>>('catalogHost');
   private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
   private readonly catalogViewport = viewChild<CdkVirtualScrollViewport>('catalogViewport');
-  private readonly viewportSizing = effect((onCleanup) => {
-    const host = this.catalogListHost()?.nativeElement;
-    if (!host) return;
-    const update = (): void => {
-      const nextWidth = host.clientWidth;
-      if (nextWidth === this.panelWidth()) return;
-      this.panelWidth.set(nextWidth);
-      queueMicrotask(() => this.catalogViewport()?.checkViewportSize());
-    };
-    update();
-    if (typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver(update);
-    observer.observe(host);
-    onCleanup(() => observer.disconnect());
+  private readonly detailsDialog = viewChild<ElementRef<HTMLDialogElement>>('detailsDialog');
+  protected readonly detailsItemId = signal<string | undefined>(undefined);
+  protected readonly detailsItem = computed(() => {
+    this.library.catalogRevision();
+    const id = this.detailsItemId();
+    return id ? this.library.getItem(id) : undefined;
   });
+  private previousResults?: readonly PlaceableItemDefinition[];
+  private previousColumns = 1;
+  private previousRowHeight = BLOCK_CATALOG_ROW_HEIGHT;
+  private focusFrame?: number;
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.cancelFocus());
+    effect((onCleanup) => {
+      const host = this.catalogHost()?.nativeElement;
+      if (!host) return;
+      const update = (): void => {
+        if (!host.clientWidth || !host.clientHeight) return;
+        this.panelWidth.set(host.clientWidth);
+        this.fontSize.set(
+          Number.parseFloat(
+            this.document.defaultView?.getComputedStyle(this.document.documentElement).fontSize ??
+              '16',
+          ) || 16,
+        );
+        queueMicrotask(() => {
+          if (!this.destroyRef.destroyed) this.catalogViewport()?.checkViewportSize();
+        });
+      };
+      update();
+      if (typeof ResizeObserver === 'undefined') return;
+      const observer = new ResizeObserver(update);
+      observer.observe(host);
+      onCleanup(() => observer.disconnect());
+    });
+    effect(() => {
+      const viewport = this.catalogViewport(),
+        results = this.results(),
+        columns = this.columns(),
+        height = this.rowHeight();
+      if (!viewport) return;
+      this.cancelFocus();
+      const focused =
+        this.document.activeElement instanceof HTMLElement &&
+        viewport.elementRef.nativeElement.contains(this.document.activeElement);
+      const anchor =
+        this.previousResults === results
+          ? Math.floor(viewport.measureScrollOffset() / this.previousRowHeight) *
+            this.previousColumns
+          : 0;
+      if (this.previousResults !== results) this.focusedIndex.set(0);
+      this.previousResults = results;
+      this.previousColumns = columns;
+      this.previousRowHeight = height;
+      const focusIndex = untracked(this.focusedIndex);
+      queueMicrotask(() => {
+        if (this.destroyRef.destroyed) return;
+        viewport.checkViewportSize();
+        if (viewport.measureScrollOffset() !== Math.floor(anchor / columns) * height)
+          viewport.scrollToIndex(Math.floor(anchor / columns), 'auto');
+        if (focused) this.focusItem(focusIndex);
+      });
+    });
+    effect(() => {
+      if (this.detailsItemId() && !this.detailsItem()) this.closeDetails();
+    });
+  }
   protected search(event: Event): void {
     this.library.setQuery((event.target as HTMLInputElement).value);
   }
@@ -118,8 +171,16 @@ export class BlockBrowserComponent {
     this.library.setQuery('');
     this.searchInput()?.nativeElement.focus();
   }
-  protected registryIdDisplayParts(registryId: string): readonly string[] {
-    return registryIdDisplayParts(registryId);
+  protected selectSource(id: string): void {
+    this.selectedSource.set(id);
+  }
+  protected setView(view: BlockCatalogView): void {
+    this.view.set(view);
+  }
+  protected select(item: PlaceableItemDefinition): void {
+    this.decorations.clearActive();
+    this.library.select(item);
+    this.assets.requestItemThumbnail(item, 'selected');
   }
   protected openAssetManager(): void {
     this.assetManagerRequested.emit();
@@ -130,54 +191,70 @@ export class BlockBrowserComponent {
   protected assetsUnavailable(): boolean {
     return !['loading-cache', 'downloading', 'importing', 'ready'].includes(this.assets.status());
   }
-  protected requestThumbnail(
-    block: PlaceableItemDefinition,
-    event: { readonly priority: ThumbnailTaskPriority },
-  ): void {
-    this.assets.requestItemThumbnail(block, event.priority);
+  protected trackRow(_index: number, row: number): number {
+    return row;
   }
-  protected selectSource(id: string): void {
-    this.selectedSource.set(id);
+  protected itemFocused(event: FocusEvent, index: number): void {
+    if (event.target instanceof HTMLElement && event.target.dataset['focusAction'] === 'select')
+      this.focusedIndex.set(index);
   }
-  protected select(block: PlaceableItemDefinition): void {
-    this.decorations.clearActive();
-    this.library.select(block);
-    this.assets.requestItemThumbnail(block, 'selected');
-  }
-  protected isActive(block: PlaceableItemDefinition): boolean {
-    const active = this.library.activeBlock.active();
-    return (
-      !!active &&
-      (active.itemId === block.itemId ||
-        active.id === block.itemId ||
-        active.id === block.displayBlockId)
-    );
-  }
-  protected addToQuickBar(event: Event, block: PlaceableItemDefinition): void {
+  protected navigate(event: KeyboardEvent, index: number): void {
+    if (!(event.target instanceof HTMLElement) || event.target.dataset['focusAction'] !== 'select')
+      return;
+    const next = catalogKeyboardTarget(event.key, index, this.columns(), this.results().length);
+    if (next === undefined) return;
+    event.preventDefault();
     event.stopPropagation();
-    if (!this.canAddToQuickBar(block)) return;
-    this.quick.add({
-      id: block.displayBlockId,
-      itemId: block.itemId,
-      placementKind: block.placementKind,
-      state: { ...block.defaultState },
-      support: block.support,
-      displayName: block.displayName,
-    });
+    this.focusedIndex.set(next);
+    this.focusItem(next);
   }
-  protected canAddToQuickBar(block: PlaceableItemDefinition): boolean {
-    const entry = { id: block.displayBlockId, itemId: block.itemId, state: block.defaultState };
-    return !this.quick.has(entry) && this.quick.canAdd(entry);
+  private focusItem(index: number): void {
+    this.cancelFocus();
+    const viewport = this.catalogViewport(),
+      item = this.results()[index],
+      view = this.document.defaultView;
+    if (!viewport || !item || !view) return;
+    const row = Math.floor(index / this.columns()),
+      offset = viewport.measureScrollOffset(),
+      top = row * this.rowHeight();
+    if (top < offset || top + this.rowHeight() > offset + viewport.getViewportSize())
+      viewport.scrollToIndex(row, 'auto');
+    const attempt = (remaining: number): void => {
+      if (this.destroyRef.destroyed) return;
+      const card = [
+        ...viewport.elementRef.nativeElement.querySelectorAll<HTMLElement>(
+          'app-block-catalog-item',
+        ),
+      ].find((e) => e.dataset['itemId'] === item.itemId);
+      const button = card?.querySelector<HTMLButtonElement>('[data-focus-action="select"]');
+      if (button) {
+        button.focus({ preventScroll: true });
+        this.focusFrame = undefined;
+      } else if (remaining)
+        this.focusFrame = view.requestAnimationFrame(() => attempt(remaining - 1));
+    };
+    this.focusFrame = view.requestAnimationFrame(() => attempt(3));
   }
-  protected quickAddLabel(block: PlaceableItemDefinition): string {
-    const entry = { id: block.displayBlockId, itemId: block.itemId, state: block.defaultState };
-    return this.quick.has(entry)
-      ? this.i18n.t('alreadyInQuickBar')
-      : this.quick.isFull()
-        ? this.i18n.t('quickBarFull')
-        : this.i18n.t('addToQuickBar');
+  private cancelFocus(): void {
+    if (this.focusFrame !== undefined)
+      this.document.defaultView?.cancelAnimationFrame(this.focusFrame);
+    this.focusFrame = undefined;
   }
-  protected trackBlock(_index: number, block: PlaceableItemDefinition): string {
-    return block.itemId;
+  protected openDetails(item: PlaceableItemDefinition): void {
+    this.detailsItemId.set(item.itemId);
+    this.detailsDialog()?.nativeElement.showModal();
+  }
+  protected closeDetails(): void {
+    const dialog = this.detailsDialog()?.nativeElement;
+    if (dialog?.open) dialog.close();
+    this.detailsItemId.set(undefined);
+  }
+  protected closeDetailsFromEscape(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.closeDetails();
+  }
+  protected closeDetailsFromBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) this.closeDetails();
   }
 }

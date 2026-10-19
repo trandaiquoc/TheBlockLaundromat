@@ -1,0 +1,89 @@
+<div
+  class="block-item"
+  thumbnailVisibility
+  [thumbnailVisibilityKey]="item().itemId"
+  [thumbnailVisibilityEpoch]="assets.thumbnailEpoch()"
+  (thumbnailVisible)="requestThumbnail($event)"
+>
+  <button
+    type="button"
+    class="block-select-action"
+    data-focus-action="select"
+    [attr.tabindex]="tabStop() ? 0 : -1"
+    [attr.aria-pressed]="active()"
+    [attr.aria-label]="item().displayName + ', ' + item().itemId"
+    (click)="selected.emit(item())"
+  >
+    <span class="preview">
+      @if (thumbnail(); as url) {
+        <img [src]="url" alt="" />
+      } @else if (item().visualSupport === 'fallback') {
+        <svg lucideCircleHelp aria-hidden="true"></svg>
+      } @else {
+        <svg lucideBox aria-hidden="true"></svg>
+      }
+    </span>
+    <span class="block-copy"
+      ><strong [attr.title]="item().displayName">{{ item().displayName }}</strong>
+      @if (layout() === 'list') {
+        <!-- Adjacent segments preserve the exact identifier when copied as text. -->
+        <!-- prettier-ignore -->
+        <small class="block-copy-id" [attr.title]="item().displayBlockId">@for (part of idParts(); track $index) {<span>{{ part }}</span>@if (!$last) {<wbr />}}</small>
+      }
+    </span>
+  </button>
+  <div class="item-actions">
+    @if (layout() !== 'details') {
+      <button
+        type="button"
+        class="details-action"
+        data-focus-action="details"
+        uiTooltip="{{ i18n.t('catalogItemDetails') }}"
+        [attr.aria-label]="i18n.t('catalogItemDetails') + ': ' + item().displayName"
+        (click)="detailsRequested.emit(item())"
+      >
+        <svg lucideInfo aria-hidden="true"></svg>
+      </button>
+    }
+    <button
+      type="button"
+      class="quick-add-action"
+      data-focus-action="quick"
+      uiTooltip="{{ quickLabel() }}"
+      [attr.aria-label]="quickLabel() + ': ' + item().displayName"
+      [disabled]="!canAdd()"
+      (click)="add()"
+    >
+      @if (added()) {
+        <svg lucideCheck aria-hidden="true"></svg>
+      } @else {
+        <svg lucidePlus aria-hidden="true"></svg>
+      }
+      @if (layout() === 'details') {
+        <span>{{ quickLabel() }}</span>
+      }
+    </button>
+  </div>
+  @if (layout() === 'details') {
+    <dl>
+      <div>
+        <dt>{{ i18n.t('contentSource') }}</dt>
+        <dd>{{ item().sourceName || item().modName || item().namespace }}</dd>
+      </div>
+    </dl>
+    <label class="id-field"
+      >{{ i18n.t('catalogItemId')
+      }}<input readonly [value]="item().itemId" (focus)="$any($event.target).select()"
+    /></label>
+    @if (item().displayBlockId !== item().itemId) {
+      <label class="id-field"
+        >{{ i18n.t('catalogBlockId')
+        }}<input readonly [value]="item().displayBlockId" (focus)="$any($event.target).select()"
+      /></label>
+    }
+    <button type="button" class="copy-action" (click)="copyId()">
+      <svg lucideCopy aria-hidden="true"></svg>{{ i18n.t('catalogCopyId') }}
+    </button>
+    <p role="status">{{ copyMessage() }}</p>
+  }
+</div>

@@ -1,12 +1,4 @@
 <section class="block-browser">
-  <app-content-source-selector
-    [sources]="sources()"
-    [selectedId]="activeSource()"
-    [label]="i18n.t('contentSource')"
-    [manageLabel]="i18n.t('manageSources')"
-    (selectionChange)="selectSource($event)"
-    (manageRequested)="openAssetManager()"
-  />
   <div class="search-field">
     <label class="visually-hidden" for="block-search">{{ i18n.t('blockSearch') }}</label>
     <div class="search-control">
@@ -23,81 +15,68 @@
       }
     </div>
   </div>
+  <div class="source-controls">
+    <app-themed-select
+      [options]="sources()"
+      [selectedId]="activeSource()"
+      [ariaLabel]="i18n.t('contentSource')"
+      (selectionChange)="selectSource($event)"
+    />
+    <button type="button" class="manage-sources" (click)="openAssetManager()">
+      <svg lucideSettings2 aria-hidden="true"></svg>{{ i18n.t('manageSources') }}
+    </button>
+  </div>
+  <div class="catalog-toolbar">
+    <span class="result-count" aria-live="polite">{{
+      i18n.t('catalogResults').replace('{count}', results().length.toLocaleString(i18n.locale()))
+    }}</span>
+    <div class="view-switch" role="group" [attr.aria-label]="i18n.t('catalogView')">
+      <button type="button" [attr.aria-pressed]="view() === 'grid'" (click)="setView('grid')">
+        <svg lucideLayoutGrid aria-hidden="true"></svg>{{ i18n.t('catalogGrid') }}
+      </button>
+      <button type="button" [attr.aria-pressed]="view() === 'list'" (click)="setView('list')">
+        <svg lucideList aria-hidden="true"></svg>{{ i18n.t('catalogList') }}
+      </button>
+    </div>
+  </div>
   @if (assetsUnavailable()) {
     <div class="asset-empty-state">
       <p role="alert">{{ assets.message() || i18n.t('assetsUnavailableForBrowser') }}</p>
-      <button
-        type="button"
-        class="ui-button ui-button--secondary ui-button--sm"
-        (click)="retryAssets()"
-      >
-        {{ i18n.t('retry') }}</button
-      ><button
-        type="button"
-        class="ui-button ui-button--primary ui-button--sm"
-        (click)="openAssetManager()"
-      >
+      <button type="button" class="ui-button ui-button--secondary" (click)="retryAssets()">
+        {{ i18n.t('retry') }}
+      </button>
+      <button type="button" class="ui-button ui-button--primary" (click)="openAssetManager()">
         {{ i18n.t('openAssetManager') }}
       </button>
     </div>
   } @else if (results().length) {
-    <div #catalogListHost class="catalog-list-host" [class.compact]="isCompact()">
+    <div #catalogHost class="catalog-host">
       <cdk-virtual-scroll-viewport
         #catalogViewport
         class="results"
-        [itemSize]="rowHeight"
+        [itemSize]="rowHeight()"
+        [minBufferPx]="rowHeight()"
+        [maxBufferPx]="rowHeight() * 2"
         role="group"
-        [style.--block-row-height.px]="rowHeight"
         [attr.aria-label]="i18n.t('blocksPanel')"
+        [style.--catalog-columns]="columns()"
+        [style.--catalog-row-height.px]="rowHeight()"
+        [class.grid-view]="view() === 'grid'"
       >
-        <div *cdkVirtualFor="let block of results(); trackBy: trackBlock" class="block-row">
-          <div
-            class="block-item"
-            thumbnailVisibility
-            [thumbnailVisibilityEpoch]="assets.thumbnailEpoch()"
-            [class.active]="isActive(block)"
-            (thumbnailVisible)="requestThumbnail(block, $event)"
-          >
-            <button
-              type="button"
-              class="block-select-action"
-              (click)="select(block)"
-              [attr.aria-pressed]="isActive(block)"
-              [attr.aria-label]="block.displayName + ', ' + block.displayBlockId"
-            >
-              <span
-                class="preview"
-                [class.has-thumbnail]="!!assets.thumbnailUrlForItem(block)"
-                [class.fallback]="block.visualSupport === 'fallback'"
-              >
-                @if (assets.thumbnailUrlForItem(block); as thumbnail) {
-                  <img [src]="thumbnail" alt="" />
-                } @else if (block.visualSupport === 'fallback') {
-                  <svg lucideCircleHelp aria-hidden="true"></svg>
-                } @else {
-                  <svg lucideBox aria-hidden="true"></svg>
-                }</span
-              ><span class="block-copy">
-                <strong>{{ block.displayName }}</strong>
-                <!-- Adjacent segments prevent formatting whitespace from changing the registry ID. -->
-                <!-- prettier-ignore -->
-                <small class="block-copy-id" [attr.title]="block.displayBlockId">@for (part of registryIdDisplayParts(block.displayBlockId); track $index) {<span>{{ part }}</span>@if (!$last) {<wbr />}}</small>
-              </span>
-            </button>
-            <div class="quick-add-wrapper">
-              <button
-                type="button"
-                class="quick-add-action"
-                [class.ui-tooltip-align-end]="isCompact()"
-                uiTooltip="{{ quickAddLabel(block) }}"
-                (click)="addToQuickBar($event, block)"
-                [disabled]="!canAddToQuickBar(block)"
-                [attr.aria-label]="quickAddLabel(block)"
-              >
-                <svg lucidePlus aria-hidden="true"></svg>
-              </button>
-            </div>
-          </div>
+        <div *cdkVirtualFor="let row of rows(); trackBy: trackRow" class="catalog-row">
+          @for (slot of columnSlots(); track slot) {
+            @if (results()[row * columns() + slot]; as item) {
+              <app-block-catalog-item
+                [item]="item"
+                [layout]="view()"
+                [tabStop]="focusedIndex() === row * columns() + slot"
+                (focusin)="itemFocused($event, row * columns() + slot)"
+                (keydown)="navigate($event, row * columns() + slot)"
+                (selected)="select($event)"
+                (detailsRequested)="openDetails($event)"
+              />
+            }
+          }
         </div>
       </cdk-virtual-scroll-viewport>
     </div>
@@ -105,14 +84,37 @@
     <div class="block-empty-state" role="status">
       <p>{{ i18n.t('noBlockResults') }}</p>
       @if (library.query().trim()) {
-        <button
-          type="button"
-          class="ui-button ui-button--secondary ui-button--sm"
-          (click)="clearSearch()"
-        >
+        <button type="button" class="ui-button ui-button--secondary" (click)="clearSearch()">
           {{ i18n.t('clearSearch') }}
         </button>
       }
     </div>
   }
 </section>
+<dialog
+  #detailsDialog
+  class="item-details-dialog"
+  aria-labelledby="catalog-details-title"
+  (keydown.escape)="closeDetailsFromEscape($event)"
+  (close)="detailsItemId.set(undefined)"
+  (click)="closeDetailsFromBackdrop($event)"
+>
+  <header>
+    <h2 id="catalog-details-title">{{ i18n.t('catalogItemDetails') }}</h2>
+    <button
+      type="button"
+      class="ui-close-button"
+      [attr.aria-label]="i18n.t('close')"
+      (click)="closeDetails()"
+    >
+      <svg lucideX aria-hidden="true"></svg>
+    </button>
+  </header>
+  @if (detailsItem(); as item) {
+    <app-block-catalog-item
+      [item]="item"
+      layout="details"
+      (selected)="select($event); closeDetails()"
+    />
+  }
+</dialog>

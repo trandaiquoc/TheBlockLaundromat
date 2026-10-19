@@ -2,6 +2,10 @@
 
 ## Current status
 
+The [P2 Block Browser Grid/List contract](BLOCK-BROWSER-GRID-LIST.md) defines the
+responsive virtual grid, compact list, counted source dropdown, Quick Add and
+explicit full-ID inspection. Both views retain one catalog and thumbnail pipeline.
+
 The [responsive layout and contextual Inspector contract](RESPONSIVE-LAYOUT-AND-CONTEXTUAL-INSPECTOR.md)
 describes the P0/P1 redesign: one narrow application Menu, compact Layer options,
 an Inspector bottom sheet, explicit Placement/Selection contexts, and

@@ -9,6 +9,8 @@ describe('ThumbnailVisibilityDirective', () => {
     const original = globalThis.IntersectionObserver;
     let callback: IntersectionObserverCallback | undefined;
     let observerCount = 0;
+    let disconnectCount = 0;
+    const unobserved: Element[] = [];
     let options: IntersectionObserverInit | undefined;
     class FakeIntersectionObserver {
       constructor(next: IntersectionObserverCallback, init?: IntersectionObserverInit) {
@@ -17,8 +19,12 @@ describe('ThumbnailVisibilityDirective', () => {
         observerCount += 1;
       }
       observe(): void {}
-      disconnect(): void {}
-      unobserve(): void {}
+      disconnect(): void {
+        disconnectCount += 1;
+      }
+      unobserve(element: Element): void {
+        unobserved.push(element);
+      }
       takeRecords(): IntersectionObserverEntry[] {
         return [];
       }
@@ -66,6 +72,9 @@ describe('ThumbnailVisibilityDirective', () => {
         {} as IntersectionObserver,
       );
       const countAfterIntersect = priorities.length;
+      directive.thumbnailVisibilityKey = 'mod:first';
+      directive.thumbnailVisibilityKey = 'mod:first';
+      directive.thumbnailVisibilityKey = 'mod:recycled';
       callback?.(
         [
           {
@@ -77,14 +86,18 @@ describe('ThumbnailVisibilityDirective', () => {
         {} as IntersectionObserver,
       );
       directive.thumbnailVisibilityEpoch = 1;
+      directive.thumbnailVisibilityKey = 'mod:hidden';
       second.thumbnailVisibilityEpoch = 1;
       expect(options?.root).toBe(root);
       expect(options?.rootMargin).toBe('160px 0px');
       expect(observerCount).toBe(1);
-      expect(priorities).toEqual(['visible', 'prefetch', 'prefetch']);
+      expect(priorities).toEqual(['visible', 'prefetch', 'visible', 'visible', 'prefetch']);
       expect(countAfterIntersect).toBe(2);
       directive.ngOnDestroy();
+      expect(disconnectCount).toBe(0);
       second.ngOnDestroy();
+      expect(disconnectCount).toBe(1);
+      expect(unobserved).toEqual([host, secondHost]);
     } finally {
       Object.assign(globalThis, { IntersectionObserver: original });
     }

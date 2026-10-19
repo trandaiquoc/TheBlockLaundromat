@@ -97,8 +97,8 @@ no demo code or assets were copied.
   headers. The Workspace keeps its current toolbar and camera-control grouping.
 - [Linear's interface refresh](https://linear.app/now/behind-the-latest-design-refresh)
   emphasizes predictable action placement and quieter borders. The catalog now
-  uses list-row hierarchy so selection stands out without a full card frame on
-  every result.
+  uses compact List rows and preview-focused Grid cards, with separate quiet
+  actions. See the [current P2 contract](BLOCK-BROWSER-GRID-LIST.md).
 - [Lucian UX/UI Prompt](https://lucianlabs.dev/uxui-prompt/) remains an idea
   source for small interaction feedback; examples are adapted to the existing
   theme, keyboard, and reduced-motion contracts rather than copied.

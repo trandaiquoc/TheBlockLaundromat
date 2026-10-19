@@ -433,7 +433,8 @@ describe('Workspace color palette contract', () => {
     expect(stylesheet).toContain('border-bottom-width: 2px;');
     expect(stylesheet).toContain('--workspace-control-frame-strong: #d3b98a;');
     expect(blockStyles).toContain('border: 1px solid var(--workspace-border);');
-    expect(blockStyles).toContain('.block-browser input:focus-visible');
+    expect(blockStyles).toContain('input:focus-visible');
+    expect(blockStyles).toContain('outline: 2px solid var(--focus-color);');
   });
 
   it('keeps the Minecraft toolbar palette and grass decoration contract', () => {
@@ -598,7 +599,6 @@ describe('Workspace color palette contract', () => {
 
     const selectedMetadataRules = [
       'src/app/shared/ui/content-source-selector/content-source-selector.component.scss',
-      'src/app/features/editor/blocks/block-browser.component.scss',
       'src/app/features/editor/decorations/decoration-browser.component.scss',
       'src/app/features/editor/decorations/painting-picker.component.scss',
     ];
@@ -608,6 +608,13 @@ describe('Workspace color palette contract', () => {
         'color: color-mix(in srgb, var(--control-selected-text) 86%, transparent);',
       );
     }
+    const catalogItemStyles = String(
+      readFileSync('src/app/features/editor/blocks/block-catalog-item.component.scss', 'utf8'),
+    ).replace(/\r\n/g, '\n');
+    // Catalog metadata now uses the full selected text color, whose contrast
+    // against the selected surface is checked above for every theme.
+    expect(catalogItemStyles).toContain('color: var(--control-selected-text);');
+    expect(catalogItemStyles).toContain(':host(.active) .block-copy-id {\n  color: inherit;\n}');
 
     const settingsStyles = String(
       readFileSync(

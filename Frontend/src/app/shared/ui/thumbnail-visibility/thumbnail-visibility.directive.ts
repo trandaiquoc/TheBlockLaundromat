@@ -18,6 +18,16 @@ export class ThumbnailVisibilityDirective implements AfterViewInit, OnDestroy {
   private shared?: SharedObserverState;
   private currentPriority?: ThumbnailTaskPriority;
   private initialized = false;
+  private itemKey: string | undefined;
+
+  @Input()
+  set thumbnailVisibilityKey(value: string) {
+    if (this.itemKey === value) return;
+    this.itemKey = value;
+    // CDK can recycle a visible view without another intersection notification.
+    if (this.initialized && this.currentPriority)
+      this.thumbnailVisible.emit({ priority: this.currentPriority });
+  }
 
   @Input()
   set thumbnailVisibilityEpoch(_value: number) {

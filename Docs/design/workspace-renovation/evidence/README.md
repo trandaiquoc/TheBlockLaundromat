@@ -11,6 +11,10 @@ acceptance for later changes.
 
 ## Current acceptance
 
+The [2026-10-19 P2 Block Browser review](20261019-block-browser-grid-list/README.md)
+checks Grid/List, quieter actions, real Vanilla/Cobblemon sources, a 10,001-item
+test source, four themes, EN/VI, fonts, resize, keyboard and thumbnail reuse.
+
 The [2026-10-19 responsive Workspace and contextual Inspector review](20261019-responsive-context-inspector/README.md)
 records the P0/P1 before/after captures, four-theme and EN/VI layout matrix,
 property editing, Layer options, and modal/collapsed bottom-sheet behavior.
