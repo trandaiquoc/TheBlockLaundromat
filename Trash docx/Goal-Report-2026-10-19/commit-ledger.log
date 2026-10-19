@@ -208,3 +208,5 @@ cf2e2fe279b2053cee6eb348bfdc17d3f40c7ea6	2026-10-19T06:38:06+07:00	feat(project-
 85fed50eb07ead3d20278850c956e5603df82ae9	2026-10-19T08:48:18+07:00	fix(project-screen): mask empty washer sample
 83de07c974bcc43c7b1ae991f3d5fd32c0e796d8	2026-10-19T08:50:14+07:00	docs(handoff): update homepage goal evidence
 6b32b1c3e7fa9c03ceb9653501286b4e731a9b5a	2026-10-19T09:16:28+07:00	fix(project-screen): align craft create tile
+3ef7d424e979af853b2f39ef71c26c60cf6cfbc7	2026-10-19T09:20:05+07:00	docs(handoff): bundle goal report for continuation
+f450e4d97db6e4ffbb610908ab86dc8c7439bec1	2026-10-19T09:49:11+07:00	fix(project-screen): show live board controls

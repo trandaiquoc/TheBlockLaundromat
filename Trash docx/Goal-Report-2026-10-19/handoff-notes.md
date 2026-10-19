@@ -10,10 +10,20 @@
 
 ## Current status supersedes historical checkpoint notes below
 
-- Current artwork code checkpoint: `6b32b1c3e7fa9c03ceb9653501286b4e731a9b5a`. The local branch also contains earlier Workspace/homepage commits; none were pushed in this handoff.
+- Current artwork code checkpoint: `f450e4d97db6e4ffbb610908ab86dc8c7439bec1`. The local branch also contains earlier Workspace/homepage commits; none were pushed in this handoff.
 - The tile alignment implementation, source-crop tool, manifest entry, focused browser screenshot, and regression assertion are committed. Targeted Project Screen tests pass 7/7; production build passes with the unchanged stylesheet soft-budget warning; encoding, formatting, and diff checks passed.
 - The currently active Goal is still incomplete. Continue from the active objective and final repository state; do not mark it done from this report.
 - This report bundle is copied under `Trash docx/Goal-Report-2026-10-19/` and is not an application runtime dependency. Read its `README.md` first. The operational state bullets in older sections below describe the checkpoint when they were written and are historical.
+
+## Addendum: board-header controls checkpoint (`f450e4d`)
+
+- Removed the baked Craft board title, search icon/placeholder, and sort label/caret with a measured, source-derived cleanup layer. Original parchment and search/sort frames remain visible.
+- The Angular heading is visible after the source grass-block marker (source x≈1067). Search and sort are live controls, including in the empty Craft board. Empty-list behavior for Light/Raccoon/Dark is unchanged.
+- Extractor: `Frontend/tools/project-screen-assets/extract-minecraft-board-header-cleanup.py`. It checks the approved 1672 × 941 source, validates glyph removal, exact alpha bounds, saved image dimensions, and recomposited output.
+- Browser evidence: `Docs/design/homepage-renovation/evidence/20261019-board-header-live/` contains source-size EN/VI screenshots. CDP verified labels, asset load, positions, input/select events, and no page exception, console warning/error, or failed request. Chrome stderr showed GCM and headless GPU/WebGPU diagnostics only.
+- Targeted tests: 13/13. Full suite: 329 files passed, 7 skipped; 2,061 tests passed, 11 skipped. App/spec/worker typechecks, production build, encoding, Prettier, JSON parse, and diff checks passed.
+- Build warning remains: `project-screen.component.scss` 29.86 KB versus 20 KB soft budget; below unchanged 30 KB hard cap. Earlier Block Usage keyboard failure was not reproduced by the current full suite.
+- The full artwork goal remains incomplete; this checkpoint does not close it.
 
 ## Addendum: tile-alignment checkpoint
 

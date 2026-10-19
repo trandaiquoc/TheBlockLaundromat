@@ -2,7 +2,7 @@
 
 - **Snapshot:** 2026-10-19
 - **Repository:** `TheBlockLaundromat`
-- **Active artwork-goal code checkpoint:** `6b32b1c3e7fa9c03ceb9653501286b4e731a9b5a` (`fix(project-screen): align craft create tile`)
+- **Active artwork-goal code checkpoint:** `f450e4d97db6e4ffbb610908ab86dc8c7439bec1` (`fix(project-screen): show live board controls`)
 - **Branch:** `main`; commits remain local and are not pushed. Check Git status before continuing.
 - **Goal status:** active and incomplete. This report is a handoff, not a request to close the Goal.
 
@@ -15,7 +15,7 @@ This report deliberately separates two related workstreams so the next ChatGPT/C
 1. The Workspace UI renovation and its follow-up behavior/accessibility fixes, recorded across the October 13-18 commit history.
 2. The active, still-in-progress pixel-faithful Homepage/Project Screen artwork reconstruction, whose full acceptance criteria are in [`source-current-goal-objective.txt`](source-current-goal-objective.txt).
 
-The original 206-commit ledger from the four-theme foundation through `cf2e2fe`, followed by the four later checkpoint commits, is in [`commit-ledger.log`](commit-ledger.log). It is a navigation aid: it includes adjacent maintenance and verification commits too, so do not assume every commit is exclusively visual UI work. An earlier focused ledger remains at `Trash docx/TheBlockLaundromat-Workspace-Handoff-20261016/commits/theme-foundation-to-current.log`.
+The original 206-commit ledger from the four-theme foundation through `cf2e2fe`, followed by six local follow-up commits through `f450e4d`, is in [`commit-ledger.log`](commit-ledger.log). It is a navigation aid: it includes adjacent maintenance and verification commits too, so do not assume every commit is exclusively visual UI work. An earlier focused ledger remains at `Trash docx/TheBlockLaundromat-Workspace-Handoff-20261016/commits/theme-foundation-to-current.log`.
 
 ## Workspace UI Work Recorded
 
@@ -49,6 +49,7 @@ The current implementation uses the real Angular Project Screen workflows and ap
 - A source-derived Minecraft project-card crop with a transparent real-preview window and live project text, plus a board cleanup layer covering baked sample project cards while preserving the source New Project tile.
 - A deterministic cleanup patch for the baked Craft washer-display copy; the live localized label and current project name now sit on the original plate.
 - A persistent Craft washer-preview well that covers the source-baked cottage even when there is no selected project, showing an honest dark grid beneath any real preview component.
+- A measured Craft board-header cleanup that removes the baked title/search/sort labels and exposes the localized Angular controls over the preserved source frames.
 - Runtime scene wiring, asset manifest/inventory, image dimension/composition regression coverage, and a browser checkpoint screenshot.
 - Existing Project Screen functionality retained: project create/open/delete/import, local persistence, real project summaries, search/sort, localized controls, and renderer-backed project previews.
 
@@ -68,6 +69,18 @@ Milestone commits to orient source review: `3161ae6` (theme-aware Project Screen
 Commit `6b32b1c3e7fa9c03ceb9653501286b4e731a9b5a` corrects the live Craft Create Project tile position after the board perspective transform. It adds a deterministic crop extraction/verification script, records the measured source rectangle in the manifest, and stores a 1672 × 941 browser screenshot in `evidence/20261019-craft-tile-alignment/`. At that browser size, `translate(-4.2%, 3.8%)` moves the button by approximately `(-5.95px, +5.91px)`. Clicking opened the real Angular menu; Escape closed it. The crop is pixel-identical to the approved reference.
 
 This fixes only the live tile hit-area/art alignment. The baked source tile remains beneath the live scene, and the full static Minecraft scene is incomplete.
+
+### Latest Board Header Checkpoint
+
+Commit `f450e4d97db6e4ffbb610908ab86dc8c7439bec1` removes the baked Craft board title, search icon/placeholder, and sort label/caret from three measured source rectangles. Its deterministic Pillow extractor samples clean rows from the same approved source, validates that dark glyph pixels are gone, checks that alpha is opaque only in the measured rectangles, reloads the saved PNG, and confirms the composite matches the validated output. The original parchment surface and control frames remain intact.
+
+The live localized heading now starts at source x≈1067, after the existing grass-block marker. Search and sort are visible real Angular controls, including in an empty Craft project list; the other three themes keep their prior empty-list presentation. The source-cleanup layer is Craft-only.
+
+Browser evidence is in `evidence/20261019-board-header-live/`: English and Vietnamese screenshots at 1672 × 941, a disposable local profile with an empty project store, verified asset loading and live DOM text/geometry, and search input/sort selection events. Page-level CDP recorded no JS exceptions, console warnings/errors, or failed requests. Chrome process stderr separately printed GCM registration errors and headless GPU/WebGPU buffer-limit messages; these were browser diagnostics, not page errors. Populated-card filtering/sorting is covered by the Angular component test rather than this empty-list browser capture.
+
+Verification after this checkpoint: focused Angular tests 13/13; full suite 329 files passed, 7 skipped, 2,061 tests passed, 11 skipped; app/spec/worker typechecks passed; production build passed; Prettier, encoding, manifest JSON parse, extractor execution, and `git diff --check` passed. The build still reports the unchanged `project-screen.component.scss` soft-budget warning at 29.86 KB against 20 KB, 0.14 KB below the unchanged 30 KB hard cap. No budget was changed. The earlier isolated Block Usage failure recorded in the previous checkpoint was not reproduced by this full run.
+
+The wider artwork Goal remains active and incomplete: the full static Minecraft scene, Light/Raccoon/Dark source work, populated GPU preview proof, and whole-scene visual acceptance remain open. Do not close the Goal.
 
 ## Verification Evidence and Limits
 
