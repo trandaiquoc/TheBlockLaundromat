@@ -297,6 +297,8 @@ export const translations = {
     deleteGroupBlocksTitle: 'Delete group blocks?',
     deleteGroupBlocksConfirm: 'Delete',
     cancel: 'Cancel',
+    dialogConfirmAction: 'Confirm',
+    dialogOkAction: 'OK',
     deleteGroupBlocksConfirmation:
       "Delete {count} blocks from '{name}'? The group itself will be kept.",
     isolateGroup: 'Isolate',
@@ -1131,6 +1133,8 @@ export const translations = {
     deleteGroupBlocksTitle: 'Xóa khối trong nhóm?',
     deleteGroupBlocksConfirm: 'Xóa',
     cancel: 'Hủy',
+    dialogConfirmAction: 'Xác nhận',
+    dialogOkAction: 'Đồng ý',
     deleteGroupBlocksConfirmation: "Xóa {count} khối khỏi '{name}'? Nhóm vẫn được giữ lại.",
     isolateGroup: 'Cô lập',
     group: 'Nhóm',

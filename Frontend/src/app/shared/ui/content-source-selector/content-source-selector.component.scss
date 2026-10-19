@@ -98,6 +98,17 @@
   width: 0.85rem;
   height: 0.85rem;
 }
+@media (pointer: coarse) {
+  .source-scroll,
+  .source-manage {
+    width: 44px;
+    height: 44px;
+  }
+
+  .source-option {
+    min-height: 44px;
+  }
+}
 :host-context([data-font='chakra-petch']) .source-option {
   font-size: 0.78rem;
   line-height: 1.05;

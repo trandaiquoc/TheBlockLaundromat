@@ -78,6 +78,25 @@ describe('SearchableDropdownComponent', () => {
     expect(document.activeElement).toBe(trigger);
   });
 
+  it('focuses the search field only after the connected overlay attaches', async () => {
+    await TestBed.configureTestingModule({
+      imports: [SearchableDropdownComponent],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(SearchableDropdownComponent);
+    fixture.componentRef.setInput('options', [{ id: 'minecraft:diamond', label: 'Diamond' }]);
+    fixture.detectChanges();
+    const trigger = fixture.nativeElement.querySelector('.dropdown-trigger') as HTMLButtonElement;
+    trigger.focus();
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const search = document.body.querySelector('.dropdown-search') as HTMLInputElement;
+    expect(search).toBeTruthy();
+    expect(document.activeElement).toBe(search);
+    fixture.destroy();
+  });
+
   it('keeps the selected row separate from keyboard focus on open', async () => {
     await TestBed.configureTestingModule({
       imports: [SearchableDropdownComponent],

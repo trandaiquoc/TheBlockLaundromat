@@ -10,7 +10,11 @@ describe('ReadonlyCodeViewerComponent', () => {
     const fixture = TestBed.createComponent(ReadonlyCodeViewerComponent);
     fixture.componentRef.setInput('value', 'alpha\nbeta\ngamma');
     fixture.componentRef.setInput('lineCountLabel', '3 lines');
+    fixture.componentRef.setInput('label', 'Generated JSON');
     fixture.detectChanges();
+    const scrollRegion = fixture.nativeElement.querySelector('.readonly-code-viewer-scroll');
+    expect(scrollRegion.getAttribute('role')).toBe('region');
+    expect(scrollRegion.getAttribute('aria-label')).toBe('Generated JSON');
     expect(fixture.nativeElement.querySelectorAll('.readonly-code-viewer-gutter span').length).toBe(
       3,
     );

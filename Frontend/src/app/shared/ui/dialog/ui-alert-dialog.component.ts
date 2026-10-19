@@ -1,6 +1,7 @@
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { LucideAlertTriangle, LucideCheckCircle2, LucideInfo, LucideX } from '@lucide/angular';
+import { I18nService } from '../../../core/ui/localization/i18n.service';
 
 export type UiAlertKind = 'confirm' | 'success' | 'warning' | 'error' | 'info';
 export type UiAlertActionKind = 'primary' | 'secondary' | 'danger';
@@ -34,6 +35,7 @@ export interface UiAlertModel {
       aria-modal="true"
       tabindex="-1"
       [attr.aria-labelledby]="titleId"
+      [attr.aria-describedby]="model().text ? textId : null"
       (keydown)="onKeydown($event)"
     >
       <header class="ui-alert-dialog__header">
@@ -51,12 +53,17 @@ export interface UiAlertModel {
           }
         </div>
         <h2 [id]="titleId">{{ model().title }}</h2>
-        <button type="button" class="ui-close-button" aria-label="Close" (click)="cancel()">
+        <button
+          type="button"
+          class="ui-close-button"
+          [attr.aria-label]="i18n.t('close')"
+          (click)="cancel()"
+        >
           <svg lucideX aria-hidden="true"></svg>
         </button>
       </header>
       @if (model().text) {
-        <p class="ui-alert-dialog__text">{{ model().text }}</p>
+        <p class="ui-alert-dialog__text" [id]="textId">{{ model().text }}</p>
       }
       <footer class="ui-alert-dialog__actions">
         @if (model().actions; as actions) {
@@ -117,6 +124,10 @@ export interface UiAlertModel {
         margin: 0;
         font: 650 1rem/1.2 var(--font-ui);
       }
+      .ui-alert-dialog__header .ui-close-button {
+        width: 44px;
+        height: 44px;
+      }
       .ui-alert-dialog__icon {
         display: grid;
         place-items: center;
@@ -140,8 +151,12 @@ export interface UiAlertModel {
       }
       .ui-alert-dialog__actions {
         display: flex;
+        flex-wrap: wrap;
         justify-content: flex-end;
         gap: 0.5rem;
+      }
+      .ui-alert-dialog__actions .ui-button {
+        min-height: 44px;
       }
       @media (prefers-reduced-motion: reduce) {
         .ui-alert-dialog * {
@@ -152,16 +167,18 @@ export interface UiAlertModel {
   ],
 })
 export class UiAlertDialogComponent {
+  protected readonly i18n = inject(I18nService);
   readonly model = signal<UiAlertModel>({
     kind: 'info',
     title: '',
-    confirmButtonText: 'OK',
-    cancelButtonText: 'Cancel',
+    confirmButtonText: this.i18n.t('dialogOkAction'),
+    cancelButtonText: this.i18n.t('cancel'),
     destructive: false,
     showCancel: false,
     cancelValue: false,
   });
   readonly titleId = `ui-alert-title-${Math.random().toString(36).slice(2)}`;
+  readonly textId = `${this.titleId}-description`;
   private finish?: (value: unknown) => void;
   configure(model: UiAlertModel, finish: (value: unknown) => void): void {
     this.model.set(model);
@@ -179,6 +196,7 @@ export class UiAlertDialogComponent {
   protected onKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       event.preventDefault();
+      event.stopPropagation();
       this.cancel();
     }
   }

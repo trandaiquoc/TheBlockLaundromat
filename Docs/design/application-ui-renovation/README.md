@@ -28,7 +28,7 @@ An inventory entry or green build alone is not visual acceptance.
 | A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; targeted/browser checks passed |
 | B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed |
 | C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed |
-| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Pending                                     |
+| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed |
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Pending                                     |
 | F          | Every supported import/export workflow and its nested decisions                              | Pending                                     |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | Pending                                     |
@@ -39,6 +39,8 @@ Each implemented checkpoint gets targeted tests, relevant localhost interaction
 checks and its own local commit. The final gate includes the full suite, app
 typecheck, production build, tool checks, scoped formatter, encoding and diff
 checks. No remote push is authorized by this work.
+
+Checkpoint evidence: [D — shared dialogs and overlays](CHECKPOINT-D.md).
 
 ## Preserved contracts
 

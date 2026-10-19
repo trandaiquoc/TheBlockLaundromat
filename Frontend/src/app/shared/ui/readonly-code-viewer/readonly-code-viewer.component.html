@@ -1,6 +1,6 @@
-<section class="readonly-code-viewer" [attr.aria-label]="label()">
+<section class="readonly-code-viewer">
   <div class="readonly-code-viewer-meta" aria-live="polite">{{ lineCountLabel() }}</div>
-  <div class="readonly-code-viewer-scroll" tabindex="0">
+  <div class="readonly-code-viewer-scroll" tabindex="0" role="region" [attr.aria-label]="label()">
     <div class="readonly-code-viewer-content">
       <div class="readonly-code-viewer-gutter" aria-hidden="true">
         @for (line of lines(); track $index) {

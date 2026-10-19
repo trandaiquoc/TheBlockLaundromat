@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Overlay } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
+import { I18nService } from '../localization/i18n.service';
 import {
   UiAlertAction,
   UiAlertActionKind,
@@ -37,14 +38,15 @@ export interface DialogChoiceOptions<T> {
 @Injectable({ providedIn: 'root' })
 export class DialogService {
   private readonly overlay = inject(Overlay);
+  private readonly i18n = inject(I18nService);
 
   confirm(options: DialogConfirmOptions): Promise<boolean> {
     return this.open({
       kind: options.icon === 'error' ? 'error' : 'confirm',
       title: options.title,
       text: options.text,
-      confirmButtonText: options.confirmButtonText ?? 'Confirm',
-      cancelButtonText: options.cancelButtonText ?? 'Cancel',
+      confirmButtonText: options.confirmButtonText ?? this.i18n.t('dialogConfirmAction'),
+      cancelButtonText: options.cancelButtonText ?? this.i18n.t('cancel'),
       destructive: options.destructive === true,
       showCancel: true,
       cancelValue: false,
@@ -87,8 +89,8 @@ export class DialogService {
       kind,
       title,
       text,
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Cancel',
+      confirmButtonText: this.i18n.t('dialogOkAction'),
+      cancelButtonText: this.i18n.t('cancel'),
       destructive: kind === 'error',
       showCancel: false,
       cancelValue: false,
@@ -139,6 +141,12 @@ export class DialogService {
       };
       component.instance.configure(model, finish);
       component.changeDetectorRef.detectChanges();
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          if (dialogHost.isConnected)
+            dialogHost.querySelector<HTMLElement>('.ui-alert-dialog button')?.focus();
+        }),
+      );
       ref.keydownEvents().subscribe((event) => {
         if (event.key === 'Escape') {
           event.preventDefault();

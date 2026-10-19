@@ -23,7 +23,10 @@
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="selectOrigin"
       [cdkConnectedOverlayOpen]="open()"
+      [cdkConnectedOverlayPositions]="overlayPositions"
       [cdkConnectedOverlayHasBackdrop]="true"
+      [cdkConnectedOverlayFlexibleDimensions]="true"
+      [cdkConnectedOverlayViewportMargin]="8"
       cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
       (backdropClick)="open.set(false)"
       (detach)="open.set(false)"

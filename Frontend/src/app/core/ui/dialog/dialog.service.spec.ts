@@ -1,6 +1,7 @@
 import { OverlayModule, OverlayContainer } from '@angular/cdk/overlay';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
+import { I18nService } from '../localization/i18n.service';
 import { DialogService } from './dialog.service';
 import { UiAlertDialogComponent } from '../../../shared/ui/dialog/ui-alert-dialog.component';
 
@@ -11,9 +12,16 @@ function completeDialogExit(overlayContainer: OverlayContainer): void {
   surface?.dispatchEvent(new Event('animationend'));
 }
 
+async function settleDialogFocus(): Promise<void> {
+  await new Promise<void>((resolve) =>
+    requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+  );
+}
+
 describe('DialogService', () => {
   let service: DialogService;
   let overlayContainer: OverlayContainer;
+  let i18n: I18nService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -22,9 +30,50 @@ describe('DialogService', () => {
     }).compileComponents();
     service = TestBed.inject(DialogService);
     overlayContainer = TestBed.inject(OverlayContainer);
+    i18n = TestBed.inject(I18nService);
   });
 
-  afterEach(() => overlayContainer.getContainerElement().replaceChildren());
+  afterEach(() => {
+    i18n.setLocale('en');
+    overlayContainer.getContainerElement().replaceChildren();
+  });
+
+  it('localizes default actions and close name, describes the message and restores focus', async () => {
+    i18n.setLocale('vi');
+    const opener = document.createElement('button');
+    document.body.append(opener);
+    opener.focus();
+
+    const confirmation = service.confirm({ title: 'Xác nhận', text: 'Mô tả' });
+    await Promise.resolve();
+    const pane = overlayContainer
+      .getContainerElement()
+      .querySelector('.ui-alert-dialog') as HTMLElement;
+    const message = pane.querySelector('.ui-alert-dialog__text') as HTMLElement;
+    expect(pane.getAttribute('aria-describedby')).toBe(message.id);
+    expect(pane.querySelector('.ui-close-button')?.getAttribute('aria-label')).toBe('Đóng');
+    expect(
+      [...pane.querySelectorAll('.ui-alert-dialog__actions button')].map((button) =>
+        button.textContent?.trim(),
+      ),
+    ).toEqual(['Hủy', 'Xác nhận']);
+
+    (pane.querySelector('.ui-close-button') as HTMLButtonElement).click();
+    completeDialogExit(overlayContainer);
+    await expect(confirmation).resolves.toBe(false);
+    expect(document.activeElement).toBe(opener);
+
+    const notice = service.info('Thông tin');
+    await Promise.resolve();
+    const noticeButton = overlayContainer
+      .getContainerElement()
+      .querySelector('.ui-alert-dialog__actions .ui-button') as HTMLButtonElement;
+    expect(noticeButton.textContent?.trim()).toBe('Đồng ý');
+    noticeButton.click();
+    completeDialogExit(overlayContainer);
+    await expect(notice).resolves.toBe(true);
+    opener.remove();
+  });
 
   it('resolves confirm with true and applies destructive styling', async () => {
     const result = service.confirm({
@@ -97,6 +146,45 @@ describe('DialogService', () => {
     ).click();
     completeDialogExit(overlayContainer);
     await expect(pending).resolves.toBeUndefined();
+  });
+
+  it('focuses nested dialogs and returns Escape to the top overlay only', async () => {
+    const parent = service.confirm({ title: 'Parent' });
+    await Promise.resolve();
+    await settleDialogFocus();
+    const parentClose = overlayContainer
+      .getContainerElement()
+      .querySelector('.ui-alert-dialog .ui-close-button') as HTMLButtonElement;
+    expect(document.activeElement).toBe(parentClose);
+
+    const nested = service.confirm({ title: 'Nested' });
+    await Promise.resolve();
+    await settleDialogFocus();
+    const dialogs = overlayContainer.getContainerElement().querySelectorAll('.ui-alert-dialog');
+    expect(dialogs).toHaveLength(2);
+    const nestedClose = dialogs[1].querySelector('.ui-close-button') as HTMLButtonElement;
+    expect(document.activeElement).toBe(nestedClose);
+
+    let documentEscapeBubbles = false;
+    const onDocumentEscape = (): void => {
+      documentEscapeBubbles = true;
+    };
+    document.addEventListener('keydown', onDocumentEscape);
+    nestedClose.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+    document.removeEventListener('keydown', onDocumentEscape);
+    expect(documentEscapeBubbles).toBe(false);
+    completeDialogExit(overlayContainer);
+    await expect(nested).resolves.toBe(false);
+    expect(
+      overlayContainer.getContainerElement().querySelectorAll('.ui-alert-dialog'),
+    ).toHaveLength(1);
+    expect(document.activeElement).toBe(parentClose);
+
+    parentClose.click();
+    completeDialogExit(overlayContainer);
+    await expect(parent).resolves.toBe(false);
   });
 
   it('disposes the overlay if the exit animation event does not arrive', async () => {

@@ -115,6 +115,13 @@
   text-align: left;
   cursor: pointer;
 }
+@media (pointer: coarse) {
+  .dropdown-trigger,
+  .dropdown-search,
+  .dropdown-option {
+    min-height: 44px;
+  }
+}
 .dropdown-option {
   transition:
     background-color 0.12s ease,

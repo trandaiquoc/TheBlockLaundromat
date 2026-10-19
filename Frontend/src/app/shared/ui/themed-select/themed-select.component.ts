@@ -1,6 +1,7 @@
 import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { LucideCheck, LucideChevronDown } from '@lucide/angular';
+import { DROPDOWN_OVERLAY_POSITIONS } from '../dropdown-overlay-positions';
 
 export interface ThemedSelectOption {
   readonly id: string;
@@ -24,6 +25,7 @@ export class ThemedSelectComponent {
   protected readonly open = signal(false);
   protected readonly activeIndex = signal(0);
   protected readonly listboxId = `themed-select-listbox-${++nextThemedSelectId}`;
+  protected readonly overlayPositions = DROPDOWN_OVERLAY_POSITIONS;
 
   protected get selectedLabel(): string {
     return this.options.find((option) => option.id === this.selectedId)?.label ?? '';

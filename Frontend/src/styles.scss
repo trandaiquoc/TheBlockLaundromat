@@ -1000,6 +1000,12 @@ app-editor-shell :where(button, input, select, textarea, [tabindex]):focus-visib
   min-height: 2.05rem;
   padding-block: 0.35rem;
 }
+@media (pointer: coarse) {
+  :root[data-theme='craft'] app-editor-shell .themed-select-trigger,
+  :root[data-theme='craft']:has(app-editor-shell) .cdk-overlay-container .themed-select-trigger {
+    min-height: 44px;
+  }
+}
 
 .ui-close-button {
   display: inline-grid;

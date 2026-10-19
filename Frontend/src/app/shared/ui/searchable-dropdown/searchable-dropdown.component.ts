@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { LucideChevronDown } from '@lucide/angular';
 import { rankSearchResults } from '../../../core/search/relevance-search';
+import { DROPDOWN_OVERLAY_POSITIONS } from '../dropdown-overlay-positions';
 
 export interface SearchableDropdownOption {
   readonly id: string;
@@ -59,6 +60,7 @@ export class SearchableDropdownComponent {
   protected readonly listId = `searchable-dropdown-${nextDropdownId++}`;
   protected readonly dropdownTrigger = viewChild<ElementRef<HTMLButtonElement>>('dropdownTrigger');
   protected readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  protected readonly overlayPositions = DROPDOWN_OVERLAY_POSITIONS;
 
   private indexedOptions?: readonly SearchableDropdownOption[];
   private readonly optionById = new Map<string, SearchableDropdownOption>();
@@ -98,11 +100,11 @@ export class SearchableDropdownComponent {
     else {
       this.open.set(true);
       this.activeIndex.set(null);
-      queueMicrotask(() => {
-        this.searchInput()?.nativeElement.focus();
-        this.announceVisibleOptions();
-      });
     }
+  }
+  protected focusSearch(): void {
+    this.searchInput()?.nativeElement.focus();
+    this.announceVisibleOptions();
   }
   protected setQuery(event: Event): void {
     this.query.set((event.target as HTMLInputElement).value);

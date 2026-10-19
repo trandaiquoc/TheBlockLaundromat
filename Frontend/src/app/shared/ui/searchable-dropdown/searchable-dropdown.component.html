@@ -42,8 +42,12 @@
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="dropdownOrigin"
       [cdkConnectedOverlayOpen]="open()"
+      [cdkConnectedOverlayPositions]="overlayPositions"
       [cdkConnectedOverlayHasBackdrop]="true"
+      [cdkConnectedOverlayFlexibleDimensions]="true"
+      [cdkConnectedOverlayViewportMargin]="8"
       cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+      (attach)="focusSearch()"
       (backdropClick)="close()"
       (detach)="close()"
     >

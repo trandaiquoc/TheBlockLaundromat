@@ -56,6 +56,12 @@
   text-align: left;
   cursor: pointer;
 }
+@media (pointer: coarse) {
+  .themed-select-trigger,
+  .themed-select-option {
+    min-height: 44px;
+  }
+}
 .themed-select-option:hover,
 .themed-select-option:focus-visible {
   background: var(--control-hover);
