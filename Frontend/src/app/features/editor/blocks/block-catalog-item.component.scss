@@ -47,6 +47,18 @@
   gap: 0.08rem;
   min-width: 0;
 }
+.block-name {
+  display: flex;
+  align-items: start;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.active-marker {
+  flex: 0 0 0.85rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  stroke-width: 3;
+}
 strong {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -69,9 +81,9 @@ strong {
 }
 .item-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0;
 }
 .item-actions button,
 .copy-action {
@@ -95,9 +107,6 @@ strong {
   height: 1rem;
   flex-shrink: 0;
 }
-.details-action {
-  background: transparent;
-}
 button:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--focus-color);
@@ -111,6 +120,7 @@ input:focus-visible {
   background: var(--control-selected);
   color: var(--control-selected-text);
   border-color: var(--control-selected-text);
+  box-shadow: inset 3px 0 0 var(--control-selected-text);
 }
 :host(.active) .block-copy-id {
   color: inherit;
@@ -167,9 +177,11 @@ button:disabled {
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
 }
-:host(:not(.detail-item)) .quick-add-action::before {
-  border-color: var(--border);
-  background: var(--control-normal);
+:host(:not(.detail-item)) .item-actions button::before {
+  background: color-mix(in srgb, var(--text) 7%, transparent);
+}
+:host(:not(.detail-item)) .quick-add-action {
+  color: var(--text);
 }
 :host(:not(.detail-item)) .item-actions button:hover:not(:disabled) {
   color: var(--text);
@@ -180,6 +192,16 @@ button:disabled {
 }
 :host(.active:not(.detail-item)) .details-action {
   color: inherit;
+}
+:host-context([data-theme='raccoon']):not(.detail-item) .block-item {
+  border-radius: var(--workspace-radius-lg) var(--workspace-radius-md);
+}
+:host-context([data-theme='raccoon']).grid-item .preview {
+  border-radius: 42% 48% 40% 46%;
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+}
+:host-context([data-theme='raccoon']):not(.detail-item) .item-actions button::before {
+  border-radius: var(--workspace-radius-md);
 }
 :host(.list-item) .block-item {
   grid-template-columns: minmax(0, 1fr) auto;

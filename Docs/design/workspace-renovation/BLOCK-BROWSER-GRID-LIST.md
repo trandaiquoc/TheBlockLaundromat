@@ -22,9 +22,20 @@ persisted preference is introduced. Clicking Quick Add or Item details does not
 select a material. Quick Bar continues to own its capacity, duplicate checks,
 item identity and shortcuts.
 
-The information action uses a quiet icon and Quick Add has a compact 28 px
-visual surface inside its 44 px hit area. This keeps the rows/cards light while
-preserving touch and keyboard access.
+Information and Quick Add use matching quiet 28 px tonal surfaces inside separate
+44 px hit areas. Grid groups them at the trailing edge below the preview; List
+keeps the same actions alongside the material. Their targets do not overlap the
+selection button. A check beside the selected material name and a leading edge
+marker reinforce selection in every theme. Raccoon adds soft, matte shapes while
+retaining the shared layout and interaction contracts.
+
+Quick Bar material names use one connected overlay owned by Quick Bar. Hover,
+keyboard focus and touch activation expose the full name and canonical item ID
+outside the scrolling slot container. The overlay stays within the viewport,
+supports pointer travel to its content and Escape/outside dismissal, and is
+removed when its slot disappears, the bar collapses or the component is destroyed.
+It derives content from the existing entries without preparing new thumbnails.
+Catalog action tooltips keep their existing implementation.
 
 Item details is an explicit, single dialog outside the virtual rows. It exposes
 the full item ID, a distinct block ID when mapped, and source; readonly ID fields

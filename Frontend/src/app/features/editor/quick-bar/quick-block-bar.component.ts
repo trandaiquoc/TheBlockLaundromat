@@ -1,4 +1,10 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, linkedSignal } from '@angular/core';
+import {
+  CdkConnectedOverlay,
+  CdkOverlayOrigin,
+  type ConnectedPosition,
+} from '@angular/cdk/overlay';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 import {
   QuickBlockBarService,
   quickEntryMatchesActive,
@@ -25,6 +31,9 @@ import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.direct
     LucideChevronUp,
     LucideX,
     UiTooltipDirective,
+    CdkOverlayOrigin,
+    CdkConnectedOverlay,
+    CdkScrollable,
   ],
   templateUrl: './quick-block-bar.component.html',
   styleUrl: './quick-block-bar.component.scss',
@@ -34,6 +43,23 @@ export class QuickBlockBarComponent {
   protected readonly quick = inject(QuickBlockBarService);
   private readonly library = inject(BlockLibraryService);
   protected readonly assets = inject(ContentAssetRuntimeService);
+  private nameDismissTimer?: ReturnType<typeof setTimeout>;
+  private readonly nameTarget = linkedSignal<{ key: string; origin: CdkOverlayOrigin } | null>(
+    () => {
+      this.quick.entries();
+      this.quick.collapsed();
+      return null;
+    },
+  );
+  protected readonly namePositions: ConnectedPosition[] = [
+    { originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom', offsetY: -10 },
+    { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top', offsetY: 10 },
+  ];
+  protected readonly materialName = computed(() => {
+    const target = this.nameTarget();
+    const entry = target && this.entries().find((entry) => entry.key === target.key);
+    return entry ? { origin: target.origin, entry } : null;
+  });
   private readonly thumbnailSync = effect(() => {
     this.assets.generation();
     for (const entry of this.quick.entries()) {
@@ -60,4 +86,41 @@ export class QuickBlockBarComponent {
       };
     });
   });
+
+  constructor() {
+    inject(DestroyRef).onDestroy(() => this.cancelNameDismiss());
+  }
+
+  protected showName(key: string, origin: CdkOverlayOrigin, event?: PointerEvent): void {
+    if (event?.pointerType === 'touch') return;
+    this.cancelNameDismiss();
+    this.nameTarget.set({ key, origin });
+  }
+
+  protected leaveName(origin: CdkOverlayOrigin): void {
+    if (origin.elementRef.nativeElement !== document.activeElement) this.scheduleNameDismiss();
+  }
+
+  protected scheduleNameDismiss(): void {
+    this.cancelNameDismiss();
+    this.nameDismissTimer = setTimeout(() => this.hideName(), 150);
+  }
+
+  protected cancelNameDismiss(): void {
+    clearTimeout(this.nameDismissTimer);
+    this.nameDismissTimer = undefined;
+  }
+
+  protected handleNameKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') this.hideName(event);
+  }
+
+  protected hideName(event?: Event): void {
+    this.cancelNameDismiss();
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    this.nameTarget.set(null);
+  }
 }

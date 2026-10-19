@@ -18,18 +18,27 @@
     }
   </button>
   @if (!quick.collapsed()) {
-    <div class="slots">
+    <div class="slots" cdkScrollable>
       @for (entry of entries(); track entry.key; let index = $index) {
         <div class="slot" [class.active]="entry.active">
           <button
             type="button"
             class="slot-select"
+            cdkOverlayOrigin
+            #nameOrigin="cdkOverlayOrigin"
             [attr.aria-pressed]="entry.active"
-            (click)="quick.select(entry)"
+            [attr.aria-describedby]="
+              materialName()?.entry?.key === entry.key ? 'quick-bar-material-name' : null
+            "
+            (pointerenter)="showName(entry.key, nameOrigin, $event)"
+            (pointerleave)="leaveName(nameOrigin)"
+            (focus)="showName(entry.key, nameOrigin)"
+            (blur)="hideName()"
+            (keydown.escape)="hideName($event)"
+            (click)="quick.select(entry); showName(entry.key, nameOrigin)"
             [attr.aria-label]="
               (index === 9 ? 0 : index + 1) + ': ' + entry.displayName + ', ' + entry.id
             "
-            [attr.title]="entry.displayName + ' · ' + entry.id"
           >
             <span>
               @if (entry.thumbnail) {
@@ -58,3 +67,26 @@
     </div>
   }
 </section>
+@if (materialName(); as name) {
+  <ng-template
+    cdkConnectedOverlay
+    [cdkConnectedOverlayOrigin]="name.origin"
+    [cdkConnectedOverlayOpen]="true"
+    [cdkConnectedOverlayPositions]="namePositions"
+    [cdkConnectedOverlayViewportMargin]="8"
+    [cdkConnectedOverlayPush]="true"
+    (overlayOutsideClick)="hideName()"
+    (overlayKeydown)="handleNameKeydown($event)"
+  >
+    <div
+      class="material-name"
+      id="quick-bar-material-name"
+      role="tooltip"
+      (pointerenter)="cancelNameDismiss()"
+      (pointerleave)="scheduleNameDismiss()"
+    >
+      <strong>{{ name.entry.displayName }}</strong>
+      <small>{{ name.entry.itemId }}</small>
+    </div>
+  </ng-template>
+}

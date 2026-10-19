@@ -24,7 +24,12 @@
       }
     </span>
     <span class="block-copy"
-      ><strong [attr.title]="item().displayName">{{ item().displayName }}</strong>
+      ><span class="block-name"
+        ><strong [attr.title]="item().displayName">{{ item().displayName }}</strong>
+        @if (active()) {
+          <svg class="active-marker" lucideCheck aria-hidden="true"></svg>
+        }
+      </span>
       @if (layout() === 'list') {
         <!-- Adjacent segments preserve the exact identifier when copied as text. -->
         <!-- prettier-ignore -->

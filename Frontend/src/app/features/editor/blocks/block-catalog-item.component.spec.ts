@@ -68,6 +68,10 @@ describe('BlockCatalogItemComponent', () => {
     expect(
       fixture.nativeElement.querySelector('.block-select-action').getAttribute('aria-pressed'),
     ).toBe('true');
+    expect(fixture.nativeElement.querySelector('.active-marker')).not.toBeNull();
+    fixture.componentRef.setInput('layout', 'grid');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.active-marker')).not.toBeNull();
     expect(quick.entries()).toHaveLength(1);
   });
   it('disables a new Quick Add when the existing capacity is full', () => {
