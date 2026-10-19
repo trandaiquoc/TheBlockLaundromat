@@ -153,6 +153,7 @@
           [attr.aria-label]="i18n.t('leftSidebar')"
           [cdkTrapFocus]="leftDrawerOpen()"
           (keydown.escape)="closeDrawerFromEscape($event)"
+          (transitionend)="focusDrawerAfterTransition('left', $event)"
         >
           <button
             type="button"
@@ -308,6 +309,7 @@
           [attr.aria-label]="i18n.t('inspector')"
           [cdkTrapFocus]="rightDrawerOpen()"
           (keydown.escape)="closeDrawerFromEscape($event)"
+          (transitionend)="focusDrawerAfterTransition('right', $event)"
         >
           <button
             type="button"

@@ -569,6 +569,7 @@ describe('editor shell movement/delete routing', () => {
       `.responsive-drawer-actions [aria-label="${i18n.t('openLeftSidebar')}"]`,
     );
     const leftDrawer = root.querySelector<HTMLElement>('.left-panel');
+    const rightDrawer = root.querySelector<HTMLElement>('.right-panel');
     const rightOpener = root.querySelector<HTMLButtonElement>(
       `.responsive-drawer-actions [aria-label="${i18n.t('openRightSidebar')}"]`,
     );
@@ -579,12 +580,23 @@ describe('editor shell movement/delete routing', () => {
       .query(By.css('.right-panel'))
       .injector.get(CdkTrapFocus);
     const shell = fixture.componentInstance as unknown as { handleViewportResize: () => void };
-
-    try {
-      leftOpener?.focus();
-      leftOpener?.click();
+    const clickDrawerOpener = async (
+      opener: HTMLButtonElement | null,
+      panel: HTMLElement | null,
+    ) => {
+      opener?.focus();
+      opener?.click();
       fixture.detectChanges();
       await fixture.whenStable();
+      expect(document.activeElement).toBe(opener);
+      const transitionEnd = new Event('transitionend', { bubbles: true });
+      Object.defineProperty(transitionEnd, 'propertyName', { value: 'transform' });
+      panel?.dispatchEvent(transitionEnd);
+      fixture.detectChanges();
+    };
+
+    try {
+      await clickDrawerOpener(leftOpener, leftDrawer);
 
       expect(leftDrawer?.getAttribute('role')).toBe('dialog');
       expect(leftDrawer?.getAttribute('aria-modal')).toBe('true');
@@ -607,20 +619,14 @@ describe('editor shell movement/delete routing', () => {
       expect(leftDrawer?.hasAttribute('aria-modal')).toBe(false);
       expect(document.activeElement).toBe(leftOpener);
 
-      rightOpener?.focus();
-      rightOpener?.click();
-      fixture.detectChanges();
-      await fixture.whenStable();
+      await clickDrawerOpener(rightOpener, rightDrawer);
       expect(document.activeElement).toBe(root.querySelector('#right-sidebar-tab-selection'));
 
-      const rightDrawer = root.querySelector<HTMLElement>('.right-panel');
       root.querySelector<HTMLButtonElement>('.right-panel .drawer-close')?.click();
       fixture.detectChanges();
       expect(document.activeElement).toBe(rightOpener);
 
-      rightOpener?.click();
-      fixture.detectChanges();
-      await fixture.whenStable();
+      await clickDrawerOpener(rightOpener, rightDrawer);
       root.querySelector<HTMLButtonElement>('.right-panel .drawer-close')?.focus();
       Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1200 });
       shell.handleViewportResize();

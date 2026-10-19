@@ -1,8 +1,10 @@
 # Workspace UI Acceptance and Audit
 
-**Status:** the audited Workspace surfaces are implemented and browser-checked.
-Full visual acceptance remains open for the Mod JAR import states that require
-a compatible external fixture.
+**Status:** the current browser audit verified the four-theme shell, empty and
+populated viewport states, representative inspector controls, narrow side
+drawers, and Settings navigation. Full visual acceptance remains open for
+unverified dialog and async workflows, including Mod JAR import states that
+require a compatible external fixture.
 
 ## Keep / Refine / Redesign inventory
 
@@ -36,15 +38,20 @@ a compatible external fixture.
 - Workspace modal backdrops had repeated literal colors, including a 0.52 NBT
   value alongside the shared 0.48 token. All seven modal backdrops now consume
   `--overlay-scrim`; the separate 0.38 drawer overlay remains unchanged.
+- Opening a narrow sidebar scheduled initial focus before the drawer's CSS
+  visibility transition completed, leaving focus on the outside trigger. Focus
+  now moves to the selected tab when the panel transform finishes; Escape still
+  closes the drawer and restores focus to its opener.
 - No project model, persistence, placement, selection, Undo/Redo, renderer, or
   100k-block hot path was changed.
 
 ## Current browser review
 
-See the [2026-10-19 Workspace cleanup review](evidence/20261019-workspace-cleanup/README.md)
+See the [2026-10-19 Workspace UI audit](evidence/20261019-workspace-full-audit/README.md)
 for fresh Chrome evidence across the four themes, empty and populated projects,
-3D/Y-Layer, narrow layout, locale switching, modal Escape, and reduced motion.
-The approved sources remain the four files under `references/`.
+3D/Y-Layer, narrow drawers, Settings, locale switching, keyboard focus, and
+Escape handling, including reduced motion. The approved sources remain the four
+files under `references/`.
 
 ## Acceptance gaps
 
@@ -59,6 +66,13 @@ the browser-local workflow; JAR code is never loaded or executed. The importer
 contract is documented in [Minecraft asset support](../../minecraft-assets.md).
 On 2026-10-18, the user confirmed no compatible fixture is available yet, so
 those importer states remain **NOT VERIFIED**.
+
+### Other unreviewed dialog states
+
+This current-run capture set does not visually recheck every JSON/NBT, Asset
+Manager, Diagnostics, Create with AI, External AI, or specialized-inspector
+state. Existing dated captures and automated tests remain useful context, but
+they are not treated as new browser acceptance for this audit.
 
 ## Historical technical checkpoints
 

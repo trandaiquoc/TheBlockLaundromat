@@ -11,6 +11,11 @@ acceptance for later changes.
 
 ## Current acceptance
 
+The [2026-10-19 Workspace UI audit](20261019-workspace-full-audit/README.md)
+contains fresh evidence for the current four-theme shell, representative editor
+states, narrow drawers, and Settings flows. It also records the current-run
+acceptance limits.
+
 The [2026-10-19 Workspace cleanup review](20261019-workspace-cleanup/README.md)
 records the four-theme empty viewport check, the Y-Layer and narrow checks,
 and the current dialog, locale, keyboard, and reduced-motion behavior.

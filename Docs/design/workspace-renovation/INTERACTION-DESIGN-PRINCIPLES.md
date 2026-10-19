@@ -64,8 +64,9 @@ no demo code or assets were copied.
 - Responsive sidebars opened over a blocking backdrop behave as modal dialogs:
   focus enters the selected tab, Tab stays inside, Escape closes, and focus
   returns to the opener. Releasing the narrow layout also releases the trap.
-- When an empty viewport asks the user to choose a block, its action opens the
-  Blocks panel and moves focus there, including when the sidebar was hidden.
+- Keep empty 3D and Y-Layer canvases unobstructed. Block discovery and placement
+  actions stay in the Blocks panel and shared Place controls; placement feedback
+  remains available without an onboarding overlay.
 - Searchable pickers keep query focus in a labeled combobox and expose the
   active listbox option. Arrow keys move through results, Enter selects,
   Escape closes and returns focus, and Tab closes while preserving the next

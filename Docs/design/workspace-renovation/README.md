@@ -2,10 +2,13 @@
 
 ## Current status
 
-Workspace visual acceptance remains open for the Mod JAR states that need a
-compatible external fixture. The [2026-10-19 Workspace cleanup review](evidence/20261019-workspace-cleanup/README.md)
-records fresh Chrome checks across all four themes and the removal of the
-redundant empty-viewport card. The [Decorations picker review](evidence/20261017-decoration-picker/README.md)
+Workspace visual acceptance remains open for unreviewed dialog and async states,
+including Mod JAR workflows that need a compatible external fixture. The
+[2026-10-19 Workspace UI audit](evidence/20261019-workspace-full-audit/README.md)
+records fresh Chrome checks across all four themes, representative viewport and
+inspector states, narrow drawers, and Settings flows. It confirms the redundant
+empty-viewport card is absent. The [2026-10-19 Workspace cleanup review](evidence/20261019-workspace-cleanup/README.md)
+records the earlier focused cleanup checkpoint. The [Decorations picker review](evidence/20261017-decoration-picker/README.md)
 checks the painting catalog, selected-state feedback, no-results message, and
 narrow drawer. The [Groups panel review](evidence/20261017-groups-panel/README.md)
 records the empty state, a selected two-block group in Dark and Minecraft, and

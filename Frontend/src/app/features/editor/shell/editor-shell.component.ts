@@ -462,10 +462,11 @@ export class EditorShellComponent implements OnDestroy {
       this.rightDrawerOpen.set(true);
       this.leftDrawerOpen.set(false);
     }
-    queueMicrotask(() => {
-      const isOpen = side === 'left' ? this.leftDrawerOpen() : this.rightDrawerOpen();
-      if (isOpen) this.focusDrawerTab(side);
-    });
+  }
+  protected focusDrawerAfterTransition(side: 'left' | 'right', event: TransitionEvent): void {
+    if (event.target !== event.currentTarget || event.propertyName !== 'transform') return;
+    const isOpen = side === 'left' ? this.leftDrawerOpen() : this.rightDrawerOpen();
+    if (isOpen) this.focusDrawerTab(side);
   }
   protected closeDrawerFromEscape(event: Event): void {
     event.preventDefault();
