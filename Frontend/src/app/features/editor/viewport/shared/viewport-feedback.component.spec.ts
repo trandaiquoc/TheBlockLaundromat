@@ -1,50 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { I18nService } from '../../../../core/ui/localization/i18n.service';
-import { ViewportOverlayStackComponent } from './viewport-overlay-stack.component';
+import { ViewportFeedbackComponent } from './viewport-feedback.component';
 
-describe('ViewportOverlayStackComponent', () => {
-  let fixture: ComponentFixture<ViewportOverlayStackComponent>;
+describe('ViewportFeedbackComponent', () => {
+  let fixture: ComponentFixture<ViewportFeedbackComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ViewportOverlayStackComponent],
+      imports: [ViewportFeedbackComponent],
       providers: [{ provide: I18nService, useValue: { t: (key: string) => key } }],
     }).compileComponents();
-    fixture = TestBed.createComponent(ViewportOverlayStackComponent);
+    fixture = TestBed.createComponent(ViewportFeedbackComponent);
   });
 
-  it('forwards the empty-state action request and keeps placement feedback in the overlay stack', () => {
-    fixture.componentRef.setInput('project', { blocks: [], decorations: [] });
-    fixture.componentRef.setInput('hasActiveBlock', true);
+  it('keeps placement feedback visible without onboarding UI in an empty viewport', () => {
     fixture.componentRef.setInput('placementStatus', 'valid');
     fixture.componentRef.setInput('target', '2, 0, 3');
-    const openRequested = vi.fn();
-    fixture.componentInstance.openBlockBrowserRequested.subscribe(openRequested);
     fixture.detectChanges();
 
     const host = fixture.nativeElement as HTMLElement;
-    const stack = host.querySelector('.viewport-overlay-stack');
-    const emptyState = host.querySelector('app-viewport-empty-state');
-    const guidance = host.querySelector('app-viewport-empty-state .viewport-starter');
     const status = host.querySelector('.viewport-status');
 
-    expect(stack).not.toBeNull();
-    expect(guidance?.getAttribute('data-guidance')).toBe('place');
+    expect(host.querySelector('.viewport-starter')).toBeNull();
+    expect(host.querySelector('.starter-action')).toBeNull();
     expect(status?.getAttribute('data-status')).toBe('valid');
     expect(status?.textContent).toContain('2, 0, 3');
-    expect(emptyState?.parentElement).toBe(stack);
-    expect(status?.parentElement).toBe(stack);
-    expect(emptyState?.compareDocumentPosition(status!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
-
-    fixture.componentRef.setInput('hasActiveBlock', false);
-    fixture.detectChanges();
-    (host.querySelector('.starter-action') as HTMLButtonElement).click();
-    expect(openRequested).toHaveBeenCalledOnce();
   });
 
-  it('keeps placement feedback when a populated project has no starter card', () => {
-    fixture.componentRef.setInput('project', { blocks: [{} as never], decorations: [] });
+  it('shows placement feedback with reasons even when no block is selected', () => {
     fixture.componentRef.setInput('placementStatus', 'warning');
     fixture.componentRef.setInput('placementReason', 'Needs support');
     fixture.detectChanges();

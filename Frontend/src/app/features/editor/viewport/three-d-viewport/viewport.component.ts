@@ -8,7 +8,6 @@ import {
   inject,
   input as angularInput,
   isDevMode,
-  output,
   viewChild,
   signal,
 } from '@angular/core';
@@ -70,7 +69,7 @@ import {
 } from '../shared/viewport-preparation-scheduler';
 import { shouldClearInteractionFeedbackForToolChange } from '../shared/viewport-interaction-feedback';
 import { ViewportHitInteractionWorkflow } from '../shared/viewport-hit-interaction-workflow';
-import { ViewportOverlayStackComponent } from '../shared/viewport-overlay-stack.component';
+import { ViewportFeedbackComponent } from '../shared/viewport-feedback.component';
 
 declare global {
   interface Window {
@@ -80,13 +79,12 @@ declare global {
 
 @Component({
   selector: 'app-viewport',
-  imports: [ViewportOverlayStackComponent],
+  imports: [ViewportFeedbackComponent],
   templateUrl: './viewport.component.html',
   styleUrl: './viewport.component.scss',
 })
 export class ViewportComponent implements AfterViewInit, OnDestroy {
   readonly viewportActive = angularInput(true);
-  readonly openBlockBrowserRequested = output<Event>();
   private readonly host = viewChild.required<ElementRef<HTMLElement>>('host');
   private readonly selectionMarquee = viewChild<ElementRef<HTMLDivElement>>('selectionMarquee');
   protected readonly workspace = inject(WorkspaceStateService);

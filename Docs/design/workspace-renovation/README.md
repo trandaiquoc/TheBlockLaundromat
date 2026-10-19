@@ -2,10 +2,10 @@
 
 ## Current status
 
-Workspace visual acceptance is still pending. Current browser captures show
-the sidebar composition, Block Browser list, Groups panel, Selection inspector
-hierarchy, and the viewport starter card in 3D and Y-Layer across all four
-themes. The [Decorations picker review](evidence/20261017-decoration-picker/README.md)
+Workspace visual acceptance remains open for the Mod JAR states that need a
+compatible external fixture. The [2026-10-19 Workspace cleanup review](evidence/20261019-workspace-cleanup/README.md)
+records fresh Chrome checks across all four themes and the removal of the
+redundant empty-viewport card. The [Decorations picker review](evidence/20261017-decoration-picker/README.md)
 checks the painting catalog, selected-state feedback, no-results message, and
 narrow drawer. The [Groups panel review](evidence/20261017-groups-panel/README.md)
 records the empty state, a selected two-block group in Dark and Minecraft, and
@@ -24,7 +24,8 @@ the layout across all themes and locales. The
 [Create with AI mobile review](evidence/20261017-ai-workspace-responsive/README.md)
 checks the five-section prompt workspace and its Vietnamese labels at narrow
 widths. The [starter-card review](evidence/20261017-viewport-empty-starter/README.md)
-also checks both modes at a narrow viewport. Current browser review also covers the
+is a historical report; its card is removed by the latest audit. Earlier browser
+reviews also cover the
 Settings dialog at a narrow viewport, JSON import/export, Structure NBT and
 Datapack export, Asset Manager, and Diagnostics. The
 [Settings navigation responsive review](evidence/20261018-settings-navigation-responsive/README.md)

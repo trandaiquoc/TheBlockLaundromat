@@ -1,0 +1,13 @@
+@if (placementStatus() || placementReason() || target()) {
+  <div class="viewport-status" [attr.data-status]="placementStatus()">
+    @if (placementStatus()) {
+      {{ i18n.t(placementStatus()!) }}
+    }
+    @if (placementReason()) {
+      <span>&middot; {{ placementReason() }}</span>
+    }
+    @if (target()) {
+      <span>{{ target() }}</span>
+    }
+  </div>
+}

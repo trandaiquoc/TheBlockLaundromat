@@ -1,8 +1,14 @@
-# Viewport Empty Starter - 2026-10-17
+# Historical Viewport Empty Starter Review - 2026-10-17
+
+**Superseded on 2026-10-19:** the starter card shown in these captures was
+removed from both 3D and Y-Layer mode after the user found it redundant. These
+screenshots remain only as a record of the previous design; they do not describe
+the current interface or establish current acceptance. See the
+[2026-10-19 Workspace cleanup review](../20261019-workspace-cleanup/README.md).
 
 ## Scope
 
-These current Chrome captures review the shared empty-state card in 3D and
+These Chrome captures reviewed the shared empty-state card in 3D and
 Y-Layer mode. Desktop screenshots use the temporary empty 16 x 16 x 16 project
 at 1600 x 1000. Narrow screenshots use a 390 x 844 viewport in Dark mode.
 
@@ -32,5 +38,5 @@ starter-card change was needed.
 - [Dark, 1600 x 1000](workspace-y-layer-dark-1600x1000.png)
 - [Dark, 390 x 844](workspace-y-layer-dark-390x844.png)
 
-This closes the starter-card visual review. Full Workspace visual acceptance
-remains open for the other surfaces and workflows.
+The original review accepted the card at that time. The 2026-10-19 redesign
+supersedes that conclusion; the card and its component were removed.

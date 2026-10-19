@@ -11,6 +11,10 @@ acceptance for later changes.
 
 ## Current acceptance
 
+The [2026-10-19 Workspace cleanup review](20261019-workspace-cleanup/README.md)
+records the four-theme empty viewport check, the Y-Layer and narrow checks,
+and the current dialog, locale, keyboard, and reduced-motion behavior.
+
 The current desktop sidebar composition has a focused before/after capture in
 [the 2026-10-17 comparison](20261017-sidebar-composition/README.md). The Block
 Browser list composition has its own [four-theme and narrow viewport evidence](20261017-block-browser-list/README.md).
@@ -41,9 +45,8 @@ labels or editor workflow.
 The [active BlockState and Help review](20261017-selection-state-help/README.md)
 checks state editing in all four themes, the narrow Selection drawer, and the
 Controls & Shortcuts dialog at desktop and narrow sizes.
-The [viewport empty-state review](20261017-viewport-empty-starter/README.md)
-covers the 3D and Y-Layer starter card in all four themes and at a narrow
-viewport. The [Settings dialog responsive review](20261017-settings-responsive/README.md)
+The [historical viewport starter-card review](20261017-viewport-empty-starter/README.md)
+records the removed card before the 2026-10-19 redesign. The [Settings dialog responsive review](20261017-settings-responsive/README.md)
 checks its mobile layout and scroll behavior. The [Workspace interaction review](20261017-workspace-interactions/README.md)
 records JSON import/export, Structure NBT/Datapack export, Asset Manager, and
 Diagnostics states, including the import, Mod JAR entry, and narrow Tools-menu

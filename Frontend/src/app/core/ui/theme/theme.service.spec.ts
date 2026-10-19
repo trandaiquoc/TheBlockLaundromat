@@ -265,6 +265,38 @@ describe('Workspace color palette contract', () => {
     expect(settingsStyles).toContain('background: var(--overlay-scrim);');
   });
 
+  it('uses the shared overlay scrim and 24px Workspace icon targets', () => {
+    const dialogStyles = [
+      'src/app/features/editor/settings/shortcuts-help/shortcuts-help-dialog.component.scss',
+      'src/app/features/editor/minecraft-structure-export/structure-nbt-export-dialog.component.scss',
+      'src/app/features/editor/shell/editor-status-bar/missing-assets-dialog.component.scss',
+      'src/app/features/editor/tools/asset-manager/asset-manager-dialog.component.scss',
+      'src/app/features/editor/tools/diagnostics/project-diagnostics-dialog.component.scss',
+      'src/app/features/editor/structure-json/export/structure-json-export-dialog.component.scss',
+      'src/app/features/editor/structure-json/import/structure-json-import-dialog.component.scss',
+    ];
+    for (const path of dialogStyles) {
+      const stylesheet = String(readFileSync(path, 'utf8'));
+      expect(stylesheet, path).toContain('background: var(--overlay-scrim);');
+      expect(stylesheet, path).not.toMatch(/background:\s*rgb\(0 0 0 \/ 0\.5[28]\)/);
+    }
+
+    const quickBarStyles = String(
+      readFileSync('src/app/features/editor/quick-bar/quick-block-bar.component.scss', 'utf8'),
+    );
+    const groupStyles = String(
+      readFileSync('src/app/features/editor/groups/groups-panel.component.scss', 'utf8'),
+    );
+    const removeTarget = quickBarStyles.match(/\.slot-remove \{[\s\S]*?\}/)?.[0] ?? '';
+    const clearTarget =
+      groupStyles.match(/\.group-search-field \.group-search-clear \{[\s\S]*?\}/)?.[0] ?? '';
+
+    for (const rule of [removeTarget, clearTarget]) {
+      expect(rule).toContain('width: 1.5rem;');
+      expect(rule).toContain('height: 1.5rem;');
+    }
+  });
+
   it('keeps menu triggers and floating-surface content in separate color scopes', () => {
     const chromeStyles = String(
       readFileSync('src/app/features/editor/shell/editor-chrome.component.scss', 'utf8'),

@@ -11,14 +11,9 @@
   (window:resize)="resize()"
 >
   <div #selectionMarquee class="selection-marquee" aria-hidden="true" hidden></div>
-  <app-viewport-overlay-stack
-    [project]="workspace.project()"
-    [tool]="tool.active()"
-    [hasActiveBlock]="!!active.active()"
-    [hasActiveDecoration]="!!decorations.active()"
+  <app-viewport-feedback
     [placementStatus]="placementFeedback()?.status"
     [placementReason]="reasonLabel()"
     [target]="target()"
-    (openBlockBrowserRequested)="openBlockBrowserRequested.emit($event)"
   />
 </div>

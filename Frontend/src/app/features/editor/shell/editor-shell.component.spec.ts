@@ -638,7 +638,7 @@ describe('editor shell movement/delete routing', () => {
     }
   });
 
-  it('opens the Block Browser from empty-viewport guidance when its sidebar is hidden', async () => {
+  it('does not render starter guidance for an empty workspace', async () => {
     const mount = vi.spyOn(ThreeViewportEngine.prototype, 'mount').mockImplementation(() => {});
     const fixture = TestBed.createComponent(EditorShellComponent);
     const workspace = TestBed.inject(WorkspaceStateService);
@@ -654,21 +654,8 @@ describe('editor shell movement/delete routing', () => {
       fixture.detectChanges();
 
       const root = fixture.nativeElement as HTMLElement;
-      const openButton = root.querySelector<HTMLButtonElement>('.starter-action');
-      expect(openButton?.textContent).toContain(TestBed.inject(I18nService).t('openLeftSidebar'));
-      openButton?.click();
-      fixture.detectChanges();
-      await fixture.whenStable();
-      await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
-      fixture.detectChanges();
-
-      expect(layout.preferences().leftSidebarVisible).toBe(true);
-      expect(root.querySelector('.left-panel')?.classList.contains('drawer-open')).toBe(true);
-      expect(document.activeElement).toBe(root.querySelector('#sidebar-tab-blocks'));
-
-      root.querySelector<HTMLButtonElement>('.left-panel .drawer-close')?.click();
-      fixture.detectChanges();
-      expect(document.activeElement).toBe(openButton);
+      expect(root.querySelector('.viewport-starter')).toBeNull();
+      expect(root.querySelector('.starter-action')).toBeNull();
     } finally {
       if (widthDescriptor) Object.defineProperty(window, 'innerWidth', widthDescriptor);
       layout.set('leftSidebarVisible', true);

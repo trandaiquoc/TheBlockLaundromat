@@ -1,18 +1,12 @@
-.viewport-overlay-stack {
+.viewport-status {
   position: absolute;
   z-index: 1;
   top: 1rem;
   left: 1rem;
-  display: grid;
-  justify-items: start;
-  gap: 0.5rem;
-  width: min(30rem, calc(100% - 2rem));
-  pointer-events: none;
-}
-
-.viewport-status {
   box-sizing: border-box;
   max-width: 100%;
+  width: min(30rem, calc(100% - 2rem));
+  pointer-events: none;
   padding: 0.35rem 0.55rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -48,7 +42,7 @@
 }
 
 @media (max-width: 560px) {
-  .viewport-overlay-stack {
+  .viewport-status {
     top: 0.75rem;
     left: 0.75rem;
     width: calc(100% - 1.5rem);

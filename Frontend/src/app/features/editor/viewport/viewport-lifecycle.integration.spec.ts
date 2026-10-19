@@ -35,11 +35,7 @@ function createAssetRuntimeStub() {
 
 const viewportOverlayTemplate = `
   <div #host>
-    <app-viewport-overlay-stack
-      [project]="workspace.project()"
-      [tool]="tool.active()"
-      [hasActiveBlock]="!!active.active()"
-      [hasActiveDecoration]="!!decorations.active()"
+    <app-viewport-feedback
       [placementStatus]="placementFeedback()?.status"
       [placementReason]="reasonLabel()"
       [target]="target()"
@@ -75,6 +71,7 @@ describe('editor viewport engine teardown', () => {
 
       const fixture = TestBed.createComponent(componentType);
       fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.viewport-starter')).toBeNull();
       const instance = fixture.componentInstance as unknown as ViewportFeedbackSignals & {
         cancelPointer(): void;
       };

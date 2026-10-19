@@ -287,18 +287,12 @@
       <main #viewportHost class="viewport" [attr.aria-label]="i18n.t('viewport')">
         @if (visitedModes().has('3d')) {
           <div class="viewport-session" [class.viewport-session-active]="mode.mode() === '3d'">
-            <app-viewport
-              [viewportActive]="mode.mode() === '3d'"
-              (openBlockBrowserRequested)="openBlockBrowserFromViewport($event)"
-            ></app-viewport>
+            <app-viewport [viewportActive]="mode.mode() === '3d'"></app-viewport>
           </div>
         }
         @if (visitedModes().has('y-layer')) {
           <div class="viewport-session" [class.viewport-session-active]="mode.mode() === 'y-layer'">
-            <app-y-layer
-              [viewportActive]="mode.mode() === 'y-layer'"
-              (openBlockBrowserRequested)="openBlockBrowserFromViewport($event)"
-            ></app-y-layer>
+            <app-y-layer [viewportActive]="mode.mode() === 'y-layer'"></app-y-layer>
           </div>
         }
         @if (movePanelVisible() && groups.activeGroup()) {

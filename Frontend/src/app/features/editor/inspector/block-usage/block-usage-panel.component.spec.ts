@@ -151,11 +151,13 @@ describe('BlockUsagePanelComponent', () => {
       'blockUsageKeyboardHint',
     );
 
-    viewport.setRenderedRange({ start: 0, end: 1 });
+    let renderedRange = { start: 0, end: 1 };
+    viewport.setRenderedRange(renderedRange);
     fixture.detectChanges();
-    vi.spyOn(viewport, 'getRenderedRange').mockReturnValue({ start: 0, end: 1 });
+    vi.spyOn(viewport, 'getRenderedRange').mockImplementation(() => renderedRange);
     const scrollToIndex = vi.spyOn(viewport, 'scrollToIndex').mockImplementation((index) => {
-      viewport.setRenderedRange({ start: index, end: index + 1 });
+      renderedRange = { start: index, end: index + 1 };
+      viewport.setRenderedRange(renderedRange);
     });
     const endKey = new KeyboardEvent('keydown', {
       key: 'End',

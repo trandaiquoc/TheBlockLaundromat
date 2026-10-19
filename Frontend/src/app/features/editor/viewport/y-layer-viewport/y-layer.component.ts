@@ -7,7 +7,6 @@ import {
   effect,
   inject,
   input as angularInput,
-  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -67,7 +66,7 @@ import {
 } from '../shared/viewport-preparation-scheduler';
 import { shouldClearInteractionFeedbackForToolChange } from '../shared/viewport-interaction-feedback';
 import { ViewportHitInteractionWorkflow } from '../shared/viewport-hit-interaction-workflow';
-import { ViewportOverlayStackComponent } from '../shared/viewport-overlay-stack.component';
+import { ViewportFeedbackComponent } from '../shared/viewport-feedback.component';
 
 export const Y_LAYER_PROJECTION_STATUS_DELAY_MS = 180;
 
@@ -78,14 +77,13 @@ export const Y_LAYER_PROJECTION_STATUS_DELAY_MS = 180;
     LucideChevronLeft,
     LucideChevronRight,
     UiTooltipDirective,
-    ViewportOverlayStackComponent,
+    ViewportFeedbackComponent,
   ],
   templateUrl: './y-layer.component.html',
   styleUrl: './y-layer.component.scss',
 })
 export class YLayerComponent implements AfterViewInit, OnDestroy {
   readonly viewportActive = angularInput(true);
-  readonly openBlockBrowserRequested = output<Event>();
   private readonly host = viewChild<ElementRef<HTMLElement>>('host');
   protected readonly workspace = inject(WorkspaceStateService);
   private readonly assets = inject(ContentAssetRuntimeService);

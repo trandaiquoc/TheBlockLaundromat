@@ -90,15 +90,10 @@
     (contextmenu)="$event.preventDefault()"
     (window:resize)="resize()"
   >
-    <app-viewport-overlay-stack
-      [project]="workspace.project()"
-      [tool]="tool.active()"
-      [hasActiveBlock]="!!active.active()"
-      [hasActiveDecoration]="!!decorations.active()"
+    <app-viewport-feedback
       [placementStatus]="placementFeedback()?.status"
       [placementReason]="reasonLabel()"
       [target]="target()"
-      (openBlockBrowserRequested)="openBlockBrowserRequested.emit($event)"
     />
   </div>
 </div>
