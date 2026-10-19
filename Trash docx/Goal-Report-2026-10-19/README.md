@@ -42,8 +42,12 @@ The current implementation uses the real Angular Project Screen workflows and ap
 
 - A measured Minecraft doorway/window exterior extraction into complementary room-shell and exterior-view PNG layers. A deterministic PowerShell script reloads the outputs and verifies pixel-for-pixel recomposition against the source.
 - A source-derived Minecraft project-card crop with a transparent real-preview window and live project text, plus a board cleanup layer covering baked sample project cards while preserving the source New Project tile.
+- A deterministic cleanup patch for the baked Craft washer-display copy; the live localized label and current project name now sit on the original plate.
+- A persistent Craft washer-preview well that covers the source-baked cottage even when there is no selected project, showing an honest dark grid beneath any real preview component.
 - Runtime scene wiring, asset manifest/inventory, image dimension/composition regression coverage, and a browser checkpoint screenshot.
 - Existing Project Screen functionality retained: project create/open/delete/import, local persistence, real project summaries, search/sort, localized controls, and renderer-backed project previews.
+
+The follow-up group is committed as `85fed50eb07ead3d20278850c956e5603df82ae9` (`fix(project-screen): mask empty washer sample`). A second source-size Chrome screenshot now documents the empty-project state and proves the baked cottage no longer shows through; the existing selected-project screenshot documents the live plate text. Both are focused checks, not whole-scene acceptance.
 
 Milestone commits to orient source review: `3161ae6` (theme-aware Project Screen), `b8978f9` / `8e3e389` / `f221c74` (real project preview path and navigation/lifecycle fixes), `adc024b` (reference alignment), `065499f` and `d056d33` (layered scenes and independent themed exterior/foreground), `5dc1989` (Minecraft reference artwork), and `cf2e2fe` (measured Minecraft layer extraction and handoff). The full 206-entry ledger includes the surrounding Workspace, accessibility, responsive, documentation, and verification commits.
 
@@ -68,11 +72,26 @@ The existing checkpoint notes report these results; they were not rerun merely t
 
 The detailed commands, failure history, screenshot caveats, extraction provenance and remaining task order are in [`empt docx/handoff-notes.md`](../../empt%20docx/handoff-notes.md). The screenshot `empt docx/minecraft-layer-check-1672x941.png` is explicitly a checkpoint sample, not a final reference match.
 
+### Latest Follow-Up Verification
+
+These checks were rerun after restoring the lockfile dependencies with `npm ci`:
+
+- Targeted Project Screen component tests: 7/7 passed.
+- Targeted scene asset contract tests: 6/6 passed.
+- Targeted Project Screen preview component tests: 4/4 passed.
+- Browser at 1672 × 941, Craft, empty project list: the persistent washer preview well hides the baked cottage and displays the grid; all four Craft scene images loaded, with no JavaScript exceptions, console warnings/errors, failed requests, or image failures.
+- Production build passed. `project-screen.component.scss` is 29.98 KB: 9.98 KB over the 20 KB warning budget, but 0.02 KB below the 30 KB hard limit. No budget was changed.
+- App, spec and worker TypeScript checks, Prettier on changed files, frontend encoding, and `git diff --check` passed. The app/spec/worker checks were run before the final template-only empty-preview markup; the final Angular build and targeted template test compiled that markup successfully.
+- The full suite currently has one reproducible failure outside this goal: `BlockUsagePanelComponent` expects ArrowDown to change `aria-activedescendant` from `block-usage-option-0` to `block-usage-option-1`, but it remains at option 0. It failed both in the full suite and when run in isolation. Result: 328 files passed, 1 failed, 7 skipped; 2,060 tests passed, 1 failed, 11 skipped. The failing Block Usage source/test was not changed here; a pre-change baseline rerun was not performed, so do not label this conclusively pre-existing.
+- `npm ci` reported zero audit vulnerabilities. It also printed the environment's install-script approval warning for `@parcel/watcher`, `esbuild`, `lmdb`, and `msgpackr-extract`; the Angular build and test runner executed successfully afterward.
+
+The newly added empty-state screenshot is `Docs/design/homepage-renovation/evidence/20261019-minecraft-display-cleanup/craft-empty-preview-browser-1672x941.png`. It is an independent browser artifact, not an automated-test substitute. Real populated GPU thumbnail rendering remains unverified in this follow-up.
+
 ## Read These Files First on the Next Machine
 
 1. This report.
-2. [`empt docx/source-current-goal-objective.txt`](../../empt%20docx/source-current-goal-objective.txt) — canonical active objective, copied from the user's attachment.
-3. [`empt docx/continuation-prompt.md`](../../empt%20docx/continuation-prompt.md) — continuation instructions and the complete objective text.
+2. [`empt docx/source-current-goal-objective.txt`](../../empt%20docx/source-current-goal-objective.txt) — extracted active objective text.
+3. [`empt docx/continuation-prompt.md`](../../empt%20docx/continuation-prompt.md) — continuation instructions and a byte-for-byte copy of the full attached prompt (SHA-256 `2904cfad94f1612b781a917832f65c4faf19520f17c1466f9b2aa52553dae902`).
 4. [`empt docx/handoff-notes.md`](../../empt%20docx/handoff-notes.md) — exact checkpoint, verification history, risks and prioritized remaining work.
 5. [`Docs/design/homepage-renovation/README.md`](../../Docs/design/homepage-renovation/README.md), [`asset-inventory.md`](../../Docs/design/homepage-renovation/asset-inventory.md), and [`asset-manifest.json`](../../Docs/design/homepage-renovation/asset-manifest.json).
 6. [`Docs/design/homepage-renovation/evidence/README.md`](../../Docs/design/homepage-renovation/evidence/README.md) and the linked focused browser-evidence READMEs.
