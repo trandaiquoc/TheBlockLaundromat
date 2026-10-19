@@ -423,14 +423,5 @@ export const representativeBlockFixture: BlockCatalogSource = {
         secondPart: 'head',
       },
     },
-    {
-      id: 'example:missing_renderer',
-      displayName: 'Example Missing Renderer',
-      defaultState: {},
-      stateDefinitions: [],
-      resources: { textures: [] },
-      support: 'fallback',
-      modName: 'Example Mod',
-    },
   ],
 };

@@ -172,25 +172,6 @@
   background: var(--control-selected);
   color: var(--control-selected-text);
 }
-.block-selected-indicator {
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  display: grid;
-  place-items: center;
-  width: 1.2rem;
-  height: 1.2rem;
-  border: 1px solid color-mix(in srgb, var(--control-selected-text) 30%, transparent);
-  border-radius: 50%;
-  background: var(--control-selected-text);
-  color: var(--control-selected);
-  box-shadow: var(--shadow-control);
-}
-.block-selected-indicator svg {
-  width: 0.75rem;
-  height: 0.75rem;
-  stroke-width: 3;
-}
 .block-select-action:focus-visible {
   outline: 2px solid var(--focus-color, var(--accent));
   outline-offset: -3px;
@@ -314,10 +295,6 @@
     var(--shadow-control-raised);
 }
 
-:host-context([data-theme='craft']) .block-selected-indicator {
-  background: var(--workspace-primary);
-  color: var(--workspace-text-on-primary);
-}
 .block-empty-state {
   display: grid;
   flex: 1 1 0;

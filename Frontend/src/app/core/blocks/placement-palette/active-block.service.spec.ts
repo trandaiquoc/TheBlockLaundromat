@@ -43,7 +43,20 @@ describe('ActiveBlockService', () => {
   it('picks a placed block without losing state or fallback status', () => {
     const service = new ActiveBlockService();
     const catalog = new BlockCatalog();
-    catalog.load(representativeBlockFixture);
+    catalog.load({
+      ...representativeBlockFixture,
+      blocks: [
+        ...representativeBlockFixture.blocks,
+        {
+          id: 'example:missing_renderer',
+          displayName: 'Missing Renderer',
+          defaultState: {},
+          stateDefinitions: [],
+          resources: { textures: [] },
+          support: 'fallback',
+        },
+      ],
+    });
     service.pick({
       kind: 'missing',
       id: 'example:unknown',

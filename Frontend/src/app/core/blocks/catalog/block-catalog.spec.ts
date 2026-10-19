@@ -29,7 +29,6 @@ describe('BlockCatalog', () => {
     catalog.load(representativeBlockFixture);
     const stairs = catalog.get('minecraft:oak_stairs');
     const door = catalog.get('minecraft:oak_door');
-    const example = catalog.get('example:missing_renderer');
     expect(hasBlockCapability(stairs, 'directional')).toBe(true);
     expect(hasBlockCapability(stairs, 'neighbor-dependent')).toBe(true);
     expect(hasBlockCapability(stairs, 'waterloggable')).toBe(true);
@@ -41,7 +40,6 @@ describe('BlockCatalog', () => {
     expect(hasBlockCapability(catalog.get('minecraft:red_bed'), 'directional')).toBe(true);
     expect(hasBlockCapability(catalog.get('minecraft:oak_log'), 'axis-oriented')).toBe(true);
     expect(hasBlockCapability(catalog.get('minecraft:chain'), 'axis-oriented')).toBe(false);
-    expect(example?.capabilities).toEqual([]);
   });
 
   it('normalizes logical placement metadata from behavior without registry-name rules', () => {
@@ -152,10 +150,24 @@ describe('BlockCatalog', () => {
 
   it('searches normalized display name, ID, namespace and mod name', () => {
     const catalog = new BlockCatalog();
-    catalog.load(representativeBlockFixture);
+    catalog.load({
+      ...representativeBlockFixture,
+      blocks: [
+        ...representativeBlockFixture.blocks,
+        {
+          id: 'example:search_sample',
+          displayName: 'Search Sample',
+          defaultState: {},
+          stateDefinitions: [],
+          resources: { textures: [] },
+          support: 'fallback',
+          modName: 'Example Mod',
+        },
+      ],
+    });
     expect(catalog.search('OAK STAIRS')).toHaveLength(1);
     expect(catalog.search('example')).toHaveLength(1);
-    expect(catalog.search('  MISSING_RENDERER ')).toHaveLength(1);
+    expect(catalog.search('  SEARCH_SAMPLE ')).toHaveLength(1);
     expect(normalizeSearchText('Tiếng Việt')).toBe('tieng viet');
   });
 
