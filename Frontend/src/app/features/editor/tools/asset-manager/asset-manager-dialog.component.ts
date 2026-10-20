@@ -41,6 +41,11 @@ import {
   JarUploadValidationError,
   validateJarUpload,
 } from '../../../../core/assets/mod/import/jar-upload-validation';
+import {
+  createAbortError,
+  isAbortError,
+} from '../../../../core/assets/asset-operation-cancellation';
+import type { VanillaAssetImportPhase } from '../../../../core/assets/vanilla/vanilla-asset-provider';
 import { UiProgressComponent } from '../../../../shared/ui/progress/ui-progress.component';
 import {
   compactContentCount,
@@ -113,6 +118,7 @@ export class AssetManagerDialogComponent {
   protected readonly technicalProgressOpen = signal(false);
   protected readonly diagnosticDialog = signal<DiagnosticDialogState | undefined>(undefined);
   protected readonly confirming = signal(false);
+  private manualJarImportController?: AbortController;
   protected readonly phaseOrder = phases;
   protected readonly stageOrder = importStages;
   protected readonly centeredOverlayPositions = [
@@ -205,6 +211,7 @@ export class AssetManagerDialogComponent {
     this.closed.emit();
   }
   ngOnDestroy(): void {
+    this.manualJarImportController?.abort(createAbortError());
     this.modImport.dispose();
   }
   protected setTab(tab: AssetManagerTab): void {
@@ -304,13 +311,46 @@ export class AssetManagerDialogComponent {
       input.value = '';
       return;
     }
+    const controller = new AbortController();
+    this.manualJarImportController = controller;
     this.vanillaActionRunning.set(true);
     try {
-      await this.assets.importJar(file);
+      await this.assets.importJar(file, controller.signal);
+    } catch (error) {
+      if (!isAbortError(error)) this.vanillaError.set(this.jarValidationMessage(error));
     } finally {
+      if (this.manualJarImportController === controller) this.manualJarImportController = undefined;
       this.vanillaActionRunning.set(false);
       input.value = '';
     }
+  }
+  protected cancelManualJarImport(): void {
+    const controller = this.manualJarImportController;
+    if (controller && !controller.signal.aborted) controller.abort(createAbortError());
+  }
+  protected manualJarImportActive(): boolean {
+    return !!this.manualJarImportController && this.assets.status() === 'importing';
+  }
+  protected manualJarImportCancelling(): boolean {
+    return this.manualJarImportController?.signal.aborted ?? false;
+  }
+  protected manualJarImportLabel(): string {
+    if (this.manualJarImportController?.signal.aborted)
+      return this.i18n.t('assetManagerCancellingVanillaJarImport');
+    const phase = this.activity.current()?.message as VanillaAssetImportPhase | undefined;
+    return phase ? this.manualJarImportPhaseLabel(phase) : this.i18n.t('assetManagerWorking');
+  }
+  protected manualJarImportPercent(): number | undefined {
+    const progress = this.activity.current()?.progress;
+    if (!progress || !progress.total) return undefined;
+    return Math.min(100, Math.max(0, (progress.loaded / progress.total) * 100));
+  }
+  protected manualJarImportProgressDetail(): string {
+    const progress = this.activity.current()?.progress;
+    if (!progress) return this.i18n.t('assetManagerWorking');
+    if (!progress.total) return String(progress.loaded);
+    const value = `${progress.loaded} / ${progress.total}`;
+    return `${value} (${Math.round((progress.loaded / progress.total) * 100)}%)`;
   }
   protected async inspectMod(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
@@ -418,9 +458,12 @@ export class AssetManagerDialogComponent {
       : `${(value / (1024 * 1024)).toFixed(1)} MB`;
   }
   private withActivityProgress(entry: AssetActivityEntry): AssetActivityEntry {
-    const phase = phases.includes(entry.message as ModImportProgress['phase'])
-      ? this.phaseLabel(entry.message as ModImportProgress['phase'])
-      : entry.message;
+    const phase =
+      entry.operation === 'manual-import'
+        ? this.manualJarImportPhaseLabel(entry.message)
+        : phases.includes(entry.message as ModImportProgress['phase'])
+          ? this.phaseLabel(entry.message as ModImportProgress['phase'])
+          : entry.message;
     return {
       ...entry,
       message: entry.progress
@@ -437,13 +480,30 @@ export class AssetManagerDialogComponent {
       ? `${loaded} (${Math.round((progress.loaded / progress.total) * 100)}%)`
       : loaded;
   }
+  private manualJarImportPhaseLabel(phase: string): string {
+    switch (phase as VanillaAssetImportPhase | 'cancelled') {
+      case 'reading':
+        return this.i18n.t('assetManagerReadingVanillaJar');
+      case 'normalizing':
+        return this.i18n.t('assetManagerNormalizingVanillaJar');
+      case 'validating':
+        return this.i18n.t('assetManagerValidatingVanillaJar');
+      case 'saving':
+        return this.i18n.t('assetManagerSavingVanillaJar');
+      case 'cancelled':
+        return this.i18n.t('assetManagerTaskCancelled');
+      default:
+        return phase;
+    }
+  }
   protected progressPercent(progress: ModImportProgress): number | undefined {
     return progressPercentForProgress(progress);
   }
   protected activityEntryMessage(entry: AssetActivityEntry): string {
-    return entry.errorCode === 'offline'
-      ? this.i18n.t('assetManagerOfflineRecovery')
-      : entry.message;
+    if (entry.errorCode === 'offline') return this.i18n.t('assetManagerOfflineRecovery');
+    if (entry.operation === 'manual-import' && entry.message === 'cancelled')
+      return this.i18n.t('assetManagerTaskCancelled');
+    return entry.message;
   }
   protected progressDetail(progress: ModImportProgress): string {
     return progress.processed !== undefined && progress.total !== undefined

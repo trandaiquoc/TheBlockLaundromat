@@ -68,6 +68,56 @@ describe('StructureJsonExportDialogComponent', () => {
     expect(tabs.length).toBe(0);
   });
 
+  it('warns when opaque block entity or decoration data cannot be represented in Structure JSON', async () => {
+    await TestBed.configureTestingModule({
+      imports: [StructureJsonExportDialogComponent],
+      providers: [{ provide: I18nService, useValue: { t: (key: string) => key } }],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(StructureJsonExportDialogComponent);
+    fixture.componentRef.setInput('project', {
+      ...project,
+      blocks: [
+        {
+          kind: 'missing',
+          id: 'mod:unknown_block',
+          namespace: 'mod',
+          position: { x: 0, y: 0, z: 0 },
+          state: {},
+          blockEntityData: { kind: 'unknown', payload: { value: 7 } },
+        },
+      ],
+      decorations: [
+        {
+          instanceId: 'opaque-painting',
+          kind: 'painting',
+          entityTypeId: 'minecraft:painting',
+          anchor: { x: 1, y: 0, z: 0 },
+          facing: 'north',
+          variantId: 'minecraft:kebab',
+          raw: { fixture: { value: 7 } },
+        },
+      ],
+    });
+    fixture.detectChanges();
+
+    const warnings = Array.from(
+      fixture.nativeElement.querySelectorAll('.structure-json-validation[role="status"]'),
+      (element: Element) => element.textContent?.trim() ?? '',
+    );
+    expect(warnings).toEqual(
+      expect.arrayContaining([
+        'structureJsonBlockEntityWarning',
+        'structureJsonRawMetadataWarning',
+      ]),
+    );
+    const exportedBlock = JSON.parse(
+      (fixture.nativeElement.querySelector('.structure-json-code-editor') as HTMLTextAreaElement)
+        .value,
+    ).blocks[0];
+    expect(exportedBlock).not.toHaveProperty('blockEntity');
+    fixture.destroy();
+  });
+
   it('keeps draft and saved JSON separate and guards only dirty downloads', async () => {
     await TestBed.configureTestingModule({
       imports: [StructureJsonExportDialogComponent],

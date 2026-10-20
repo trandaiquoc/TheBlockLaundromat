@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { ContentAssetRuntimeService } from './content-asset-runtime.service';
 import { ContentSourceCleanupError } from './content-source/composite-asset-provider';
 import { AssetActivityService } from './asset-activity.service';
+import { ContentOperationCoordinator } from './content-operation-coordinator';
+import { createAbortError } from './asset-operation-cancellation';
 
 type Assert<T extends true> = T;
 type ActiveProviderReadView = NonNullable<ReturnType<ContentAssetRuntimeService['provider']>>;
@@ -106,6 +108,44 @@ describe('ContentAssetRuntimeService content generation', () => {
       operation: 'cache',
       level: 'warning',
       message: cleanupFailure.message,
+    });
+  });
+
+  it('cancels a manual Vanilla import without replacing the active provider', async () => {
+    const service = TestBed.inject(ContentAssetRuntimeService);
+    const activeProvider = {};
+    const internal = service as unknown as {
+      contentOperations: ContentOperationCoordinator;
+      vanillaLifecycle: {
+        importClientJar: (file: File, version: string, signal: AbortSignal) => Promise<never>;
+      };
+      providerState: { set(provider: unknown): void };
+      statusState: { set(status: string): void };
+      messageState: { set(message: string): void };
+    };
+    internal.contentOperations = new ContentOperationCoordinator();
+    internal.providerState.set(activeProvider);
+    internal.statusState.set('ready');
+    internal.messageState.set('');
+    internal.vanillaLifecycle = {
+      importClientJar: (_file, _version, signal) =>
+        new Promise((_, reject) => {
+          signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+        }),
+    };
+    const controller = new AbortController();
+    const imported = service.importJar(new File(['jar'], 'minecraft.jar'), controller.signal);
+    controller.abort(createAbortError());
+
+    await expect(imported).resolves.toBeUndefined();
+    expect(service.provider()).toBe(activeProvider);
+    expect(service.status()).toBe('ready');
+    expect(service.message()).toBe('');
+    expect(TestBed.inject(AssetActivityService).current()).toBeUndefined();
+    expect(TestBed.inject(AssetActivityService).entries().at(-1)).toMatchObject({
+      operation: 'manual-import',
+      message: 'cancelled',
+      level: 'info',
     });
   });
 });

@@ -4,7 +4,7 @@ import type {
   MojangVanillaAssetSource,
   VanillaDownloadProgress,
 } from './mojang-vanilla-asset-source';
-import type { VanillaAssetProvider } from './vanilla-asset-provider';
+import type { VanillaAssetImportProgress, VanillaAssetProvider } from './vanilla-asset-provider';
 import { validateJarUpload } from '../mod/import/jar-upload-validation';
 import { evaluateCompatibility } from './compatibility/compatibility-evaluator';
 import type { CompatibilityReport } from './compatibility/compatibility.types';
@@ -72,12 +72,17 @@ export class VanillaAssetLifecycle {
     file: File,
     version: string,
     signal?: AbortSignal,
+    onProgress?: (progress: VanillaAssetImportProgress) => void,
   ): Promise<VanillaAssetProvider> {
     validateJarUpload(file);
-    const bundle = await new JarImportSource().load(file, version, signal);
+    const bundle = await new JarImportSource().load(file, version, signal, onProgress);
     const provider = providerFromBundle(bundle);
+    onProgress?.({ phase: 'validating', loaded: 0, total: 1 });
     provider.assertUsable();
+    onProgress?.({ phase: 'validating', loaded: 1, total: 1 });
+    onProgress?.({ phase: 'saving', loaded: 0, total: 1 });
     await this.cache.save(provider.serialize(), signal);
+    onProgress?.({ phase: 'saving', loaded: 1, total: 1 });
     return provider;
   }
 

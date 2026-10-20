@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { strToU8, zipSync } from 'fflate';
 import { VanillaAssetProvider, texturePath } from './vanilla-asset-provider';
 import { BlockCatalog } from '../../blocks/catalog/block-catalog';
 import { parseVanillaBlockRegistry } from '../../blocks/registry/vanilla-block-registry';
@@ -11,6 +12,54 @@ import { resolveConcreteBlockId } from '../../blocks/placement-palette/placeable
 
 describe('VanillaAssetProvider', () => {
   afterEach(() => vi.restoreAllMocks());
+
+  it('reports archive reading and resource normalization progress for a JAR import', async () => {
+    const progress: { phase: string; loaded: number; total?: number }[] = [];
+    const archive = zipSync({
+      'assets/minecraft/lang/en_us.json': strToU8('{}'),
+      'assets/minecraft/textures/block/stone.png': new Uint8Array([1, 2, 3]),
+    });
+
+    const provider = await VanillaAssetProvider.fromJar(
+      new Blob([archive]),
+      '1.21.1',
+      'manual.jar',
+      undefined,
+      (value) => progress.push(value),
+    );
+
+    expect(provider.sourceName).toBe('manual.jar');
+    expect(progress.some((value) => value.phase === 'reading' && value.loaded > 0)).toBe(true);
+    expect(progress.filter((value) => value.phase === 'normalizing').at(-1)).toEqual({
+      phase: 'normalizing',
+      loaded: 2,
+      total: 2,
+    });
+  });
+
+  it('limits normalization progress notifications while reporting the final resource count', async () => {
+    const contents: Record<string, Uint8Array> = {
+      'assets/minecraft/lang/en_us.json': strToU8('{}'),
+      'assets/minecraft/blockstates/stone.json': strToU8('{}'),
+      'assets/minecraft/models/block/stone.json': strToU8('{}'),
+      'assets/minecraft/textures/block/stone.png': new Uint8Array([1]),
+    };
+    for (let index = 0; index < 514; index++)
+      contents[`assets/minecraft/models/block/test_${index}.json`] = strToU8('{}');
+    const progress: { phase: string; loaded: number; total?: number }[] = [];
+
+    await VanillaAssetProvider.fromJar(
+      new Blob([zipSync(contents)]),
+      '1.21.1',
+      'manual.jar',
+      undefined,
+      (value) => progress.push(value),
+    );
+
+    expect(
+      progress.filter((value) => value.phase === 'normalizing').map((value) => value.loaded),
+    ).toEqual([0, 256, 512, 518]);
+  });
 
   it('resolves generic namespaced texture paths and preserves missing resources', () => {
     expect(texturePath('minecraft:block/stone')).toBe('assets/minecraft/textures/block/stone.png');

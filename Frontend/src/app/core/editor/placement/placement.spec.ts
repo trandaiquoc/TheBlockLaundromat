@@ -23,6 +23,14 @@ describe('placement math', () => {
     });
   });
 
+  it('uses the dominant face axis when a ray normal has floating point residue', () => {
+    expect(targetFromBlockFace({ x: 9, y: 0, z: 2 }, { x: 1, y: 0, z: -Number.EPSILON })).toEqual({
+      x: 10,
+      y: 0,
+      z: 2,
+    });
+  });
+
   it('floors grid hits to integer voxel coordinates', () => {
     expect(targetFromGridHit({ x: 1.9, z: 3.1 })).toEqual({ x: 1, y: 0, z: 3 });
   });

@@ -131,4 +131,8 @@ voxel axis is on its boundary. This resolves the Iron Bars upper cap where the
 official 1.21.1 `iron_bars_post_ends` geometry reports coincident internal side
 faces first, without changing geometry or widening hitboxes. Both the 3D DDA
 precise fallback and direct Y-Layer picking use this resolver. Preview and
-commit retain the shared placement plan and atomic history.
+commit retain the shared placement plan and atomic history. A picked normal is
+resolved along its dominant voxel axis, so floating-point residue cannot turn a
+side face into a diagonal target. Placement previews expose the neighbor-derived
+state from their local preview overlay, matching the committed Iron Bars
+connection state without scanning the full project.

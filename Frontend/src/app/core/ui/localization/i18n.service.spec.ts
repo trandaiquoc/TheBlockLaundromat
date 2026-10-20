@@ -143,7 +143,7 @@ describe('translation dictionaries', () => {
     );
     service.setLocale('vi');
     expect(service.t('structureJsonLimitations')).toBe(
-      'Structure JSON bao gom block, do trang tri va block entity semantic da xac minh. Du lieu raw khong duoc ho tro co the can Ban sao luu du an de giu nguyen.',
+      'Structure JSON bao gồm khối, vật trang trí và dữ liệu block entity ngữ nghĩa được hỗ trợ. Bản sao lưu dự án giữ nguyên đầy đủ dữ liệu.',
     );
     expect(service.t('structureJsonImportDescription')).toBe(
       'Dán hoặc tải Structure JSON hiện tại để kiểm tra trước khi thay đổi dự án.',

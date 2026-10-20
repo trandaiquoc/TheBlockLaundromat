@@ -266,6 +266,20 @@ describe('AssetManagerDialogComponent progress announcements', () => {
     expect(openingTag('preflight-card')).not.toContain('aria-live');
     expect(openingTag('import-progress compact')).not.toContain('aria-live');
   });
+
+  it('offers cancellation for a running Vanilla JAR import', () => {
+    const controller = new AbortController();
+    const state = Object.create(AssetManagerDialogComponent.prototype) as {
+      cancelManualJarImport: () => void;
+    };
+    Object.defineProperty(state, 'manualJarImportController', { value: controller });
+
+    state.cancelManualJarImport();
+
+    expect(controller.signal.aborted).toBe(true);
+    expect(assetManagerTemplate).toContain('manualJarImportActive()');
+    expect(assetManagerTemplate).toContain("i18n.t('assetManagerCancelVanillaJarImport')");
+  });
 });
 
 describe('AssetManagerDialogComponent empty states', () => {

@@ -144,7 +144,7 @@ describe('BlockRuleEngine', () => {
     ).toEqual([{ position: request.position, state: request.state }]);
   });
 
-  it('places Iron Bars vertically while retaining horizontal derived connections', () => {
+  it('keeps Iron Bars preview state aligned with vertical and horizontal placement commits', () => {
     const lowerRequest = block('minecraft:iron_bars', { x: 2, y: 0, z: 2 });
     const lower = engine.place(base, lowerRequest).project!;
     const upperRequest = block('minecraft:iron_bars', { x: 2, y: 1, z: 2 });
@@ -163,10 +163,8 @@ describe('BlockRuleEngine', () => {
     expect(vertical.blocks.map((entry) => entry.position)).toContainEqual({ x: 2, y: 1, z: 2 });
     expect(vertical.blocks).toHaveLength(2);
 
-    const horizontal = engine.place(
-      vertical,
-      block('minecraft:iron_bars', { x: 3, y: 0, z: 2 }),
-    ).project!;
+    const horizontalRequest = block('minecraft:iron_bars', { x: 3, y: 0, z: 2 });
+    const horizontal = engine.place(vertical, horizontalRequest).project!;
     expect(
       horizontal.blocks.find((entry) => entry.position.x === 2 && entry.position.y === 0)?.state[
         'east'
@@ -177,6 +175,21 @@ describe('BlockRuleEngine', () => {
         'west'
       ],
     ).toBe('true');
+
+    const adjacentRequest = block('minecraft:iron_bars', { x: 4, y: 0, z: 2 });
+    const adjacentPreview = engine.preview(
+      horizontal,
+      adjacentRequest,
+      undefined,
+      new ProjectBlockSpatialIndex(horizontal.blocks),
+    );
+    const adjacentCommit = engine.place(horizontal, adjacentRequest).project!;
+    const previewedAdjacent = adjacentPreview.plannedBlocks?.[0];
+    const committedAdjacent = adjacentCommit.blocks.find(
+      (entry) => entry.position.x === adjacentRequest.position.x,
+    );
+    expect(previewedAdjacent?.state).toMatchObject({ west: 'true' });
+    expect(committedAdjacent?.state).toEqual(previewedAdjacent?.state);
   });
 
   it('normalizes a resource-selected upper half before placing a double-height object', () => {

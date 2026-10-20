@@ -11,5 +11,8 @@ placed on a block, selected, and changed from Alban to Aztec. The variant grid
 fit in the inspector at 390 px and 320 px without horizontal overflow. Chrome
 confirmed search focus on open and trigger focus after Escape. Focused painting
 browser, picker and inspector tests passed (5 tests); the Angular production
-build passed. Cross-theme and other decoration recovery states remain for the
-final gate.
+build passed. The final browser matrix checked the painting inspector and open
+compact picker in Minecraft, Light, Raccoon and Dark at 390 px. All 46 variants
+fit the picker width without document overflow; search focus and Escape focus
+return passed in each theme. Item Frame rotation and Decorations-to-Asset-Manager
+Escape recovery remain covered by H12 and H15.

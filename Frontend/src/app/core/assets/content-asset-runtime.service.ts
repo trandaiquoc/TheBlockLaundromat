@@ -1,4 +1,12 @@
-import { computed, effect, Injectable, inject, signal, type Signal } from '@angular/core';
+import {
+  computed,
+  effect,
+  Injectable,
+  inject,
+  signal,
+  untracked,
+  type Signal,
+} from '@angular/core';
 import { BlockDefinition } from '../blocks/catalog/block-definition.types';
 import type { PlaceableItemDefinition } from '../blocks/placement-palette/placeable-item.types';
 import { BlockLibraryService } from '../blocks/catalog/block-library.service';
@@ -9,6 +17,7 @@ import type { ThumbnailPreviewState } from './vanilla/thumbnails/asset-thumbnail
 import {
   VanillaAssetProvider,
   type VanillaAssetInspectionView,
+  type VanillaAssetImportProgress,
   VanillaAssetProviderDiagnostics,
   VANILLA_ASSET_CACHE_SCHEMA_VERSION,
 } from './vanilla/vanilla-asset-provider';
@@ -211,38 +220,59 @@ export class ContentAssetRuntimeService {
     this.thumbnailEpoch = this.thumbnails.epoch;
     effect(() => {
       const version = this.workspace.project()?.metadata.minecraftVersion;
-      if (version) void this.ensureVersion(version);
+      if (version) untracked(() => void this.ensureVersion(version));
     });
     void this.refreshCachedVersions();
   }
 
-  async importJar(file: File): Promise<void> {
-    return this.contentOperations.run('foreground', async (signal) => {
-      const request = ++this.loadRequest;
-      const protection = this.activity.protect(`Importing ${file.name}`);
-      this.statusState.set('importing');
-      this.messageState.set('');
-      this.activity.begin('manual-import', `Reading ${file.name}`);
-      try {
-        const provider = await this.vanillaLifecycle.importClientJar(
-          file,
-          this.activeVersion(),
-          signal,
-        );
-        throwIfAborted(signal);
-        await this.activateVersion(provider, request, signal);
-        this.activity.finish('manual-import', `Imported ${file.name}`);
-      } catch (error) {
-        if (isAbortError(error) || signal.aborted) return;
-        this.statusState.set('import-required');
-        this.messageState.set(
-          error instanceof Error ? error.message : 'Unable to import Minecraft assets',
-        );
-        this.activity.fail('manual-import', this.message());
-      } finally {
-        this.activity.releaseProtected(protection);
-      }
-    });
+  async importJar(file: File, callerSignal?: AbortSignal): Promise<void> {
+    return this.contentOperations.run(
+      'foreground',
+      async (signal) => {
+        const request = ++this.loadRequest;
+        const protection = this.activity.protect(`Importing ${file.name}`);
+        this.statusState.set('importing');
+        this.messageState.set('');
+        this.activity.begin('manual-import', `Reading ${file.name}`);
+        try {
+          const provider = await this.vanillaLifecycle.importClientJar(
+            file,
+            this.activeVersion(),
+            signal,
+            (progress: VanillaAssetImportProgress) => {
+              if (signal.aborted) return;
+              this.activity.update(
+                {
+                  loaded: progress.loaded,
+                  ...(progress.total !== undefined ? { total: progress.total } : {}),
+                },
+                progress.phase,
+              );
+            },
+          );
+          throwIfAborted(signal);
+          await this.activateVersion(provider, request, signal);
+          this.activity.finish('manual-import', `Imported ${file.name}`);
+        } catch (error) {
+          if (isAbortError(error) || signal.aborted) {
+            if (request === this.loadRequest) {
+              this.statusState.set(this.providerState() ? 'ready' : 'import-required');
+              this.messageState.set('');
+              this.activity.cancel('manual-import', 'cancelled', 'vanilla');
+            }
+            return;
+          }
+          this.statusState.set('import-required');
+          this.messageState.set(
+            error instanceof Error ? error.message : 'Unable to import Minecraft assets',
+          );
+          this.activity.fail('manual-import', this.message());
+        } finally {
+          this.activity.releaseProtected(protection);
+        }
+      },
+      callerSignal,
+    );
   }
 
   async importModJar(file: File, signal?: AbortSignal): Promise<ModImportReport> {

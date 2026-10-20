@@ -45,6 +45,7 @@ const BLOCK_TAG_PATH = /^data\/[^/]+\/tags\/block\/.*\.json$/;
 const DECORATION_DATA_PATH =
   /^data\/[^/]+\/(?:painting_variant\/.*\.json|tags\/painting_variant\/.*\.json)$/;
 const MAX_CACHE_BYTES = 256 * 1024 * 1024;
+const NORMALIZATION_PROGRESS_INTERVAL = 256;
 
 export interface SerializedVanillaAssets {
   readonly schemaVersion: number;
@@ -52,6 +53,14 @@ export interface SerializedVanillaAssets {
   readonly sourceName: string;
   readonly json: Readonly<Record<string, unknown>>;
   readonly binary: readonly { readonly path: string; readonly data: ArrayBuffer }[];
+}
+
+export type VanillaAssetImportPhase = 'reading' | 'normalizing' | 'validating' | 'saving';
+
+export interface VanillaAssetImportProgress {
+  readonly phase: VanillaAssetImportPhase;
+  readonly loaded: number;
+  readonly total?: number;
 }
 
 export interface VanillaAssetProviderDiagnostics {
@@ -133,9 +142,14 @@ export class VanillaAssetProvider implements ContentSourceProvider, VanillaAsset
     minecraftVersion = VANILLA_ASSET_VERSION,
     sourceName = 'Imported Minecraft assets',
     signal?: AbortSignal,
+    onProgress?: (progress: VanillaAssetImportProgress) => void,
   ): Promise<VanillaAssetProvider> {
     throwIfAborted(signal);
-    const archive = await ZipArchive.open(file, undefined, signal);
+    const archive = await ZipArchive.open(
+      file,
+      (loaded, total) => onProgress?.({ phase: 'reading', loaded, total }),
+      signal,
+    );
     const entries = archive.entries.filter(
       (entry) =>
         RESOURCE_PATH.test(entry.name) ||
@@ -147,6 +161,7 @@ export class VanillaAssetProvider implements ContentSourceProvider, VanillaAsset
       throw new Error('The selected archive contains no Minecraft asset resources');
     if (totalSize > MAX_CACHE_BYTES)
       throw new Error('The selected Minecraft asset set is too large');
+    onProgress?.({ phase: 'normalizing', loaded: 0, total: entries.length });
     const json: Record<string, unknown> = {};
     const binary = new Map<string, Uint8Array>();
     for (let offset = 0; offset < entries.length; offset += 32) {
@@ -155,7 +170,8 @@ export class VanillaAssetProvider implements ContentSourceProvider, VanillaAsset
       const decoded = await Promise.all(
         batch.map(async (entry) => ({ entry, bytes: await entry.read(signal) })),
       );
-      for (const { entry, bytes } of decoded) {
+      for (let index = 0; index < decoded.length; index++) {
+        const { entry, bytes } = decoded[index];
         if (entry.name.endsWith('.json') || entry.name.endsWith('.png.mcmeta')) {
           try {
             json[entry.name] = JSON.parse(new TextDecoder().decode(bytes));
@@ -164,6 +180,16 @@ export class VanillaAssetProvider implements ContentSourceProvider, VanillaAsset
           }
         } else binary.set(entry.name, bytes);
         await yieldToBrowser(signal);
+        const normalizedCount = offset + index + 1;
+        if (
+          normalizedCount % NORMALIZATION_PROGRESS_INTERVAL === 0 ||
+          normalizedCount === entries.length
+        )
+          onProgress?.({
+            phase: 'normalizing',
+            loaded: normalizedCount,
+            total: entries.length,
+          });
       }
     }
     return new VanillaAssetProvider(sourceName, minecraftVersion, json, binary);

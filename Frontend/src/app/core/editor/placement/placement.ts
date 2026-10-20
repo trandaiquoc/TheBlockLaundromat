@@ -40,10 +40,15 @@ export function projectGridBounds(size: ProjectSize): ProjectGridBounds {
 }
 
 export function targetFromBlockFace(block: VoxelCoordinate, normal: FaceNormal): VoxelCoordinate {
+  const x = Math.abs(normal.x);
+  const y = Math.abs(normal.y);
+  const z = Math.abs(normal.z);
+  const axis = x >= y && x >= z ? 'x' : y >= z ? 'y' : 'z';
+  const direction = Math.sign(normal[axis]);
   return {
-    x: block.x + Math.sign(normal.x),
-    y: block.y + Math.sign(normal.y),
-    z: block.z + Math.sign(normal.z),
+    x: block.x + (axis === 'x' ? direction : 0),
+    y: block.y + (axis === 'y' ? direction : 0),
+    z: block.z + (axis === 'z' ? direction : 0),
   };
 }
 

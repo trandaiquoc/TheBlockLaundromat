@@ -186,6 +186,33 @@
               >
                 {{ i18n.t('assetManagerImport') }}
               </button>
+              @if (manualJarImportActive()) {
+                <section class="active-task-panel" aria-busy="true">
+                  <div class="active-task-heading">
+                    <span class="active-task-label" role="status">
+                      <span class="active-task-indicator" aria-hidden="true"></span>
+                      {{ manualJarImportLabel() }}
+                    </span>
+                    <button
+                      type="button"
+                      class="operation-cancel"
+                      [disabled]="manualJarImportCancelling()"
+                      [attr.aria-label]="i18n.t('assetManagerCancelVanillaJarImport')"
+                      [attr.title]="i18n.t('assetManagerCancelVanillaJarImport')"
+                      (click)="cancelManualJarImport()"
+                    >
+                      <svg lucideX aria-hidden="true"></svg>
+                    </button>
+                  </div>
+                  <app-ui-progress
+                    [value]="manualJarImportPercent()"
+                    [indeterminate]="manualJarImportPercent() === undefined"
+                    [compact]="true"
+                    [label]="i18n.t('assetActivityCurrent')"
+                  />
+                  <small>{{ manualJarImportProgressDetail() }}</small>
+                </section>
+              }
             </div>
           </section>
         } @else {

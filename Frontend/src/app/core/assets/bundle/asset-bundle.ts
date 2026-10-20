@@ -1,4 +1,8 @@
-import { SerializedVanillaAssets, VanillaAssetProvider } from '../vanilla/vanilla-asset-provider';
+import {
+  SerializedVanillaAssets,
+  VanillaAssetImportProgress,
+  VanillaAssetProvider,
+} from '../vanilla/vanilla-asset-provider';
 import { DEFAULT_MINECRAFT_VERSION } from '../../domain/project.types';
 
 export const ASSET_BUNDLE_FORMAT = 'the-block-laundromat-asset-bundle' as const;
@@ -25,9 +29,12 @@ export class JarImportSource {
     file: File,
     minecraftVersion: string = DEFAULT_MINECRAFT_VERSION,
     signal?: AbortSignal,
+    onProgress?: (progress: VanillaAssetImportProgress) => void,
   ): Promise<VanillaAssetBundle> {
     return vanillaBundle(
-      (await VanillaAssetProvider.fromJar(file, minecraftVersion, file.name, signal)).serialize(),
+      (
+        await VanillaAssetProvider.fromJar(file, minecraftVersion, file.name, signal, onProgress)
+      ).serialize(),
       file.name,
     );
   }

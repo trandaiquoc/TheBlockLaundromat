@@ -139,6 +139,11 @@ export class BlockRuleEngine {
         : support.status === 'valid' && !knownPlacement
           ? 'unknown'
           : support.status;
+    const refreshedByKey = new Map(
+      (refreshed.changedBlocks ?? []).map(
+        (entry) => [coordinateKey(entry.position), entry] as const,
+      ),
+    );
     return {
       validation: {
         status,
@@ -146,7 +151,9 @@ export class BlockRuleEngine {
         affectedPositions: refreshed.validation.affectedPositions,
       },
       project: touch(refreshed.project),
-      plannedBlocks: placed,
+      plannedBlocks: placed.map(
+        (entry) => refreshedByKey.get(coordinateKey(entry.position)) ?? entry,
+      ),
       changedBlocks: refreshed.changedBlocks,
     };
   }
@@ -197,7 +204,7 @@ export class BlockRuleEngine {
         reason: status === 'valid' ? 'ok' : 'unknown-behavior',
         affectedPositions: refreshed.affectedPositions,
       },
-      plannedBlocks: placed,
+      plannedBlocks: placed.map((entry) => overlay.get(entry.position) ?? entry),
     };
   }
 

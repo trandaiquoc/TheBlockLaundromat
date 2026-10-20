@@ -2307,6 +2307,12 @@ const supplementalTranslationSource = {
       'This JAR is damaged or incomplete. Choose a valid .jar file and try again.',
     assetManagerFinalizingCache: 'Finalizing cache…',
     assetManagerReadingJar: 'Reading JAR',
+    assetManagerReadingVanillaJar: 'Reading Vanilla JAR',
+    assetManagerNormalizingVanillaJar: 'Normalizing Minecraft resources',
+    assetManagerValidatingVanillaJar: 'Validating Minecraft resources',
+    assetManagerSavingVanillaJar: 'Saving Vanilla assets',
+    assetManagerCancelVanillaJarImport: 'Cancel Vanilla JAR import',
+    assetManagerCancellingVanillaJarImport: 'Cancelling Vanilla JAR import…',
     assetManagerResourcesStage: 'Resources',
     assetManagerDiscoveringContent: 'Discovering content',
     assetManagerValidationStage: 'Validation',
@@ -2652,6 +2658,12 @@ const supplementalTranslationSource = {
       'Tệp JAR bị hỏng hoặc chưa hoàn chỉnh. Hãy chọn tệp .jar hợp lệ và thử lại.',
     assetManagerFinalizingCache: 'Đang hoàn tất bộ nhớ đệm…',
     assetManagerReadingJar: 'Đọc JAR',
+    assetManagerReadingVanillaJar: 'Đang đọc JAR Vanilla',
+    assetManagerNormalizingVanillaJar: 'Đang chuẩn hóa tài nguyên Minecraft',
+    assetManagerValidatingVanillaJar: 'Đang xác thực tài nguyên Minecraft',
+    assetManagerSavingVanillaJar: 'Đang lưu tài nguyên Vanilla',
+    assetManagerCancelVanillaJarImport: 'Hủy nhập JAR Vanilla',
+    assetManagerCancellingVanillaJarImport: 'Đang hủy nhập JAR Vanilla…',
     assetManagerResourcesStage: 'Tài nguyên',
     assetManagerDiscoveringContent: 'Tìm nội dung',
     assetManagerValidationStage: 'Xác thực',
@@ -2708,7 +2720,7 @@ export const structureJsonProjectUiTranslations = {
   vi: {
     structureJsonCurrentFormat: 'Structure JSON của The Block Laundromat',
     structureJsonLimitations:
-      'Structure JSON bao gom block, do trang tri va block entity semantic da xac minh. Du lieu raw khong duoc ho tro co the can Ban sao luu du an de giu nguyen.',
+      'Structure JSON bao gồm khối, vật trang trí và dữ liệu block entity ngữ nghĩa được hỗ trợ. Bản sao lưu dự án giữ nguyên đầy đủ dữ liệu.',
     structureJsonImportStale:
       'Dự án đã thay đổi trong khi chờ nhập. Hãy kiểm tra lại trước khi áp dụng.',
     structureJsonImportDescription:

@@ -12,6 +12,8 @@ raw-data warning remain owned by the existing component and services.
 Verification: focused Decorated Pot and item-picker tests passed (9 tests), and
 the Angular production build passed. A real Decorated Pot was placed and selected
 in a disposable browser project. The inspector remained readable at 1440 px and
-in the 390 px inspector sheet, with no horizontal overflow. Screenshots stayed
-in `/tmp` and were not added to the repository. EN and the other themes remain
-for the final cross-theme gate.
+in the 390 px inspector sheet, with no horizontal overflow. The final browser
+matrix checked the populated pot inspector in Minecraft, Light, Raccoon and Dark
+at both 1440 px and 390 px. The sheet stayed within the viewport in all eight
+combinations; each theme retained its own semantic surface and text colors.
+Screenshots stayed in ignored `.artifacts/`.
