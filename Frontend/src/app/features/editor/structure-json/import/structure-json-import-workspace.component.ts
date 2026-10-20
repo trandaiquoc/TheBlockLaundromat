@@ -37,6 +37,7 @@ import {
   type StructureJsonValidationSeverity,
 } from '../../../../core/persistence/structure-json/validation/structure-json-validation-severity';
 import type { TranslationKey } from '../../../../core/ui/localization/translation-catalogs';
+import { structureJsonFileIssue } from '../../../../core/persistence/structure-json/import/structure-json-file-policy';
 import {
   StructureJsonImportWorkflow,
   type StructureJsonImportProgress,
@@ -126,12 +127,9 @@ export class StructureJsonImportWorkspaceComponent implements OnChanges {
       this.workflow.setDraft(this.draftJson());
       this.selectedFileName.set(undefined);
       this.fileSelectionError.set(undefined);
-      if (!file.name.toLowerCase().endsWith('.json')) {
-        this.fileSelectionError.set('type');
-        return;
-      }
-      if (file.size > 64 * 1024 * 1024) {
-        this.fileSelectionError.set('size');
+      const issue = structureJsonFileIssue(file);
+      if (issue) {
+        this.fileSelectionError.set(issue);
         return;
       }
       this.selectedFileName.set(file.name);

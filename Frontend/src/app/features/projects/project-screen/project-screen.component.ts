@@ -272,6 +272,8 @@ export class ProjectScreenComponent {
   protected structureJsonImportErrorMessage(): string {
     const failure = this.structureJsonImport.failure();
     if (!failure) return '';
+    if (failure.kind === 'file-type') return this.i18n.t('structureJsonFileTypeError');
+    if (failure.kind === 'file-size') return this.i18n.t('structureJsonFileSizeError');
     if (failure.kind === 'parse') return this.structureJsonValidationError(failure.code);
     if (failure.kind === 'prepare') return this.structureJsonProjectImportError(failure.code);
     return this.i18n.t(

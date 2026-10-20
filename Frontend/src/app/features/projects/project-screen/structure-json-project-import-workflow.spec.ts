@@ -53,6 +53,25 @@ function file(name: string, text: () => Promise<string>): File {
 }
 
 describe('StructureJsonProjectImportWorkflow', () => {
+  it('rejects the wrong file type and oversized JSON before reading or preparing a project', async () => {
+    const { workflow } = createWorkflow();
+    const read = vi.fn(async () => source);
+    await workflow.selectFile(
+      { name: 'house.zip', size: 4, text: read } as unknown as File,
+      'Untitled structure',
+    );
+    expect(workflow.failure()).toEqual({ kind: 'file-type' });
+    expect(workflow.progress()).toBe('error');
+    expect(read).not.toHaveBeenCalled();
+    await workflow.selectFile(
+      { name: 'house.json', size: 65 * 1024 * 1024, text: read } as unknown as File,
+      'Untitled structure',
+    );
+    expect(workflow.failure()).toEqual({ kind: 'file-size' });
+    expect(workflow.preview()).toBeUndefined();
+    expect(read).not.toHaveBeenCalled();
+    workflow.dispose();
+  });
   it('exposes project-import state as read-only signals owned by the workflow', async () => {
     const { workflow } = createWorkflow();
     const states = [

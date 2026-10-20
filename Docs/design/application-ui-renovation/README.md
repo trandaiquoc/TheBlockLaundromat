@@ -46,6 +46,7 @@ Checkpoint F backup evidence: [F1 — project backup](CHECKPOINT-F1.md).
 Checkpoint F JSON export evidence: [F2 — export intent](CHECKPOINT-F2.md).
 Checkpoint F JSON input evidence: [F3 — file and review feedback](CHECKPOINT-F3.md).
 Checkpoint F NBT/AI audit: [F4 — retained workflows](CHECKPOINT-F4.md).
+Checkpoint F file-policy parity: [F5 — Structure JSON entry points](CHECKPOINT-F5.md).
 
 ## Preserved contracts
 

@@ -1,6 +1,7 @@
 import { DestroyRef, inject, signal } from '@angular/core';
 import { BlockLibraryService } from '../../../core/blocks/catalog/block-library.service';
 import type { ProjectDocument } from '../../../core/domain/project.types';
+import { structureJsonFileIssue } from '../../../core/persistence/structure-json/import/structure-json-file-policy';
 import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
 import {
   parseStructureJsonWithWorker,
@@ -17,7 +18,7 @@ export type StructureJsonProjectImportProgress =
 export type StructureJsonProjectImportFailure =
   | { readonly kind: 'parse'; readonly code?: string }
   | { readonly kind: 'prepare'; readonly code: StructureJsonProjectImportError }
-  | { readonly kind: 'read' | 'save' };
+  | { readonly kind: 'read' | 'save' | 'file-type' | 'file-size' };
 
 export class StructureJsonProjectImportWorkflow {
   private readonly library = inject(BlockLibraryService);
@@ -57,6 +58,12 @@ export class StructureJsonProjectImportWorkflow {
     this.previewState.set(undefined);
     this.failureState.set(undefined);
     this.progressState.set('reading');
+    const fileIssue = structureJsonFileIssue(file);
+    if (fileIssue) {
+      this.failureState.set({ kind: fileIssue === 'type' ? 'file-type' : 'file-size' });
+      this.progressState.set('error');
+      return;
+    }
     try {
       const serialized = await file.text();
       if (generation !== this.generation) return;
