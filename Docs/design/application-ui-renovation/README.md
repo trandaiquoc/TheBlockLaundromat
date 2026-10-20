@@ -23,17 +23,17 @@ An inventory entry or green build alone is not visual acceptance.
 
 ## Checkpoints
 
-| Checkpoint | Boundary                                                                                     | Status                                                                                                                          |
-| ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; A4 refines visible action surfaces while preserving 44 px hit targets                                              |
-| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                                                                     |
-| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                                                                     |
-| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                                                     |
-| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                                                     |
-| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                                                                               |
-| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G7; real unsupported-Mod compatibility and activation cancellation remain                                       |
-| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H10 and H12–H14 viewport, Homepage account controls, diagnostics and specialized editors; other surfaces remain |
-| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                                                           |
+| Checkpoint | Boundary                                                                                     | Status                                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; A4 refines visible action surfaces while preserving 44 px hit targets                                                    |
+| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                                                                           |
+| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                                                                           |
+| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                                                           |
+| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                                                           |
+| F          | Every supported import/export workflow and its nested decisions                              | In progress: F1–F7 project backup, Structure JSON review and clip-empty recovery implemented; remaining branches are inventoried      |
+| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G8; official Fabric import, NeoForge rejection and commit cancellation verified; remaining states are inventoried     |
+| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H10 and H12–H15; viewport, Quick Bar, source handoff, account controls and specialized editors; other surfaces remain |
+| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                                                                 |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
 checks and its own local commit. The final gate includes the full suite, app
@@ -48,6 +48,7 @@ Checkpoint F JSON input evidence: [F3 — file and review feedback](CHECKPOINT-F
 Checkpoint F NBT/AI audit: [F4 — retained workflows](CHECKPOINT-F4.md).
 Checkpoint F file-policy parity: [F5 — Structure JSON entry points](CHECKPOINT-F5.md).
 Checkpoint F review hierarchy: [F6 — import choices](CHECKPOINT-F6.md).
+Checkpoint F clipped import recovery: [F7 — empty clip result](CHECKPOINT-F7.md).
 Checkpoint G initial asset manager refinement: [G1 — Vanilla tab intent](CHECKPOINT-G1.md).
 Checkpoint G nested confirmation safety: [G2 — asset manager confirmation](CHECKPOINT-G2.md).
 Checkpoint G real Fabric archive workflow: [G3 — Cobblemon import and cleanup](CHECKPOINT-G3.md).
@@ -55,6 +56,7 @@ Checkpoint G archive errors: [G4 — Mod JAR error presentation](CHECKPOINT-G4.m
 Checkpoint G nested overlays: [G5 — Escape and loader limits](CHECKPOINT-G5.md).
 Checkpoint G offline/cache recovery: [G6 — Vanilla fallback and recovery](CHECKPOINT-G6.md).
 Checkpoint G timeout/retry and warning diagnostics: [G7 — Mod preflight recovery](CHECKPOINT-G7.md).
+Checkpoint G real loader and activation follow-up: [G8 — Cobblemon loader and cancellation](CHECKPOINT-G8.md).
 Checkpoint A2 catalog controls: [A2 — action placement and shared active states](CHECKPOINT-A2.md).
 Checkpoint A3 catalog actions: [A3 — smaller, quieter action surfaces](CHECKPOINT-A3.md).
 Checkpoint A4 catalog action follow-up: [A4 — softer compact action surfaces](CHECKPOINT-A4.md).
@@ -71,6 +73,7 @@ Checkpoint H10 inventory inspector: [H10 — selected slot hierarchy and nested 
 Checkpoint H12 decoration inspector: [H12 — Item Frame rotation control](CHECKPOINT-H12.md).
 Checkpoint H13 painting picker: [H13 — compact painting picker focus and Escape](CHECKPOINT-H13.md).
 Checkpoint H14 group movement: [H14 — Move panel Escape and narrow viewport spacing](CHECKPOINT-H14.md).
+Checkpoint H15 final viewport/sidebar checks: [H15 — Y-Layer, Quick Bar and source handoff](CHECKPOINT-H15.md).
 Checkpoint I2 stale Mod JAR state: [I2 — replacement validation](CHECKPOINT-I2.md).
 Checkpoint I3 archive validation: [I3 — malformed ZIP classification](CHECKPOINT-I3.md).
 Checkpoint I4 activity lifecycle: [I4 — failed task state](CHECKPOINT-I4.md).

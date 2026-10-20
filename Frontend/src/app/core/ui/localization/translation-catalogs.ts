@@ -988,6 +988,9 @@ export const translations = {
     structureJsonImportClippedTitle: 'Imported with clipping',
     structureJsonImportClippedText:
       '{blocks} blocks and {decorations} decorations outside the current bounds were skipped.',
+    structureJsonImportClippedEmptyTitle: 'No content remains after clipping',
+    structureJsonImportClippedEmptyText:
+      'All imported blocks and decorations are outside the current project bounds. Nothing was imported. Choose “Resize & import” to include them, or cancel.',
   },
   vi: {
     newGroup: 'Nhóm mới',
@@ -1966,6 +1969,9 @@ export const translations = {
     structureJsonImportClippedTitle: 'Đã nhập và cắt phần ngoài giới hạn',
     structureJsonImportClippedText:
       'Đã bỏ qua {blocks} khối và {decorations} đồ trang trí nằm ngoài giới hạn hiện tại.',
+    structureJsonImportClippedEmptyTitle: 'Không còn nội dung sau khi cắt',
+    structureJsonImportClippedEmptyText:
+      'Tất cả khối và đồ trang trí đều nằm ngoài giới hạn dự án hiện tại nên chưa có dữ liệu nào được nhập. Chọn “Mở rộng và nhập” để đưa chúng vào, hoặc hủy.',
   },
 } as const;
 

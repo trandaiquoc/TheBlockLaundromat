@@ -291,6 +291,18 @@ export class StructureJsonImportWorkflow implements OnDestroy {
         if (!resizedPlan || !this.isCurrent(generation, baseProject)) return false;
         effectivePlan = resizedPlan;
       }
+      if (
+        clipped &&
+        effectivePlan.source.blocks.length === 0 &&
+        effectivePlan.source.decorations.length === 0
+      ) {
+        this.progressState.set('ready');
+        await this.dialogs.warning(
+          this.i18n.t('structureJsonImportClippedEmptyTitle'),
+          this.i18n.t('structureJsonImportClippedEmptyText'),
+        );
+        return false;
+      }
       if (!effectivePlan.applicable) {
         await this.dialogs.warning(this.i18n.t('structureJsonImportResizeUnavailable'));
         return false;

@@ -149,6 +149,43 @@ describe('StructureJsonImportWorkflow', () => {
     expect(workspace.project()?.blocks).toHaveLength(1);
   });
 
+  it('explains when keeping the current size clips all imported content', async () => {
+    const dialogs = {
+      confirm: vi.fn().mockResolvedValue(true),
+      warning: vi.fn(),
+      choice: vi.fn().mockResolvedValue('keep'),
+    };
+    const { workflow, workspace, history } = configure(dialogs);
+    const oversizedSource = JSON.stringify({
+      format: 'the-block-laundromat-structure',
+      minecraftVersion: '1.21.1',
+      blocks: [{ id: stone.id, x: 4, y: 0, z: 0 }],
+      decorations: [
+        {
+          kind: 'painting',
+          anchor: { x: 4, y: 0, z: 0 },
+          facing: 'north',
+          variantId: 'minecraft:kebab',
+        },
+      ],
+    });
+    workflow.setDraft(oversizedSource);
+
+    await workflow.validate(context);
+    await workflow.selectImportMode('merge', context);
+
+    expect(workflow.canApplyImport()).toBe(true);
+    expect(await workflow.applyImport(context)).toBe(false);
+
+    expect(dialogs.warning).toHaveBeenCalledWith(
+      'structureJsonImportClippedEmptyTitle',
+      'structureJsonImportClippedEmptyText',
+    );
+    expect(workspace.project()).toBe(project);
+    expect(history.undo()).toBe(false);
+    expect(workflow.progress()).toBe('ready');
+  });
+
   it('invalidates a running validation and plan when the project scope changes', async () => {
     const { workflow } = configure();
     workflow.setDraft(serializedStone());
