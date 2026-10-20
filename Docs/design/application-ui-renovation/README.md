@@ -1,6 +1,6 @@
 # Application UI renovation
 
-Implementation in progress from the current local HEAD. This work covers navigation,
+Implementation and verification are complete at the current local HEAD. This work covers navigation,
 menus, shared UI, Settings, Help, all existing dialogs and their nested workflows.
 It does not reopen unrelated Homepage composition or change Minecraft/file-format
 semantics to accommodate presentation.
@@ -30,7 +30,7 @@ An inventory entry or green build alone is not visual acceptance.
 | C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                                                                           |
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                                                           |
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                                                           |
-| F          | Every supported import/export workflow and its nested decisions                              | F1–F9 workflow and branch audit complete; full automated and build gates passed                                                           |
+| F          | Every supported import/export workflow and its nested decisions                              | F1–F9 workflow and branch audit complete; full tests, app typecheck, production build and final checks passed                              |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | G1–G11 implemented; official Mojang client fallback cancellation and real Supplementaries nonblocking warnings verified; import remains disabled for the warning fixture's separate blockers |
 | H          | Project/diagnostics and all specialized editor surfaces                                      | H1–H10 and H12–H15 browser evidence complete; inventory owner audits reconciled                                                                       |
 | I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                                                                 |

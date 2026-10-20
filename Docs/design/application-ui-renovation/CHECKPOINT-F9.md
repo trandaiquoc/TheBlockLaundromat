@@ -50,6 +50,8 @@ Minecraft NBT import remains unsupported and is explained in Help; no parallel
 import action was added. NBT/datapack generation has no in-progress user
 cancellation control; Cancel closes the dialog before generation.
 
-The final automated test, production build, typecheck, formatter, and encoding
-gates passed after F9. The overall A-I renovation remains open for G7's
-unavailable real nonblocking Mod warning fixture.
+At the time of F9, the final automated test, production build, typecheck,
+formatter, and encoding gates passed. G10 later closed the real nonblocking Mod
+warning-fixture gap; G11 verifies the official client fallback with a genuine
+Mojang archive. The combined final audit is recorded in the current renovation
+inventory after A7, G10 and G11.
