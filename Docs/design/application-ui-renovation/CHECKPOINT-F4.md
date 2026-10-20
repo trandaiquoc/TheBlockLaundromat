@@ -16,5 +16,8 @@ does not call an AI service. It separates prompt inclusion from Describe,
 Content, Limits, Guide and Example viewing tabs. All five tabs were navigable
 at 320 px without horizontal overflow or page errors. Existing dialog specs
 cover tab navigation, content inclusion, mod selection, persisted limits,
-diagnostic translation and atomic import handoff. Real mod source interaction
+diagnostic translation and atomic import handoff. A follow-up regression test
+now verifies that rejected clipboard writes and an unavailable Clipboard API
+show a failure state for the correct copy target. The F follow-up run passed
+70 tests across eight import, export and AI specs. Real mod source interaction
 remains in checkpoint G.

@@ -58,6 +58,37 @@ describe('ExternalAiWorkspaceComponent copy feedback', () => {
     expect(state.aiCopyTarget()).toBeUndefined();
   });
 
+  it('reports clipboard permission failures and unavailable clipboard support', async () => {
+    const state = component as unknown as {
+      copyText: (value: string, target: 'prompt' | 'example') => Promise<void>;
+      aiCopyStatus: () => string;
+      aiCopyTarget: () => string | undefined;
+    };
+    const originalClipboard = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
+    const writeText = vi.fn().mockRejectedValue(new Error('permission denied'));
+
+    try {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText },
+      });
+      await state.copyText('generated prompt text', 'prompt');
+
+      expect(writeText).toHaveBeenCalledExactlyOnceWith('generated prompt text');
+      expect(state.aiCopyStatus()).toBe('failed');
+      expect(state.aiCopyTarget()).toBe('prompt');
+
+      Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined });
+      await state.copyText('canonical example', 'example');
+
+      expect(state.aiCopyStatus()).toBe('failed');
+      expect(state.aiCopyTarget()).toBe('example');
+    } finally {
+      if (originalClipboard) Object.defineProperty(navigator, 'clipboard', originalClipboard);
+      else Reflect.deleteProperty(navigator, 'clipboard');
+    }
+  });
+
   it('clears pending feedback on destroy and ignores late clipboard results', () => {
     const state = component as unknown as {
       showCopyFeedback: (status: 'copied' | 'failed', target: 'prompt' | 'example') => void;
