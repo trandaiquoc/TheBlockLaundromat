@@ -4,14 +4,15 @@ import { I18nService } from '../../../../core/ui/localization/i18n.service';
 import type { TranslationKey } from '../../../../core/ui/localization/translation-catalogs';
 
 const AXES = [
-  { axis: 'X', preset: 'right', label: 'cameraRight', vector: { x: 1, y: 0, z: 0 } },
-  { axis: 'X', preset: 'left', label: 'cameraLeft', vector: { x: -1, y: 0, z: 0 } },
-  { axis: 'Y', preset: 'top', label: 'cameraTop', vector: { x: 0, y: 1, z: 0 } },
-  { axis: 'Y', preset: 'bottom', label: 'cameraBottom', vector: { x: 0, y: -1, z: 0 } },
-  { axis: 'Z', preset: 'front', label: 'cameraFront', vector: { x: 0, y: 0, z: 1 } },
-  { axis: 'Z', preset: 'back', label: 'cameraBack', vector: { x: 0, y: 0, z: -1 } },
+  { axis: 'X', sign: '+', preset: 'right', label: 'cameraRight', vector: { x: 1, y: 0, z: 0 } },
+  { axis: 'X', sign: '−', preset: 'left', label: 'cameraLeft', vector: { x: -1, y: 0, z: 0 } },
+  { axis: 'Y', sign: '+', preset: 'top', label: 'cameraTop', vector: { x: 0, y: 1, z: 0 } },
+  { axis: 'Y', sign: '−', preset: 'bottom', label: 'cameraBottom', vector: { x: 0, y: -1, z: 0 } },
+  { axis: 'Z', sign: '+', preset: 'front', label: 'cameraFront', vector: { x: 0, y: 0, z: 1 } },
+  { axis: 'Z', sign: '−', preset: 'back', label: 'cameraBack', vector: { x: 0, y: 0, z: -1 } },
 ] as const satisfies readonly {
   axis: 'X' | 'Y' | 'Z';
+  sign: '+' | '−';
   preset: CameraPreset;
   label: TranslationKey;
   vector: { x: number; y: number; z: number };
@@ -45,12 +46,12 @@ const AXES = [
           [class.axis-endpoint-back]="axis.back"
           [style.left.px]="axis.left"
           [style.top.px]="axis.top"
-          [attr.aria-label]="i18n.t(axis.label)"
-          [title]="i18n.t(axis.label)"
+          [attr.aria-label]="i18n.t(axis.label) + ' (' + axis.sign + axis.axis + ')'"
+          [title]="i18n.t(axis.label) + ' (' + axis.sign + axis.axis + ')'"
           (pointerdown)="$event.stopPropagation()"
           (click)="selectPreset.emit(axis.preset)"
         >
-          {{ axis.axis }}
+          {{ axis.sign }}{{ axis.axis }}
         </button>
       }
     </nav>
@@ -59,23 +60,23 @@ const AXES = [
     :host {
       position: absolute;
       z-index: 3;
-      top: 1rem;
-      left: 1rem;
+      top: 0.75rem;
+      right: 0.75rem;
       pointer-events: none;
     }
     .axis-gizmo {
       position: relative;
-      width: 5.25rem;
-      height: 5.25rem;
+      width: 4rem;
+      height: 4rem;
       pointer-events: none;
     }
     .axis-gizmo-center {
       position: absolute;
       z-index: 1;
-      left: 2.35rem;
-      top: 2.35rem;
-      width: 0.55rem;
-      height: 0.55rem;
+      left: 1.72rem;
+      top: 1.72rem;
+      width: 0.5rem;
+      height: 0.5rem;
       border: 1px solid var(--border-strong, var(--border));
       border-radius: 50%;
       background: var(--surface-raised);
@@ -100,14 +101,14 @@ const AXES = [
       z-index: 2;
       display: grid;
       place-items: center;
-      width: 1.55rem;
-      height: 1.55rem;
+      width: 1.3rem;
+      height: 1.05rem;
       padding: 0;
-      border: 1px solid color-mix(in srgb, currentColor 48%, transparent);
-      border-radius: 50%;
+      border: 1px solid color-mix(in srgb, var(--axis-color) 64%, transparent);
+      border-radius: 0.52rem;
       background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
       color: var(--axis-color);
-      font: 700 0.72rem var(--font-ui);
+      font: 700 0.62rem var(--font-ui);
       cursor: pointer;
       pointer-events: auto;
       box-shadow: 0 1px 4px color-mix(in srgb, #000 18%, transparent);
@@ -122,7 +123,7 @@ const AXES = [
       --axis-color: var(--axis-z);
     }
     .axis-endpoint-back {
-      opacity: 0.58;
+      opacity: 0.76;
     }
     .axis-endpoint:hover {
       background: var(--surface-hover);
@@ -160,8 +161,8 @@ export class ViewportAxisGizmoComponent {
     });
     const right = normalize(cross(forward, up));
     const screenUp = normalize(cross(right, forward));
-    const center = 42;
-    const radius = 28;
+    const center = 32;
+    const radius = 21;
 
     return AXES.map((axis) => {
       const projectedX = dot(axis.vector, right);
@@ -172,8 +173,8 @@ export class ViewportAxisGizmoComponent {
       const oppositeY = center - projectedY * radius;
       return {
         ...axis,
-        left: x - 12,
-        top: y - 12,
+        left: x - 10,
+        top: y - 8,
         back: dot(axis.vector, forward) > 0,
         lineLeft: oppositeX,
         lineTop: oppositeY,

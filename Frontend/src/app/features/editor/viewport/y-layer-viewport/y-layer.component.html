@@ -24,6 +24,10 @@
     (contextmenu)="$event.preventDefault()"
     (window:resize)="resize()"
   >
+    <app-viewport-axis-gizmo
+      [cameraState]="cameraOrientation()"
+      (selectPreset)="chooseAxisView($event)"
+    />
     <app-viewport-feedback
       [placementStatus]="placementFeedback()?.status"
       [placementReason]="reasonLabel()"

@@ -60,7 +60,7 @@ import {
   hoverCoordinateForHit,
 } from '../../../../core/editor/viewport/viewport-status.service';
 import { ViewportHydrationStatusService } from '../../../../core/editor/state/viewport-hydration-status.service';
-import type { ProjectDocument } from '../../../../core/domain/project.types';
+import type { ProjectDocument, VoxelCoordinate } from '../../../../core/domain/project.types';
 import type { ViewportRuntimeTraceApi } from '../../../../core/renderer/diagnostics/trace/viewport-runtime-trace';
 import { ViewportSessionOwner } from '../shared/viewport-session-owner';
 import {
@@ -111,7 +111,7 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
     ReturnType<typeof placementFeedbackForHit> | undefined
   >(undefined);
   protected readonly decorationReason = signal('');
-  protected readonly target = signal<string>('');
+  protected readonly target = signal<VoxelCoordinate | undefined>(undefined);
   private readonly engine = new ThreeViewportEngine(undefined, {
     blockLookup: this.blockRuntimeIndex,
     onCameraChange: () => this.cameraOrientation.set(this.engine.cameraState()),
@@ -408,7 +408,7 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
     this.decorationReason.set(activeDecoration ? (hit.decorationPlan?.reason ?? '') : '');
     this.engine.setGhostStatus(feedback?.status ?? 'invalid');
     this.placementFeedback.set(feedback);
-    this.target.set(hit.target ? `${hit.target.x}, ${hit.target.y}, ${hit.target.z}` : '');
+    this.target.set(hit.target);
     this.viewportStatus.publish(
       this.viewportStatusOwner,
       projectId,
@@ -575,7 +575,7 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
     this.engine.clearGhost();
     this.placementFeedback.set(undefined);
     this.decorationReason.set('');
-    this.target.set('');
+    this.target.set(undefined);
     this.viewportStatus.clear(this.viewportStatusOwner);
   }
   protected cancelPointer(event?: PointerEvent): void {

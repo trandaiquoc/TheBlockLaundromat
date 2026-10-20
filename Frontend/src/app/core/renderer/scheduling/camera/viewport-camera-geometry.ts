@@ -50,9 +50,9 @@ export function perspectiveDirection(): THREE.Vector3 {
 export function presetDirection(preset: CameraPreset): THREE.Vector3 {
   switch (preset) {
     case 'top':
-      return new THREE.Vector3(0, 1, 0);
+      return new THREE.Vector3(0.01, 1, 0).normalize();
     case 'bottom':
-      return new THREE.Vector3(0, -1, 0);
+      return new THREE.Vector3(0.01, -1, 0).normalize();
     case 'front':
       return new THREE.Vector3(0, 0, 1);
     case 'back':

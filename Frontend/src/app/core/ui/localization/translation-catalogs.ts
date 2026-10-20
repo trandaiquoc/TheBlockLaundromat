@@ -411,6 +411,7 @@ export const translations = {
     redo: 'Redo',
     camera: 'Camera',
     cameraPresets: 'Camera presets',
+    hoverCoordinates: 'Hovered block coordinates',
     fitStructure: 'Fit structure',
     focusSelection: 'Focus selection',
     resetCamera: 'Reset camera',
@@ -770,7 +771,7 @@ export const translations = {
     helpCameraPointThree:
       'Adjust movement keys and pointer response in Settings; bindings shown here update with your preferences.',
     helpCameraPointFour:
-      'The XYZ gizmo appears only in 3D and follows the camera orbit. Its view buttons frame the whole structure, even when a block is selected; selection does not change the camera pivot or edit block data.',
+      'The XYZ gizmo appears in 3D and Y-Layer and follows the camera orbit. Click a signed axis to frame the whole structure from that direction, even when a block is selected; selection does not change the camera pivot or edit block data. Minecraft Y is vertical.',
     helpPlacementTitle: 'Place, delete, pick, and select',
     helpPlacementSummary:
       'Choose a tool and use the configured mouse bindings on the target voxel.',
@@ -1394,6 +1395,7 @@ export const translations = {
     redo: 'Làm lại',
     camera: 'Camera',
     cameraPresets: 'Góc camera',
+    hoverCoordinates: 'Tọa độ khối đang trỏ tới',
     fitStructure: 'Vừa cấu trúc',
     focusSelection: 'Tập trung lựa chọn',
     resetCamera: 'Đặt lại camera',
@@ -1756,7 +1758,7 @@ export const translations = {
     helpCameraPointThree:
       'Điều chỉnh phím di chuyển và phản hồi con trỏ trong Cài đặt; danh sách bên dưới cập nhật theo lựa chọn của bạn.',
     helpCameraPointFour:
-      'Gizmo XYZ chỉ xuất hiện ở chế độ 3D và xoay theo camera. Các nút góc nhìn căn toàn bộ công trình, kể cả khi đang chọn khối; lựa chọn không đổi tâm camera hay chỉnh sửa dữ liệu khối.',
+      'Gizmo XYZ xuất hiện ở cả chế độ 3D và Lớp Y, đồng thời xoay theo camera. Nhấn trục có dấu để căn toàn bộ công trình từ hướng đó, kể cả khi đang chọn khối; lựa chọn không đổi tâm camera hay chỉnh sửa dữ liệu khối. Trục Y là chiều cao trong Minecraft.',
     helpPlacementTitle: 'Đặt, xóa, lấy mẫu và chọn',
     helpPlacementSummary: 'Chọn công cụ rồi dùng thao tác chuột đã cấu hình lên khối mục tiêu.',
     helpPlacementPointOne:

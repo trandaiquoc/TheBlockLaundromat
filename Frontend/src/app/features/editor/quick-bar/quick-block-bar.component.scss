@@ -19,28 +19,6 @@
     border-color var(--motion-duration-ui) var(--motion-easing-standard),
     box-shadow var(--motion-duration-ui) var(--motion-easing-standard);
 }
-.material-name {
-  display: grid;
-  gap: 0.25rem;
-  box-sizing: border-box;
-  width: max-content;
-  max-width: min(22rem, calc(100vw - 16px));
-  padding: 0.55rem 0.7rem;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--workspace-radius-md);
-  background: var(--surface-raised);
-  color: var(--text);
-  box-shadow: var(--shadow-popover);
-  font-size: 0.78rem;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-.material-name small {
-  color: var(--text-muted);
-  font:
-    0.68rem/1.4 ui-monospace,
-    monospace;
-}
 .slots {
   display: flex;
   flex-wrap: nowrap;

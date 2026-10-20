@@ -1,13 +1,21 @@
 @if (placementStatus() || placementReason() || target()) {
   <div class="viewport-status" [attr.data-status]="placementStatus()">
-    @if (placementStatus()) {
-      {{ i18n.t(placementStatus()!) }}
-    }
-    @if (placementReason()) {
-      <span>&middot; {{ placementReason() }}</span>
+    @if (placementStatus() || placementReason()) {
+      <span class="status-chip">
+        @if (placementStatus()) {
+          {{ i18n.t(placementStatus()!) }}
+        }
+        @if (placementReason()) {
+          <span class="status-reason">{{ placementReason() }}</span>
+        }
+      </span>
     }
     @if (target()) {
-      <span>{{ target() }}</span>
+      <span class="coordinate-readout" role="group" [attr.aria-label]="i18n.t('hoverCoordinates')">
+        <span class="coordinate-x"><b>X</b>{{ target()?.x }}</span>
+        <span class="coordinate-y"><b>Y</b>{{ target()?.y }}</span>
+        <span class="coordinate-z"><b>Z</b>{{ target()?.z }}</span>
+      </span>
     }
   </div>
 }

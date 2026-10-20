@@ -16,6 +16,7 @@ import type { YLayerPrewarmTerminalNotification } from '../../../core/renderer/e
 import { ViewportComponent } from './three-d-viewport/viewport.component';
 import { YLayerComponent } from './y-layer-viewport/y-layer.component';
 import { EditorToolService } from '../../../core/editor/state/tool.service';
+import type { VoxelCoordinate } from '../../../core/domain/voxel-coordinate.types';
 
 function createAssetRuntimeStub() {
   return {
@@ -46,7 +47,7 @@ const viewportOverlayTemplate = `
 type ViewportFeedbackSignals = {
   placementFeedback: WritableSignal<PlacementFeedback | undefined>;
   decorationReason: WritableSignal<string>;
-  target: WritableSignal<string>;
+  target: WritableSignal<VoxelCoordinate | undefined>;
 };
 
 describe('editor viewport engine teardown', () => {
@@ -77,10 +78,10 @@ describe('editor viewport engine teardown', () => {
       };
       instance['placementFeedback'].set({ status: 'valid' });
       instance['decorationReason'].set('missing-support');
-      instance['target'].set('1, 2, 3');
+      instance['target'].set({ x: 1, y: 2, z: 3 });
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('.viewport-status')?.textContent).toContain(
-        '1, 2, 3',
+        'X1Y2Z3',
       );
 
       instance.cancelPointer();
@@ -89,7 +90,7 @@ describe('editor viewport engine teardown', () => {
 
       instance.placementFeedback.set({ status: 'valid' });
       instance.decorationReason.set('missing-support');
-      instance.target.set('1, 2, 3');
+      instance.target.set({ x: 1, y: 2, z: 3 });
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('.viewport-status')).not.toBeNull();
 
@@ -99,7 +100,7 @@ describe('editor viewport engine teardown', () => {
       expect(fixture.nativeElement.querySelector('.viewport-status')).toBeNull();
       expect(instance['placementFeedback']()).toBeUndefined();
       expect(instance['decorationReason']()).toBe('');
-      expect(instance['target']()).toBe('');
+      expect(instance['target']()).toBeUndefined();
       fixture.destroy();
     },
   );
@@ -129,7 +130,7 @@ describe('editor viewport engine teardown', () => {
 
       instance.placementFeedback.set({ status: 'valid' });
       instance.decorationReason.set('missing-support');
-      instance.target.set('1, 2, 3');
+      instance.target.set({ x: 1, y: 2, z: 3 });
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('.viewport-status')).not.toBeNull();
 
@@ -139,7 +140,7 @@ describe('editor viewport engine teardown', () => {
       expect(fixture.nativeElement.querySelector('.viewport-status')).toBeNull();
       expect(instance.placementFeedback()).toBeUndefined();
       expect(instance.decorationReason()).toBe('');
-      expect(instance.target()).toBe('');
+      expect(instance.target()).toBeUndefined();
       fixture.destroy();
     },
   );
@@ -163,7 +164,7 @@ describe('editor viewport engine teardown', () => {
       const instance = fixture.componentInstance as unknown as ViewportFeedbackSignals;
       instance.placementFeedback.set({ status: 'valid' });
       instance.decorationReason.set('missing-support');
-      instance.target.set('1, 2, 3');
+      instance.target.set({ x: 1, y: 2, z: 3 });
       fixture.detectChanges();
       expect(fixture.nativeElement.querySelector('.viewport-status')).not.toBeNull();
 
@@ -172,7 +173,7 @@ describe('editor viewport engine teardown', () => {
       expect(fixture.nativeElement.querySelector('.viewport-status')).toBeNull();
       expect(instance.placementFeedback()).toBeUndefined();
       expect(instance.decorationReason()).toBe('');
-      expect(instance.target()).toBe('');
+      expect(instance.target()).toBeUndefined();
 
       fixture.componentRef.setInput('viewportActive', true);
       fixture.detectChanges();

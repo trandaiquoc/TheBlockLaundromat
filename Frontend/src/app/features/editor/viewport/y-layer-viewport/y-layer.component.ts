@@ -27,6 +27,7 @@ import { EditorToolService } from '../../../../core/editor/state/tool.service';
 import type { EditorTool } from '../../../../core/editor/state/tool.service';
 import { CameraStateService } from '../../../../core/editor/camera/camera-state.service';
 import { CameraPreset } from '../../../../core/editor/camera/camera';
+import type { CameraState } from '../../../../core/editor/camera/camera';
 import { GroupService } from '../../../../core/editor/groups/group.service';
 import { clampVoxelBox, normalizeVoxelBox } from '../../../../core/editor/selection/selection';
 import { ThreeViewportEngine } from '../../../../core/renderer/engine/three-viewport-engine';
@@ -62,6 +63,7 @@ import {
 import { shouldClearInteractionFeedbackForToolChange } from '../shared/viewport-interaction-feedback';
 import { ViewportHitInteractionWorkflow } from '../shared/viewport-hit-interaction-workflow';
 import { ViewportFeedbackComponent } from '../shared/viewport-feedback.component';
+import { ViewportAxisGizmoComponent } from '../shared/viewport-axis-gizmo.component';
 
 import { LayerControlsComponent, type LayerControlAction } from './layer-controls.component';
 
@@ -69,7 +71,7 @@ export const Y_LAYER_PROJECTION_STATUS_DELAY_MS = 180;
 
 @Component({
   selector: 'app-y-layer',
-  imports: [LayerControlsComponent, ViewportFeedbackComponent],
+  imports: [LayerControlsComponent, ViewportFeedbackComponent, ViewportAxisGizmoComponent],
   templateUrl: './y-layer.component.html',
   styleUrl: './y-layer.component.scss',
 })
@@ -128,9 +130,11 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
     ReturnType<typeof placementFeedbackForHit> | undefined
   >(undefined);
   protected readonly decorationReason = signal('');
-  protected readonly target = signal<string>('');
+  protected readonly target = signal<VoxelCoordinate | undefined>(undefined);
+  protected readonly cameraOrientation = signal<CameraState | undefined>(undefined);
   private readonly engine = new ThreeViewportEngine(undefined, {
     blockLookup: this.layerIndex,
+    onCameraChange: () => this.cameraOrientation.set(this.engine.cameraState()),
   });
   private readonly viewportSession = new ViewportSessionOwner(
     this.engine,
@@ -188,6 +192,7 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
       this.cameraState.get('y-layer', this.workspace.project()?.id),
       this.workspace.project()?.id,
     );
+    this.cameraOrientation.set(this.engine.cameraState());
     this.viewportMounted = true;
   });
   private readonly prepareViewportResources = effect(() => {
@@ -357,6 +362,9 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
   setCameraPreset(preset: CameraPreset): void {
     this.engine.setCameraPreset(preset);
   }
+  protected chooseAxisView(preset: CameraPreset): void {
+    this.setCameraPreset(preset);
+  }
 
   protected currentY(): number {
     return this.session.displayCurrentY(this.workspace.project());
@@ -450,7 +458,7 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
     this.decorationReason.set(activeDecoration ? (hit.decorationPlan?.reason ?? '') : '');
     this.engine.setGhostStatus(feedback?.status ?? 'invalid');
     this.placementFeedback.set(feedback);
-    this.target.set(hit.target ? `${hit.target.x}, ${hit.target.y}, ${hit.target.z}` : '');
+    this.target.set(hit.target);
     this.viewportStatus.publish(
       this.viewportStatusOwner,
       projectId,
@@ -651,7 +659,7 @@ export class YLayerComponent implements AfterViewInit, OnDestroy {
     this.engine.clearGhost();
     this.placementFeedback.set(undefined);
     this.decorationReason.set('');
-    this.target.set('');
+    this.target.set(undefined);
     this.viewportStatus.clear(this.viewportStatusOwner);
   }
 }

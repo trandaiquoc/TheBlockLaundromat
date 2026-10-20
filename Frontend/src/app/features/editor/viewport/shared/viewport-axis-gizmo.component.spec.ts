@@ -12,9 +12,15 @@ describe('ViewportAxisGizmoComponent', () => {
 
     const buttons = fixture.nativeElement.querySelectorAll('button');
     expect(buttons).toHaveLength(6);
-    expect(fixture.nativeElement.querySelector('[aria-label="Top"]')).not.toBeNull();
-    expect(fixture.nativeElement.querySelector('[aria-label="Bottom"]')).not.toBeNull();
-    fixture.nativeElement.querySelector('[aria-label="Bottom"]').click();
+    expect(fixture.nativeElement.querySelector('[aria-label="Right (+X)"]')?.textContent).toContain(
+      '+X',
+    );
+    expect(fixture.nativeElement.querySelector('[aria-label="Left (−X)"]')?.textContent).toContain(
+      '−X',
+    );
+    expect(fixture.nativeElement.querySelector('[aria-label="Top (+Y)"]')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('[aria-label="Bottom (−Y)"]')).not.toBeNull();
+    fixture.nativeElement.querySelector('[aria-label="Bottom (−Y)"]').click();
     expect(selected).toEqual(['bottom']);
   });
 
@@ -27,7 +33,7 @@ describe('ViewportAxisGizmoComponent', () => {
       up: { x: 0, y: 1, z: 0 },
     });
     fixture.detectChanges();
-    const right = fixture.nativeElement.querySelector('[aria-label="Right"]') as HTMLElement;
+    const right = fixture.nativeElement.querySelector('[aria-label="Right (+X)"]') as HTMLElement;
     const initialLeft = right.style.left;
 
     fixture.componentRef.setInput('cameraState', {

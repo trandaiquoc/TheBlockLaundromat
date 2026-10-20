@@ -29,8 +29,10 @@ describe('viewport camera geometry', () => {
   });
 
   it('maps Minecraft Y to the vertical camera axis in both directions', () => {
-    expect(presetDirection('top').toArray()).toEqual([0, 1, 0]);
-    expect(presetDirection('bottom').toArray()).toEqual([0, -1, 0]);
+    expect(presetDirection('top').y).toBeGreaterThan(0.99);
+    expect(presetDirection('bottom').y).toBeLessThan(-0.99);
+    expect(presetDirection('top').x).toBeGreaterThan(0);
+    expect(presetDirection('bottom').x).toBeGreaterThan(0);
   });
 
   it('uses the same translation speed for horizontal and vertical movement', () => {

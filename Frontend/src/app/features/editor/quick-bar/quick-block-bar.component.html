@@ -24,18 +24,8 @@
           <button
             type="button"
             class="slot-select"
-            cdkOverlayOrigin
-            #nameOrigin="cdkOverlayOrigin"
             [attr.aria-pressed]="entry.active"
-            [attr.aria-describedby]="
-              materialName()?.entry?.key === entry.key ? 'quick-bar-material-name' : null
-            "
-            (pointerenter)="showName(entry.key, nameOrigin, $event)"
-            (pointerleave)="leaveName(nameOrigin)"
-            (focus)="showName(entry.key, nameOrigin)"
-            (blur)="hideName()"
-            (keydown.escape)="hideName($event)"
-            (click)="quick.select(entry); showName(entry.key, nameOrigin)"
+            (click)="quick.select(entry)"
             [attr.aria-label]="
               (index === 9 ? 0 : index + 1) + ': ' + entry.displayName + ', ' + entry.id
             "
@@ -67,26 +57,3 @@
     </div>
   }
 </section>
-@if (materialName(); as name) {
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="name.origin"
-    [cdkConnectedOverlayOpen]="true"
-    [cdkConnectedOverlayPositions]="namePositions"
-    [cdkConnectedOverlayViewportMargin]="8"
-    [cdkConnectedOverlayPush]="true"
-    (overlayOutsideClick)="hideName()"
-    (overlayKeydown)="handleNameKeydown($event)"
-  >
-    <div
-      class="material-name"
-      id="quick-bar-material-name"
-      role="tooltip"
-      (pointerenter)="cancelNameDismiss()"
-      (pointerleave)="scheduleNameDismiss()"
-    >
-      <strong>{{ name.entry.displayName }}</strong>
-      <small>{{ name.entry.itemId }}</small>
-    </div>
-  </ng-template>
-}

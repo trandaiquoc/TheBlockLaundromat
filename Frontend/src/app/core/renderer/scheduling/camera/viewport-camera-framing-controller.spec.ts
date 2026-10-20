@@ -5,7 +5,7 @@ import { ViewportCameraFramingController } from './viewport-camera-framing-contr
 import type { ProjectDocument } from '../../../domain/project.types';
 
 describe('ViewportCameraFramingController', () => {
-  it('frames top and bottom presets along Minecraft Y with stable roll', () => {
+  it('frames top and bottom presets along Minecraft Y while preserving orbit orientation', () => {
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.set(4, 6, 8);
     const controls = new OrbitControls(camera, document.createElement('canvas'));
@@ -25,10 +25,15 @@ describe('ViewportCameraFramingController', () => {
 
     controller.setCameraPreset('top');
     expect(camera.position.y).toBeGreaterThan(controls.target.y);
-    expect(camera.up.toArray()).toEqual([0, 0, -1]);
+    expect(camera.up.toArray()).toEqual([0, 1, 0]);
+    expect(camera.position.x).toBeGreaterThan(controls.target.x);
     controller.setCameraPreset('bottom');
     expect(camera.position.y).toBeLessThan(controls.target.y);
-    expect(camera.up.toArray()).toEqual([0, 0, 1]);
+    expect(camera.up.toArray()).toEqual([0, 1, 0]);
+    const presetPosition = camera.position.clone();
+    controls.rotateUp(0.3);
+    controls.update();
+    expect(camera.position.distanceTo(presetPosition)).toBeGreaterThan(0.1);
     controls.dispose();
   });
 
