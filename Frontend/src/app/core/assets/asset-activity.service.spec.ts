@@ -27,8 +27,10 @@ describe('AssetActivityService', () => {
     activity.finish('ready', 'Ready');
     expect(activity.current()).toBeUndefined();
     expect(activity.entries().at(-1)).toMatchObject({ operation: 'ready', level: 'success' });
+    activity.begin('download', 'Downloading');
     activity.fail('download', 'Failed');
-    expect(activity.current()).toMatchObject({ level: 'error', message: 'Failed' });
+    expect(activity.current()).toBeUndefined();
+    expect(activity.entries().at(-1)).toMatchObject({ level: 'error', message: 'Failed' });
   });
 
   it('tracks protected operations independently from the activity feed', () => {

@@ -76,8 +76,8 @@ export class AssetActivityService {
   }
 
   fail(operation: string, message: string, category: AssetActivityCategory = 'vanilla'): void {
-    const entry = this.push({ category, level: 'error', operation, message });
-    this.currentState.set(entry);
+    this.event(operation, message, 'error', category);
+    this.currentState.set(undefined);
   }
 
   cancel(operation: string, message: string, category: AssetActivityCategory = 'mod'): void {
