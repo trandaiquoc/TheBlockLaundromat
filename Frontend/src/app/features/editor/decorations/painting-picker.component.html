@@ -1,15 +1,19 @@
 @if (compact()) {
   <button
     type="button"
+    #changeButton
     class="change-painting ui-button ui-button--secondary ui-button--sm"
+    [attr.aria-expanded]="open()"
+    [attr.aria-controls]="open() ? panelId : null"
     (click)="toggle()"
   >
     {{ i18n.t('changePainting') }}
   </button>
   @if (open()) {
-    <div class="picker-panel">
+    <div class="picker-panel" [id]="panelId" (keydown.escape)="closeOnEscape($event)">
       <div class="picker-search">
         <input
+          #searchInput
           type="search"
           [value]="query()"
           [placeholder]="i18n.t('searchPaintings')"

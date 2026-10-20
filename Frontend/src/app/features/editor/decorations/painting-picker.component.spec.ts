@@ -72,4 +72,46 @@ describe('PaintingPickerComponent', () => {
     expect(fixture.nativeElement.querySelector('.painting-selected-preview')).toBeNull();
     catalog.removeSource('example-paintings');
   });
+
+  it('focuses compact search and restores the trigger after Escape or selection', async () => {
+    await TestBed.configureTestingModule({
+      imports: [PaintingPickerComponent],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(PaintingPickerComponent);
+    fixture.componentRef.setInput('compact', true);
+    fixture.detectChanges();
+    const trigger = fixture.nativeElement.querySelector('.change-painting') as HTMLButtonElement;
+    let escapedToEditor = false;
+    fixture.nativeElement.addEventListener('keydown', () => (escapedToEditor = true));
+
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    let search = fixture.nativeElement.querySelector('.picker-panel input') as HTMLInputElement;
+    expect(trigger.getAttribute('aria-expanded')).toBe('true');
+    expect(trigger.getAttribute('aria-controls')).toBe(
+      fixture.nativeElement.querySelector('.picker-panel').id,
+    );
+    expect(document.activeElement).toBe(search);
+
+    search.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('.picker-panel')).toBeNull();
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    expect(trigger.hasAttribute('aria-controls')).toBe(false);
+    expect(escapedToEditor).toBe(false);
+    expect(document.activeElement).toBe(trigger);
+
+    trigger.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    search = fixture.nativeElement.querySelector('.picker-panel input') as HTMLInputElement;
+    expect(document.activeElement).toBe(search);
+    (fixture.nativeElement.querySelector('.painting-card') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('.picker-panel')).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+  });
 });

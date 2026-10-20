@@ -32,7 +32,7 @@ An inventory entry or green build alone is not visual acceptance.
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                                            |
 | F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                                                                      |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G7; real unsupported-Mod compatibility and activation cancellation remain                              |
-| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H12 viewport, Homepage account controls, diagnostics and specialized inspectors; other surfaces remain |
+| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H13 viewport, Homepage account controls, diagnostics and specialized inspectors; other surfaces remain |
 | I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                                                  |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
@@ -67,6 +67,7 @@ Checkpoint H8 gizmo sizing: [H8 — larger shared axis gizmo](CHECKPOINT-H8.md).
 Checkpoint H9 pot inspector: [H9 — Decorated Pot grouping and picker consistency](CHECKPOINT-H9.md).
 Checkpoint H10 inventory inspector: [H10 — selected slot hierarchy and nested picker](CHECKPOINT-H10.md).
 Checkpoint H12 decoration inspector: [H12 — Item Frame rotation control](CHECKPOINT-H12.md).
+Checkpoint H13 painting picker: [H13 — compact painting picker focus and Escape](CHECKPOINT-H13.md).
 Checkpoint I2 stale Mod JAR state: [I2 — replacement validation](CHECKPOINT-I2.md).
 Checkpoint I3 archive validation: [I3 — malformed ZIP classification](CHECKPOINT-I3.md).
 Checkpoint I4 activity lifecycle: [I4 — failed task state](CHECKPOINT-I4.md).

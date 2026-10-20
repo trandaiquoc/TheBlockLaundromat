@@ -1,4 +1,16 @@
-import { Component, computed, inject, input, Output, EventEmitter, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  EventEmitter,
+  inject,
+  Injector,
+  input,
+  Output,
+  signal,
+  viewChild,
+  afterNextRender,
+} from '@angular/core';
 import { PaintingVariant } from '../../../core/decorations/decoration.types';
 import { PaintingVariantCatalogService } from '../../../core/decorations/catalog/painting-variant-catalog.service';
 import { ContentAssetRuntimeService } from '../../../core/assets/content-asset-runtime.service';
@@ -6,6 +18,8 @@ import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { normalizeSearchText, rankSearchResults } from '../../../core/search/relevance-search';
 import { ALL_CONTENT_SOURCE } from '../../../core/content/source-selection/content-source-selection';
 import { LucideCheck } from '@lucide/angular';
+
+let nextPaintingPickerId = 0;
 
 @Component({
   selector: 'app-painting-picker',
@@ -21,6 +35,10 @@ export class PaintingPickerComponent {
   protected readonly i18n = inject(I18nService);
   private readonly assets = inject(ContentAssetRuntimeService);
   private readonly catalog = inject(PaintingVariantCatalogService);
+  private readonly injector = inject(Injector);
+  private readonly changeButton = viewChild<ElementRef<HTMLButtonElement>>('changeButton');
+  private readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
+  protected readonly panelId = `painting-picker-panel-${nextPaintingPickerId++}`;
   protected readonly query = signal('');
   protected readonly open = signal(false);
   protected variants(): readonly PaintingVariant[] {
@@ -63,10 +81,24 @@ export class PaintingPickerComponent {
   }
   protected choose(id: string): void {
     this.selectionChange.emit(id);
-    if (this.compact()) this.open.set(false);
+    if (this.compact()) this.close();
   }
   protected toggle(): void {
-    this.open.update((value) => !value);
+    if (this.open()) {
+      this.close();
+      return;
+    }
+    this.open.set(true);
+    afterNextRender(() => this.searchInput()?.nativeElement.focus(), { injector: this.injector });
+  }
+  protected closeOnEscape(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.close();
+  }
+  private close(): void {
+    this.open.set(false);
+    afterNextRender(() => this.changeButton()?.nativeElement.focus(), { injector: this.injector });
   }
   protected updateQuery(event: Event): void {
     this.query.set((event.target as HTMLInputElement).value);
