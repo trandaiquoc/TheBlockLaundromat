@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+// @ts-expect-error Vitest executes this style contract test in Node.
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { signal } from '@angular/core';
 import { BlockCatalogItemComponent, registryIdDisplayParts } from './block-catalog-item.component';
@@ -36,6 +38,15 @@ describe('BlockCatalogItemComponent', () => {
       'mod::x',
     ])
       expect(registryIdDisplayParts(id).join('')).toBe(id);
+  });
+  it('balances grid action placement while retaining centered detail actions', () => {
+    const styles = String(
+      readFileSync('src/app/features/editor/blocks/block-catalog-item.component.scss', 'utf8'),
+    );
+    expect(styles).toContain(
+      '.item-actions {\n  display: flex;\n  justify-content: space-between;',
+    );
+    expect(styles).toContain(':host(.detail-item) .item-actions {\n  justify-content: center;');
   });
   it('shares canonical selection, fallback and Quick Add across layouts without selecting on add/details', () => {
     const { fixture, library, item, quick } = create();

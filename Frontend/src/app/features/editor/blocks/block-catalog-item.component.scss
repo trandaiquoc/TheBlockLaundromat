@@ -81,9 +81,9 @@ strong {
 }
 .item-actions {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   align-items: center;
-  gap: 0;
+  gap: 0.25rem;
 }
 .item-actions button,
 .copy-action {

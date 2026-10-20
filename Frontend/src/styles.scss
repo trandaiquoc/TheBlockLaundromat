@@ -582,6 +582,11 @@ svg[class*='lucide'] {
   color: var(--control-selected-text);
   font-weight: 700;
 }
+:root[data-theme='light']
+  :where([aria-pressed='true'], [aria-selected='true'], .ui-button--selected, .active-option) {
+  outline: 1px solid var(--workspace-primary);
+  outline-offset: -1px;
+}
 .ui-tab-strip > [role='tab']:focus-visible {
   z-index: 2;
   outline: 2px solid var(--focus-color, var(--accent));

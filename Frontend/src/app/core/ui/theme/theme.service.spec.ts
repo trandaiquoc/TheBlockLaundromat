@@ -561,6 +561,11 @@ describe('Workspace color palette contract', () => {
       ).toBeGreaterThanOrEqual(4.5);
       expect(contrastRatio(focus, raised), `${themeName} focus boundary`).toBeGreaterThanOrEqual(3);
       expect(contrastRatio(focus, panel), `${themeName} focus on panel`).toBeGreaterThanOrEqual(3);
+      if (themeName === 'light')
+        expect(
+          contrastRatio(primary, selected),
+          'Light selected-state indicator against the selected surface',
+        ).toBeGreaterThanOrEqual(3);
 
       for (const [statusRole, token] of [
         ['Success', '--workspace-status-valid'],
@@ -594,6 +599,10 @@ describe('Workspace color palette contract', () => {
         ).toBeGreaterThanOrEqual(4.5);
       }
     }
+
+    expect(normalizedStylesheet).toMatch(
+      /:root\[data-theme='light'\]\s*:where\([\s\S]*?\)\s*\{\s*outline: 1px solid var\(--workspace-primary\);\s*outline-offset: -1px;\s*\}/,
+    );
 
     const selectedMetadataRules = [
       'src/app/shared/ui/content-source-selector/content-source-selector.component.scss',
