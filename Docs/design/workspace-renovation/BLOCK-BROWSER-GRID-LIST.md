@@ -13,7 +13,7 @@ labeled settings button rather than an ambiguous plus icon.
 
 Grid is the initial local view. Its columns respond to sidebar width and font
 size; each card has a large preview, two-line name, visible selection, and
-separate 44 px information/Quick Add targets below the preview. List retains
+separate 40 px information/Quick Add targets below the preview. List retains
 56 px rows at the normal font size, with 40 px previews, names, exact registry
 ID text and the same actions. Larger fonts increase the virtual row size.
 
@@ -22,10 +22,9 @@ persisted preference is introduced. Clicking Quick Add or Item details does not
 select a material. Quick Bar continues to own its capacity, duplicate checks,
 item identity and shortcuts.
 
-Information and Quick Add use matching quiet 1.125 rem tonal surfaces (18 px at
-normal font size) inside separate 44 px hit areas. Their hover treatment stays
-borderless so the controls remain visually light while the larger targets remain
-easy to use by touch. Grid groups them at the trailing edge below the preview;
+Information and Quick Add use matching quiet 16 px tonal surfaces inside
+separate 40 px hit areas. Their hover treatment stays borderless, keeping the
+controls light while the targets remain easy to use by touch. Grid groups them at the trailing edge below the preview;
 List keeps the same actions alongside the material. Their targets do not overlap
 the selection button. A check beside the selected material name and a leading
 edge marker reinforce selection in every theme. Raccoon adds soft, matte shapes

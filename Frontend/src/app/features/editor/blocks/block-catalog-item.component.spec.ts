@@ -48,7 +48,7 @@ describe('BlockCatalogItemComponent', () => {
     );
     expect(styles).toContain(':host(.detail-item) .item-actions {\n  justify-content: center;');
   });
-  it('keeps catalog actions compact inside independent 44 px targets', () => {
+  it('keeps catalog actions compact inside independent 40 px targets', () => {
     const styles = String(
       readFileSync('src/app/features/editor/blocks/block-catalog-item.component.scss', 'utf8'),
     ).replace(/\r\n/g, '\n');
@@ -59,8 +59,10 @@ describe('BlockCatalogItemComponent', () => {
       /:host\(:not\(\.detail-item\)\) \.item-actions button::before \{([\s\S]*?)\n\}/,
     )?.[1];
 
-    expect(targetStyle).toContain('width: 44px');
-    expect(targetStyle).toContain('height: 44px');
+    expect(targetStyle).toContain('width: 40px');
+    expect(targetStyle).toContain('height: 40px');
+    expect(targetStyle).toContain('min-width: 40px');
+    expect(targetStyle).toContain('min-height: 40px');
     expect(surfaceStyle).toContain('width: 16px');
     expect(surfaceStyle).toContain('height: 16px');
     expect(surfaceStyle).toContain('border-radius: var(--radius-md)');

@@ -114,7 +114,7 @@ compositions.
 The [Block Browser density review](evidence/20261019-block-browser-density/README.md)
 records the earlier 68 px row and 32 px Quick Add checkpoint. The current
 catalog follow-up uses compact separated rows, delimiter-aware registry ID
-wrapping, and a 44 px Quick Add target. Search, virtualization, asset thumbnail
+wrapping, and a 40 px Quick Add target. Search, virtualization, asset thumbnail
 scheduling, and editor behavior remain unchanged.
 
 The [2026-10-19 Workspace scanning follow-up](evidence/20261019-workspace-scanning/README.md)

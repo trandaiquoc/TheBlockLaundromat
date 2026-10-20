@@ -167,8 +167,10 @@ button:disabled {
 :host(:not(.detail-item)) .item-actions button {
   position: relative;
   isolation: isolate;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   flex: 0 0 auto;
   padding: 0;
   border: 0;
