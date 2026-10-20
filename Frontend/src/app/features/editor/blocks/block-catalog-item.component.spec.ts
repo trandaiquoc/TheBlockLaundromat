@@ -61,10 +61,11 @@ describe('BlockCatalogItemComponent', () => {
 
     expect(targetStyle).toContain('width: max(44px, 2.75rem)');
     expect(targetStyle).toContain('height: max(44px, 2.75rem)');
-    expect(surfaceStyle).toContain('width: 1.75rem');
-    expect(surfaceStyle).toContain('height: 1.75rem');
+    expect(surfaceStyle).toContain('width: 1.375rem');
+    expect(surfaceStyle).toContain('height: 1.375rem');
     expect(surfaceStyle).toContain('border-radius: var(--radius-md)');
     expect(surfaceStyle).toContain('inset: 0');
+    expect(styles).toContain('background: color-mix(in srgb, var(--text) 3%, transparent)');
     expect(styles).not.toContain('border-color: var(--border-strong)');
   });
   it('shares canonical selection, fallback and Quick Add across layouts without selecting on add/details', () => {

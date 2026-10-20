@@ -188,14 +188,14 @@ button:disabled {
   z-index: -1;
   inset: 0;
   margin: auto;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.375rem;
+  height: 1.375rem;
   box-sizing: border-box;
   border: 1px solid transparent;
   border-radius: var(--radius-md);
 }
 :host(:not(.detail-item)) .item-actions button::before {
-  background: color-mix(in srgb, var(--text) 5%, transparent);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
 }
 :host(:not(.detail-item)) .quick-add-action {
   color: var(--text);
