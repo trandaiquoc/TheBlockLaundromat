@@ -56,6 +56,7 @@ Checkpoint G nested overlays: [G5 — Escape and loader limits](CHECKPOINT-G5.md
 Checkpoint A2 catalog controls: [A2 — action placement and shared active states](CHECKPOINT-A2.md).
 Checkpoint H1 viewport controls: [H1 — XYZ gizmo and Y-Layer stepper](CHECKPOINT-H1.md).
 Checkpoint H2 viewport follow-up: [H2 — signed gizmo and compact Quick Bar](CHECKPOINT-H2.md).
+Checkpoint H3 viewport visual refinement: [H3 — separated feedback and themed gizmo surfaces](CHECKPOINT-H3.md).
 Checkpoint I2 stale Mod JAR state: [I2 — replacement validation](CHECKPOINT-I2.md).
 Checkpoint I3 archive validation: [I3 — malformed ZIP classification](CHECKPOINT-I3.md).
 Checkpoint I4 activity lifecycle: [I4 — failed task state](CHECKPOINT-I4.md).

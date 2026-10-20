@@ -104,14 +104,14 @@ const AXES = [
       width: 1.3rem;
       height: 1.05rem;
       padding: 0;
-      border: 1px solid color-mix(in srgb, var(--axis-color) 64%, transparent);
+      border: 1px solid color-mix(in srgb, var(--axis-color) 72%, var(--border-floating));
       border-radius: 0.52rem;
-      background: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+      background: var(--surface-floating-raised);
       color: var(--axis-color);
       font: 700 0.62rem var(--font-ui);
       cursor: pointer;
       pointer-events: auto;
-      box-shadow: 0 1px 4px color-mix(in srgb, #000 18%, transparent);
+      box-shadow: var(--shadow-control);
     }
     .axis-endpoint-x {
       --axis-color: var(--axis-x);
@@ -127,7 +127,11 @@ const AXES = [
     }
     .axis-endpoint:hover {
       background: var(--surface-hover);
+      border-color: var(--axis-color);
       transform: scale(1.08);
+    }
+    .axis-endpoint:active {
+      background: var(--surface-selected);
     }
     .axis-endpoint:focus-visible {
       outline: 2px solid var(--focus-color);
