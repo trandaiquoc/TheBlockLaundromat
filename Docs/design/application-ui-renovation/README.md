@@ -23,17 +23,17 @@ An inventory entry or green build alone is not visual acceptance.
 
 ## Checkpoints
 
-| Checkpoint | Boundary                                                                                     | Status                                               |
-| ---------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; catalog/Quick Bar browser checks passed |
-| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed          |
-| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed          |
-| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed          |
-| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed          |
-| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                    |
-| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: Asset Manager tab intent                |
-| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1 viewport axes and Y-Layer controls   |
-| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1: JSON saved-download recovery fixed               |
+| Checkpoint | Boundary                                                                                     | Status                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; catalog/Quick Bar browser checks passed                                                     |
+| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                                              |
+| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                                              |
+| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                              |
+| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                              |
+| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                                                        |
+| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G3 tab, nested confirmation and real Cobblemon import; remaining recovery states pending |
+| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1/H2 viewport and Y-Layer controls                                                         |
+| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1: JSON saved-download recovery fixed                                                                   |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
 checks and its own local commit. The final gate includes the full suite, app
@@ -50,8 +50,10 @@ Checkpoint F file-policy parity: [F5 — Structure JSON entry points](CHECKPOINT
 Checkpoint F review hierarchy: [F6 — import choices](CHECKPOINT-F6.md).
 Checkpoint G initial asset manager refinement: [G1 — Vanilla tab intent](CHECKPOINT-G1.md).
 Checkpoint G nested confirmation safety: [G2 — asset manager confirmation](CHECKPOINT-G2.md).
+Checkpoint G real Fabric archive workflow: [G3 — Cobblemon import and cleanup](CHECKPOINT-G3.md).
 Checkpoint A2 catalog controls: [A2 — action placement and shared active states](CHECKPOINT-A2.md).
 Checkpoint H1 viewport controls: [H1 — XYZ gizmo and Y-Layer stepper](CHECKPOINT-H1.md).
+Checkpoint H2 viewport follow-up: [H2 — signed gizmo and compact Quick Bar](CHECKPOINT-H2.md).
 
 ## Preserved contracts
 
@@ -81,12 +83,17 @@ standalone badge. In Minecraft, Y is vertical. Axis interactions must update
 the existing camera, not add a second camera state or change project coordinates.
 
 User follow-up, 2026-10-20: keep the live voxel coordinate only in the viewport's
-upper hover feedback and remove the duplicate selected/hover coordinate from the
-lower status bar. Show the XYZ gizmo in 3D only; Y-Layer has no gizmo. The 3D
-gizmo must track camera orbit orientation. Clicking its axes frames the whole
-structure around its center even if a block is selected; selection must not
-change the camera pivot or mutate project content. Explain these behaviors in
-the bilingual Camera navigation help topic.
+upper feedback and remove the duplicate selected/hover coordinate from the lower
+status bar. Render coordinates as a compact X/Y/Z group using matching axis
+colors, without a long full-width strip. Place a small, clear signed-axis gizmo
+at the viewport's upper right in both 3D and Y-Layer. The gizmo follows camera
+orbit orientation. Clicking an axis frames the whole structure around its center
+even if a block is selected; selection must not change the camera pivot or
+mutate project content. Minecraft Y is vertical. Explain these behaviors in
+bilingual Camera navigation Help.
+
+User follow-up, 2026-10-20: remove the visible hover-name popup from the Quick Bar
+to keep the compact toolbar clear. Keep each slot's full accessible button name.
 
 ## Research grounding
 

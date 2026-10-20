@@ -19,6 +19,13 @@ The Quick Bar no longer opens a visible material-name popup on hover or focus.
 Its buttons keep their full material name and item ID in their accessible name.
 
 Focused component/camera tests passed (16 tests across the gizmo, feedback, Quick
-Bar and camera specs); the full suite passed (2,139 tests, 11 skipped). Browser
-QA was performed on the previous H2 iteration; this visual refinement still
-needs a browser check. Any captures remain in `/tmp` only.
+Bar and camera specs); the full suite passed (2,139 tests, 11 skipped). App
+typecheck, production build, encoding and Prettier checks passed.
+
+Final browser QA used a disposable local Chrome profile and a new 16 × 16 × 16
+test project. Minecraft, Raccoon, Light and Dark each rendered the same 64px
+signed gizmo geometry. The active 3D and Y-Layer sessions exposed the shared
+controls; the Dark Y-Layer view was visually inspected. With a selected block,
+the Dark 3D status and coordinate chips had an 8px gap, and computed X/Y/Z
+colors were distinct. Clicking Bottom, then dragging the camera manually,
+changed the gizmo projection without Reset. Captures stayed in `/tmp` only.
