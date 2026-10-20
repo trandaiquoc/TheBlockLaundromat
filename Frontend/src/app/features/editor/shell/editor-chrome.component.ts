@@ -99,6 +99,7 @@ export class EditorChromeComponent {
   protected readonly cameraPresets = [
     'perspective',
     'top',
+    'bottom',
     'front',
     'back',
     'left',
@@ -402,6 +403,7 @@ export class EditorChromeComponent {
     const keys = {
       perspective: 'cameraPerspective',
       top: 'cameraTop',
+      bottom: 'cameraBottom',
       front: 'cameraFront',
       back: 'cameraBack',
       left: 'cameraLeft',

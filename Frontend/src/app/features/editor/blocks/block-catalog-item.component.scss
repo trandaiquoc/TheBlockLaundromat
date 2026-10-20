@@ -48,6 +48,7 @@
   min-width: 0;
 }
 .block-name {
+  position: relative;
   display: flex;
   align-items: start;
   gap: 0.25rem;
@@ -119,8 +120,7 @@ input:focus-visible {
 :host(.active) .block-item {
   background: var(--control-selected);
   color: var(--control-selected-text);
-  border-color: var(--control-selected-text);
-  box-shadow: inset 3px 0 0 var(--control-selected-text);
+  box-shadow: inset 3px 0 0 var(--workspace-focus);
 }
 :host(.active) .block-copy-id {
   color: inherit;
@@ -140,10 +140,25 @@ button:disabled {
   grid-template-rows: 5rem minmax(2rem, 1fr);
   gap: 0.25rem;
   align-items: start;
+  text-align: center;
+}
+:host(.grid-item) .block-copy {
+  width: 100%;
+  text-align: center;
+}
+:host(.grid-item) .block-name {
+  justify-content: center;
+}
+:host(.grid-item) strong {
+  text-align: center;
+}
+:host(.grid-item) .active-marker {
+  position: absolute;
+  right: 0;
+  top: 0.1rem;
 }
 :host(.grid-item.active) .block-item {
   background: var(--control-selected);
-  border-color: var(--control-selected-text);
 }
 :host(.grid-item:not(.active)) .block-item:hover,
 :host(.grid-item:not(.active)) .block-item:focus-within {

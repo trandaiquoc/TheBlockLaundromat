@@ -70,6 +70,7 @@ import {
 import { shouldClearInteractionFeedbackForToolChange } from '../shared/viewport-interaction-feedback';
 import { ViewportHitInteractionWorkflow } from '../shared/viewport-hit-interaction-workflow';
 import { ViewportFeedbackComponent } from '../shared/viewport-feedback.component';
+import { ViewportAxisGizmoComponent } from '../shared/viewport-axis-gizmo.component';
 
 declare global {
   interface Window {
@@ -79,7 +80,7 @@ declare global {
 
 @Component({
   selector: 'app-viewport',
-  imports: [ViewportFeedbackComponent],
+  imports: [ViewportFeedbackComponent, ViewportAxisGizmoComponent],
   templateUrl: './viewport.component.html',
   styleUrl: './viewport.component.scss',
 })
@@ -369,6 +370,10 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
   }
   setCameraPreset(preset: CameraPreset): void {
     this.engine.setCameraPreset(preset);
+  }
+
+  protected chooseAxisView(preset: CameraPreset): void {
+    this.setCameraPreset(preset);
   }
 
   protected resize(): void {

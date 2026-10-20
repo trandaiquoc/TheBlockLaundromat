@@ -7,6 +7,7 @@ import type { ProjectSummary } from '../../../core/persistence/project-store/pro
 import { MojangVersionService } from '../../../core/assets/vanilla/mojang-vanilla-asset-source';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { ProjectScreenComponent } from './project-screen.component';
+import { ProjectBackupWorkflow } from './project-backup-workflow';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
 
 const templatePath = 'src/app/features/projects/project-screen/project-screen.component.html';
@@ -71,7 +72,24 @@ describe('ProjectScreenComponent', () => {
       ],
     });
     TestBed.overrideComponent(ProjectScreenComponent, {
-      set: { providers: [{ provide: ProjectScreenWorkflow, useValue: workflow }] },
+      set: {
+        providers: [
+          { provide: ProjectScreenWorkflow, useValue: workflow },
+          {
+            provide: ProjectBackupWorkflow,
+            useValue: {
+              preview: signal(undefined),
+              collision: signal(false),
+              failure: signal(undefined),
+              busy: signal(undefined),
+              reset: vi.fn(),
+              selectFile: vi.fn(async () => undefined),
+              restore: vi.fn(async () => undefined),
+              export: vi.fn(async () => undefined),
+            },
+          },
+        ],
+      },
     });
     await TestBed.compileComponents();
 

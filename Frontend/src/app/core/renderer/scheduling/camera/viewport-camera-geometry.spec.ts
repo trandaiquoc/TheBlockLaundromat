@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import * as THREE from 'three';
 import { effectiveCameraMovementSpeed } from './camera-movement-speed';
-import { cameraActionMovementDelta, cameraMovementDirection } from './viewport-camera-geometry';
+import {
+  cameraActionMovementDelta,
+  cameraMovementDirection,
+  presetDirection,
+} from './viewport-camera-geometry';
 import { rendererBenchmarkProject } from '../../benchmark/renderer-benchmark-fixtures';
 
 describe('viewport camera geometry', () => {
@@ -22,6 +26,11 @@ describe('viewport camera geometry', () => {
     const combined = cameraMovementDirection(new Set(['KeyW', 'Space']), camera);
     expect(combined.y).toBe(1);
     expect(combined.z).toBeLessThan(0);
+  });
+
+  it('maps Minecraft Y to the vertical camera axis in both directions', () => {
+    expect(presetDirection('top').toArray()).toEqual([0, 1, 0]);
+    expect(presetDirection('bottom').toArray()).toEqual([0, -1, 0]);
   });
 
   it('uses the same translation speed for horizontal and vertical movement', () => {

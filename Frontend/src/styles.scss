@@ -351,6 +351,9 @@
 }
 
 :root[data-theme] {
+  --axis-x: #ffc1a8;
+  --axis-y: #b8f3c1;
+  --axis-z: #b4d8ee;
   --app-bg: var(--workspace-app-bg);
   --surface: var(--workspace-panel-bg);
   --surface-raised: var(--workspace-raised);
@@ -408,6 +411,18 @@
   --shadow-dialog: var(--workspace-shadow-dialog);
   --shadow-panel: var(--workspace-shadow-control-raised);
   color-scheme: var(--workspace-color-scheme);
+}
+
+:root[data-theme='light'] {
+  --axis-x: #a3262c;
+  --axis-y: #176b36;
+  --axis-z: #245db5;
+}
+:root[data-theme='raccoon'],
+:root[data-theme='dark'] {
+  --axis-x: #ffaaa3;
+  --axis-y: #a6e9b1;
+  --axis-z: #a8d5ff;
 }
 
 :root[data-theme] app-editor-shell,
@@ -581,11 +596,6 @@ svg[class*='lucide'] {
   background: var(--control-selected);
   color: var(--control-selected-text);
   font-weight: 700;
-}
-:root[data-theme='light']
-  :where([aria-pressed='true'], [aria-selected='true'], .ui-button--selected, .active-option) {
-  outline: 1px solid var(--workspace-primary);
-  outline-offset: -1px;
 }
 .ui-tab-strip > [role='tab']:focus-visible {
   z-index: 2;

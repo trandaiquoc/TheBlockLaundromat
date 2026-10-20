@@ -115,7 +115,11 @@ export class ViewportCameraFramingController {
       vectorValue(controls.target),
       presetDirection(preset),
       Math.max(4, this.camera.position.distanceTo(controls.target)),
-      preset === 'top' ? { x: 0, y: 0, z: -1 } : { x: 0, y: 1, z: 0 },
+      preset === 'top'
+        ? { x: 0, y: 0, z: -1 }
+        : preset === 'bottom'
+          ? { x: 0, y: 0, z: 1 }
+          : { x: 0, y: 1, z: 0 },
     );
   }
 

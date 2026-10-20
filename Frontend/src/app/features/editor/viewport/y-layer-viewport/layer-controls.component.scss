@@ -14,7 +14,10 @@
 .layer-primary {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  min-height: 2.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
 }
 button,
 summary,
@@ -31,6 +34,21 @@ button {
   cursor: pointer;
   min-width: 2.75rem;
   padding: 0.4rem;
+}
+.layer-primary > button {
+  min-width: 2.5rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.layer-primary > button:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.layer-primary > button:first-child:hover:not(:disabled) {
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+.layer-primary > button:last-child:hover:not(:disabled) {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 button:disabled {
   opacity: 0.6;
@@ -57,9 +75,31 @@ label {
   gap: 0.3rem;
   font-size: 0.8rem;
 }
+.layer-axis-label > span {
+  display: inline-flex;
+  align-items: center;
+  color: var(--axis-y);
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1;
+}
+.layer-axis-label {
+  align-self: stretch;
+  gap: 0.5rem;
+  padding: 0 0.6rem;
+  border-inline: 1px solid var(--divider);
+}
 input[type='number'] {
-  width: 3.8rem;
-  padding: 0.3rem;
+  width: 2.7rem;
+  min-height: 0;
+  padding: 0.25rem 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.layer-primary input[type='number']:focus-visible {
+  outline-offset: -3px;
 }
 summary {
   display: flex;

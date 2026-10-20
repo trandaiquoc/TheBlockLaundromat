@@ -82,6 +82,27 @@
   min-width: 0;
   color: color-mix(in srgb, var(--workspace-header-text) 84%, transparent);
 }
+.axis-values {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.24rem;
+}
+.axis-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+}
+.axis-x {
+  color: var(--axis-x);
+}
+.axis-y {
+  color: var(--axis-y);
+}
+.axis-z {
+  color: var(--axis-z);
+}
+.axis-separator {
+  opacity: 0.58;
+}
 .status-metrics {
   display: flex;
   flex: 0 0 auto;

@@ -1,6 +1,6 @@
 import { PlacedBlock, ProjectSize, VoxelCoordinate } from '../../domain/project.types';
 
-export type CameraPreset = 'perspective' | 'top' | 'front' | 'back' | 'left' | 'right';
+export type CameraPreset = 'perspective' | 'top' | 'bottom' | 'front' | 'back' | 'left' | 'right';
 
 export interface CameraVector {
   readonly x: number;

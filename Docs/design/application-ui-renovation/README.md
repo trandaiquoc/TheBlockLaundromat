@@ -23,17 +23,17 @@ An inventory entry or green build alone is not visual acceptance.
 
 ## Checkpoints
 
-| Checkpoint | Boundary                                                                                     | Status                                      |
-| ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | In progress: catalog controls and Light selected-state clarity |
-| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed |
-| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed |
-| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed |
-| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed |
-| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired           |
-| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: Asset Manager tab intent       |
-| H          | Project/diagnostics and all specialized editor surfaces                                      | Pending                                     |
-| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1: JSON saved-download recovery fixed      |
+| Checkpoint | Boundary                                                                                     | Status                                               |
+| ---------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; catalog/Quick Bar browser checks passed |
+| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed          |
+| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed          |
+| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed          |
+| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed          |
+| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                    |
+| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: Asset Manager tab intent                |
+| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1 viewport axes and Y-Layer controls   |
+| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1: JSON saved-download recovery fixed               |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
 checks and its own local commit. The final gate includes the full suite, app
@@ -50,7 +50,8 @@ Checkpoint F file-policy parity: [F5 — Structure JSON entry points](CHECKPOINT
 Checkpoint F review hierarchy: [F6 — import choices](CHECKPOINT-F6.md).
 Checkpoint G initial asset manager refinement: [G1 — Vanilla tab intent](CHECKPOINT-G1.md).
 Checkpoint G nested confirmation safety: [G2 — asset manager confirmation](CHECKPOINT-G2.md).
-Checkpoint A2 catalog controls: [A2 — action placement and Light active states](CHECKPOINT-A2.md).
+Checkpoint A2 catalog controls: [A2 — action placement and shared active states](CHECKPOINT-A2.md).
+Checkpoint H1 viewport controls: [H1 — XYZ gizmo and Y-Layer stepper](CHECKPOINT-H1.md).
 
 ## Preserved contracts
 
@@ -67,15 +68,17 @@ Checkpoint A2 catalog controls: [A2 — action placement and Light active states
 ## User-added visual acceptance
 
 User-added visual acceptance, 2026-10-20: refine the catalog card `i` and `+`
-positions, and make active/selected controls clearly distinguishable in the
-Light theme. Preserve the shared component structure, touch targets, keyboard
-behavior and semantic theme tokens; verify across all four themes.
+positions, center block names in cards, and keep selected-state treatment
+consistent between Light and Dark while remaining clear. Preserve the shared
+component structure, touch targets, keyboard behavior and semantic theme
+tokens; verify across all four themes.
 
 The same update adds a viewport refinement: replace the long X/Y/Z readout with
-an aligned, separately colored coordinate group; redesign the Y-Layer strip;
-and add an interactive XYZ orientation gizmo beside the grid. In Minecraft, Y
-is vertical. Axis interactions must update the existing camera, not add a second
-camera state or change project coordinates.
+an aligned, separately colored coordinate group; redesign the Y-Layer strip as
+one compact stepper with its Y label integrated beside the value; and add an
+interactive XYZ orientation gizmo beside the grid. Do not render Y as a
+standalone badge. In Minecraft, Y is vertical. Axis interactions must update
+the existing camera, not add a second camera state or change project coordinates.
 
 ## Research grounding
 

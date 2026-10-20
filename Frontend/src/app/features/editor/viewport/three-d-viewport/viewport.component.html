@@ -10,6 +10,7 @@
   (contextmenu)="$event.preventDefault()"
   (window:resize)="resize()"
 >
+  <app-viewport-axis-gizmo (selectPreset)="chooseAxisView($event)" />
   <div #selectionMarquee class="selection-marquee" aria-hidden="true" hidden></div>
   <app-viewport-feedback
     [placementStatus]="placementFeedback()?.status"

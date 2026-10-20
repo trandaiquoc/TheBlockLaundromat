@@ -15,6 +15,14 @@ describe('LayerControlsComponent', () => {
     fixture.detectChanges();
     return { fixture, actions };
   }
+  it('groups Minecraft Y height with both step controls in one compact stepper', () => {
+    const { fixture } = create();
+    const stepper = fixture.nativeElement.querySelector('.layer-primary');
+    expect(stepper.children).toHaveLength(3);
+    expect(stepper.querySelector('.layer-axis-label > span')?.textContent).toBe('Y');
+    expect(stepper.querySelector('input[type="number"]')?.value).toBe('4');
+    expect(stepper.querySelector('[aria-label="Current Y"]')).not.toBeNull();
+  });
   it('emits step, preview, commit, occupied and opacity actions through the existing layer contract', () => {
     const { fixture, actions } = create();
     fixture.nativeElement.querySelector('.layer-primary button').click();

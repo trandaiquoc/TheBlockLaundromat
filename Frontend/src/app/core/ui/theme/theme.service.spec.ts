@@ -495,6 +495,11 @@ describe('Workspace color palette contract', () => {
     );
     const paletteStyles = stylesheet.slice(stylesheet.indexOf('/* Workspace V2 palette'));
     const themeNames = ['craft', 'light', 'raccoon', 'dark'] as const;
+    const axisTokenRules = [
+      ...stylesheet.matchAll(
+        /:root\[data-theme(?:='([^']+)')?\](?:,\s*:root\[data-theme(?:='([^']+)')?\])?\s*\{([^}]+)\}/g,
+      ),
+    ];
     const normalizedStylesheet = stylesheet.replace(/\r\n/g, '\n');
     expect(normalizedStylesheet)
       .toContain(`:root[data-theme] app-editor-shell :where(input, textarea)::placeholder,
@@ -530,6 +535,30 @@ describe('Workspace color palette contract', () => {
       const primaryHover = value('Primary Hover');
       const textOnPrimary = value('Text on Primary');
       const focus = value('Focus / Outline');
+      const axisRule = axisTokenRules.find(
+        (rule) =>
+          (rule[1] === themeName ||
+            rule[2] === themeName ||
+            (themeName === 'craft' && rule[1] === undefined)) &&
+          rule[3].includes('--axis-x:'),
+      );
+      const axisColors = ['x', 'y', 'z'].map(
+        (axis) => axisRule?.[3].match(new RegExp(`--axis-${axis}:\\s*(#[0-9a-fA-F]{6});`))?.[1],
+      );
+      expect(
+        axisColors.every((color) => color !== undefined),
+        `${themeName} axis tokens`,
+      ).toBe(true);
+      expect(new Set(axisColors).size, `${themeName} distinct axis colors`).toBe(3);
+      const axisBackgrounds = [header, raised];
+      for (const [axisIndex, axis] of ['X', 'Y', 'Z'].entries()) {
+        const axisColor = axisColors[axisIndex]!;
+        for (const background of axisBackgrounds)
+          expect(
+            contrastRatio(axisColor, background),
+            `${themeName} ${axis} axis indicator on ${background}`,
+          ).toBeGreaterThanOrEqual(4.5);
+      }
       const block = paletteStyles.match(
         new RegExp(`:root\\[data-theme='${themeName}'\\]\\s*\\{([^}]+)\\}`),
       )![1];
@@ -561,11 +590,10 @@ describe('Workspace color palette contract', () => {
       ).toBeGreaterThanOrEqual(4.5);
       expect(contrastRatio(focus, raised), `${themeName} focus boundary`).toBeGreaterThanOrEqual(3);
       expect(contrastRatio(focus, panel), `${themeName} focus on panel`).toBeGreaterThanOrEqual(3);
-      if (themeName === 'light')
-        expect(
-          contrastRatio(primary, selected),
-          'Light selected-state indicator against the selected surface',
-        ).toBeGreaterThanOrEqual(3);
+      expect(
+        contrastRatio(focus, selected),
+        `${themeName} shared selected-state indicator against the selected surface`,
+      ).toBeGreaterThanOrEqual(3);
 
       for (const [statusRole, token] of [
         ['Success', '--workspace-status-valid'],
@@ -600,9 +628,7 @@ describe('Workspace color palette contract', () => {
       }
     }
 
-    expect(normalizedStylesheet).toMatch(
-      /:root\[data-theme='light'\]\s*:where\([\s\S]*?\)\s*\{\s*outline: 1px solid var\(--workspace-primary\);\s*outline-offset: -1px;\s*\}/,
-    );
+    expect(normalizedStylesheet).not.toContain("data-theme='light'] :where([aria-pressed='true']");
 
     const selectedMetadataRules = [
       'src/app/shared/ui/content-source-selector/content-source-selector.component.scss',
@@ -622,6 +648,8 @@ describe('Workspace color palette contract', () => {
     // against the selected surface is checked above for every theme.
     expect(catalogItemStyles).toContain('color: var(--control-selected-text);');
     expect(catalogItemStyles).toContain(':host(.active) .block-copy-id {\n  color: inherit;\n}');
+    expect(catalogItemStyles).toContain('box-shadow: inset 3px 0 0 var(--workspace-focus);');
+    expect(catalogItemStyles).toContain(':host(.grid-item) strong {\n  text-align: center;');
 
     const settingsStyles = String(
       readFileSync(
