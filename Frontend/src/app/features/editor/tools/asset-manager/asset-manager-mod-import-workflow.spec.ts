@@ -85,6 +85,23 @@ describe('AssetManagerModImportWorkflow', () => {
     expect(second.dispose).toHaveBeenCalledOnce();
   });
 
+  it('clears a previous import preview when the replacement file fails validation', async () => {
+    const { assets, workflow } = setup();
+    const previous = prepared();
+    assets.inspectModJar.mockResolvedValue(previous);
+
+    await workflow.inspect(file('previous.jar'));
+    await workflow.inspect(file('invalid.txt'));
+
+    expect(previous.dispose).toHaveBeenCalledOnce();
+    expect(workflow.preflight()).toBeUndefined();
+    expect(workflow.preflightError()).toBe('assetManagerJarOnly');
+    expect(workflow.operationStatus()).toBe('failed');
+    expect(workflow.canRetry()).toBe(false);
+    expect(assets.inspectModJar).toHaveBeenCalledOnce();
+    workflow.dispose();
+  });
+
   it('aborts stale inspection and disposes a late prepared result without publishing it', async () => {
     const { assets, workflow } = setup();
     let resolveInspection!: (value: PreparedModImport) => void;

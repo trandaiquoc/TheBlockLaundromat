@@ -45,19 +45,19 @@ export class AssetManagerModImportWorkflow {
 
   async inspect(file: File): Promise<void> {
     if (this.disposed) return;
-    if (this.importing()) this.cancel();
+    this.cancel();
+    this.retryFile = undefined;
+    this.modErrorState.set('');
     try {
       validateJarUpload(file);
     } catch (error) {
+      this.operationStatusState.set('failed');
       this.preflightErrorState.set(this.jarValidationMessage(error));
       return;
     }
 
     this.retryFile = file;
-    this.cancel();
-    this.preflightState.set(undefined);
     this.beginOperation('preflight');
-    this.modErrorState.set('');
     this.preflightErrorState.set('');
     this.preflightProgressState.set(undefined);
     const generation = this.generation;

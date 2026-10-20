@@ -33,7 +33,7 @@ An inventory entry or green build alone is not visual acceptance.
 | F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                                                        |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G3 tab, nested confirmation and real Cobblemon import; remaining recovery states pending |
 | H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1/H2 viewport and Y-Layer controls                                                         |
-| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1: JSON saved-download recovery fixed                                                                   |
+| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1 saved JSON and I2 stale Mod JAR preview fixed                                                         |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
 checks and its own local commit. The final gate includes the full suite, app
@@ -54,6 +54,7 @@ Checkpoint G real Fabric archive workflow: [G3 — Cobblemon import and cleanup]
 Checkpoint A2 catalog controls: [A2 — action placement and shared active states](CHECKPOINT-A2.md).
 Checkpoint H1 viewport controls: [H1 — XYZ gizmo and Y-Layer stepper](CHECKPOINT-H1.md).
 Checkpoint H2 viewport follow-up: [H2 — signed gizmo and compact Quick Bar](CHECKPOINT-H2.md).
+Checkpoint I2 stale Mod JAR state: [I2 — replacement validation](CHECKPOINT-I2.md).
 
 ## Preserved contracts
 
