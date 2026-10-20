@@ -1,7 +1,7 @@
 import { signal, type WritableSignal } from '@angular/core';
 // @ts-expect-error Vitest executes this template contract test in Node.
 import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { AssetManagerDialogComponent } from './asset-manager-dialog.component';
 
 const assetManagerTemplate = readFileSync(
@@ -22,6 +22,14 @@ interface AssetManagerHelpState {
   readonly openHelp: () => void;
   readonly closeHelp: () => void;
   readonly closeHelpFromEscape: (event: Event) => void;
+}
+
+interface AssetManagerConfirmationState {
+  readonly confirming: WritableSignal<boolean>;
+  readonly helpOpen: WritableSignal<boolean>;
+  readonly closed: { emit: () => void };
+  readonly cancelPreflight: () => void;
+  readonly closeFromEscape: () => void;
 }
 
 describe('AssetManagerDialogComponent tabs', () => {
@@ -98,6 +106,27 @@ describe('AssetManagerDialogComponent help', () => {
     expect(escape.defaultPrevented).toBe(true);
     expect(escape.cancelBubble).toBe(true);
     expect(state.helpOpen()).toBe(false);
+  });
+});
+
+describe('AssetManagerDialogComponent nested confirmation', () => {
+  it('keeps the manager open while a confirmation owns Escape', () => {
+    const state = Object.create(
+      AssetManagerDialogComponent.prototype,
+    ) as AssetManagerConfirmationState;
+    const emit = vi.fn();
+    const cancelPreflight = vi.fn();
+    Object.defineProperties(state, {
+      confirming: { value: signal(true) },
+      helpOpen: { value: signal(false) },
+      closed: { value: { emit } },
+      cancelPreflight: { value: cancelPreflight },
+    });
+
+    state.closeFromEscape();
+
+    expect(cancelPreflight).not.toHaveBeenCalled();
+    expect(emit).not.toHaveBeenCalled();
   });
 });
 

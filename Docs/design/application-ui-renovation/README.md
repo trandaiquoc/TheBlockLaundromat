@@ -49,6 +49,7 @@ Checkpoint F NBT/AI audit: [F4 — retained workflows](CHECKPOINT-F4.md).
 Checkpoint F file-policy parity: [F5 — Structure JSON entry points](CHECKPOINT-F5.md).
 Checkpoint F review hierarchy: [F6 — import choices](CHECKPOINT-F6.md).
 Checkpoint G initial asset manager refinement: [G1 — Vanilla tab intent](CHECKPOINT-G1.md).
+Checkpoint G nested confirmation safety: [G2 — asset manager confirmation](CHECKPOINT-G2.md).
 
 ## Preserved contracts
 

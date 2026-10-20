@@ -20,6 +20,7 @@
       <button
         type="button"
         class="ui-close-button"
+        [disabled]="confirming()"
         [attr.aria-label]="i18n.t('cancel')"
         (click)="closeFromEscape()"
       >
@@ -748,6 +749,7 @@
         <button
           type="button"
           class="close-button ui-close-button"
+          [disabled]="confirming()"
           [attr.aria-label]="i18n.t('cancel')"
           (click)="closeDetails()"
         >

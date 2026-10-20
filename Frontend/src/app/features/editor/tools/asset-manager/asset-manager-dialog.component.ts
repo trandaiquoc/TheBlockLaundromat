@@ -188,6 +188,7 @@ export class AssetManagerDialogComponent {
   });
 
   protected closeFromEscape(): void {
+    if (this.confirming()) return;
     if (this.helpOpen()) {
       this.closeHelp();
       return;
@@ -279,14 +280,20 @@ export class AssetManagerDialogComponent {
       input.value = '';
       return;
     }
-    const confirmed = await this.dialog.confirm({
-      title: this.i18n.t('assetManagerManualImportConfirmTitle'),
-      text: this.i18n
-        .t('assetManagerManualImportConfirmText')
-        .replace('{version}', this.assets.activeVersion()),
-      confirmButtonText: this.i18n.t('assetManagerImport'),
-      cancelButtonText: this.i18n.t('cancel'),
-    });
+    this.confirming.set(true);
+    let confirmed = false;
+    try {
+      confirmed = await this.dialog.confirm({
+        title: this.i18n.t('assetManagerManualImportConfirmTitle'),
+        text: this.i18n
+          .t('assetManagerManualImportConfirmText')
+          .replace('{version}', this.assets.activeVersion()),
+        confirmButtonText: this.i18n.t('assetManagerImport'),
+        cancelButtonText: this.i18n.t('cancel'),
+      });
+    } finally {
+      this.confirming.set(false);
+    }
     if (!confirmed) {
       input.value = '';
       return;
