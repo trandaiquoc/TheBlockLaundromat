@@ -291,6 +291,13 @@ describe('StructureJsonImportDialogComponent', () => {
     expect(instance.preview()).toBeUndefined();
     await instance.validate();
     expect(instance.preview()).toMatchObject({ structuralValid: true, totalBlocks: 0 });
+    fixture.detectChanges();
+    const review = fixture.nativeElement.querySelector('.structure-json-info') as HTMLElement;
+    const modeSection = review.querySelector('.import-apply-section') as HTMLElement;
+    const summary = review.querySelector('.validation-summary') as HTMLElement;
+    expect(
+      modeSection.compareDocumentPosition(summary) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     instance.loadFile({
       target: { files: [new File(['{}'], 'wrong.zip')], value: 'wrong.zip' },
     } as unknown as Event);

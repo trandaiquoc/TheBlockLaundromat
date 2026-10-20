@@ -437,6 +437,9 @@
     max-height: min(22dvh, 10rem);
     overflow: auto;
   }
+  .structure-json-import-layout.has-plan .structure-json-info {
+    max-height: min(42dvh, 22rem);
+  }
   .structure-json-workspace {
     min-height: 0;
     grid-template-rows: auto minmax(12rem, 38dvh) auto;
