@@ -3,7 +3,7 @@ import type { FaceNormal } from '../../editor/placement/placement';
 import type { ProjectSize, VoxelCoordinate } from '../../domain/project.types';
 import { coordinateKey } from '../../domain/coordinates';
 import { ddaVoxelCandidates, type VoxelRaycastCandidate } from './voxel-raycast';
-import { preciseFaceNormal } from './viewport-hit-ownership';
+import { preciseFaceNormal, preciseVoxelBoundaryIntersection } from './viewport-hit-ownership';
 
 export interface ViewportRayHit {
   readonly position: VoxelCoordinate;
@@ -74,11 +74,16 @@ export class ViewportRaycastController {
   ): ViewportRayHit | undefined {
     for (const candidate of candidates) {
       const objects = this.callbacks.objectsForVoxel(candidate.position);
-      const intersection = objects.length
+      const intersections = objects.length
         ? this.raycaster
             .intersectObjects([...objects], true)
-            .find((hit) => this.callbacks.isPreciseHit(hit, candidate.position))
-        : undefined;
+            .filter((hit) => this.callbacks.isPreciseHit(hit, candidate.position))
+        : [];
+      const intersection = preciseVoxelBoundaryIntersection(
+        intersections,
+        candidate.position,
+        this.raycaster.ray.direction,
+      );
       if (!intersection) continue;
       const normal =
         preciseFaceNormal(intersection, this.raycaster.ray.direction) ??

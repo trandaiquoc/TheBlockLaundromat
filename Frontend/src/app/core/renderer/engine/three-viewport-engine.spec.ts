@@ -1191,6 +1191,90 @@ describe('camera movement input contract', () => {
     engine.dispose();
   });
 
+  it('uses the voxel top boundary for a tied side face in direct Y-Layer hits', () => {
+    const engine = new ThreeViewportEngine();
+    const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
+    const side = new THREE.Mesh(
+      viewportHitQuad([
+        [1.5, 1, 1.4375],
+        [1.5, 2, 1.4375],
+        [1.5, 2, 1.5625],
+        [1.5, 1, 1.5625],
+      ]),
+      material,
+    );
+    const top = new THREE.Mesh(
+      viewportHitQuad([
+        [1.4375, 2, 1.4375],
+        [1.4375, 2, 1.5625],
+        [1.5625, 2, 1.5625],
+        [1.5625, 2, 1.4375],
+      ]),
+      material,
+    );
+    const position = { x: 1, y: 1, z: 1 };
+    side.userData['voxel'] = position;
+    top.userData['voxel'] = position;
+    const internal = engine as unknown as {
+      blocksGroup: THREE.Group;
+      camera: THREE.PerspectiveCamera;
+      container: HTMLElement;
+      renderer: THREE.WebGLRenderer;
+      renderScheduler: { request: (render: () => void) => void };
+    };
+    internal.blocksGroup.add(side, top);
+    internal.container = {} as HTMLElement;
+    internal.renderer = {
+      domElement: {
+        getBoundingClientRect: () => ({ left: 0, top: 0, width: 100, height: 100 }) as DOMRect,
+        remove: vi.fn(),
+      },
+      dispose: vi.fn(),
+    } as unknown as THREE.WebGLRenderer;
+    vi.spyOn(internal.renderScheduler, 'request').mockImplementation(() => undefined);
+    internal.camera.position.set(3, 3, 3);
+    internal.camera.lookAt(1.5, 2, 1.5);
+    internal.camera.updateProjectionMatrix();
+    internal.camera.updateMatrixWorld(true);
+
+    const block: PlacedBlock = {
+      kind: 'resolved',
+      id: 'minecraft:iron_bars',
+      namespace: 'minecraft',
+      position,
+      state: {
+        east: 'false',
+        north: 'false',
+        south: 'false',
+        waterlogged: 'false',
+        west: 'false',
+      },
+    };
+    const project: ProjectDocument = {
+      ...rendererBenchmarkProject('small'),
+      size: { x: 4, y: 4, z: 4 },
+      blocks: [block],
+      groups: [],
+      decorations: [],
+    };
+    const active: ActiveBlock = {
+      id: block.id,
+      sourceId: 'vanilla',
+      support: 'fallback',
+      state: block.state,
+    };
+    const hit = engine.hit({ clientX: 50, clientY: 50 } as PointerEvent, project, active, 1, false);
+
+    expect(hit.block).toEqual(position);
+    expect(hit.faceNormal).toEqual({ x: 0, y: 1, z: 0 });
+    expect(hit.target).toEqual({ x: 1, y: 2, z: 1 });
+
+    engine.dispose();
+    side.geometry.dispose();
+    top.geometry.dispose();
+    material.dispose();
+  });
+
   it('adds voxel translation without replacing a special visual local transform', () => {
     const visual = new SpecialBlockVisualRegistry()
       .resolve({
@@ -6573,6 +6657,16 @@ function countObjectsWithUserData(root: THREE.Object3D, key: string): number {
     if (object.userData[key] === true) count += 1;
   });
   return count;
+}
+
+function viewportHitQuad(
+  points: readonly (readonly [number, number, number])[],
+): THREE.BufferGeometry {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setFromPoints(points.map(([x, y, z]) => new THREE.Vector3(x, y, z)));
+  geometry.setIndex([0, 1, 2, 0, 2, 3]);
+  geometry.computeVertexNormals();
+  return geometry;
 }
 
 function deferred<T>(): { readonly promise: Promise<T>; readonly resolve: (value: T) => void } {

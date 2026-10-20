@@ -144,6 +144,41 @@ describe('BlockRuleEngine', () => {
     ).toEqual([{ position: request.position, state: request.state }]);
   });
 
+  it('places Iron Bars vertically while retaining horizontal derived connections', () => {
+    const lowerRequest = block('minecraft:iron_bars', { x: 2, y: 0, z: 2 });
+    const lower = engine.place(base, lowerRequest).project!;
+    const upperRequest = block('minecraft:iron_bars', { x: 2, y: 1, z: 2 });
+    const upperPreview = engine.preview(
+      lower,
+      upperRequest,
+      undefined,
+      new ProjectBlockSpatialIndex(lower.blocks),
+    );
+    const vertical = engine.place(lower, upperRequest).project!;
+
+    expect(upperPreview.validation.status).toBe('valid');
+    expect(upperPreview.plannedBlocks?.map(({ position, state }) => ({ position, state }))).toEqual(
+      [{ position: upperRequest.position, state: upperRequest.state }],
+    );
+    expect(vertical.blocks.map((entry) => entry.position)).toContainEqual({ x: 2, y: 1, z: 2 });
+    expect(vertical.blocks).toHaveLength(2);
+
+    const horizontal = engine.place(
+      vertical,
+      block('minecraft:iron_bars', { x: 3, y: 0, z: 2 }),
+    ).project!;
+    expect(
+      horizontal.blocks.find((entry) => entry.position.x === 2 && entry.position.y === 0)?.state[
+        'east'
+      ],
+    ).toBe('true');
+    expect(
+      horizontal.blocks.find((entry) => entry.position.x === 3 && entry.position.y === 0)?.state[
+        'west'
+      ],
+    ).toBe('true');
+  });
+
   it('normalizes a resource-selected upper half before placing a double-height object', () => {
     const supported = {
       ...base,
@@ -909,12 +944,30 @@ describe('BlockRuleEngine', () => {
 
   it('places standing and chain-hanging lanterns with canonical hanging state', () => {
     const support = { ...base, blocks: [block('minecraft:stone', { x: 2, y: 0, z: 2 })] };
-    const standing = engine.place(support, block('minecraft:lantern', { x: 2, y: 1, z: 2 }));
+    const standingRequest = block('minecraft:lantern', { x: 2, y: 1, z: 2 });
+    const standingPreview = engine.preview(
+      support,
+      standingRequest,
+      undefined,
+      new ProjectBlockSpatialIndex(support.blocks),
+    );
+    const standing = engine.place(support, standingRequest);
+    expect(standingPreview.validation).toMatchObject({ status: 'valid', reason: 'ok' });
+    expect(standingPreview.plannedBlocks?.[0].state['hanging']).toBe('false');
     expect(standing.validation).toMatchObject({ status: 'valid' });
     expect(standing.project?.blocks.at(-1)?.state['hanging']).toBe('false');
 
     const chain = engine.place(base, block('minecraft:chain', { x: 2, y: 2, z: 2 })).project!;
-    const hanging = engine.place(chain, block('minecraft:lantern', { x: 2, y: 1, z: 2 }));
+    const hangingRequest = block('minecraft:lantern', { x: 2, y: 1, z: 2 });
+    const hangingPreview = engine.preview(
+      chain,
+      hangingRequest,
+      undefined,
+      new ProjectBlockSpatialIndex(chain.blocks),
+    );
+    const hanging = engine.place(chain, hangingRequest);
+    expect(hangingPreview.validation).toMatchObject({ status: 'valid', reason: 'ok' });
+    expect(hangingPreview.plannedBlocks?.[0].state['hanging']).toBe('true');
     expect(hanging.validation).toMatchObject({ status: 'valid' });
     expect(hanging.project?.blocks.at(-1)).toMatchObject({
       id: 'minecraft:lantern',
@@ -922,9 +975,44 @@ describe('BlockRuleEngine', () => {
     });
   });
 
+  it('uses the virtual floor for Lantern at Y=0 in preview and commit without adding support blocks', () => {
+    const project = { ...base, blocks: [] };
+    const request = block('minecraft:lantern', { x: 2, y: 0, z: 2 });
+    const context = { faceNormal: { x: 0, y: 1, z: 0 } };
+    const preview = engine.preview(
+      project,
+      request,
+      context,
+      new ProjectBlockSpatialIndex(project.blocks),
+    );
+    const committed = engine.place(project, request, context);
+
+    expect(preview.validation).toMatchObject({ status: 'valid', reason: 'ok' });
+    expect(preview.plannedBlocks).toEqual([
+      expect.objectContaining({
+        position: request.position,
+        state: expect.objectContaining({ hanging: 'false' }),
+      }),
+    ]);
+    expect(committed.validation).toMatchObject({ status: 'valid', reason: 'ok' });
+    expect(committed.project?.blocks).toEqual([
+      expect.objectContaining({ id: 'minecraft:lantern', position: request.position }),
+    ]);
+  });
+
   it('rejects unsupported lantern placement and preserves hanging lantern after chain removal', () => {
     const unsupported = engine.place(base, block('minecraft:lantern', { x: 2, y: 1, z: 2 }));
     expect(unsupported.validation).toMatchObject({ status: 'invalid', reason: 'missing-support' });
+    const unsupportedPreview = engine.preview(
+      base,
+      block('minecraft:lantern', { x: 2, y: 1, z: 2 }),
+      undefined,
+      new ProjectBlockSpatialIndex(base.blocks),
+    );
+    expect(unsupportedPreview.validation).toMatchObject({
+      status: 'invalid',
+      reason: 'missing-support',
+    });
     const chain = engine.place(base, block('minecraft:chain', { x: 2, y: 2, z: 2 })).project!;
     const placed = engine.place(chain, block('minecraft:lantern', { x: 2, y: 1, z: 2 })).project!;
     const removed = engine.delete(placed, { x: 2, y: 2, z: 2 });

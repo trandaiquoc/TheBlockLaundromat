@@ -266,6 +266,7 @@ import { ViewportCameraMotionController } from '../scheduling/camera/viewport-ca
 import {
   blockCoordinateFromHit,
   preciseFaceNormal,
+  preciseVoxelBoundaryIntersection,
   surfaceFaceDirectionFromHit,
 } from '../interaction/viewport-hit-ownership';
 import {
@@ -3464,12 +3465,33 @@ export class ThreeViewportEngine {
       .intersectObjects(decorationRoot.children, true)
       .find((hit) => !!hit.object.userData['decoration']);
     const ddaHit = planeY === undefined ? this.ddaPick(project) : undefined;
-    const blockHit =
-      planeY === undefined
-        ? undefined
-        : this.raycaster
-            .intersectObjects(blockRoot.children, true)
-            .find((hit) => !hit.object.userData['decoration']);
+    const blockIntersections =
+      planeY === undefined ? [] : this.raycaster.intersectObjects(blockRoot.children, true);
+    const firstBlockIndex = blockIntersections.findIndex(
+      (hit) => !hit.object.userData['decoration'],
+    );
+    const firstBlockHit = blockIntersections[firstBlockIndex];
+    const firstBlockPosition = firstBlockHit && blockCoordinateFromHit(firstBlockHit);
+    const blockHit = firstBlockHit
+      ? firstBlockPosition
+        ? (preciseVoxelBoundaryIntersection(
+            blockIntersections,
+            firstBlockPosition,
+            this.raycaster.ray.direction,
+            firstBlockIndex,
+            (hit) => {
+              if (hit.object.userData['decoration']) return false;
+              const position = blockCoordinateFromHit(hit);
+              if (!position) return false;
+              return (
+                position.x === firstBlockPosition.x &&
+                position.y === firstBlockPosition.y &&
+                position.z === firstBlockPosition.z
+              );
+            },
+          ) ?? firstBlockHit)
+        : firstBlockHit
+      : undefined;
     const decoration = decorationHit?.object.userData['decoration'] as PlacedDecoration | undefined;
     let target: VoxelCoordinate | undefined;
     let block: VoxelCoordinate | undefined;

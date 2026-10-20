@@ -13,6 +13,8 @@ import {
   sixFaceDirectionOffset,
 } from './block-rule-geometry';
 
+const VIRTUAL_FLOOR_SUPPORT_Y = -1;
+
 /** Owns verified support contracts; mutation policy remains in BlockRuleEngine. */
 export function validateBlockSupport(
   project: ProjectDocument,
@@ -143,7 +145,7 @@ export function validateBlockSupport(
     supportPosition = add(block.position, { x: 0, y: -1, z: 0 });
   if (!supportPosition)
     return { status: 'valid', reason: 'ok', affectedPositions: [block.position] };
-  if (supportPosition.y === -1 && block.position.y === 0 && requiresSupportBelow(behavior))
+  if (isVirtualFloorSupport(block, supportPosition, behavior))
     return { status: 'valid', reason: 'ok', affectedPositions: [block.position, supportPosition] };
   const support = find(source, supportPosition);
   if (!support)
@@ -275,5 +277,17 @@ function requiresSupportBelow(behavior: NonNullable<BlockDefinition['behavior']>
     behavior.kind === 'standing-sign' ||
     behavior.kind === 'lantern-placement' ||
     (behavior.kind === 'double-height' && behavior.requiresFloor)
+  );
+}
+
+function isVirtualFloorSupport(
+  block: PlacedBlock,
+  supportPosition: VoxelCoordinate,
+  behavior: NonNullable<BlockDefinition['behavior']>,
+): boolean {
+  return (
+    block.position.y === 0 &&
+    supportPosition.y === VIRTUAL_FLOOR_SUPPORT_Y &&
+    requiresSupportBelow(behavior)
   );
 }

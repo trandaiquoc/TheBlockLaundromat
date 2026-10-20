@@ -117,7 +117,10 @@ does not create project blocks or support floating placements above Y=0.
 Chain-hanging Lanterns still require the existing verified attachment support.
 
 Precise picking of double-sided model faces reports the side approached by the
-pointer ray. This handles the coincident up/down caps in the official 1.21.1
-`iron_bars_post_ends` model without changing geometry or widening hitboxes.
-Both the 3D DDA precise fallback and the Y-Layer precise path use this normal
-resolver. Preview and commit retain the shared placement plan and atomic history.
+pointer ray. When equally near model faces meet at one point, an actual voxel
+boundary face takes precedence over an internal model face when exactly one
+voxel axis is on its boundary. This resolves the Iron Bars upper cap where the
+official 1.21.1 `iron_bars_post_ends` geometry reports coincident internal side
+faces first, without changing geometry or widening hitboxes. Both the 3D DDA
+precise fallback and direct Y-Layer picking use this resolver. Preview and
+commit retain the shared placement plan and atomic history.

@@ -10,6 +10,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { DEFAULT_REFERENCE_LAYER_OPACITY } from '../../../../core/domain/editor-settings';
 import { ActiveBlockService } from '../../../../core/blocks/placement-palette/active-block.service';
 import { BlockLibraryService } from '../../../../core/blocks/catalog/block-library.service';
 import { StructureEditorService } from '../../../../core/editor/structure/structure-editor.service';
@@ -74,6 +75,7 @@ export const Y_LAYER_PROJECTION_STATUS_DELAY_MS = 180;
 })
 export class YLayerComponent implements AfterViewInit, OnDestroy {
   readonly viewportActive = angularInput(true);
+  protected readonly defaultReferenceLayerOpacity = DEFAULT_REFERENCE_LAYER_OPACITY;
   private readonly host = viewChild<ElementRef<HTMLElement>>('host');
   protected readonly workspace = inject(WorkspaceStateService);
   private readonly assets = inject(ContentAssetRuntimeService);

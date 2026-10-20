@@ -38,6 +38,50 @@ describe('ViewportRaycastController', () => {
     for (const mesh of meshes) mesh.geometry.dispose();
     material.dispose();
   });
+  it('prefers the voxel top face when a narrow model side ties at its upper boundary', () => {
+    const voxel = { x: 1, y: 1, z: 1 };
+    const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
+    const side = new THREE.Mesh(
+      quadGeometry([
+        [1.5, 1, 1.4375],
+        [1.5, 2, 1.4375],
+        [1.5, 2, 1.5625],
+        [1.5, 1, 1.5625],
+      ]),
+      material,
+    );
+    const top = new THREE.Mesh(
+      quadGeometry([
+        [1.4375, 2, 1.4375],
+        [1.4375, 2, 1.5625],
+        [1.5625, 2, 1.5625],
+        [1.5625, 2, 1.4375],
+      ]),
+      material,
+    );
+    const targetPoint = new THREE.Vector3(1.5, 2, 1.5);
+    const origin = new THREE.Vector3(3, 3, 3);
+    const direction = targetPoint.clone().sub(origin).normalize();
+    const raycaster = new THREE.Raycaster(origin, direction);
+    const controller = new ViewportRaycastController(raycaster, {
+      classify: (position) =>
+        position.x === voxel.x && position.y === voxel.y && position.z === voxel.z
+          ? 'fallback'
+          : 'skip',
+      objectsForVoxel: () => [side, top],
+      isPreciseHit: () => true,
+      record: () => undefined,
+    });
+
+    const hit = controller.pick(raycaster.ray, { x: 4, y: 4, z: 4 })!;
+
+    expect(hit.position).toEqual(voxel);
+    expect(hit.normal).toEqual({ x: 0, y: 1, z: 0 });
+    expect(targetFromBlockFace(hit.position, hit.normal)).toEqual({ x: 1, y: 2, z: 1 });
+    side.geometry.dispose();
+    top.geometry.dispose();
+    material.dispose();
+  });
   it('records bounded DDA work and delegates translucent candidates to precise picking', () => {
     const record = vi.fn();
     const controller = new ViewportRaycastController(new THREE.Raycaster(), {
@@ -54,3 +98,13 @@ describe('ViewportRaycastController', () => {
     expect(record).toHaveBeenCalledWith('ddaPickCount');
   });
 });
+
+function quadGeometry(
+  points: readonly (readonly [number, number, number])[],
+): THREE.BufferGeometry {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setFromPoints(points.map(([x, y, z]) => new THREE.Vector3(x, y, z)));
+  geometry.setIndex([0, 1, 2, 0, 2, 3]);
+  geometry.computeVertexNormals();
+  return geometry;
+}

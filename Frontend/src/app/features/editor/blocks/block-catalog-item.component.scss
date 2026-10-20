@@ -103,8 +103,8 @@ strong {
 }
 .item-actions svg,
 .copy-action svg {
-  width: 1rem;
-  height: 1rem;
+  width: 0.875rem;
+  height: 0.875rem;
   flex-shrink: 0;
 }
 button:focus-visible,
@@ -171,14 +171,14 @@ button:disabled {
   content: '';
   position: absolute;
   z-index: -1;
-  width: 24px;
-  height: 24px;
+  width: 1.25rem;
+  height: 1.25rem;
   box-sizing: border-box;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
 }
 :host(:not(.detail-item)) .item-actions button::before {
-  background: color-mix(in srgb, var(--text) 7%, transparent);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
 }
 :host(:not(.detail-item)) .quick-add-action {
   color: var(--text);

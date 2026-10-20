@@ -6,7 +6,9 @@
     [updating]="projectionIndicatorVisible()"
     [active]="viewportActive()"
     [visibility]="visibility()"
-    [opacity]="workspace.project()?.editorSettings?.referenceLayerOpacity ?? 0.28"
+    [opacity]="
+      workspace.project()?.editorSettings?.referenceLayerOpacity ?? defaultReferenceLayerOpacity
+    "
     (action)="handleLayerControl($event)"
   />
   <div
