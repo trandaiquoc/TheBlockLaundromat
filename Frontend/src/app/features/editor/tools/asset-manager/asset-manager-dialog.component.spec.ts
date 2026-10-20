@@ -2,6 +2,7 @@ import { signal, type WritableSignal } from '@angular/core';
 // @ts-expect-error Vitest executes this template contract test in Node.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
+import { JarUploadValidationError } from '../../../../core/assets/mod/import/jar-upload-validation';
 import { AssetManagerDialogComponent } from './asset-manager-dialog.component';
 
 const assetManagerTemplate = readFileSync(
@@ -31,6 +32,27 @@ interface AssetManagerConfirmationState {
   readonly cancelPreflight: () => void;
   readonly closeFromEscape: () => void;
 }
+
+interface AssetManagerJarValidationState {
+  readonly jarValidationMessage: (error: unknown) => string;
+}
+
+describe('AssetManagerDialogComponent file validation', () => {
+  it('uses the same upload limit in the Vanilla JAR fallback message', () => {
+    const state = Object.create(
+      AssetManagerDialogComponent.prototype,
+    ) as AssetManagerJarValidationState;
+    Object.defineProperty(state, 'i18n', {
+      value: {
+        t: (key: string) => (key === 'assetManagerJarTooLarge' ? 'JAR limit: {maxMiB} MiB' : key),
+      },
+    });
+
+    expect(state.jarValidationMessage(new JarUploadValidationError('jar-too-large'))).toBe(
+      'JAR limit: 200 MiB',
+    );
+  });
+});
 
 describe('AssetManagerDialogComponent tabs', () => {
   it('keeps one tab stop and moves focus with arrow, Home, and End keys', () => {

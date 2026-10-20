@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { ContentAssetRuntimeService } from '../../../../core/assets/content-asset-runtime.service';
 import { AssetActivityService } from '../../../../core/assets/asset-activity.service';
+import { InvalidZipArchiveError } from '../../../../core/assets/archive/zip-archive';
 import {
   ModImportProgress,
   PreparedModImport,
@@ -212,7 +213,12 @@ export class AssetManagerModImportWorkflow {
       }
       return;
     }
-    const message = error instanceof Error ? error.message : this.i18n.t('assetManagerImportError');
+    const message =
+      error instanceof InvalidZipArchiveError
+        ? this.i18n.t('assetManagerInvalidJarArchive')
+        : error instanceof Error
+          ? error.message
+          : this.i18n.t('assetManagerImportError');
     this.operationStatusState.set('failed');
     if (operation === 'commit') this.modErrorState.set(message);
     else this.preflightErrorState.set(message);
@@ -221,9 +227,9 @@ export class AssetManagerModImportWorkflow {
 
   private jarValidationMessage(error: unknown): string {
     if (error instanceof JarUploadValidationError)
-      return this.i18n.t(
-        error.code === 'jar-extension' ? 'assetManagerJarOnly' : 'assetManagerJarTooLarge',
-      );
+      return this.i18n
+        .t(error.code === 'jar-extension' ? 'assetManagerJarOnly' : 'assetManagerJarTooLarge')
+        .replace('{maxMiB}', String(error.maxBytes / (1024 * 1024)));
     return error instanceof Error ? error.message : this.i18n.t('assetManagerImportError');
   }
 

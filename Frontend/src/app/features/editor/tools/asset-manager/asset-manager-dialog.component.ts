@@ -316,9 +316,9 @@ export class AssetManagerDialogComponent {
   }
   private jarValidationMessage(error: unknown): string {
     if (error instanceof JarUploadValidationError)
-      return this.i18n.t(
-        error.code === 'jar-extension' ? 'assetManagerJarOnly' : 'assetManagerJarTooLarge',
-      );
+      return this.i18n
+        .t(error.code === 'jar-extension' ? 'assetManagerJarOnly' : 'assetManagerJarTooLarge')
+        .replace('{maxMiB}', String(error.maxBytes / (1024 * 1024)));
     return error instanceof Error ? error.message : this.i18n.t('assetManagerImportError');
   }
   protected async confirmModImport(): Promise<void> {

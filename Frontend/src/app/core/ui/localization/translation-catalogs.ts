@@ -2274,7 +2274,9 @@ const supplementalTranslationSource = {
     assetManagerDiagnostics: 'Diagnostics',
     assetManagerShowTechnicalProgress: 'Show technical progress',
     assetManagerJarOnly: 'Only JAR files (.jar) are supported.',
-    assetManagerJarTooLarge: 'JAR files must not exceed 100 MB.',
+    assetManagerJarTooLarge: 'JAR files must not exceed {maxMiB} MiB.',
+    assetManagerInvalidJarArchive:
+      'This JAR is damaged or incomplete. Choose a valid .jar file and try again.',
     assetManagerFinalizingCache: 'Finalizing cache…',
     assetManagerReadingJar: 'Reading JAR',
     assetManagerResourcesStage: 'Resources',
@@ -2617,7 +2619,9 @@ const supplementalTranslationSource = {
     assetManagerDiagnostics: 'Chẩn đoán',
     assetManagerShowTechnicalProgress: 'Hiện tiến trình kỹ thuật',
     assetManagerJarOnly: 'Chỉ hỗ trợ tệp JAR (.jar).',
-    assetManagerJarTooLarge: 'Tệp JAR không được vượt quá 100 MB.',
+    assetManagerJarTooLarge: 'Tệp JAR không được vượt quá {maxMiB} MiB.',
+    assetManagerInvalidJarArchive:
+      'Tệp JAR bị hỏng hoặc chưa hoàn chỉnh. Hãy chọn tệp .jar hợp lệ và thử lại.',
     assetManagerFinalizingCache: 'Đang hoàn tất bộ nhớ đệm…',
     assetManagerReadingJar: 'Đọc JAR',
     assetManagerResourcesStage: 'Tài nguyên',

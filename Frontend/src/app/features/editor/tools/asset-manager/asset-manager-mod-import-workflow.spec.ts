@@ -1,11 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { ContentAssetRuntimeService } from '../../../../core/assets/content-asset-runtime.service';
 import type { AssetActivityService } from '../../../../core/assets/asset-activity.service';
+import { InvalidZipArchiveError } from '../../../../core/assets/archive/zip-archive';
 import type {
   ModImportProgress,
   PreparedModImport,
 } from '../../../../core/assets/mod/import/external-mod-importer';
 import { ModImportTimeoutError } from '../../../../core/assets/mod/import/mod-import-phase-watchdog';
+import { MAX_JAR_UPLOAD_BYTES } from '../../../../core/assets/mod/import/jar-upload-validation';
 import type { I18nService } from '../../../../core/ui/localization/i18n.service';
 import { AssetManagerModImportWorkflow } from './asset-manager-mod-import-workflow';
 
@@ -31,7 +33,9 @@ function setup() {
     inspectModJar: vi.fn(),
     commitPreparedModImport: vi.fn(),
   };
-  const i18n = { t: (key: string) => key };
+  const i18n = {
+    t: (key: string) => (key === 'assetManagerJarTooLarge' ? 'JAR limit: {maxMiB} MiB' : key),
+  };
   return {
     activity,
     assets,
@@ -99,6 +103,28 @@ describe('AssetManagerModImportWorkflow', () => {
     expect(workflow.operationStatus()).toBe('failed');
     expect(workflow.canRetry()).toBe(false);
     expect(assets.inspectModJar).toHaveBeenCalledOnce();
+    workflow.dispose();
+  });
+
+  it('uses the configured size limit in the error message', async () => {
+    const { workflow } = setup();
+    await workflow.inspect({ name: 'oversized.jar', size: MAX_JAR_UPLOAD_BYTES + 1 } as File);
+
+    expect(workflow.preflightError()).toBe('JAR limit: 200 MiB');
+    workflow.dispose();
+  });
+
+  it('presents a damaged archive as a recoverable JAR error', async () => {
+    const { assets, workflow } = setup();
+    assets.inspectModJar.mockRejectedValue(
+      new InvalidZipArchiveError('ZIP end-of-central-directory record was not found'),
+    );
+
+    await workflow.inspect(file());
+
+    expect(workflow.preflightError()).toBe('assetManagerInvalidJarArchive');
+    expect(workflow.preflight()).toBeUndefined();
+    expect(workflow.operationStatus()).toBe('failed');
     workflow.dispose();
   });
 
