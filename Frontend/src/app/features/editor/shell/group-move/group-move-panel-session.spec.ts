@@ -96,7 +96,7 @@ describe('GroupMovePanelSession', () => {
     viewport.width = 390;
     session.clampPersistedPosition();
 
-    expect(session.position()).toEqual({ x: 90, y: 16 });
-    expect(preferences().groupMovePanelX).toBe(90);
+    expect(session.position()).toEqual({ x: 82, y: 16 });
+    expect(preferences().groupMovePanelX).toBe(82);
   });
 });

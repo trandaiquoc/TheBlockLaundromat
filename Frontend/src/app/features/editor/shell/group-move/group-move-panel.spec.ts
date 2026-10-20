@@ -36,7 +36,14 @@ describe('group move panel positioning', () => {
         { width: 390, height: 844 },
         { width: 300, height: 280 },
       ),
-    ).toEqual({ x: 90, y: 50 });
+    ).toEqual({ x: 82, y: 50 });
+    expect(
+      clampGroupMovePanelPosition(
+        { x: 500, y: 50 },
+        { width: 320, height: 844 },
+        { width: 288, height: 280 },
+      ),
+    ).toEqual({ x: 24, y: 50 });
     expect(
       clampGroupMovePanelPosition(
         { x: 200, y: 50 },

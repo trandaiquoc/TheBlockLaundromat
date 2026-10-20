@@ -703,6 +703,11 @@ export class EditorShellComponent implements OnDestroy {
     )
       return;
     if (event.key === 'Escape') {
+      if (this.movePanelVisible()) {
+        this.hideMovePanel();
+        event.preventDefault();
+        return;
+      }
       if (this.leftDrawerOpen() || this.rightDrawerOpen()) {
         this.closeDrawers();
         event.preventDefault();

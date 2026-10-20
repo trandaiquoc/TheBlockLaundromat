@@ -682,6 +682,23 @@ describe('editor shell movement/delete routing', () => {
         expect(shell['movePanelVisible']()).toBe(false);
         expect(shell['groups'].moveOffset().x).toBe(0);
         expect(document.activeElement).toBe(width < 850 ? opener : move);
+        move.focus();
+        move.click();
+        fixture.detectChanges();
+        await fixture.whenStable();
+        shell['groups'].setMoveOffset('x', 1);
+        const escape = new KeyboardEvent('keydown', {
+          key: 'Escape',
+          bubbles: true,
+          cancelable: true,
+        });
+        document.activeElement!.dispatchEvent(escape);
+        fixture.detectChanges();
+        await fixture.whenStable();
+        expect(escape.defaultPrevented).toBe(true);
+        expect(shell['movePanelVisible']()).toBe(false);
+        expect(shell['groups'].moveOffset().x).toBe(0);
+        expect(document.activeElement).toBe(width < 850 ? opener : move);
         if (width < 850) {
           opener.click();
           fixture.detectChanges();

@@ -24,9 +24,11 @@ export function clampGroupMovePanelPosition(
   reachableHeaderSize = 48,
 ): PanelPosition {
   const keepPanelVisible = viewport.width <= NARROW_VIEWPORT_MAX_WIDTH;
-  const minX = keepPanelVisible ? 0 : reachableHeaderSize - panel.width;
+  const freeHorizontalSpace = viewport.width - panel.width;
+  const narrowInset = Math.min(8, Math.max(0, freeHorizontalSpace / 2));
+  const minX = keepPanelVisible ? narrowInset : reachableHeaderSize - panel.width;
   const maxX = keepPanelVisible
-    ? Math.max(minX, viewport.width - panel.width)
+    ? Math.max(minX, freeHorizontalSpace - narrowInset)
     : Math.max(minX, viewport.width - reachableHeaderSize);
   const minY = 0;
   const maxY = Math.max(minY, viewport.height - reachableHeaderSize);
