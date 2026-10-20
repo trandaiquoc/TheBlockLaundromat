@@ -30,7 +30,7 @@ An inventory entry or green build alone is not visual acceptance.
 | C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                                                                           |
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                                                           |
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                                                           |
-| F          | Every supported import/export workflow and its nested decisions                              | In progress: F1–F7 project backup, Structure JSON review and clip-empty recovery implemented; remaining branches are inventoried      |
+| F          | Every supported import/export workflow and its nested decisions                              | In progress: F1–F8 project backup and both Structure JSON entry points refined; remaining workflows and branches are inventoried      |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G8; official Fabric import, NeoForge rejection and commit cancellation verified; remaining states are inventoried     |
 | H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H10 and H12–H15; viewport, Quick Bar, source handoff, account controls and specialized editors; other surfaces remain |
 | I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                                                                 |
@@ -49,6 +49,7 @@ Checkpoint F NBT/AI audit: [F4 — retained workflows](CHECKPOINT-F4.md).
 Checkpoint F file-policy parity: [F5 — Structure JSON entry points](CHECKPOINT-F5.md).
 Checkpoint F review hierarchy: [F6 — import choices](CHECKPOINT-F6.md).
 Checkpoint F clipped import recovery: [F7 — empty clip result](CHECKPOINT-F7.md).
+Checkpoint F Project Screen import recovery: [F8 — file, Huge and keyboard states](CHECKPOINT-F8.md).
 Checkpoint G initial asset manager refinement: [G1 — Vanilla tab intent](CHECKPOINT-G1.md).
 Checkpoint G nested confirmation safety: [G2 — asset manager confirmation](CHECKPOINT-G2.md).
 Checkpoint G real Fabric archive workflow: [G3 — Cobblemon import and cleanup](CHECKPOINT-G3.md).

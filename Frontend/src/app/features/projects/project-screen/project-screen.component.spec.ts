@@ -36,6 +36,7 @@ describe('ProjectScreenComponent', () => {
     const template = String(readFileSync(templatePath, 'utf8'));
 
     expect(template).toMatch(/<h2\s+cdkFocusInitial\s+tabindex="-1"/);
+    expect(template).toContain('(keydown.escape)="closeStructureJsonImport()"');
     expect(template).toContain('(input)="updateProjectSearch($event)"');
     expect(template).toContain('(change)="updateProjectOrder($event)"');
     expect(template).toContain("i18n.t('open')");

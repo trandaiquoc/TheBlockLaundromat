@@ -70,6 +70,9 @@ export class ProjectScreenComponent {
   protected readonly backup = inject(ProjectBackupWorkflow);
   protected readonly backupDialogOpen = signal(false);
   private readonly backupTrigger = viewChild<ElementRef<HTMLButtonElement>>('backupTrigger');
+  private readonly structureJsonCreateTrigger = viewChild<ElementRef<HTMLButtonElement>>(
+    'structureJsonCreateTrigger',
+  );
   protected readonly backupExportingId = signal<string | undefined>(undefined);
   protected readonly backupExportError = signal(false);
   protected readonly name = signal(this.i18n.t('untitledStructure'));
@@ -254,7 +257,12 @@ export class ProjectScreenComponent {
     await this.structureJsonImport.selectFile(file, this.i18n.t('untitledStructure'));
   }
   protected closeStructureJsonImport(): void {
+    const wasOpen = this.structureJsonImport.open();
     this.structureJsonImport.close();
+    if (!wasOpen || this.structureJsonImport.open()) return;
+    queueMicrotask(() =>
+      this.structureJsonCreateTrigger()?.nativeElement.focus({ preventScroll: true }),
+    );
   }
   protected async createProjectFromStructureJson(): Promise<void> {
     const project = await this.structureJsonImport.createProject();

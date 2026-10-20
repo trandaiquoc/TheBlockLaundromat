@@ -194,6 +194,7 @@
             type="button"
             class="ui-button ui-button--secondary structure-json-create-action"
             [disabled]="creating() || !!openingId()"
+            #structureJsonCreateTrigger
             (click)="openStructureJsonPicker(structureJsonFile)"
           >
             <svg lucideFileUp aria-hidden="true"></svg
@@ -447,6 +448,7 @@
         aria-modal="true"
         tabindex="-1"
         autofocus
+        (keydown.escape)="closeStructureJsonImport()"
         [attr.aria-label]="i18n.t('createFromStructureJson')"
       >
         <header class="project-import-header">

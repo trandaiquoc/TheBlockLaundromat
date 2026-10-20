@@ -52,6 +52,15 @@ function file(name: string, text: () => Promise<string>): File {
   return { name, text } as unknown as File;
 }
 
+function structureJson(blocks: readonly { id: string; x: number; y: number; z: number }[]): string {
+  return JSON.stringify({
+    format: 'the-block-laundromat-structure',
+    minecraftVersion: '1.21.1',
+    blocks,
+    decorations: [],
+  });
+}
+
 describe('StructureJsonProjectImportWorkflow', () => {
   it('rejects the wrong file type and oversized JSON before reading or preparing a project', async () => {
     const { workflow } = createWorkflow();
@@ -70,6 +79,68 @@ describe('StructureJsonProjectImportWorkflow', () => {
     expect(workflow.failure()).toEqual({ kind: 'file-size' });
     expect(workflow.preview()).toBeUndefined();
     expect(read).not.toHaveBeenCalled();
+    workflow.dispose();
+  });
+
+  it('reports a file read error and clears it when the user retries with a valid file', async () => {
+    const { workflow } = createWorkflow();
+    await workflow.selectFile(
+      file('unavailable.json', async () => {
+        throw new Error('read failed');
+      }),
+      'Untitled structure',
+    );
+
+    expect(workflow.failure()).toEqual({ kind: 'read' });
+    expect(workflow.progress()).toBe('error');
+    expect(workflow.preview()).toBeUndefined();
+
+    await workflow.selectFile(
+      file('house.json', async () => source),
+      'Untitled structure',
+    );
+
+    expect(workflow.failure()).toBeUndefined();
+    expect(workflow.progress()).toBe('ready');
+    expect(workflow.preview()?.filename).toBe('house.json');
+    workflow.dispose();
+  });
+
+  it('surfaces invalid JSON as a parse failure without creating a preview', async () => {
+    const { workflow } = createWorkflow();
+    await workflow.selectFile(
+      file('broken.json', async () => '{'),
+      'Untitled structure',
+    );
+
+    expect(workflow.failure()).toEqual({ kind: 'parse', code: 'invalid-json' });
+    expect(workflow.progress()).toBe('error');
+    expect(workflow.preview()).toBeUndefined();
+    workflow.dispose();
+  });
+
+  it.each([
+    { label: 'empty structures', blocks: [], code: 'empty-structure' },
+    {
+      label: 'negative coordinates',
+      blocks: [{ id: stone.id, x: -1, y: 0, z: 0 }],
+      code: 'negative-coordinates',
+    },
+    {
+      label: 'sizes beyond Huge Structure Blocks',
+      blocks: [{ id: stone.id, x: 512, y: 0, z: 0 }],
+      code: 'unsupported-size',
+    },
+  ] as const)('reports preparation failures for $label', async ({ blocks, code }) => {
+    const { workflow } = createWorkflow();
+    await workflow.selectFile(
+      file('invalid-structure.json', async () => structureJson(blocks)),
+      'Untitled structure',
+    );
+
+    expect(workflow.failure()).toEqual({ kind: 'prepare', code });
+    expect(workflow.progress()).toBe('error');
+    expect(workflow.preview()?.project).toBeUndefined();
     workflow.dispose();
   });
   it('exposes project-import state as read-only signals owned by the workflow', async () => {
