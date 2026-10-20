@@ -1,7 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { ZipArchive } from './zip-archive';
+import { InvalidZipArchiveError, ZipArchive } from './zip-archive';
 
 describe('ZipArchive', () => {
+  it('classifies a corrupt archive without a central directory', async () => {
+    await expect(ZipArchive.open(new Blob(['not a ZIP']))).rejects.toBeInstanceOf(
+      InvalidZipArchiveError,
+    );
+  });
+
+  it('classifies a truncated central directory entry', async () => {
+    const bytes = new Uint8Array(storedZip('entry.txt', 'data'));
+    const view = new DataView(bytes.buffer);
+    view.setUint32(bytes.length - 22 + 16, bytes.length - 25, true);
+    await expect(ZipArchive.open(new Blob([bytes]))).rejects.toBeInstanceOf(InvalidZipArchiveError);
+  });
+
   it('reads a stored entry from the central directory', async () => {
     const archive = await ZipArchive.open(
       new Blob([storedZip('assets/minecraft/lang/en_us.json', '{"ok":true}')], {

@@ -13,6 +13,13 @@ const CENTRAL_SIGNATURE = 0x02014b50;
 const LOCAL_SIGNATURE = 0x04034b50;
 const MAX_ENTRY_SIZE = 32 * 1024 * 1024;
 
+export class InvalidZipArchiveError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidZipArchiveError';
+  }
+}
+
 export class ZipArchive {
   readonly entries: readonly ZipEntry[];
   private constructor(
@@ -36,8 +43,10 @@ export class ZipArchive {
     const entries: ZipEntry[] = [];
     for (let index = 0; index < entryCount; index++) {
       throwIfAborted(signal);
+      if (cursor + 46 > view.byteLength)
+        throw new InvalidZipArchiveError('Invalid ZIP central directory');
       if (view.getUint32(cursor, true) !== CENTRAL_SIGNATURE)
-        throw new Error('Invalid ZIP central directory');
+        throw new InvalidZipArchiveError('Invalid ZIP central directory');
       const flags = view.getUint16(cursor + 8, true);
       const method = view.getUint16(cursor + 10, true);
       const compressedSize = view.getUint32(cursor + 20, true);
@@ -46,6 +55,8 @@ export class ZipArchive {
       const extraLength = view.getUint16(cursor + 30, true);
       const commentLength = view.getUint16(cursor + 32, true);
       const localOffset = view.getUint32(cursor + 42, true);
+      if (cursor + 46 + nameLength + extraLength + commentLength > view.byteLength)
+        throw new InvalidZipArchiveError('Invalid ZIP central directory entry');
       const name = new TextDecoder((flags & 0x800) !== 0 ? 'utf-8' : 'utf-8').decode(
         bytes.subarray(cursor + 46, cursor + 46 + nameLength),
       );
@@ -143,7 +154,7 @@ function findEndOfCentralDirectory(view: DataView): number {
   const minimum = Math.max(0, view.byteLength - 65_557);
   for (let cursor = view.byteLength - 22; cursor >= minimum; cursor--)
     if (view.getUint32(cursor, true) === EOCD_SIGNATURE) return cursor;
-  throw new Error('ZIP end-of-central-directory record was not found');
+  throw new InvalidZipArchiveError('ZIP end-of-central-directory record was not found');
 }
 
 async function readEntry(
@@ -157,11 +168,15 @@ async function readEntry(
   signal?: AbortSignal,
 ): Promise<Uint8Array> {
   throwIfAborted(signal);
+  if (localOffset + 30 > view.byteLength)
+    throw new InvalidZipArchiveError(`Invalid ZIP local header: ${name}`);
   if (view.getUint32(localOffset, true) !== LOCAL_SIGNATURE)
-    throw new Error(`Invalid ZIP local header: ${name}`);
+    throw new InvalidZipArchiveError(`Invalid ZIP local header: ${name}`);
   const nameLength = view.getUint16(localOffset + 26, true);
   const extraLength = view.getUint16(localOffset + 28, true);
   const start = localOffset + 30 + nameLength + extraLength;
+  if (start + compressedSize > bytes.byteLength)
+    throw new InvalidZipArchiveError(`Truncated ZIP entry: ${name}`);
   const compressed = bytes.slice(start, start + compressedSize);
   let output: Uint8Array;
   if (method === 0) output = compressed;
@@ -183,6 +198,7 @@ async function readEntry(
     }
   } else throw new Error(`Unsupported ZIP compression method ${method}: ${name}`);
   throwIfAborted(signal);
-  if (output.byteLength !== expectedSize) throw new Error(`ZIP entry size mismatch: ${name}`);
+  if (output.byteLength !== expectedSize)
+    throw new InvalidZipArchiveError(`ZIP entry size mismatch: ${name}`);
   return output;
 }
