@@ -97,6 +97,42 @@ describe('StructureJsonExportDialogComponent', () => {
     expect(instance.downloadGuardOpen()).toBe(true);
   });
 
+  it('lets a user download the valid saved snapshot when the draft is invalid', async () => {
+    await TestBed.configureTestingModule({
+      imports: [StructureJsonExportDialogComponent],
+      providers: [{ provide: I18nService, useValue: { t: (key: string) => key } }],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(StructureJsonExportDialogComponent);
+    fixture.componentRef.setInput('project', project);
+    fixture.detectChanges();
+    const instance = fixture.componentInstance as unknown as {
+      savedJson: () => string;
+      setDraftJson: (value: string) => void;
+      download: () => void;
+      downloadSaved: () => void;
+      downloadGuardOpen: () => boolean;
+    };
+    const original = instance.savedJson();
+    instance.setDraftJson('{');
+    instance.download();
+    expect(instance.downloadGuardOpen()).toBe(true);
+    const download = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:download');
+    const revoke = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => undefined);
+    instance.downloadSaved();
+    expect(download).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'application/json;charset=utf-8' }),
+    );
+    expect(instance.downloadGuardOpen()).toBe(false);
+    expect(instance.savedJson()).toBe(original);
+    download.mockRestore();
+    revoke.mockRestore();
+    click.mockRestore();
+    fixture.destroy();
+  });
+
   it('moves focus into the dirty-download guard and restores it when canceled', async () => {
     await TestBed.configureTestingModule({
       imports: [StructureJsonExportDialogComponent],

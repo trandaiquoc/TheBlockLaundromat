@@ -110,9 +110,11 @@ export class StructureJsonExportDialogComponent {
     await this.copy(this.draftJson());
   }
   protected download(): void {
-    if (!this.validateDraft()) return;
-    if (this.dirty()) this.downloadGuardOpen.set(true);
-    else this.downloadText(this.savedJson());
+    if (this.dirty()) {
+      this.downloadGuardOpen.set(true);
+      return;
+    }
+    if (this.validateDraft(this.savedJson())) this.downloadText(this.savedJson());
   }
   protected downloadSaved(): void {
     if (!this.validateDraft(this.savedJson())) return;

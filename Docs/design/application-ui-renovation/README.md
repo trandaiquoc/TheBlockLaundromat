@@ -33,7 +33,7 @@ An inventory entry or green build alone is not visual acceptance.
 | F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired           |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | Pending                                     |
 | H          | Project/diagnostics and all specialized editor surfaces                                      | Pending                                     |
-| I          | Only confirmed business-logic defects, isolated from presentation commits                    | Not yet required                            |
+| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1: JSON saved-download recovery fixed      |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
 checks and its own local commit. The final gate includes the full suite, app
