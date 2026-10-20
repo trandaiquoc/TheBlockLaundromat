@@ -39,6 +39,15 @@ export const translations = {
     noPlacementSelected: 'Choose a material',
     placementChooseHint: 'Choose a block or decoration in the browser, or use the Quick Bar.',
     importReadFailed: 'Unable to read project backup',
+    backupImportHint:
+      'Choose a project backup to review its contents before restoring it. Existing projects are kept.',
+    backupChooseFile: 'Choose backup file',
+    backupRestoreCopy: 'Restore project',
+    backupExistingCopy:
+      'A project with this ID already exists. The backup will be restored as a separate copy.',
+    backupExportNamed: 'Export backup of {name}',
+    backupFileTooLarge: 'This backup exceeds the 64 MB file limit.',
+    backupFileType: 'Choose a JSON project backup file.',
     importSavingCurrent: 'Saving current project',
     importReadingFile: 'Reading project backup',
     importParsing: 'Parsing project backup',
@@ -829,9 +838,9 @@ export const translations = {
     helpImportExportPointTwo:
       'Choose the available import mode, review any size or coordinate changes, then confirm Apply.',
     helpImportExportPointThree:
-      'Use File → Export Structure JSON to save the current structure in the app format.',
+      'Use File to export Structure JSON or Minecraft Structure NBT, including a datapack ZIP.',
     helpImportExportNote:
-      'Minecraft Structure NBT export is not implemented yet; it is separate from Structure JSON.',
+      'Project Backup import/export is on the project screen. NBT import is not supported.',
     helpKeyboardMouseTitle: 'Keyboard and mouse',
     helpKeyboardMouseSummary: 'The reference below uses your current saved bindings.',
     helpKeyboardMousePointOne: 'Change keyboard or mouse bindings in Settings → Shortcuts.',
@@ -1017,6 +1026,14 @@ export const translations = {
       'D\u1eef li\u1ec7u nh\u1eadp c\u00f3 th\u00eam tr\u01b0\u1eddng; thay \u0111\u1ed5i v\u1eabn gi\u1eef l\u1ea1i nh\u01b0ng xu\u1ea5t c\u00f3 th\u1ec3 b\u00e1o d\u1eef li\u1ec7u ch\u01b0a h\u1ed7 tr\u1ee3.',
     importReadFailed:
       'Kh\\u00f4ng th\\u1ec3 \\u0111\\u1ecdc b\\u1ea3n sao l\\u01b0u d\\u1ef1 \\u00e1n',
+    backupImportHint:
+      'Chọn bản sao lưu để xem trước nội dung trước khi khôi phục. Các dự án hiện có được giữ nguyên.',
+    backupChooseFile: 'Chọn tệp sao lưu',
+    backupRestoreCopy: 'Khôi phục dự án',
+    backupExistingCopy: 'Đã có dự án cùng ID. Bản sao lưu sẽ được khôi phục thành một bản riêng.',
+    backupExportNamed: 'Xuất bản sao lưu của {name}',
+    backupFileTooLarge: 'Bản sao lưu vượt quá giới hạn tệp 64 MB.',
+    backupFileType: 'Hãy chọn tệp JSON sao lưu dự án.',
     importSavingCurrent: '\u0110ang l\u01b0u d\u1ef1 \u00e1n hi\u1ec7n t\u1ea1i',
     importReadingFile: '\u0110ang \u0111\u1ecdc t\u1ec7p',
     importParsing: '\u0110ang ph\u00e2n t\u00edch t\u1ec7p d\u1ef1 \u00e1n',
@@ -1802,9 +1819,9 @@ export const translations = {
     helpImportExportPointTwo:
       'Chọn chế độ nhập khả dụng, xem lại thay đổi kích thước hoặc tọa độ rồi xác nhận Áp dụng.',
     helpImportExportPointThree:
-      'Dùng Tệp → Xuất Structure JSON để lưu cấu trúc hiện tại theo định dạng của ứng dụng.',
+      'Dùng menu Tệp để xuất Structure JSON hoặc Minecraft Structure NBT, gồm cả ZIP datapack.',
     helpImportExportNote:
-      'Chưa hỗ trợ xuất Minecraft Structure NBT; định dạng này khác với Structure JSON.',
+      'Nhập/xuất Bản sao lưu dự án nằm trên màn hình dự án. Chưa hỗ trợ nhập NBT.',
     helpKeyboardMouseTitle: 'Bàn phím và chuột',
     helpKeyboardMouseSummary: 'Danh sách bên dưới sử dụng các phím tắt đã lưu hiện tại của bạn.',
     helpKeyboardMousePointOne: 'Đổi thao tác bàn phím hoặc chuột trong Cài đặt → Phím tắt.',

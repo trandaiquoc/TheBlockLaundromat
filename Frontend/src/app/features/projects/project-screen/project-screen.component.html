@@ -199,6 +199,16 @@
             <svg lucideFileUp aria-hidden="true"></svg
             ><span>{{ i18n.t('createFromStructureJson') }}</span>
           </button>
+          <button
+            #backupTrigger
+            type="button"
+            class="ui-button ui-button--secondary structure-json-create-action"
+            [disabled]="creating() || !!openingId()"
+            (click)="openBackupDialog()"
+          >
+            <svg lucideFileUp aria-hidden="true"></svg>
+            <span>{{ i18n.t('importProjectPackage') }}</span>
+          </button>
         </div>
         @if (error()) {
           <p class="error" role="alert">{{ error() }}</p>
@@ -284,6 +294,16 @@
                   }}</span>
                 </button>
                 <button
+                  class="project-backup-action ui-button ui-button--secondary ui-button--icon"
+                  type="button"
+                  [disabled]="!!backupExportingId() || deletingProjectIds().has(project.id)"
+                  [attr.aria-label]="i18n.t('backupExportNamed').replace('{name}', project.name)"
+                  [attr.title]="i18n.t('backupExportNamed').replace('{name}', project.name)"
+                  (click)="exportBackup(project, $event)"
+                >
+                  <svg lucideDownload aria-hidden="true"></svg>
+                </button>
+                <button
                   class="project-delete-action ui-button ui-button--danger ui-button--icon"
                   type="button"
                   uiTooltip="{{ i18n.t('deleteProjectAriaLabel').replace('{name}', project.name) }}"
@@ -303,6 +323,9 @@
         @if (deleteError()) {
           <p class="error recent-project-error" role="alert">{{ deleteError() }}</p>
         }
+        @if (backupExportError()) {
+          <p class="error recent-project-error" role="alert">{{ i18n.t('exportProjectError') }}</p>
+        }
       </section>
     </section>
   </div>
@@ -310,6 +333,110 @@
   <footer class="project-page-footer">
     <app-project-screen-account />
   </footer>
+  @if (backupDialogOpen()) {
+    <div class="project-import-backdrop" role="presentation">
+      <section
+        class="project-import-dialog backup-import-dialog"
+        cdkTrapFocus
+        [cdkTrapFocusAutoCapture]="true"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-label]="i18n.t('importProjectPackage')"
+        (keydown.escape)="closeBackupDialog()"
+      >
+        <header class="project-import-header">
+          <div>
+            <h2>{{ i18n.t('importProjectPackage') }}</h2>
+            <p>{{ i18n.t('backupImportHint') }}</p>
+          </div>
+          <button
+            type="button"
+            class="ui-close-button"
+            [attr.aria-label]="i18n.t('cancel')"
+            [disabled]="backup.busy() === 'saving'"
+            (click)="closeBackupDialog()"
+          >
+            <svg lucideX aria-hidden="true"></svg>
+          </button>
+        </header>
+        <div class="project-import-body">
+          <input
+            #backupFile
+            type="file"
+            accept="application/json,.json"
+            hidden
+            (change)="selectBackup($event)"
+          />
+          <button
+            type="button"
+            class="ui-button ui-button--secondary"
+            [disabled]="!!backup.busy()"
+            (click)="backupFile.click()"
+          >
+            <svg lucideFileUp aria-hidden="true"></svg>{{ i18n.t('backupChooseFile') }}
+          </button>
+          @if (backup.busy() === 'reading') {
+            <p class="project-import-progress" role="status">
+              {{ i18n.t('projectBackupReadingFile') }}
+            </p>
+          }
+          @if (backup.busy() === 'saving') {
+            <p class="project-import-progress" role="status">
+              {{ i18n.t('projectBackupSavingRestored') }}
+            </p>
+          }
+          @if (backup.failure(); as failure) {
+            <p class="project-import-error" role="alert">{{ backupFailureLabel(failure) }}</p>
+          }
+          @if (backup.preview(); as project) {
+            <dl class="project-import-summary">
+              <div>
+                <dt>{{ i18n.t('projectName') }}</dt>
+                <dd>{{ project.metadata.name }}</dd>
+              </div>
+              <div>
+                <dt>{{ i18n.t('minecraftVersion') }}</dt>
+                <dd>{{ project.metadata.minecraftVersion }}</dd>
+              </div>
+              <div>
+                <dt>{{ i18n.t('structureSize') }}</dt>
+                <dd>{{ project.size.x }} × {{ project.size.y }} × {{ project.size.z }}</dd>
+              </div>
+              <div>
+                <dt>{{ i18n.t('structureJsonBlockCount') }}</dt>
+                <dd>{{ project.blocks.length }}</dd>
+              </div>
+              <div>
+                <dt>{{ i18n.t('structureJsonDecorationCount') }}</dt>
+                <dd>{{ project.decorations?.length ?? 0 }}</dd>
+              </div>
+            </dl>
+            @if (backup.collision()) {
+              <p class="backup-collision" role="status">{{ i18n.t('backupExistingCopy') }}</p>
+            }
+          }
+        </div>
+        <footer class="project-import-footer">
+          <button
+            type="button"
+            class="ui-button ui-button--ghost"
+            [disabled]="backup.busy() === 'saving'"
+            (click)="closeBackupDialog()"
+          >
+            {{ i18n.t('cancel') }}
+          </button>
+          <button
+            type="button"
+            class="ui-button ui-button--primary"
+            [disabled]="!backup.preview() || !!backup.busy()"
+            (click)="restoreBackup()"
+          >
+            {{ i18n.t('backupRestoreCopy') }}
+          </button>
+        </footer>
+      </section>
+    </div>
+  }
   @if (structureJsonImport.open()) {
     <div class="project-import-backdrop" role="presentation">
       <section

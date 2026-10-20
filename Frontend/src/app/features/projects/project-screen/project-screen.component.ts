@@ -1,6 +1,6 @@
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
 import {
   DEFAULT_MINECRAFT_VERSION,
@@ -14,8 +14,9 @@ import {
   isStructureCreationAllowed,
 } from '../../../core/domain/structure-size-policy';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
+import type { TranslationKey } from '../../../core/ui/localization/translation-catalogs';
 import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
-import { LucideFileUp, LucideSearch, LucideTrash2, LucideX } from '@lucide/angular';
+import { LucideDownload, LucideFileUp, LucideSearch, LucideTrash2, LucideX } from '@lucide/angular';
 import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import {
   SearchableDropdownComponent,
@@ -32,6 +33,7 @@ import type {
 } from '../../../core/persistence/structure-json/import/structure-json-project-import';
 import { StructureJsonProjectImportWorkflow } from './structure-json-project-import-workflow';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
+import { ProjectBackupWorkflow, BackupFailure } from './project-backup-workflow';
 import { ProjectScreenControlsComponent } from './project-screen-controls.component';
 import { ProjectScreenAccountComponent } from './project-screen-account.component';
 import {
@@ -42,12 +44,13 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
 
 @Component({
   selector: 'app-project-screen',
-  providers: [ProjectScreenWorkflow],
+  providers: [ProjectScreenWorkflow, ProjectBackupWorkflow],
   imports: [
     CdkTrapFocus,
     DatePipe,
     NgOptimizedImage,
     LucideFileUp,
+    LucideDownload,
     LucideSearch,
     LucideTrash2,
     LucideX,
@@ -64,6 +67,11 @@ export class ProjectScreenComponent {
   protected readonly i18n = inject(I18nService);
   private readonly preferences = inject(UiPreferencesService);
   protected readonly workflow = inject(ProjectScreenWorkflow);
+  protected readonly backup = inject(ProjectBackupWorkflow);
+  protected readonly backupDialogOpen = signal(false);
+  private readonly backupTrigger = viewChild<ElementRef<HTMLButtonElement>>('backupTrigger');
+  protected readonly backupExportingId = signal<string | undefined>(undefined);
+  protected readonly backupExportError = signal(false);
   protected readonly name = signal(this.i18n.t('untitledStructure'));
   protected readonly defaultMinecraftVersion = DEFAULT_MINECRAFT_VERSION;
   protected readonly sizeX = signal('16');
@@ -180,6 +188,63 @@ export class ProjectScreenComponent {
   }
   protected openStructureJsonPicker(input: HTMLInputElement): void {
     if (!this.structureJsonImport.creating()) input.click();
+  }
+  protected openBackupDialog(): void {
+    this.backup.reset();
+    this.backupDialogOpen.set(true);
+  }
+  protected closeBackupDialog(): void {
+    if (this.backup.busy() === 'saving') return;
+    this.backup.reset();
+    this.backupDialogOpen.set(false);
+    queueMicrotask(() => this.backupTrigger()?.nativeElement.focus({ preventScroll: true }));
+  }
+  protected async selectBackup(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (file) await this.backup.selectFile(file);
+  }
+  protected backupFailureLabel(failure: BackupFailure): string {
+    const key = {
+      'file-type': 'backupFileType',
+      'file-too-large': 'backupFileTooLarge',
+      read: 'projectBackupReadFailed',
+      'invalid-json': 'projectBackupInvalidJson',
+      'not-project-package': 'projectBackupNotRecognized',
+      'unsupported-package-version': 'projectBackupUnsupportedVersion',
+      'unsupported-project-schema': 'importUnsupportedSchema',
+      'invalid-project-data': 'importInvalidData',
+      storage: 'importStorageFailed',
+    } satisfies Record<BackupFailure, TranslationKey>;
+    return this.i18n.t(key[failure]);
+  }
+  protected async restoreBackup(): Promise<void> {
+    const restored = await this.backup.restore();
+    if (!restored) return;
+    await this.workflow.loadProjects();
+    this.closeBackupDialog();
+  }
+  protected async exportBackup(project: ProjectSummary, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (this.backupExportingId()) return;
+    this.backupExportingId.set(project.id);
+    this.backupExportError.set(false);
+    try {
+      const backup = await this.backup.export(project.id);
+      if (!backup) throw new Error('Project no longer exists');
+      const blob = new Blob([backup.content], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `${backup.name.replace(/[^a-z0-9_-]+/gi, '-').replace(/^-|-$/g, '') || 'project'}.tbl-project.json`;
+      anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    } catch {
+      this.backupExportError.set(true);
+    } finally {
+      this.backupExportingId.set(undefined);
+    }
   }
   protected async selectStructureJson(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;

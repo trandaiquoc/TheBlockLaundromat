@@ -30,7 +30,7 @@ An inventory entry or green build alone is not visual acceptance.
 | C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed |
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed |
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed |
-| F          | Every supported import/export workflow and its nested decisions                              | Pending                                     |
+| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired           |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | Pending                                     |
 | H          | Project/diagnostics and all specialized editor surfaces                                      | Pending                                     |
 | I          | Only confirmed business-logic defects, isolated from presentation commits                    | Not yet required                            |
@@ -42,6 +42,7 @@ checks. No remote push is authorized by this work.
 
 Checkpoint evidence: [D — shared dialogs and overlays](CHECKPOINT-D.md).
 Checkpoint E evidence: [E — Settings and Help](CHECKPOINT-E.md).
+Checkpoint F backup evidence: [F1 — project backup](CHECKPOINT-F1.md).
 
 ## Preserved contracts
 

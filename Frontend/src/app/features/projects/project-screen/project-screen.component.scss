@@ -351,7 +351,7 @@
 .project-row {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: stretch;
   gap: 0.35rem;
   margin-bottom: 0.55rem;
@@ -452,7 +452,8 @@
 .project-row.opening .project-row-cta {
   color: inherit;
 }
-.project-delete-action {
+.project-delete-action,
+.project-backup-action {
   display: grid;
   place-items: center;
   width: var(--control-md);
@@ -465,6 +466,19 @@
   background: transparent;
   color: var(--danger);
   cursor: pointer;
+}
+.project-backup-action {
+  margin-right: 0;
+  color: var(--accent);
+}
+.project-backup-action:hover:not(:disabled),
+.project-backup-action:focus-visible {
+  background: var(--surface-hover);
+  color: var(--accent);
+}
+.project-backup-action svg {
+  width: 1rem;
+  height: 1rem;
 }
 .project-delete-action svg {
   width: 1rem;
@@ -520,6 +534,18 @@
   background: var(--surface-modal);
   color: var(--text);
   box-shadow: var(--shadow-dialog);
+}
+.backup-import-dialog {
+  width: min(560px, 100%);
+}
+.backup-collision {
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--status-warning);
+  border-radius: var(--radius-sm);
+  color: var(--status-warning);
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 .project-import-header,
 .project-import-footer {
