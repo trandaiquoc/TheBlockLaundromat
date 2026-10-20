@@ -37,6 +37,50 @@ interface AssetManagerJarValidationState {
   readonly jarValidationMessage: (error: unknown) => string;
 }
 
+interface AssetManagerNestedEscapeState {
+  readonly closeDetailsFromEscape: (event: Event) => void;
+  readonly closeDiagnosticsFromEscape: (event: Event) => void;
+}
+
+describe('AssetManagerDialogComponent nested Escape', () => {
+  it.each(['details', 'diagnostics'] as const)(
+    'closes only the %s overlay and stops Escape before it reaches the manager',
+    (overlay) => {
+      const state = Object.create(
+        AssetManagerDialogComponent.prototype,
+      ) as AssetManagerNestedEscapeState;
+      const close = vi.fn();
+      Object.defineProperty(state, overlay === 'details' ? 'closeDetails' : 'closeDiagnostics', {
+        value: close,
+      });
+      const manager = document.createElement('div');
+      const nested = document.createElement('div');
+      const parentEscape = vi.fn();
+      manager.addEventListener('keydown', parentEscape);
+      nested.addEventListener('keydown', (event) =>
+        overlay === 'details'
+          ? state.closeDetailsFromEscape(event)
+          : state.closeDiagnosticsFromEscape(event),
+      );
+      manager.append(nested);
+
+      const escape = new KeyboardEvent('keydown', {
+        key: 'Escape',
+        bubbles: true,
+        cancelable: true,
+      });
+      nested.dispatchEvent(escape);
+
+      expect(escape.defaultPrevented).toBe(true);
+      expect(parentEscape).not.toHaveBeenCalled();
+      expect(close).toHaveBeenCalledOnce();
+      expect(assetManagerTemplate).toContain(
+        `(keydown.escape)="${overlay === 'details' ? 'closeDetailsFromEscape' : 'closeDiagnosticsFromEscape'}($event)"`,
+      );
+    },
+  );
+});
+
 describe('AssetManagerDialogComponent file validation', () => {
   it('uses the same upload limit in the Vanilla JAR fallback message', () => {
     const state = Object.create(

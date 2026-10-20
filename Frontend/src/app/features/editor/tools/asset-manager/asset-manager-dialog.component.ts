@@ -240,6 +240,11 @@ export class AssetManagerDialogComponent {
     this.detailsSourceId.set(undefined);
     queueMicrotask(() => target?.focus());
   }
+  protected closeDetailsFromEscape(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.closeDetails();
+  }
   protected openDetails(sourceId: string): void {
     this.detailsSourceId.set(sourceId);
   }
@@ -375,6 +380,11 @@ export class AssetManagerDialogComponent {
   }
   protected closeDiagnostics(): void {
     this.diagnosticDialog.set(undefined);
+  }
+  protected closeDiagnosticsFromEscape(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.closeDiagnostics();
   }
   protected async redownload(): Promise<void> {
     if (!this.importing()) {

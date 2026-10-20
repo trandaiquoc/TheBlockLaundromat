@@ -735,6 +735,7 @@
   >
     <section
       class="details-dialog"
+      (keydown.escape)="closeDetailsFromEscape($event)"
       cdkTrapFocus
       [cdkTrapFocusAutoCapture]="true"
       [cdkTrapFocus]="!confirming() && !diagnosticDialog()"
@@ -788,6 +789,7 @@
   >
     <section
       class="details-dialog diagnostic-dialog"
+      (keydown.escape)="closeDiagnosticsFromEscape($event)"
       cdkTrapFocus
       [cdkTrapFocusAutoCapture]="true"
       [cdkTrapFocus]="!confirming()"

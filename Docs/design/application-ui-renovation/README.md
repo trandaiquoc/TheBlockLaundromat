@@ -23,17 +23,17 @@ An inventory entry or green build alone is not visual acceptance.
 
 ## Checkpoints
 
-| Checkpoint | Boundary                                                                                     | Status                                                                               |
-| ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; catalog/Quick Bar browser checks passed                                 |
-| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                          |
-| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                          |
-| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                          |
-| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                          |
-| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                                    |
-| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G4 import, detail and error paths; remaining recovery states pending |
-| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1/H2 viewport and Y-Layer controls                                     |
-| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                |
+| Checkpoint | Boundary                                                                                     | Status                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; catalog/Quick Bar browser checks passed                          |
+| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                   |
+| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                   |
+| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                   |
+| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                   |
+| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                             |
+| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G5 import and nested flows; remaining recovery states pending |
+| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1/H2 viewport and Y-Layer controls                              |
+| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                         |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
 checks and its own local commit. The final gate includes the full suite, app
@@ -52,6 +52,7 @@ Checkpoint G initial asset manager refinement: [G1 — Vanilla tab intent](CHECK
 Checkpoint G nested confirmation safety: [G2 — asset manager confirmation](CHECKPOINT-G2.md).
 Checkpoint G real Fabric archive workflow: [G3 — Cobblemon import and cleanup](CHECKPOINT-G3.md).
 Checkpoint G archive errors: [G4 — Mod JAR error presentation](CHECKPOINT-G4.md).
+Checkpoint G nested overlays: [G5 — Escape and loader limits](CHECKPOINT-G5.md).
 Checkpoint A2 catalog controls: [A2 — action placement and shared active states](CHECKPOINT-A2.md).
 Checkpoint H1 viewport controls: [H1 — XYZ gizmo and Y-Layer stepper](CHECKPOINT-H1.md).
 Checkpoint H2 viewport follow-up: [H2 — signed gizmo and compact Quick Bar](CHECKPOINT-H2.md).
