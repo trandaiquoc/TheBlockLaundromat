@@ -22,6 +22,7 @@ import { WorkspaceStateService } from '../../../../core/workspace/workspace-stat
 import type { ProjectDocument } from '../../../../core/domain/project.types';
 import type { VanillaAssetInspectionView } from '../../../../core/assets/vanilla/vanilla-asset-provider';
 import { I18nService } from '../../../../core/ui/localization/i18n.service';
+import type { TranslationKey } from '../../../../core/ui/localization/translation-catalogs';
 import { UiTooltipDirective } from '../../../../shared/ui/tooltip/ui-tooltip.directive';
 import { UiProgressComponent } from '../../../../shared/ui/progress/ui-progress.component';
 import type { ViewportPerformanceEvidence } from '../../../../core/renderer/engine/three-viewport-engine';
@@ -41,6 +42,74 @@ interface ProjectDiagnosticsAuditScope {
   readonly controller: AbortController;
   readonly generation: number;
 }
+
+type AssetAuditFilter =
+  | 'all'
+  | 'visual-real'
+  | 'visual-partial'
+  | 'visual-fallback'
+  | 'behavior-full'
+  | 'behavior-partial'
+  | 'behavior-unknown'
+  | 'thumbnail-real';
+
+interface AssetAuditFilterOption {
+  readonly id: AssetAuditFilter;
+  readonly label: TranslationKey;
+  readonly count: (report: VanillaAssetCoverageReport) => number;
+}
+
+interface AssetAuditFilterGroup {
+  readonly id: 'visual' | 'behavior';
+  readonly label: TranslationKey;
+  readonly filters: readonly AssetAuditFilterOption[];
+}
+
+const AUDIT_FILTER_GROUPS: readonly AssetAuditFilterGroup[] = [
+  {
+    id: 'visual',
+    label: 'auditVisualGroup',
+    filters: [
+      { id: 'visual-real', label: 'auditReal', count: (report) => report.summary.visual.real },
+      {
+        id: 'visual-partial',
+        label: 'auditPartial',
+        count: (report) => report.summary.visual.partial,
+      },
+      {
+        id: 'visual-fallback',
+        label: 'auditFallback',
+        count: (report) => report.summary.visual.fallback,
+      },
+      {
+        id: 'thumbnail-real',
+        label: 'auditThumbnails',
+        count: (report) => report.summary.thumbnail.real,
+      },
+    ],
+  },
+  {
+    id: 'behavior',
+    label: 'auditBehaviorGroup',
+    filters: [
+      {
+        id: 'behavior-full',
+        label: 'auditBehaviorFull',
+        count: (report) => report.summary.behavior.full,
+      },
+      {
+        id: 'behavior-partial',
+        label: 'auditBehaviorPartial',
+        count: (report) => report.summary.behavior.partial,
+      },
+      {
+        id: 'behavior-unknown',
+        label: 'auditBehaviorUnknown',
+        count: (report) => report.summary.behavior.unknown,
+      },
+    ],
+  },
+];
 
 @Component({
   selector: 'app-project-diagnostics-dialog',
@@ -76,6 +145,11 @@ export class ProjectDiagnosticsDialogComponent implements OnDestroy {
     () => this.workspace.project()?.blocks.length ?? 0,
   );
   protected readonly audit = signal<VanillaAssetCoverageReport | undefined>(undefined);
+  protected readonly auditFilter = signal<AssetAuditFilter>('all');
+  protected readonly auditFilterGroups = AUDIT_FILTER_GROUPS;
+  protected readonly visibleAuditRecords = computed(() =>
+    (this.audit()?.records ?? []).filter((record) => this.recordMatches(record)),
+  );
   protected readonly auditProgress = signal(0);
   protected readonly auditing = signal(false);
   private controller?: AbortController;
@@ -171,6 +245,7 @@ export class ProjectDiagnosticsDialogComponent implements OnDestroy {
       } else if (project !== this.observedAuditProject || provider !== this.observedAuditProvider) {
         this.cancelAudit();
         this.audit.set(undefined);
+        this.auditFilter.set('all');
         this.auditProgress.set(0);
       }
       this.observedAuditProject = project;
@@ -227,12 +302,15 @@ export class ProjectDiagnosticsDialogComponent implements OnDestroy {
   }
   protected recordMatches(record: VanillaAssetAuditRecord): boolean {
     const q = this.query().trim().toLocaleLowerCase();
-    return (
+    const matchesQuery =
       !q ||
       `${record.registryId} ${record.catalog.displayName} ${record.render.reasons.join(' ')}`
         .toLocaleLowerCase()
-        .includes(q)
-    );
+        .includes(q);
+    return matchesQuery && matchesAuditFilter(record, this.auditFilter());
+  }
+  protected toggleAuditFilter(filter: AssetAuditFilter): void {
+    this.auditFilter.update((selected) => (selected === filter ? 'all' : filter));
   }
   protected async runAudit(): Promise<void> {
     const provider = this.assets.provider();
@@ -247,6 +325,7 @@ export class ProjectDiagnosticsDialogComponent implements OnDestroy {
     this.controller = controller;
     this.auditScope = scope;
     this.auditing.set(true);
+    this.auditFilter.set('all');
     this.auditProgress.set(0);
     try {
       const report = await auditVanillaAssets(provider, {
@@ -290,4 +369,25 @@ export class ProjectDiagnosticsDialogComponent implements OnDestroy {
 
 function isCompatibilityIssue(issue: ProjectIssuePresentation): boolean {
   return issue.category === 'visual' || issue.category === 'behavior';
+}
+
+function matchesAuditFilter(record: VanillaAssetAuditRecord, filter: AssetAuditFilter): boolean {
+  switch (filter) {
+    case 'all':
+      return true;
+    case 'visual-real':
+      return record.render.visualSupport === 'real';
+    case 'visual-partial':
+      return record.render.visualSupport === 'partial';
+    case 'visual-fallback':
+      return record.render.visualSupport === 'fallback';
+    case 'behavior-full':
+      return record.catalog.behaviorSupport === 'full';
+    case 'behavior-partial':
+      return record.catalog.behaviorSupport === 'partial';
+    case 'behavior-unknown':
+      return record.catalog.behaviorSupport === 'unknown';
+    case 'thumbnail-real':
+      return record.thumbnail === 'real';
+  }
 }

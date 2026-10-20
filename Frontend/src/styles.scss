@@ -424,6 +424,13 @@
   --axis-y: #a6e9b1;
   --axis-z: #a8d5ff;
 }
+:root[data-theme] {
+  --diagnostic-visual-accent: var(--info);
+  --diagnostic-behavior-accent: var(--warning);
+}
+:root[data-theme='light'] {
+  --diagnostic-visual-accent: var(--axis-z);
+}
 
 :root[data-theme] app-editor-shell,
 :root[data-theme]:has(app-editor-shell) .cdk-overlay-container {

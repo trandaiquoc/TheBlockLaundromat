@@ -214,36 +214,60 @@
           <app-ui-progress [value]="auditProgress()" [max]="1" [label]="i18n.t('auditRunning')" />
         }
         @if (audit(); as report) {
-          <div class="audit-grid">
-            <span
-              >{{ i18n.t('auditEntries') }} <b>{{ report.summary.totalEntries }}</b></span
-            ><span
-              >{{ i18n.t('auditReal') }} <b>{{ report.summary.visual.real }}</b></span
-            ><span
-              >{{ i18n.t('auditPartial') }} <b>{{ report.summary.visual.partial }}</b></span
-            ><span
-              >{{ i18n.t('auditFallback') }} <b>{{ report.summary.visual.fallback }}</b></span
-            ><span
-              >{{ i18n.t('auditBehaviorFull') }} <b>{{ report.summary.behavior.full }}</b></span
-            ><span
-              >{{ i18n.t('auditBehaviorPartial') }}
-              <b>{{ report.summary.behavior.partial }}</b></span
-            ><span
-              >{{ i18n.t('auditBehaviorUnknown') }}
-              <b>{{ report.summary.behavior.unknown }}</b></span
-            ><span
-              >{{ i18n.t('auditThumbnails') }} <b>{{ report.summary.thumbnail.real }}</b></span
+          <div class="audit-grid" role="group" [attr.aria-label]="i18n.t('auditFilterGroup')">
+            <button
+              type="button"
+              class="audit-stat audit-stat--all"
+              data-audit-filter="all"
+              [attr.aria-pressed]="auditFilter() === 'all'"
+              [class.is-selected]="auditFilter() === 'all'"
+              (click)="toggleAuditFilter('all')"
             >
-          </div>
-          <div class="audit-records">
-            @for (record of report.records; track record.registryId) {
-              @if (recordMatches(record)) {
-                <div>
-                  <strong>{{ record.catalog.displayName }}</strong
-                  ><code>{{ record.registryId }}</code
-                  ><small>{{ record.render.renderMode }}</small>
-                </div>
+              <span>{{ i18n.t('auditEntries') }}</span
+              ><b>{{ report.summary.totalEntries }}</b>
+            </button>
+            <div class="audit-category-groups">
+              @for (group of auditFilterGroups; track group.id) {
+                <section class="audit-category-group" [attr.data-audit-category]="group.id">
+                  <h4>{{ i18n.t(group.label) }}</h4>
+                  <div class="audit-category-stats">
+                    @for (filter of group.filters; track filter.id) {
+                      <button
+                        type="button"
+                        class="audit-stat"
+                        [attr.data-audit-filter]="filter.id"
+                        [attr.aria-pressed]="auditFilter() === filter.id"
+                        [class.is-selected]="auditFilter() === filter.id"
+                        (click)="toggleAuditFilter(filter.id)"
+                      >
+                        <span>{{ i18n.t(filter.label) }}</span
+                        ><b>{{ filter.count(report) }}</b>
+                      </button>
+                    }
+                  </div>
+                </section>
               }
+            </div>
+          </div>
+          <div
+            class="audit-records"
+            role="region"
+            [attr.aria-label]="i18n.t('auditFilteredEntries')"
+          >
+            @for (record of visibleAuditRecords(); track record.registryId) {
+              <div>
+                <strong>{{ record.catalog.displayName }}</strong
+                ><code>{{ record.registryId }}</code
+                ><span class="audit-record-support audit-record-support--visual"
+                  ><small>{{ i18n.t('auditVisualShort') }}</small
+                  ><b>{{ record.render.visualSupport }}</b></span
+                ><span class="audit-record-support audit-record-support--behavior"
+                  ><small>{{ i18n.t('auditBehaviorShort') }}</small
+                  ><b>{{ record.catalog.behaviorSupport }}</b></span
+                >
+              </div>
+            } @empty {
+              <p class="audit-empty">{{ i18n.t('auditNoMatches') }}</p>
             }
           </div>
         }

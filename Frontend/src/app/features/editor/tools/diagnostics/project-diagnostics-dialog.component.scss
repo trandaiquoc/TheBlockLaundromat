@@ -308,21 +308,85 @@
 }
 .audit-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.35rem;
+  gap: 0.45rem;
 }
-.audit-grid span {
+.audit-stat {
   display: grid;
   gap: 0.12rem;
+  min-width: 0;
   padding: 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--audit-type-color) 24%, var(--border));
+  border-left: 3px solid color-mix(in srgb, var(--audit-type-color) 55%, var(--border));
   border-radius: var(--radius-sm);
-  background: var(--surface-muted);
-  color: var(--text-muted);
+  background: color-mix(in srgb, var(--audit-type-color) 5%, var(--surface-muted));
+  color: var(--text);
+  font: inherit;
   font-size: 0.68rem;
+  text-align: left;
+  cursor: pointer;
 }
-.audit-grid b {
+.audit-stat--all {
+  --audit-type-color: var(--accent);
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  justify-self: start;
+  min-width: 8rem;
+}
+.audit-stat:hover {
+  border-color: color-mix(in srgb, var(--audit-type-color) 64%, var(--border));
+  background: color-mix(in srgb, var(--audit-type-color) 13%, var(--surface-hover));
+}
+.audit-stat.is-selected {
+  border-color: color-mix(in srgb, var(--audit-type-color) 76%, var(--border));
+  border-left-color: var(--audit-type-color);
+  background: color-mix(in srgb, var(--audit-type-color) 18%, var(--surface-raised));
+  color: var(--text);
+}
+.audit-stat:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 2px;
+}
+.audit-stat b {
   color: var(--text);
   font-size: 0.9rem;
+}
+.audit-category-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+.audit-category-group {
+  --audit-type-color: var(--diagnostic-visual-accent);
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--audit-type-color) 32%, var(--border));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--audit-type-color) 4%, var(--surface-raised));
+}
+.audit-category-group[data-audit-category='behavior'] {
+  --audit-type-color: var(--diagnostic-behavior-accent);
+}
+.audit-category-group h4 {
+  margin: 0;
+  color: var(--audit-type-color);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.audit-category-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+.audit-category-group .audit-stat {
+  --audit-type-color: var(--diagnostic-visual-accent);
+}
+.audit-category-group[data-audit-category='behavior'] .audit-stat {
+  --audit-type-color: var(--diagnostic-behavior-accent);
 }
 .audit-records {
   display: grid;
@@ -332,7 +396,7 @@
 }
 .audit-records > div {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, auto) auto auto;
   gap: 0.45rem;
   align-items: center;
   padding: 0.35rem 0.45rem;
@@ -346,6 +410,35 @@
 }
 .audit-records small {
   color: var(--text-muted);
+  white-space: nowrap;
+}
+.audit-record-support {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  padding: 0.12rem 0.3rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--audit-support-color) 8%, var(--surface-raised));
+  color: var(--audit-support-color);
+  font-size: 0.64rem;
+  white-space: nowrap;
+}
+.audit-record-support--visual {
+  --audit-support-color: var(--diagnostic-visual-accent);
+}
+.audit-record-support--behavior {
+  --audit-support-color: var(--diagnostic-behavior-accent);
+}
+.audit-record-support b {
+  color: inherit;
+  font-size: inherit;
+  font-weight: 700;
+}
+.audit-empty {
+  margin: 0;
+  padding: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
 }
 @media (max-width: 620px) {
   .tool-dialog-backdrop {
@@ -355,7 +448,10 @@
     max-height: calc(100dvh - 1rem);
   }
   .audit-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .audit-category-groups {
+    grid-template-columns: minmax(0, 1fr);
   }
   .audit-heading {
     align-items: flex-start;
@@ -375,7 +471,13 @@
 }
 @media (max-width: 380px) {
   .audit-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .audit-category-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .audit-stat--all {
+    width: 100%;
   }
 }
 

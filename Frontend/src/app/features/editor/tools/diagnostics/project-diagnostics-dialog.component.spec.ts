@@ -3,12 +3,95 @@ import { signal, type WritableSignal } from '@angular/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BlockLibraryService } from '../../../../core/blocks/catalog/block-library.service';
 import { ContentAssetRuntimeService } from '../../../../core/assets/content-asset-runtime.service';
+import type {
+  VanillaAssetAuditRecord,
+  VanillaAssetCoverageReport,
+} from '../../../../core/assets/vanilla/audit/vanilla-asset-audit.types';
 import { VanillaAssetProvider } from '../../../../core/assets/vanilla/vanilla-asset-provider';
 import type { ProjectDocument } from '../../../../core/domain/project.types';
 import type { ViewportPerformanceEvidence } from '../../../../core/renderer/engine/three-viewport-engine';
 import { WorkspaceStateService } from '../../../../core/workspace/workspace-state.service';
 import { I18nService } from '../../../../core/ui/localization/i18n.service';
 import { ProjectDiagnosticsDialogComponent } from './project-diagnostics-dialog.component';
+
+function auditRecord(
+  registryId: string,
+  visualSupport: 'real' | 'partial' | 'fallback',
+  behaviorSupport: 'full' | 'partial' | 'unknown',
+  thumbnail: 'real' | 'fallback' | 'unavailable',
+): VanillaAssetAuditRecord {
+  return {
+    registryId,
+    family: 'block',
+    catalog: { found: true, displayName: registryId, behaviorSupport, capabilities: [] },
+    defaultState: { known: true, source: 'vanilla', state: {} },
+    blockstate: {
+      resource: `assets/${registryId}/blockstates/test.json`,
+      exists: true,
+      parsed: true,
+      kind: 'variants',
+      selectedConfigurationCount: 1,
+    },
+    model: {
+      ids: [registryId],
+      parentResolved: true,
+      elementCount: 1,
+      faceCount: 6,
+      resources: [],
+      parentResources: [],
+    },
+    texture: {
+      referencedCount: 0,
+      resolvedCount: 0,
+      missingCount: 0,
+      decodeSuccessCount: 0,
+      decodeFailureCount: 0,
+    },
+    geometry: { buildSuccess: true, geometryCount: 6 },
+    render: {
+      visualSupport,
+      classification: 'standard-json',
+      renderMode: visualSupport,
+      reasons: [],
+    },
+    thumbnail,
+  };
+}
+
+function auditReport(records: readonly VanillaAssetAuditRecord[]): VanillaAssetCoverageReport {
+  return {
+    schemaVersion: 1,
+    minecraftVersion: '1.21.1',
+    sourceName: 'test fixture',
+    generatedAt: '',
+    methodology: [],
+    summary: {
+      totalEntries: records.length,
+      visual: {
+        real: records.filter((record) => record.render.visualSupport === 'real').length,
+        partial: records.filter((record) => record.render.visualSupport === 'partial').length,
+        fallback: records.filter((record) => record.render.visualSupport === 'fallback').length,
+      },
+      behavior: {
+        full: records.filter((record) => record.catalog.behaviorSupport === 'full').length,
+        partial: records.filter((record) => record.catalog.behaviorSupport === 'partial').length,
+        unknown: records.filter((record) => record.catalog.behaviorSupport === 'unknown').length,
+      },
+      thumbnail: {
+        real: records.filter((record) => record.thumbnail === 'real').length,
+        fallback: records.filter((record) => record.thumbnail === 'fallback').length,
+        unavailable: records.filter((record) => record.thumbnail === 'unavailable').length,
+      },
+      defaultState: { known: records.length, unknown: 0 },
+      specialRendererRequired: 0,
+      intentionallyInvisible: 0,
+      failureReasons: {},
+      families: { block: records.length },
+      contentDomain: {} as VanillaAssetCoverageReport['summary']['contentDomain'],
+    },
+    records,
+  };
+}
 
 const project = (id: string): ProjectDocument => ({
   schemaVersion: 3,
@@ -75,7 +158,10 @@ describe('ProjectDiagnosticsDialogComponent', () => {
     showMoreIssues: () => void;
     runAudit: () => Promise<void>;
     auditing: () => boolean;
-    audit: () => unknown;
+    auditFilter: () => string;
+    toggleAuditFilter: (filter: string) => void;
+    visibleAuditRecords: () => readonly VanillaAssetAuditRecord[];
+    audit: WritableSignal<VanillaAssetCoverageReport | undefined>;
   };
   let fixture: ComponentFixture<ProjectDiagnosticsDialogComponent>;
 
@@ -192,6 +278,87 @@ describe('ProjectDiagnosticsDialogComponent', () => {
     fixture.detectChanges();
 
     expect(performanceDetails.open).toBe(true);
+  });
+
+  it('filters audit records by a selected summary category and toggles back to all', () => {
+    component.audit.set(
+      auditReport([
+        auditRecord('minecraft:stone', 'real', 'full', 'real'),
+        auditRecord('minecraft:oak_leaves', 'partial', 'partial', 'fallback'),
+        auditRecord('example:machine', 'fallback', 'unknown', 'unavailable'),
+      ]),
+    );
+    fixture.detectChanges();
+
+    const visualFilter = fixture.nativeElement.querySelector(
+      '[data-audit-filter="visual-real"]',
+    ) as HTMLButtonElement;
+    expect(fixture.nativeElement.querySelectorAll('.audit-grid button')).toHaveLength(8);
+    expect(fixture.nativeElement.querySelectorAll('.audit-records > div')).toHaveLength(3);
+    expect(
+      fixture.nativeElement.querySelector('[data-audit-filter="all"]').getAttribute('aria-pressed'),
+    ).toBe('true');
+
+    visualFilter.click();
+    fixture.detectChanges();
+    expect(visualFilter.getAttribute('aria-pressed')).toBe('true');
+    expect(
+      [...fixture.nativeElement.querySelectorAll('.audit-records code')].map(
+        (element: HTMLElement) => element.textContent,
+      ),
+    ).toEqual(['minecraft:stone']);
+
+    visualFilter.click();
+    fixture.detectChanges();
+    expect(visualFilter.getAttribute('aria-pressed')).toBe('false');
+    expect(fixture.nativeElement.querySelectorAll('.audit-records > div')).toHaveLength(3);
+    expect(component.auditFilter()).toBe('all');
+  });
+
+  it('applies each audit summary category to its matching support field', () => {
+    component.audit.set(
+      auditReport([
+        auditRecord('minecraft:stone', 'real', 'full', 'real'),
+        auditRecord('minecraft:oak_leaves', 'partial', 'partial', 'fallback'),
+        auditRecord('example:machine', 'fallback', 'unknown', 'unavailable'),
+      ]),
+    );
+    const filters = [
+      ['visual-real', 'minecraft:stone'],
+      ['visual-partial', 'minecraft:oak_leaves'],
+      ['visual-fallback', 'example:machine'],
+      ['behavior-full', 'minecraft:stone'],
+      ['behavior-partial', 'minecraft:oak_leaves'],
+      ['behavior-unknown', 'example:machine'],
+      ['thumbnail-real', 'minecraft:stone'],
+    ] as const;
+
+    for (const [filter, expectedId] of filters) {
+      component.toggleAuditFilter(filter);
+      expect(component.visibleAuditRecords().map((record) => record.registryId)).toEqual([
+        expectedId,
+      ]);
+      component.toggleAuditFilter(filter);
+    }
+  });
+
+  it('shows an empty result when a selected audit category has no entries', () => {
+    component.audit.set(
+      auditReport([auditRecord('example:machine', 'partial', 'unknown', 'fallback')]),
+    );
+    fixture.detectChanges();
+
+    const thumbnailFilter = fixture.nativeElement.querySelector(
+      '[data-audit-filter="thumbnail-real"]',
+    ) as HTMLButtonElement;
+    thumbnailFilter.click();
+    fixture.detectChanges();
+
+    expect(thumbnailFilter.getAttribute('aria-pressed')).toBe('true');
+    expect(fixture.nativeElement.querySelector('.audit-records > div')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.audit-empty')?.textContent).toContain(
+      'en:auditNoMatches',
+    );
   });
 
   it('filters the collected project report without rescanning blocks for each query', () => {

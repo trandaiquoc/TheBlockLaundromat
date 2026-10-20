@@ -32,7 +32,7 @@ An inventory entry or green build alone is not visual acceptance.
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                         |
 | F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                                                   |
 | G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G7; real unsupported-Mod compatibility and activation cancellation remain           |
-| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H6 viewport, Homepage account controls and diagnostics; specialized surfaces remain |
+| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H7 viewport, Homepage account controls and diagnostics; specialized surfaces remain |
 | I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                               |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
@@ -62,6 +62,7 @@ Checkpoint H3 viewport visual refinement: [H3 — separated feedback and themed 
 Checkpoint H4 feedback separation: [H4 — status and coordinates across themes](CHECKPOINT-H4.md).
 Checkpoint H5 account controls: [H5 — Homepage account and responsive controls](CHECKPOINT-H5.md).
 Checkpoint H6 diagnostics: [H6 — issue-first diagnostics and optional renderer details](CHECKPOINT-H6.md).
+Checkpoint H7 asset-audit filters: [H7 — category filters and visual grouping](CHECKPOINT-H7.md).
 Checkpoint I2 stale Mod JAR state: [I2 — replacement validation](CHECKPOINT-I2.md).
 Checkpoint I3 archive validation: [I3 — malformed ZIP classification](CHECKPOINT-I3.md).
 Checkpoint I4 activity lifecycle: [I4 — failed task state](CHECKPOINT-I4.md).
@@ -92,6 +93,11 @@ one compact stepper with its Y label integrated beside the value; and add an
 interactive XYZ orientation gizmo beside the grid. Do not render Y as a
 standalone badge. In Minecraft, Y is vertical. Axis interactions must update
 the existing camera, not add a second camera state or change project coordinates.
+
+Asset-audit summary counts are interactive filters: activating a count filters
+the records below, and activating it again restores all records. Visually group
+visual coverage and behavior coverage with distinct semantic colors and matching
+selected states in every theme.
 
 User follow-up, 2026-10-20: keep the live voxel coordinate only in the viewport's
 upper feedback and remove the duplicate selected/hover coordinate from the lower
