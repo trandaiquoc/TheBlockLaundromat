@@ -24,8 +24,9 @@ Targeted Vanilla provider, runtime cancellation, Asset Manager, lifecycle and
 localization specs passed **56 tests**. G6 continues to cover the invalid-file,
 200 MiB limit, replacement confirmation and offline recovery paths.
 
-A real nonblocking Mod warning archive remains unavailable. G7's generated
-unsafe-path archive verifies warning presentation only; G8 verifies the real
-unsupported-loader blocker. The generated Vanilla JAR used for this check was
-removed after browser verification. The final automated test, production build,
-typecheck, formatter, and encoding gates passed after G9.
+At the time of G9, a real nonblocking Mod warning archive remained unavailable;
+G7's generated unsafe-path archive verified warning presentation only, while G8
+verified a real unsupported-loader blocker. G10 later closes the warning-fixture
+gap with a real Supplementaries archive. The generated Vanilla JAR used for this
+G9 check was removed after browser verification. The final automated test,
+production build, typecheck, formatter, and encoding gates passed after G9.

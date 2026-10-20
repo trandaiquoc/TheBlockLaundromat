@@ -31,7 +31,7 @@ An inventory entry or green build alone is not visual acceptance.
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                                                           |
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                                                           |
 | F          | Every supported import/export workflow and its nested decisions                              | F1–F9 workflow and branch audit complete; full automated and build gates passed                                                           |
-| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G9; manual Vanilla progress/cancel verified; official Fabric and NeoForge checks passed; real warning fixture unavailable              |
+| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | G1–G10 implemented; real Supplementaries nonblocking warnings verified; import remains disabled for that fixture's separate blockers                  |
 | H          | Project/diagnostics and all specialized editor surfaces                                      | H1–H10 and H12–H15 browser evidence complete; inventory owner audits reconciled                                                                       |
 | I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                                                                 |
 
@@ -58,6 +58,8 @@ Checkpoint G nested overlays: [G5 — Escape and loader limits](CHECKPOINT-G5.md
 Checkpoint G offline/cache recovery: [G6 — Vanilla fallback and recovery](CHECKPOINT-G6.md).
 Checkpoint G timeout/retry and warning diagnostics: [G7 — Mod preflight recovery](CHECKPOINT-G7.md).
 Checkpoint G real loader and activation follow-up: [G8 — Cobblemon loader and cancellation](CHECKPOINT-G8.md).
+Checkpoint G manual Vanilla fallback progress and cancellation: [G9 — resource archive progress](CHECKPOINT-G9.md).
+Checkpoint G real Mod warning diagnostics: [G10 — Supplementaries warning report](CHECKPOINT-G10.md).
 Checkpoint A2 catalog controls: [A2 — action placement and shared active states](CHECKPOINT-A2.md).
 Checkpoint A3 catalog actions: [A3 — smaller, quieter action surfaces](CHECKPOINT-A3.md).
 Checkpoint A4 catalog action follow-up: [A4 — softer compact action surfaces](CHECKPOINT-A4.md).
