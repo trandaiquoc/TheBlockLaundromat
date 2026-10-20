@@ -93,6 +93,9 @@ h4 {
 .selected-slot-editor {
   display: grid;
   gap: 0.45rem;
+  margin-top: 0.2rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
 }
 .count-field {
   display: grid;

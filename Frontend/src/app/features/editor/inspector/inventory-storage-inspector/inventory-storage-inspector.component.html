@@ -71,7 +71,12 @@
           [disabled]="locked"
           (change)="changeCount($event)"
       /></label>
-      <button type="button" class="clear-item" [disabled]="locked" (click)="clearSelected()">
+      <button
+        type="button"
+        class="ui-button ui-button--secondary ui-button--sm clear-item"
+        [disabled]="locked"
+        (click)="clearSelected()"
+      >
         {{ i18n.t('clearItem') }}
       </button>
       @if (countFeedback()) {
