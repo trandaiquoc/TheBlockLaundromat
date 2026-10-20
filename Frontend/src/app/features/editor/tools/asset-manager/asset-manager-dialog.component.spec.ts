@@ -2,6 +2,7 @@ import { signal, type WritableSignal } from '@angular/core';
 // @ts-expect-error Vitest executes this template contract test in Node.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it, vi } from 'vitest';
+import type { AssetActivityEntry } from '../../../../core/assets/asset-activity.service';
 import { JarUploadValidationError } from '../../../../core/assets/mod/import/jar-upload-validation';
 import { AssetManagerDialogComponent } from './asset-manager-dialog.component';
 
@@ -36,6 +37,65 @@ interface AssetManagerConfirmationState {
 interface AssetManagerJarValidationState {
   readonly jarValidationMessage: (error: unknown) => string;
 }
+
+interface AssetManagerVanillaActionState {
+  readonly redownload: () => Promise<void>;
+  readonly removeCached: () => Promise<void>;
+}
+
+interface AssetManagerActivityMessageState {
+  readonly i18n: { t: (key: 'assetManagerOfflineRecovery') => string };
+  readonly activityEntryMessage: (entry: AssetActivityEntry) => string;
+}
+
+describe('AssetManagerDialogComponent activity messages', () => {
+  it('localizes offline failure entries while retaining ordinary technical messages', () => {
+    const state = Object.create(
+      AssetManagerDialogComponent.prototype,
+    ) as AssetManagerActivityMessageState;
+    Object.defineProperty(state, 'i18n', {
+      value: { t: () => 'Localized offline recovery' },
+    });
+    const offlineEntry: AssetActivityEntry = {
+      id: 1,
+      timestamp: 0,
+      category: 'vanilla',
+      level: 'error',
+      operation: 'assets',
+      message: 'Failed to fetch',
+      errorCode: 'offline',
+    };
+
+    expect(state.activityEntryMessage(offlineEntry)).toBe('Localized offline recovery');
+    expect(state.activityEntryMessage({ ...offlineEntry, errorCode: undefined })).toBe(
+      'Failed to fetch',
+    );
+  });
+});
+
+describe('AssetManagerDialogComponent Vanilla recovery', () => {
+  it.each(['redownload', 'removeCached'] as const)(
+    'clears an unrelated JAR validation error before %s',
+    async (action) => {
+      const state = Object.create(
+        AssetManagerDialogComponent.prototype,
+      ) as AssetManagerVanillaActionState;
+      const vanillaError = signal('Old JAR error');
+      const run = vi.fn().mockResolvedValue(undefined);
+      Object.defineProperties(state, {
+        importing: { value: () => false },
+        vanillaActionRunning: { value: signal(false) },
+        vanillaError: { value: vanillaError },
+        assets: { value: { redownload: run, removeCachedVersion: run } },
+      });
+
+      await state[action]();
+
+      expect(run).toHaveBeenCalledOnce();
+      expect(vanillaError()).toBe('');
+    },
+  );
+});
 
 interface AssetManagerNestedEscapeState {
   readonly closeDetailsFromEscape: (event: Event) => void;

@@ -278,6 +278,7 @@ export class AssetManagerDialogComponent {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
+    this.vanillaError.set('');
     try {
       validateJarUpload(file);
     } catch (error) {
@@ -388,6 +389,7 @@ export class AssetManagerDialogComponent {
   }
   protected async redownload(): Promise<void> {
     if (!this.importing()) {
+      this.vanillaError.set('');
       this.vanillaActionRunning.set(true);
       try {
         await this.assets.redownload();
@@ -398,6 +400,7 @@ export class AssetManagerDialogComponent {
   }
   protected async removeCached(): Promise<void> {
     if (!this.importing()) {
+      this.vanillaError.set('');
       this.vanillaActionRunning.set(true);
       try {
         await this.assets.removeCachedVersion();
@@ -436,6 +439,11 @@ export class AssetManagerDialogComponent {
   }
   protected progressPercent(progress: ModImportProgress): number | undefined {
     return progressPercentForProgress(progress);
+  }
+  protected activityEntryMessage(entry: AssetActivityEntry): string {
+    return entry.errorCode === 'offline'
+      ? this.i18n.t('assetManagerOfflineRecovery')
+      : entry.message;
   }
   protected progressDetail(progress: ModImportProgress): string {
     return progress.processed !== undefined && progress.total !== undefined

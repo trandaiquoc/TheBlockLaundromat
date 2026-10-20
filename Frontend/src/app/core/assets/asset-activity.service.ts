@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 
 export type AssetActivityCategory = 'vanilla' | 'cache' | 'mod' | 'system';
 export type AssetActivityLevel = 'info' | 'success' | 'warning' | 'error';
+export type AssetActivityErrorCode = 'offline';
 
 export interface AssetActivityProgress {
   readonly loaded: number;
@@ -14,6 +15,7 @@ export interface AssetActivityEntry {
   readonly level: AssetActivityLevel;
   readonly operation: string;
   readonly message: string;
+  readonly errorCode?: AssetActivityErrorCode;
   readonly progress?: AssetActivityProgress;
 }
 
@@ -75,8 +77,19 @@ export class AssetActivityService {
     this.currentState.set(undefined);
   }
 
-  fail(operation: string, message: string, category: AssetActivityCategory = 'vanilla'): void {
-    this.event(operation, message, 'error', category);
+  fail(
+    operation: string,
+    message: string,
+    category: AssetActivityCategory = 'vanilla',
+    errorCode?: AssetActivityErrorCode,
+  ): void {
+    this.push({
+      category,
+      level: 'error',
+      operation,
+      message,
+      ...(errorCode ? { errorCode } : {}),
+    });
     this.currentState.set(undefined);
   }
 

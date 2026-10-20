@@ -19,4 +19,5 @@ button. The test mod was then removed; the imported count returned to zero.
 The component Escape specs passed (9 tests), as did app typecheck and production
 build. The synthetic Forge ZIP proves the UI state and loader path only; it is
 not evidence of compatibility with a real Forge mod. Vanilla offline/cache
-recovery, timeout/retry and warning diagnostics remain in G.
+recovery was verified separately in [G6](CHECKPOINT-G6.md). Mod timeout/retry
+and warning diagnostics remain in G.

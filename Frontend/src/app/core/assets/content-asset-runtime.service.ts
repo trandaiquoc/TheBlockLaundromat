@@ -455,7 +455,7 @@ export class ContentAssetRuntimeService {
         providerReady: false,
         resourceCount: 0,
       }));
-      this.activity.fail('assets', message, 'vanilla');
+      this.activity.fail('assets', message, 'vanilla', unsupported ? undefined : 'offline');
       this.library.load({
         minecraftVersion: version,
         sourceId: 'vanilla',

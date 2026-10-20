@@ -136,7 +136,9 @@
                 </dl>
               </section>
             }
-            @if (assets.message()) {
+            @if (assets.status() === 'offline') {
+              <p class="manager-error" role="alert">{{ i18n.t('assetManagerOfflineRecovery') }}</p>
+            } @else if (assets.message()) {
               <p class="manager-error" role="alert">{{ assets.message() }}</p>
             }
             @if (vanillaError()) {
@@ -693,7 +695,7 @@
             @for (entry of vanillaActivity(); track entry.id) {
               <div class="activity-entry" [class]="'level-' + entry.level">
                 <time>{{ formatTime(entry.timestamp) }}</time
-                ><span>{{ entry.message }}</span>
+                ><span>{{ activityEntryMessage(entry) }}</span>
               </div>
             } @empty {
               <p class="manager-empty">{{ i18n.t('assetActivityEmpty') }}</p>
@@ -711,7 +713,7 @@
             @for (entry of modActivity(); track entry.id) {
               <div class="activity-entry" [class]="'level-' + entry.level">
                 <time>{{ formatTime(entry.timestamp) }}</time
-                ><span>{{ entry.message }}</span>
+                ><span>{{ activityEntryMessage(entry) }}</span>
               </div>
             } @empty {
               <p class="manager-empty">{{ i18n.t('assetActivityEmpty') }}</p>

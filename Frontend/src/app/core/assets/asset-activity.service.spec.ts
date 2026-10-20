@@ -33,6 +33,19 @@ describe('AssetActivityService', () => {
     expect(activity.entries().at(-1)).toMatchObject({ level: 'error', message: 'Failed' });
   });
 
+  it('keeps the offline error code with the failed Vanilla activity entry', () => {
+    const activity = new AssetActivityService();
+
+    activity.begin('assets', 'Loading official assets');
+    activity.fail('assets', 'Failed to fetch', 'vanilla', 'offline');
+
+    expect(activity.entries().at(-1)).toMatchObject({
+      category: 'vanilla',
+      level: 'error',
+      errorCode: 'offline',
+    });
+  });
+
   it('tracks protected operations independently from the activity feed', () => {
     const activity = new AssetActivityService();
     const id = activity.protect('Downloading assets');

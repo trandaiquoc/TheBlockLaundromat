@@ -931,6 +931,8 @@ export const translations = {
     rawDataWarning:
       'Imported data contains additional fields; edits preserve them, but export may report unsupported data.',
     assetsOffline: 'Assets unavailable offline',
+    assetManagerOfflineRecovery:
+      'Official assets could not load. Check your connection, then redownload them.',
     assetManagerRedownload: 'Redownload official assets',
     assetManagerRemoveCache: 'Remove cached assets',
     assetManagerTargetVersion: 'Target Minecraft version: {version}',
@@ -1909,6 +1911,8 @@ export const translations = {
     itemSlot: 'Ô vật phẩm',
     emptySlot: 'Ô trống',
     assetsOffline: 'Tài nguyên không khả dụng khi ngoại tuyến',
+    assetManagerOfflineRecovery:
+      'Không thể tải tài nguyên chính thức. Hãy kiểm tra kết nối rồi tải lại.',
     assetManagerRedownload: 'Tải lại tài nguyên chính thức',
     assetManagerRemoveCache: 'Xóa tài nguyên đã lưu',
     assetManagerTargetVersion: 'Phiên bản Minecraft đích: {version}',
