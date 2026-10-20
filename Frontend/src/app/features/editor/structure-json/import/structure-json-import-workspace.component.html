@@ -1,7 +1,8 @@
 <div class="structure-json-import-layout">
   <aside
+    #previewPanel
     class="structure-json-info"
-    tabindex="0"
+    tabindex="-1"
     [attr.aria-label]="i18n.t('structureJsonValidationPreview')"
   >
     <h3>{{ i18n.t('structureJsonValidationPreview') }}</h3>
@@ -398,9 +399,6 @@
         </button>
       </div>
     </div>
-    @if (fileReadError()) {
-      <p class="status-error" role="alert">{{ i18n.t('structureJsonProjectFileReadError') }}</p>
-    }
     <textarea
       class="structure-json-code-editor"
       [value]="draftJson()"
@@ -408,18 +406,36 @@
       [attr.aria-label]="i18n.t('structureJsonSource')"
       spellcheck="false"
     ></textarea>
-    @if (progress() !== 'idle' && progress() !== 'complete') {
-      <p class="progress-status" role="status">
-        {{ progressLabel() }}
-        @if (progress() === 'checking' && checkingProgress().total > 0) {
-          <span>({{ checkingProgress().completed }}/{{ checkingProgress().total }})</span>
+    @if (fileReadError() || fileSelectionError() || selectedFileName() || progress() !== 'idle') {
+      <div class="import-source-status">
+        @if (fileReadError()) {
+          <p class="status-error" role="alert">{{ i18n.t('structureJsonProjectFileReadError') }}</p>
         }
-      </p>
-    }
-    @if (progress() === 'complete') {
-      <p class="progress-status complete" role="status">
-        {{ i18n.t('structureJsonProgressComplete') }}
-      </p>
+        @if (fileSelectionError() === 'type') {
+          <p class="status-error" role="alert">{{ i18n.t('structureJsonFileTypeError') }}</p>
+        }
+        @if (fileSelectionError() === 'size') {
+          <p class="status-error" role="alert">{{ i18n.t('structureJsonFileSizeError') }}</p>
+        }
+        @if (selectedFileName(); as name) {
+          <p class="selected-file" role="status">
+            {{ i18n.t('structureJsonSelectedFile') }} <strong>{{ name }}</strong>
+          </p>
+        }
+        @if (progress() !== 'idle' && progress() !== 'complete') {
+          <p class="progress-status" role="status">
+            {{ progressLabel() }}
+            @if (progress() === 'checking' && checkingProgress().total > 0) {
+              <span>({{ checkingProgress().completed }}/{{ checkingProgress().total }})</span>
+            }
+          </p>
+        }
+        @if (progress() === 'complete') {
+          <p class="progress-status complete" role="status">
+            {{ i18n.t('structureJsonProgressComplete') }}
+          </p>
+        }
+      </div>
     }
   </section>
 </div>

@@ -2121,6 +2121,9 @@ const supplementalTranslationSource = {
     structureJsonDownloadEdited: 'Download edited',
     structureJsonImportDescription:
       'Paste or load Structure JSON to inspect it before any project changes.',
+    structureJsonFileTypeError: 'Choose a Structure JSON file ending in .json.',
+    structureJsonFileSizeError: 'This Structure JSON file exceeds the 64 MB limit.',
+    structureJsonSelectedFile: 'Selected file:',
     structureJsonValidationPreview: 'Validation preview',
     structureJsonStructure: 'Structure',
     untitledStructure: 'Untitled structure',
@@ -2460,6 +2463,9 @@ const supplementalTranslationSource = {
     structureJsonDownloadEdited: 'Tải bản đã sửa',
     structureJsonImportDescription:
       'Dán hoặc tải Structure JSON để kiểm tra trước khi thay đổi dự án.',
+    structureJsonFileTypeError: 'Hãy chọn tệp Structure JSON có đuôi .json.',
+    structureJsonFileSizeError: 'Tệp Structure JSON vượt quá giới hạn 64 MB.',
+    structureJsonSelectedFile: 'Tệp đã chọn:',
     structureJsonValidationPreview: 'Bản xem trước kiểm tra',
     structureJsonStructure: 'Cấu trúc',
     untitledStructure: 'Cấu trúc chưa đặt tên',

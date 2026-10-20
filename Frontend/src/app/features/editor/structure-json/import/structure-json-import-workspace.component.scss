@@ -14,6 +14,10 @@
   background: var(--surface-muted);
   scrollbar-gutter: stable;
 }
+.structure-json-info:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
 .structure-json-info h3 {
   margin: 0 0 0.8rem;
   font-size: 0.8rem;
@@ -127,6 +131,24 @@
 }
 .progress-status {
   margin: 0;
+}
+.import-source-status {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.import-source-status p {
+  margin: 0;
+  font: 0.74rem/1.4 var(--font-readable);
+}
+.selected-file {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-muted);
+}
+.selected-file strong {
+  color: var(--text);
+  font-weight: 650;
 }
 .progress-status.complete,
 .status-success {

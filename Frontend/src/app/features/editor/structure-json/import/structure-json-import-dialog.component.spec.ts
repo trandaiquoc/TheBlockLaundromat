@@ -274,18 +274,33 @@ describe('StructureJsonImportDialogComponent', () => {
     fixture.detectChanges();
     const instance = importWorkspace(fixture) as unknown as {
       setDraft: (value: string) => void;
+      loadFile: (event: Event) => void;
       validate: () => Promise<void>;
       preview: () => unknown;
+      fileSelectionError: () => 'type' | 'size' | undefined;
     };
+    const previewPanel = fixture.nativeElement.querySelector('.structure-json-info') as HTMLElement;
+    const focus = vi.spyOn(previewPanel, 'focus');
     instance.setDraft('{');
     await instance.validate();
     expect(instance.preview()).toMatchObject({ structuralValid: false });
+    expect(focus).toHaveBeenCalledWith({ preventScroll: false });
     instance.setDraft(
       '{"format":"the-block-laundromat-structure","formatVersion":2,"minecraftVersion":"1.21.1","blocks":[],"decorations":[]}',
     );
     expect(instance.preview()).toBeUndefined();
     await instance.validate();
     expect(instance.preview()).toMatchObject({ structuralValid: true, totalBlocks: 0 });
+    instance.loadFile({
+      target: { files: [new File(['{}'], 'wrong.zip')], value: 'wrong.zip' },
+    } as unknown as Event);
+    expect(instance.fileSelectionError()).toBe('type');
+    expect(instance.preview()).toBeUndefined();
+
+    instance.loadFile({
+      target: { files: [{ name: 'huge.json', size: 65 * 1024 * 1024 }], value: 'huge.json' },
+    } as unknown as Event);
+    expect(instance.fileSelectionError()).toBe('size');
 
     instance.setDraft(
       JSON.stringify({

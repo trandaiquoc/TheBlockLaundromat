@@ -1,4 +1,13 @@
-import { Component, OnChanges, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnChanges,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {
   LucideCheck,
   LucideCheckCircle2,
@@ -73,6 +82,9 @@ export class StructureJsonImportWorkspaceComponent implements OnChanges {
   protected readonly i18n = inject(I18nService);
   private readonly workflow = inject(StructureJsonImportWorkflow);
   private readonly issueDisplayCounts = signal(createIssueDisplayCounts());
+  private readonly previewPanel = viewChild<ElementRef<HTMLElement>>('previewPanel');
+  protected readonly selectedFileName = signal<string | undefined>(undefined);
+  protected readonly fileSelectionError = signal<'type' | 'size' | undefined>(undefined);
 
   readonly project = input.required<ProjectDocument>();
   readonly placeableItems = input.required<readonly PlaceableItemDefinition[]>();
@@ -100,6 +112,8 @@ export class StructureJsonImportWorkspaceComponent implements OnChanges {
 
   protected setDraft(value: string): void {
     this.resetIssueDisplayCounts();
+    this.selectedFileName.set(undefined);
+    this.fileSelectionError.set(undefined);
     this.workflow.setDraft(value);
   }
 
@@ -109,13 +123,26 @@ export class StructureJsonImportWorkspaceComponent implements OnChanges {
     input.value = '';
     if (file) {
       this.resetIssueDisplayCounts();
+      this.workflow.setDraft(this.draftJson());
+      this.selectedFileName.set(undefined);
+      this.fileSelectionError.set(undefined);
+      if (!file.name.toLowerCase().endsWith('.json')) {
+        this.fileSelectionError.set('type');
+        return;
+      }
+      if (file.size > 64 * 1024 * 1024) {
+        this.fileSelectionError.set('size');
+        return;
+      }
+      this.selectedFileName.set(file.name);
       void this.workflow.loadFile(file);
     }
   }
 
-  protected validate(): Promise<void> {
+  protected async validate(): Promise<void> {
     this.resetIssueDisplayCounts();
-    return this.workflow.validate(this.validationContext());
+    await this.workflow.validate(this.validationContext());
+    if (this.preview()) this.previewPanel()?.nativeElement.focus({ preventScroll: false });
   }
 
   protected selectImportMode(mode: StructureJsonImportMode): Promise<void> {

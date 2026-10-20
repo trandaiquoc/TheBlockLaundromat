@@ -44,6 +44,7 @@ Checkpoint evidence: [D — shared dialogs and overlays](CHECKPOINT-D.md).
 Checkpoint E evidence: [E — Settings and Help](CHECKPOINT-E.md).
 Checkpoint F backup evidence: [F1 — project backup](CHECKPOINT-F1.md).
 Checkpoint F JSON export evidence: [F2 — export intent](CHECKPOINT-F2.md).
+Checkpoint F JSON input evidence: [F3 — file and review feedback](CHECKPOINT-F3.md).
 
 ## Preserved contracts
 
