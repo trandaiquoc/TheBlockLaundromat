@@ -92,8 +92,8 @@ strong {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
+  min-width: 44px;
+  min-height: 44px;
   padding: 0.3rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -164,16 +164,11 @@ button:disabled {
 :host(.grid-item:not(.active)) .block-item:focus-within {
   background: var(--surface-hover);
 }
-.item-actions button,
-.copy-action {
-  min-width: max(44px, 2.75rem);
-  min-height: max(44px, 2.75rem);
-}
 :host(:not(.detail-item)) .item-actions button {
   position: relative;
   isolation: isolate;
-  width: max(44px, 2.75rem);
-  height: max(44px, 2.75rem);
+  width: 44px;
+  height: 44px;
   flex: 0 0 auto;
   padding: 0;
   border: 0;
@@ -188,14 +183,11 @@ button:disabled {
   z-index: -1;
   inset: 0;
   margin: auto;
-  width: 1.125rem;
-  height: 1.125rem;
+  width: 16px;
+  height: 16px;
   box-sizing: border-box;
-  border: 1px solid transparent;
   border-radius: var(--radius-md);
-}
-:host(:not(.detail-item)) .item-actions button::before {
-  background: color-mix(in srgb, var(--text) 3%, transparent);
+  background: transparent;
 }
 :host(:not(.detail-item)) .quick-add-action {
   color: var(--text);
@@ -204,6 +196,9 @@ button:disabled {
   color: var(--text);
 }
 :host(:not(.detail-item)) .item-actions button:hover:not(:disabled)::before {
+  background: color-mix(in srgb, var(--text) 9%, transparent);
+}
+:host(:not(.detail-item)) .item-actions button:focus-visible::before {
   background: color-mix(in srgb, var(--text) 9%, transparent);
 }
 :host(.active:not(.detail-item)) .details-action {

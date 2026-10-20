@@ -25,7 +25,7 @@ An inventory entry or green build alone is not visual acceptance.
 
 | Checkpoint | Boundary                                                                                     | Status                                                                                                                                |
 | ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; A6 reduces Grid/List action surfaces to 18 px while preserving 44 px hit targets                                         |
+| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; A7 uses a clear 16 px hover/focus surface inside fixed 44 px targets across font sizes                                   |
 | B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                                                                           |
 | C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                                                                           |
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                                                           |
@@ -63,6 +63,7 @@ Checkpoint A3 catalog actions: [A3 — smaller, quieter action surfaces](CHECKPO
 Checkpoint A4 catalog action follow-up: [A4 — softer compact action surfaces](CHECKPOINT-A4.md).
 Checkpoint A5 catalog action follow-up: [A5 — smaller, quieter catalog actions](CHECKPOINT-A5.md).
 Checkpoint A6 latest catalog action follow-up: [A6 — smaller catalog action surfaces](CHECKPOINT-A6.md).
+Checkpoint A7 catalog action refinement: [A7 — quiet idle actions and fixed targets](CHECKPOINT-A7.md).
 Checkpoint H1 viewport controls: [H1 — XYZ gizmo and Y-Layer stepper](CHECKPOINT-H1.md).
 Checkpoint H2 viewport follow-up: [H2 — signed gizmo and compact Quick Bar](CHECKPOINT-H2.md).
 Checkpoint H3 viewport visual refinement: [H3 — separated feedback and themed gizmo surfaces](CHECKPOINT-H3.md).
@@ -137,6 +138,10 @@ icon surface in Grid and List.
 User follow-up, 2026-10-21: the Grid and List info/Quick Add surfaces still feel
 slightly too large. Reduce their visible surface again while keeping the 44 px
 interaction area, theme radius, focus treatment and command behavior.
+
+User follow-up, 2026-10-21: make the catalog action faces feel less bulky. Keep
+idle actions unframed, show a compact surface on hover/focus, and do not scale
+the 44 px interaction target with the UI font-size preference.
 
 User follow-up, 2026-10-20: separate the placement-status label and live X/Y/Z
 readout more clearly. Keep the status chip semantically tinted and the coordinate
