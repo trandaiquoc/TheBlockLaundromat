@@ -97,10 +97,8 @@
   font-size: 0.74rem;
 }
 .frame-control {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.4rem;
+  display: grid;
+  gap: 0.5rem;
   min-width: 0;
 }
 .frame-control > span:first-child {
@@ -118,14 +116,14 @@
 }
 .stepper {
   display: grid;
-  grid-template-columns: 1.7rem 3.3rem 1.7rem;
+  grid-template-columns: 2rem 3.3rem 2rem;
   align-items: center;
   gap: 0.2rem;
-  flex: 0 0 auto;
+  justify-self: start;
 }
 .stepper button {
-  min-width: 1.7rem;
-  height: 1.7rem;
+  min-width: 2rem;
+  height: 2rem;
 }
 .stepper output {
   text-align: center;
