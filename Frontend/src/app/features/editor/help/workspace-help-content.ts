@@ -60,7 +60,12 @@ export const WORKSPACE_HELP_ARTICLES: readonly WorkspaceHelpArticle[] = [
     group: 'editing',
     titleKey: 'helpCameraTitle',
     summaryKey: 'helpCameraSummary',
-    points: ['helpCameraPointOne', 'helpCameraPointTwo', 'helpCameraPointThree'],
+    points: [
+      'helpCameraPointOne',
+      'helpCameraPointTwo',
+      'helpCameraPointThree',
+      'helpCameraPointFour',
+    ],
   },
   {
     id: 'place-delete-pick-select',

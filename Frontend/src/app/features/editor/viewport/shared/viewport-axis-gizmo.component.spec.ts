@@ -17,4 +17,26 @@ describe('ViewportAxisGizmoComponent', () => {
     fixture.nativeElement.querySelector('[aria-label="Bottom"]').click();
     expect(selected).toEqual(['bottom']);
   });
+
+  it('repositions the axis endpoints when the camera orientation changes', () => {
+    TestBed.configureTestingModule({ imports: [ViewportAxisGizmoComponent] });
+    const fixture = TestBed.createComponent(ViewportAxisGizmoComponent);
+    fixture.componentRef.setInput('cameraState', {
+      position: { x: 8, y: 7, z: 9 },
+      target: { x: 0, y: 0, z: 0 },
+      up: { x: 0, y: 1, z: 0 },
+    });
+    fixture.detectChanges();
+    const right = fixture.nativeElement.querySelector('[aria-label="Right"]') as HTMLElement;
+    const initialLeft = right.style.left;
+
+    fixture.componentRef.setInput('cameraState', {
+      position: { x: 9, y: 7, z: -8 },
+      target: { x: 0, y: 0, z: 0 },
+      up: { x: 0, y: 1, z: 0 },
+    });
+    fixture.detectChanges();
+
+    expect(right.style.left).not.toBe(initialLeft);
+  });
 });

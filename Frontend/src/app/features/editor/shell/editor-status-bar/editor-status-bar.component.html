@@ -43,20 +43,6 @@
       @if (selectionCount() > 1) {
         <span class="status-detail">{{ selectionSummaryLabel() }}</span>
       }
-      @if (statusCoordinate(); as coordinate) {
-        <span
-          class="coordinate-status status-detail axis-values"
-          [attr.title]="coordinateTitle()"
-          [attr.aria-label]="coordinateLabel()"
-        >
-          <span>{{ i18n.t('position') }}:</span>
-          <span class="axis-value axis-x">X {{ coordinate.coordinate.x }}</span
-          ><span class="axis-separator"> · </span>
-          <span class="axis-value axis-y">Y {{ coordinate.coordinate.y }}</span
-          ><span class="axis-separator"> · </span>
-          <span class="axis-value axis-z">Z {{ coordinate.coordinate.z }}</span>
-        </span>
-      }
     </div>
     @if (workspace.project()) {
       <div class="status-metrics">

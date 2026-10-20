@@ -19,7 +19,6 @@ import type { ProjectDocument } from '../../../../core/domain/project.types';
 import { MissingBlockReconciliationService } from '../../../../core/editor/structure/missing-block-reconciliation.service';
 import { EditorModeService } from '../../../../core/editor/state/editor-mode.service';
 import { EditorSessionService } from '../../../../core/editor/state/editor-session.service';
-import { ViewportStatusService } from '../../../../core/editor/viewport/viewport-status.service';
 import { SelectionService } from '../../../../core/editor/selection/selection.service';
 
 beforeEach(() => localStorage.removeItem('the-block-laundromat.ui-preferences'));
@@ -700,34 +699,14 @@ describe('EditorStatusBarComponent project coordinates', () => {
     expect(fixture.nativeElement.querySelector('.coordinate-status')).toBeNull();
   });
 
-  it('shows one selected coordinate, suppresses it for multiple blocks, and gives hover priority', async () => {
+  it('keeps block coordinates out of the lower status bar when hovering or selecting', async () => {
     const fixture = await createFixture();
     const selection = TestBed.inject(SelectionService);
-    const status = TestBed.inject(ViewportStatusService);
-    const owner = status.claim();
-    status.activate(owner, project.id);
     selection.select(project.blocks[0].position);
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.coordinate-status')?.textContent).toContain(
-      'X 2 · Y 3 · Z 1',
-    );
-
-    selection.selectBox({ min: { x: 0, y: 0, z: 0 }, max: { x: 5, y: 5, z: 3 } });
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.coordinate-status')).toBeNull();
 
-    selection.select(project.blocks[0].position);
-    status.publish(owner, project.id, { x: 7, y: 1, z: 2 }, 'valid');
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.coordinate-status')?.textContent).toContain(
-      'X 7 · Y 1 · Z 2',
-    );
-    status.clear(owner);
-    fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.coordinate-status')?.textContent).toContain(
-      'X 2 · Y 3 · Z 1',
-    );
-    status.release(owner);
     selection.clear();
+    fixture.destroy();
   });
 });

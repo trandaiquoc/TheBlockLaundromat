@@ -114,7 +114,9 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
   protected readonly target = signal<string>('');
   private readonly engine = new ThreeViewportEngine(undefined, {
     blockLookup: this.blockRuntimeIndex,
+    onCameraChange: () => this.cameraOrientation.set(this.engine.cameraState()),
   });
+  protected readonly cameraOrientation = signal<CameraState | undefined>(undefined);
   private readonly session = new ViewportSessionOwner(
     this.engine,
     () => this.viewportActive(),
@@ -299,6 +301,7 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
     }
     const project = this.workspace.project();
     this.engine.restoreCamera(this.cameraState.get('3d', project?.id), project?.id);
+    this.cameraOrientation.set(this.engine.cameraState());
     this.viewportMounted = true;
     if (isDevMode()) console.debug('[The Block Laundromat][3D mounted]', this.engine.diagnostics());
   }

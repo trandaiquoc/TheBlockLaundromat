@@ -1,6 +1,6 @@
 # Application UI renovation
 
-Implementation in progress from local HEAD `8eeeb9b5`. This work covers navigation,
+Implementation in progress from the current local HEAD. This work covers navigation,
 menus, shared UI, Settings, Help, all existing dialogs and their nested workflows.
 It does not reopen unrelated Homepage composition or change Minecraft/file-format
 semantics to accommodate presentation.
@@ -79,6 +79,14 @@ one compact stepper with its Y label integrated beside the value; and add an
 interactive XYZ orientation gizmo beside the grid. Do not render Y as a
 standalone badge. In Minecraft, Y is vertical. Axis interactions must update
 the existing camera, not add a second camera state or change project coordinates.
+
+User follow-up, 2026-10-20: keep the live voxel coordinate only in the viewport's
+upper hover feedback and remove the duplicate selected/hover coordinate from the
+lower status bar. Show the XYZ gizmo in 3D only; Y-Layer has no gizmo. The 3D
+gizmo must track camera orbit orientation. Clicking its axes frames the whole
+structure around its center even if a block is selected; selection must not
+change the camera pivot or mutate project content. Explain these behaviors in
+the bilingual Camera navigation help topic.
 
 ## Research grounding
 

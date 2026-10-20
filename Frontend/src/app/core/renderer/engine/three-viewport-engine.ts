@@ -358,6 +358,7 @@ interface PendingProjectPreviewReadback {
 }
 
 export class ThreeViewportEngine {
+  private readonly onCameraChange?: () => void;
   private readonly scene = new THREE.Scene();
   private readonly realityEnvironment: RealityEnvironmentOwner;
   private realityFallbackHandler?: (fallback: RealityEnvironmentFallback) => void;
@@ -647,6 +648,7 @@ export class ThreeViewportEngine {
   private blockUsageHighlightId?: string;
   private blockUsageHighlightPositions?: readonly VoxelCoordinate[];
   private readonly renderOnControlChange = () => {
+    this.onCameraChange?.();
     this.instrumentation.record('controlChangeEvents');
     this.runtimeTrace?.record('controls-change');
     if (this.cameraMovementInProgress) {
@@ -974,6 +976,7 @@ export class ThreeViewportEngine {
     readonly instrumentation = new RendererDiagnostics(),
     options: ViewportEngineOptions = {},
   ) {
+    this.onCameraChange = options.onCameraChange;
     this.realityEnvironment = new RealityEnvironmentOwner(this.scene, this.camera, {
       loadTexture: (url) => new THREE.TextureLoader().loadAsync(url),
       scheduleRender: () => this.scheduleRender(),

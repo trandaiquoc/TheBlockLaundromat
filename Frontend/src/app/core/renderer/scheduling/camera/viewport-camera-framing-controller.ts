@@ -111,10 +111,19 @@ export class ViewportCameraFramingController {
   setCameraPreset(preset: CameraPreset): void {
     const controls = this.controls();
     if (!controls) return;
+    const project = this.callbacks.project();
+    const bounds = project
+      ? (structureCameraBounds(project.blocks) ?? projectCameraBounds(project.size))
+      : undefined;
+    const target = bounds ? cameraBoundsCenter(bounds) : vectorValue(controls.target);
+    const currentDistance = this.camera.position.distanceTo(controls.target);
+    const structureDistance = bounds
+      ? cameraDistanceForBounds(bounds, this.camera.fov, this.camera.aspect)
+      : 4;
     this.setCamera(
-      vectorValue(controls.target),
+      target,
       presetDirection(preset),
-      Math.max(4, this.camera.position.distanceTo(controls.target)),
+      Math.max(4, currentDistance, structureDistance),
       preset === 'top'
         ? { x: 0, y: 0, z: -1 }
         : preset === 'bottom'

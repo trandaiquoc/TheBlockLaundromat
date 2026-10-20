@@ -64,6 +64,7 @@ export interface ViewportEngineOptions {
   readonly terrainAtlasMode?: TerrainAtlasMode;
   readonly terrainShouldCommitChunk?: (chunkKey: string, compiled: CompiledTerrainChunk) => boolean;
   readonly blockLookup?: ProjectBlockLookupProvider;
+  readonly onCameraChange?: () => void;
 }
 /** Result of one preparation attempt; completion is not GPU-presentation readiness. */
 export type ViewportPreparationAttempt = 'completed' | 'accepted' | 'in-progress' | 'rejected';

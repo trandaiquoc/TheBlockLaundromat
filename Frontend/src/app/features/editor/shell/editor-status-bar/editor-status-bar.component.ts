@@ -18,7 +18,6 @@ import { MissingBlockReconciliationService } from '../../../../core/editor/struc
 import { MissingProjectContentSummaryService } from '../../../../core/editor/state/missing-project-content-summary';
 import { MissingAssetsDialogComponent } from './missing-assets-dialog.component';
 import { EditorSessionService } from '../../../../core/editor/state/editor-session.service';
-import { ViewportStatusService } from '../../../../core/editor/viewport/viewport-status.service';
 import { UiProgressComponent } from '../../../../shared/ui/progress/ui-progress.component';
 
 @Component({
@@ -43,7 +42,6 @@ export class EditorStatusBarComponent {
   protected readonly library = inject(BlockLibraryService);
   protected readonly decorations = inject(DecorationService);
   private readonly session = inject(EditorSessionService);
-  private readonly viewportStatus = inject(ViewportStatusService);
   private readonly paintingCatalog = inject(PaintingVariantCatalogService);
   protected readonly selectionCount = computed(() => {
     const project = this.workspace.project();
@@ -56,18 +54,6 @@ export class EditorStatusBarComponent {
   protected readonly projectBlockCount = computed(
     () => this.workspace.project()?.blocks.length ?? 0,
   );
-  protected readonly statusCoordinate = computed(() => {
-    const project = this.workspace.project();
-    if (!project) return undefined;
-    const hovered = this.viewportStatus.target();
-    if (this.viewportStatus.projectId() === project.id && hovered)
-      return { coordinate: hovered, source: 'hover' as const };
-    const selected = this.selection.single();
-    const positions = this.selection.logicalPositions();
-    if (this.selectionCount() === 1 && selected && positions.length === 1)
-      return { coordinate: selected, source: 'selection' as const };
-    return undefined;
-  });
   protected readonly missingSummary = this.missingContent.summary;
   protected readonly missingDialogOpen = signal(false);
   private readonly closeMissingDialogWhenResolved = effect(() => {
@@ -120,17 +106,6 @@ export class EditorStatusBarComponent {
   protected projectSizeLabel(): string {
     const size = this.workspace.project()?.size;
     return size ? `X ${size.x} · Y ${size.y} · Z ${size.z}` : '';
-  }
-  protected coordinateLabel(): string {
-    const status = this.statusCoordinate();
-    if (!status) return '';
-    const { x, y, z } = status.coordinate;
-    return `${this.i18n.t('position')}: X ${x} · Y ${y} · Z ${z}`;
-  }
-  protected coordinateTitle(): string {
-    return this.statusCoordinate()?.source === 'hover'
-      ? this.i18n.t('target')
-      : this.i18n.t('selectedBlock');
   }
   protected currentLayer(): number {
     return this.session.currentY(this.workspace.project());

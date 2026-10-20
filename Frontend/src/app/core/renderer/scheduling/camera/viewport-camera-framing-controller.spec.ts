@@ -58,4 +58,32 @@ describe('ViewportCameraFramingController', () => {
     expect(controller.cameraState()?.position.z).toBeCloseTo(3);
     controls.dispose();
   });
+
+  it('keeps axis views centered on the whole structure when a selected block was the prior target', () => {
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(3, 4, 5);
+    const controls = new OrbitControls(camera, document.createElement('canvas'));
+    controls.target.set(2, 3, 4);
+    const project = {
+      id: 'project',
+      size: { x: 16, y: 12, z: 8 },
+      blocks: [],
+      decorations: [],
+      groups: [],
+    } as unknown as ProjectDocument;
+    const controller = new ViewportCameraFramingController(camera, () => controls, {
+      project: () => project,
+      renderOptions: () => ({}),
+      scheduleRender: vi.fn(),
+    });
+
+    controller.setCameraPreset('front');
+
+    expect(controls.target.x).toBeCloseTo(8);
+    expect(controls.target.y).toBeCloseTo(6);
+    expect(controls.target.z).toBeCloseTo(4);
+    expect(camera.position.z).toBeGreaterThan(controls.target.z);
+    expect(camera.position.distanceTo(controls.target)).toBeGreaterThan(5);
+    controls.dispose();
+  });
 });
