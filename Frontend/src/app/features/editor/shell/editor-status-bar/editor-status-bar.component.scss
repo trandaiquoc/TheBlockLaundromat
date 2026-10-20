@@ -210,8 +210,8 @@ app-ui-progress.block-loading-progress {
 @media (max-width: 640px) {
   .status-bar {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-rows: auto auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto;
     gap: 0.3rem 0.6rem;
     align-items: center;
   }
@@ -219,19 +219,21 @@ app-ui-progress.block-loading-progress {
     display: contents;
   }
   .status-context {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 1;
   }
   .status-activity {
-    grid-column: 2;
-    grid-row: 1;
-    flex: 1 1 auto;
-    flex-wrap: nowrap;
-    overflow: hidden;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex: 0 1 auto;
+    overflow: visible;
+  }
+  .active-placement-status {
+    max-width: min(24rem, 60vw);
   }
   .status-metrics {
     grid-column: 1;
-    grid-row: 2;
+    grid-row: 3;
     flex: 0 1 auto;
     min-width: 0;
     margin-left: 0;
@@ -246,7 +248,7 @@ app-ui-progress.block-loading-progress {
   }
   .status-right {
     grid-column: 2;
-    grid-row: 2;
+    grid-row: 3;
     flex: 0 1 auto;
     max-width: none;
     justify-content: flex-end;
@@ -255,5 +257,31 @@ app-ui-progress.block-loading-progress {
   .asset-status {
     justify-items: end;
     text-align: right;
+  }
+}
+@media (max-width: 360px) {
+  .status-bar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
+  }
+  .active-placement-label {
+    display: none;
+  }
+  .status-context,
+  .status-activity,
+  .status-metrics,
+  .status-right {
+    grid-column: 1;
+  }
+  .status-metrics {
+    grid-row: 3;
+  }
+  .status-right {
+    grid-row: 4;
+    justify-content: flex-start;
+  }
+  .asset-status {
+    justify-items: start;
+    text-align: left;
   }
 }

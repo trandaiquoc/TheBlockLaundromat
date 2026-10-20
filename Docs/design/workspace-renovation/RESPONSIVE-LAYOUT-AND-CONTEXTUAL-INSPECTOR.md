@@ -62,6 +62,14 @@ from its layout and the Inspector's context; material state remains with the
 existing block/decorations services. Save status, coordinates, current Y, block
 count, and assets retain their existing presentation.
 
+At widths up to 640 CSS px, the Status Bar gives activity a full-width row
+between mode/tool context and project metrics. This keeps Saved, the active
+material, and Current Y readable when the narrow Inspector is closed or
+collapsed; block count, dimensions, and asset status stay on the final row.
+At 360 px and below, metrics and asset status each get a full-width row, and the
+active material keeps its name without the repeated label so Vietnamese labels
+do not crowd Current Y.
+
 New projects, new Structure JSON projects, missing stored preferences, and
 renderer fallbacks use 15% reference-layer opacity. Explicit stored values,
 including zero, take precedence; the slider and persistence remain available.
