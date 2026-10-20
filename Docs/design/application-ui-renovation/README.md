@@ -23,17 +23,17 @@ An inventory entry or green build alone is not visual acceptance.
 
 ## Checkpoints
 
-| Checkpoint | Boundary                                                                                     | Status                                                                                    |
-| ---------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; catalog/Quick Bar browser checks passed                                      |
-| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                               |
-| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                               |
-| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                               |
-| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                               |
-| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                                         |
-| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G7; real unsupported-Mod compatibility and activation cancellation remain |
-| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H3 viewport and Y-Layer controls                                          |
-| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                     |
+| Checkpoint | Boundary                                                                                     | Status                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; catalog/Quick Bar browser checks passed                                                  |
+| B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                                           |
+| C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                                           |
+| D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                           |
+| E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed                                                           |
+| F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired                                                                     |
+| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: G1–G7; real unsupported-Mod compatibility and activation cancellation remain             |
+| H          | Project/diagnostics and all specialized editor surfaces                                      | In progress: H1–H4 viewport and Y-Layer controls; project/diagnostics and specialized surfaces remain |
+| I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1–I4 confirmed correctness fixes recorded separately                                                 |
 
 Each implemented checkpoint gets targeted tests, relevant localhost interaction
 checks and its own local commit. The final gate includes the full suite, app
@@ -59,6 +59,7 @@ Checkpoint A2 catalog controls: [A2 — action placement and shared active state
 Checkpoint H1 viewport controls: [H1 — XYZ gizmo and Y-Layer stepper](CHECKPOINT-H1.md).
 Checkpoint H2 viewport follow-up: [H2 — signed gizmo and compact Quick Bar](CHECKPOINT-H2.md).
 Checkpoint H3 viewport visual refinement: [H3 — separated feedback and themed gizmo surfaces](CHECKPOINT-H3.md).
+Checkpoint H4 feedback separation: [H4 — status and coordinates across themes](CHECKPOINT-H4.md).
 Checkpoint I2 stale Mod JAR state: [I2 — replacement validation](CHECKPOINT-I2.md).
 Checkpoint I3 archive validation: [I3 — malformed ZIP classification](CHECKPOINT-I3.md).
 Checkpoint I4 activity lifecycle: [I4 — failed task state](CHECKPOINT-I4.md).
@@ -102,6 +103,12 @@ bilingual Camera navigation Help.
 
 User follow-up, 2026-10-20: remove the visible hover-name popup from the Quick Bar
 to keep the compact toolbar clear. Keep each slot's full accessible button name.
+
+User follow-up, 2026-10-20: separate the placement-status label and live X/Y/Z
+readout more clearly. Keep the status chip semantically tinted and the coordinate
+chip neutral, with enough gap to read as separate controls. The XYZ gizmo keeps
+one component, geometry and interaction model across Minecraft, Raccoon, Light
+and Dark; semantic theme tokens supply its colors and material.
 
 ## Research grounding
 
