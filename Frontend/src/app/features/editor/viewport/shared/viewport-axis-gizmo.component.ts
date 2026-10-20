@@ -30,9 +30,9 @@ const AXES = [
             [class.axis-line-x]="axis.axis === 'X'"
             [class.axis-line-y]="axis.axis === 'Y'"
             [class.axis-line-z]="axis.axis === 'Z'"
-            [style.left.px]="axis.lineLeft"
-            [style.top.px]="axis.lineTop"
-            [style.width.px]="axis.lineLength"
+            [style.left.%]="axis.lineLeft"
+            [style.top.%]="axis.lineTop"
+            [style.width.%]="axis.lineLength"
             [style.transform]="'rotate(' + axis.lineAngle + 'deg)'"
             aria-hidden="true"
           ></span>
@@ -44,8 +44,8 @@ const AXES = [
           [class.axis-endpoint-y]="axis.axis === 'Y'"
           [class.axis-endpoint-z]="axis.axis === 'Z'"
           [class.axis-endpoint-back]="axis.back"
-          [style.left.px]="axis.left"
-          [style.top.px]="axis.top"
+          [style.left.%]="axis.left"
+          [style.top.%]="axis.top"
           [attr.aria-label]="i18n.t(axis.label) + ' (' + axis.sign + axis.axis + ')'"
           [title]="i18n.t(axis.label) + ' (' + axis.sign + axis.axis + ')'"
           (pointerdown)="$event.stopPropagation()"
@@ -66,20 +66,21 @@ const AXES = [
     }
     .axis-gizmo {
       position: relative;
-      width: 4rem;
-      height: 4rem;
+      width: 4.5rem;
+      height: 4.5rem;
       pointer-events: none;
     }
     .axis-gizmo-center {
       position: absolute;
       z-index: 1;
-      left: 1.72rem;
-      top: 1.72rem;
+      left: 50%;
+      top: 50%;
       width: 0.5rem;
       height: 0.5rem;
       border: 1px solid var(--border-strong, var(--border));
       border-radius: 50%;
       background: var(--surface-raised);
+      transform: translate(-50%, -50%);
     }
     .axis-line {
       position: absolute;
@@ -101,17 +102,18 @@ const AXES = [
       z-index: 2;
       display: grid;
       place-items: center;
-      width: 1.3rem;
-      height: 1.05rem;
+      width: 1.45rem;
+      height: 1.18rem;
       padding: 0;
       border: 1px solid color-mix(in srgb, var(--axis-color) 72%, var(--border-floating));
-      border-radius: 0.52rem;
+      border-radius: 0.59rem;
       background: var(--surface-floating-raised);
       color: var(--axis-color);
-      font: 700 0.62rem var(--font-ui);
+      font: 700 0.68rem var(--font-ui);
       cursor: pointer;
       pointer-events: auto;
       box-shadow: var(--shadow-control);
+      transform: translate(-50%, -50%);
     }
     .axis-endpoint-x {
       --axis-color: var(--axis-x);
@@ -128,7 +130,7 @@ const AXES = [
     .axis-endpoint:hover {
       background: var(--surface-hover);
       border-color: var(--axis-color);
-      transform: scale(1.08);
+      transform: translate(-50%, -50%) scale(1.08);
     }
     .axis-endpoint:active {
       background: var(--surface-selected);
@@ -165,20 +167,20 @@ export class ViewportAxisGizmoComponent {
     });
     const right = normalize(cross(forward, up));
     const screenUp = normalize(cross(right, forward));
-    const center = 32;
-    const radius = 21;
+    const centerPercent = 50;
+    const radiusPercent = 32;
 
     return AXES.map((axis) => {
       const projectedX = dot(axis.vector, right);
       const projectedY = -dot(axis.vector, screenUp);
-      const x = center + projectedX * radius;
-      const y = center + projectedY * radius;
-      const oppositeX = center - projectedX * radius;
-      const oppositeY = center - projectedY * radius;
+      const x = centerPercent + projectedX * radiusPercent;
+      const y = centerPercent + projectedY * radiusPercent;
+      const oppositeX = centerPercent - projectedX * radiusPercent;
+      const oppositeY = centerPercent - projectedY * radiusPercent;
       return {
         ...axis,
-        left: x - 10,
-        top: y - 8,
+        left: x,
+        top: y,
         back: dot(axis.vector, forward) > 0,
         lineLeft: oppositeX,
         lineTop: oppositeY,
