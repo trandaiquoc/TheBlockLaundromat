@@ -31,7 +31,7 @@ An inventory entry or green build alone is not visual acceptance.
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed |
 | E          | Settings hierarchy and real bilingual Help/documentation                                     | Implemented; targeted/browser checks passed |
 | F          | Every supported import/export workflow and its nested decisions                              | In progress: project backup wired           |
-| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | Pending                                     |
+| G          | Vanilla/Mod assets, preflight, details, diagnostics and recovery                             | In progress: Asset Manager tab intent       |
 | H          | Project/diagnostics and all specialized editor surfaces                                      | Pending                                     |
 | I          | Only confirmed business-logic defects, isolated from presentation commits                    | I1: JSON saved-download recovery fixed      |
 
@@ -48,6 +48,7 @@ Checkpoint F JSON input evidence: [F3 — file and review feedback](CHECKPOINT-F
 Checkpoint F NBT/AI audit: [F4 — retained workflows](CHECKPOINT-F4.md).
 Checkpoint F file-policy parity: [F5 — Structure JSON entry points](CHECKPOINT-F5.md).
 Checkpoint F review hierarchy: [F6 — import choices](CHECKPOINT-F6.md).
+Checkpoint G initial asset manager refinement: [G1 — Vanilla tab intent](CHECKPOINT-G1.md).
 
 ## Preserved contracts
 

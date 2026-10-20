@@ -2217,7 +2217,7 @@ const supplementalTranslationSource = {
     assetManagerHelpCompatibility: 'Compatibility is checked before activation.',
     assetManagerHelpCertified:
       'Fully supported means this exact Mod/version/Minecraft/loader combination was tested.',
-    assetManagerTabVanilla: 'Minecraft Versions',
+    assetManagerTabVanilla: 'Vanilla',
     assetManagerTabMods: 'Mods',
     assetManagerModSearch: 'Search imported mods',
     assetManagerNoModMatches: 'No imported mods match this search.',
@@ -2560,7 +2560,7 @@ const supplementalTranslationSource = {
     assetManagerHelpCompatibility: 'Tương thích được kiểm tra trước khi kích hoạt.',
     assetManagerHelpCertified:
       'Được hỗ trợ đầy đủ nghĩa là đúng tổ hợp Mod/phiên bản/Minecraft/loader này đã được kiểm thử.',
-    assetManagerTabVanilla: 'Phiên bản Minecraft',
+    assetManagerTabVanilla: 'Vanilla',
     assetManagerTabMods: 'Mod',
     assetManagerModSearch: 'Tìm mod đã nhập',
     assetManagerNoModMatches: 'Không có mod đã nhập nào khớp.',

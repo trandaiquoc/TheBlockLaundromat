@@ -64,7 +64,8 @@ describe('translation dictionaries', () => {
       Object.keys(supplementalTranslations.vi).sort(),
     );
     expect(values.some((value) => mojibake.test(value))).toBe(false);
-    expect(supplementalTranslations.vi.assetManagerTabVanilla).toBe('Phiên bản Minecraft');
+    expect(supplementalTranslations.en.assetManagerTabVanilla).toBe('Vanilla');
+    expect(supplementalTranslations.vi.assetManagerTabVanilla).toBe('Vanilla');
     expect(supplementalTranslations.vi.assetManagerShowTechnicalProgress).toBe(
       'Hiện tiến trình kỹ thuật',
     );
