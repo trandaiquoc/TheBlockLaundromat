@@ -36,10 +36,10 @@ describe('StructureJsonExportDialogComponent', () => {
                 structureJsonBlockCount: 'Blocks',
                 structureJsonFormat: 'Format',
                 structureJsonTab: 'Structure JSON',
-                structureJsonSaved: 'Saved',
-                structureJsonDirty: 'Unsaved changes',
-                structureJsonDiscardChanges: 'Discard changes',
-                structureJsonSaveChanges: 'Save changes',
+                structureJsonSaved: 'Original snapshot',
+                structureJsonDirty: 'Edited draft',
+                structureJsonDiscardChanges: 'Revert edits',
+                structureJsonExportLocalHint: 'Project stays unchanged',
                 copyJson: 'Copy JSON',
                 downloadJson: 'Download .json',
                 structureJsonLimitations: 'Limitations',
@@ -58,13 +58,14 @@ describe('StructureJsonExportDialogComponent', () => {
     expect(text).toContain('Export Structure JSON');
     expect(text).toContain('Copy JSON');
     expect(text).toContain('Structure JSON');
+    expect(text).toContain('Project stays unchanged');
     expect(text).not.toContain('Preview');
     expect(text).not.toContain('Import Structure JSON');
     expect(fixture.nativeElement.querySelectorAll('button').length).toBeGreaterThan(3);
     const tabs = fixture.nativeElement.querySelectorAll(
       '[role="tab"]',
     ) as NodeListOf<HTMLButtonElement>;
-    expect(tabs.length).toBe(1);
+    expect(tabs.length).toBe(0);
   });
 
   it('keeps draft and saved JSON separate and guards only dirty downloads', async () => {
@@ -80,7 +81,6 @@ describe('StructureJsonExportDialogComponent', () => {
       savedJson: () => string;
       dirty: () => boolean;
       setDraftJson: (value: string) => void;
-      saveChanges: () => boolean;
       discardChanges: () => void;
       download: () => void;
       downloadGuardOpen: () => boolean;
@@ -88,7 +88,6 @@ describe('StructureJsonExportDialogComponent', () => {
     const initial = instance.savedJson();
     instance.setDraftJson('{');
     expect(instance.dirty()).toBe(true);
-    expect(instance.saveChanges()).toBe(false);
     expect(instance.savedJson()).toBe(initial);
     instance.discardChanges();
     expect(instance.dirty()).toBe(false);
@@ -109,13 +108,18 @@ describe('StructureJsonExportDialogComponent', () => {
       savedJson: () => string;
       setDraftJson: (value: string) => void;
       download: () => void;
+      downloadEdited: () => void;
       downloadSaved: () => void;
       downloadGuardOpen: () => boolean;
+      validationError: () => string | undefined;
     };
     const original = instance.savedJson();
     instance.setDraftJson('{');
     instance.download();
     expect(instance.downloadGuardOpen()).toBe(true);
+    instance.downloadEdited();
+    expect(instance.downloadGuardOpen()).toBe(true);
+    expect(instance.validationError()).toBeTruthy();
     const download = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:download');
     const revoke = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
     const click = vi
@@ -130,6 +134,36 @@ describe('StructureJsonExportDialogComponent', () => {
     download.mockRestore();
     revoke.mockRestore();
     click.mockRestore();
+    fixture.destroy();
+  });
+
+  it('downloads a valid edited draft without replacing the original snapshot', async () => {
+    await TestBed.configureTestingModule({
+      imports: [StructureJsonExportDialogComponent],
+      providers: [{ provide: I18nService, useValue: { t: (key: string) => key } }],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(StructureJsonExportDialogComponent);
+    fixture.componentRef.setInput('project', project);
+    fixture.detectChanges();
+    const instance = fixture.componentInstance as unknown as {
+      savedJson: () => string;
+      draftJson: () => string;
+      setDraftJson: (value: string) => void;
+      download: () => void;
+      downloadEdited: () => void;
+      dirty: () => boolean;
+    };
+    const original = instance.savedJson();
+    instance.setDraftJson(`${original} `);
+    instance.download();
+    const download = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:download');
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    instance.downloadEdited();
+    expect(download).toHaveBeenCalledOnce();
+    expect(instance.savedJson()).toBe(original);
+    expect(instance.draftJson()).toBe(`${original} `);
+    expect(instance.dirty()).toBe(true);
     fixture.destroy();
   });
 

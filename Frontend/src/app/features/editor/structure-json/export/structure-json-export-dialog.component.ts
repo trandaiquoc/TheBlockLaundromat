@@ -1,6 +1,6 @@
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { LucideCopy, LucideDownload, LucideSave, LucideX } from '@lucide/angular';
+import { LucideCopy, LucideDownload, LucideX } from '@lucide/angular';
 import { ProjectDocument } from '../../../../core/domain/project.types';
 import { BlockLibraryService } from '../../../../core/blocks/catalog/block-library.service';
 import { sanitizeFilename } from '../../../../core/persistence/file-name';
@@ -14,11 +14,10 @@ import { I18nService } from '../../../../core/ui/localization/i18n.service';
 import { UiTooltipDirective } from '../../../../shared/ui/tooltip/ui-tooltip.directive';
 
 type CopyFeedback = 'success' | 'error' | undefined;
-type StructureJsonTab = 'structure';
 
 @Component({
   selector: 'app-structure-json-export-dialog',
-  imports: [CdkTrapFocus, LucideCopy, LucideDownload, LucideSave, LucideX, UiTooltipDirective],
+  imports: [CdkTrapFocus, LucideCopy, LucideDownload, LucideX, UiTooltipDirective],
   templateUrl: './structure-json-export-dialog.component.html',
   styleUrl: './structure-json-export-dialog.component.scss',
   host: { '(document:keydown.escape)': 'onEscape()' },
@@ -28,14 +27,12 @@ export class StructureJsonExportDialogComponent {
   private readonly library = inject(BlockLibraryService);
   readonly project = input.required<ProjectDocument>();
   readonly closed = output<void>();
-  protected readonly tab = signal<StructureJsonTab>('structure');
   protected readonly savedJson = signal('');
   protected readonly draftJson = signal('');
   protected readonly validationError = signal<string | undefined>(undefined);
   protected readonly feedback = signal<CopyFeedback>(undefined);
   protected readonly downloadGuardOpen = signal(false);
   protected readonly dirty = computed(() => this.savedJson() !== this.draftJson());
-  protected readonly tabs: readonly StructureJsonTab[] = ['structure'];
 
   ngOnInit(): void {
     const snapshot = serializeStructureJson(this.project(), this.resolveDefinition);
@@ -68,37 +65,10 @@ export class StructureJsonExportDialogComponent {
   protected hasUnsupportedBlockEntityData(): boolean {
     return hasUnsupportedProjectBlockEntities(this.project(), this.resolveDefinition);
   }
-  protected setTab(tab: StructureJsonTab): void {
-    this.tab.set(tab);
-    this.feedback.set(undefined);
-  }
-  protected handleTabKeydown(event: KeyboardEvent): void {
-    const index = this.tabs.indexOf(this.tab());
-    const next =
-      event.key === 'ArrowRight'
-        ? (index + 1) % this.tabs.length
-        : event.key === 'ArrowLeft'
-          ? (index + this.tabs.length - 1) % this.tabs.length
-          : event.key === 'Home'
-            ? 0
-            : event.key === 'End'
-              ? this.tabs.length - 1
-              : -1;
-    if (next >= 0) {
-      event.preventDefault();
-      this.setTab(this.tabs[next]);
-    }
-  }
   protected setDraftJson(value: string): void {
     this.draftJson.set(value);
     this.validationError.set(undefined);
     this.feedback.set(undefined);
-  }
-  protected saveChanges(): boolean {
-    if (!this.validateDraft()) return false;
-    this.savedJson.set(this.draftJson());
-    this.validationError.set(undefined);
-    return true;
   }
   protected discardChanges(): void {
     this.draftJson.set(this.savedJson());
@@ -121,14 +91,10 @@ export class StructureJsonExportDialogComponent {
     this.downloadGuardOpen.set(false);
     this.downloadText(this.savedJson());
   }
-  protected saveAndDownload(): void {
-    if (this.saveChanges()) {
-      this.downloadGuardOpen.set(false);
-      this.downloadText(this.savedJson());
-    }
-  }
-  protected tabLabel(_tab: StructureJsonTab): string {
-    return this.i18n.t('structureJsonTab');
+  protected downloadEdited(): void {
+    if (!this.validateDraft()) return;
+    this.downloadGuardOpen.set(false);
+    this.downloadText(this.draftJson());
   }
   protected validationMessage(
     code: StructureJsonValidationCode | undefined,
@@ -168,7 +134,6 @@ export class StructureJsonExportDialogComponent {
     const result = validateStructureJson(value, this.resolveDefinition, this.resolveMaxStackSize);
     if (!result.valid) {
       this.validationError.set(this.validationMessage(result.code, result.path));
-      this.tab.set('structure');
       return false;
     }
     this.validationError.set(undefined);
