@@ -75,15 +75,22 @@ export class ViewportRaycastController {
     for (const candidate of candidates) {
       const objects = this.callbacks.objectsForVoxel(candidate.position);
       const intersections = objects.length
-        ? this.raycaster
-            .intersectObjects([...objects], true)
-            .filter((hit) => this.callbacks.isPreciseHit(hit, candidate.position))
+        ? this.raycaster.intersectObjects([...objects], true)
         : [];
-      const intersection = preciseVoxelBoundaryIntersection(
-        intersections,
-        candidate.position,
-        this.raycaster.ray.direction,
+      const firstPreciseIndex = intersections.findIndex((hit) =>
+        this.callbacks.isPreciseHit(hit, candidate.position),
       );
+      const firstPreciseHit = intersections[firstPreciseIndex];
+      const intersection = firstPreciseHit
+        ? preciseVoxelBoundaryIntersection(
+            intersections,
+            candidate.position,
+            this.raycaster.ray.direction,
+            firstPreciseIndex,
+            (hit) =>
+              hit === firstPreciseHit || this.callbacks.isPreciseHit(hit, candidate.position),
+          )
+        : undefined;
       if (!intersection) continue;
       const normal =
         preciseFaceNormal(intersection, this.raycaster.ray.direction) ??

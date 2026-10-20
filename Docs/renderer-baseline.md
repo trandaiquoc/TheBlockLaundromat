@@ -17,6 +17,10 @@ Precise double-sided model hits orient their geometric normal against the
 incoming ray, including coincident opposite faces in thin model elements.
 3D and Y-Layer share this resolution while retaining exact geometry hit tests;
 surface-batch metadata and the full-cube DDA path keep their existing ownership.
+For partial models, the picker finds the first exact voxel hit and examines
+only intersections at that nearest distance when resolving a coincident voxel
+boundary face; farther model hits are not scanned. The selected face normal is
+reduced to its dominant voxel axis before placement targeting.
 Reference representations use the domain's 15% default only when no explicit
 opacity is supplied. Persisted opacity and manual adjustments take precedence.
 
@@ -62,6 +66,17 @@ correctness checks; they do not assert machine-dependent elapsed-time limits. Th
 renderer workloads and reports counters and elapsed time. Vitest does not
 create a real WebGL context, so these benchmarks cannot measure GPU execution,
 GPU memory, or browser frame latency.
+
+### Dated candidate-hit microprobe (2026-10-21)
+
+An ignored local probe compared only post-raycast per-voxel hit selection with
+100,000 coordinate entries and 16 synthetic intersections per candidate. Across
+five rounds of 250,000 selections, the previous first-hit-plus-normal path had a
+26.54 ms median; boundary-aware selection had a 51.88 ms median. The added work
+was about 0.102 microseconds per candidate, with matching hit checksums. This
+probe excludes mesh intersection, DDA traversal, rendering, GPU work and browser
+frame time; it is an informational micro-measurement, not a full renderer or
+browser benchmark.
 
 Deterministic small (256 blocks), medium (2,048 blocks), and large (8,192
 blocks) fixtures live beside the benchmark specs. Run the explicit benchmark

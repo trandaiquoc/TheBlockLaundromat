@@ -135,4 +135,6 @@ commit retain the shared placement plan and atomic history. A picked normal is
 resolved along its dominant voxel axis, so floating-point residue cannot turn a
 side face into a diagonal target. Placement previews expose the neighbor-derived
 state from their local preview overlay, matching the committed Iron Bars
-connection state without scanning the full project.
+connection state without scanning the full project. Candidate resolution stops
+after the nearest intersection and its coincident faces, avoiding a scan of
+farther model surfaces on pointer-picking events.

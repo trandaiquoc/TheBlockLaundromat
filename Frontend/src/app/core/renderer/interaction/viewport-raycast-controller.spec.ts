@@ -82,6 +82,47 @@ describe('ViewportRaycastController', () => {
     top.geometry.dispose();
     material.dispose();
   });
+  it('limits precise ownership checks to intersections tied at the nearest hit', () => {
+    const voxel = { x: 1, y: 1, z: 1 };
+    const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
+    const geometry = new THREE.PlaneGeometry(1, 1);
+    geometry.rotateX(-Math.PI / 2);
+    const nearest = new THREE.Mesh(geometry, material);
+    nearest.position.set(1.5, 2, 1.5);
+    nearest.updateMatrixWorld(true);
+    const farther = new THREE.Mesh(geometry, material);
+    farther.position.set(1.5, 1.5, 1.5);
+    farther.updateMatrixWorld(true);
+    const raycaster = new THREE.Raycaster(
+      new THREE.Vector3(1.5, 4, 1.5),
+      new THREE.Vector3(0, -1, 0),
+    );
+    const preciseChecks = vi.fn(
+      (intersection: THREE.Intersection) => intersection.object !== farther,
+    );
+    const controller = new ViewportRaycastController(raycaster, {
+      classify: (position) =>
+        position.x === voxel.x && position.y === voxel.y && position.z === voxel.z
+          ? 'fallback'
+          : 'skip',
+      objectsForVoxel: () => [nearest, farther],
+      isPreciseHit: preciseChecks,
+      record: () => undefined,
+    });
+
+    const hit = controller.pick(raycaster.ray, { x: 4, y: 4, z: 4 });
+
+    expect(hit?.position).toEqual(voxel);
+    expect(hit?.normal.x).toBeCloseTo(0);
+    expect(hit?.normal.y).toBeCloseTo(1);
+    expect(hit?.normal.z).toBeCloseTo(0);
+    expect(targetFromBlockFace(hit!.position, hit!.normal)).toEqual({ x: 1, y: 2, z: 1 });
+    expect(preciseChecks.mock.calls.map(([intersection]) => intersection.object)).not.toContain(
+      farther,
+    );
+    geometry.dispose();
+    material.dispose();
+  });
   it('records bounded DDA work and delegates translucent candidates to precise picking', () => {
     const record = vi.fn();
     const controller = new ViewportRaycastController(new THREE.Raycaster(), {
