@@ -25,7 +25,7 @@ An inventory entry or green build alone is not visual acceptance.
 
 | Checkpoint | Boundary                                                                                     | Status                                                                                                                          |
 | ---------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; catalog/Quick Bar browser checks passed                                                                            |
+| A          | Quick Bar names, compact catalog actions, selected states and Raccoon treatment              | Implemented; A3 further quiets action surfaces while preserving 44 px hit targets                                               |
 | B          | Reality configuration discoverability and applied/saved/draft clarity in the shared Settings | Implemented; targeted/browser checks passed                                                                                     |
 | C          | Header command/navigation ownership, discoverability and duplicate options                   | Implemented; targeted/browser checks passed                                                                                     |
 | D          | Modal, nested overlay, picker and feedback presentation/accessibility                        | Implemented; targeted/browser checks passed                                                                                     |
@@ -56,6 +56,7 @@ Checkpoint G nested overlays: [G5 — Escape and loader limits](CHECKPOINT-G5.md
 Checkpoint G offline/cache recovery: [G6 — Vanilla fallback and recovery](CHECKPOINT-G6.md).
 Checkpoint G timeout/retry and warning diagnostics: [G7 — Mod preflight recovery](CHECKPOINT-G7.md).
 Checkpoint A2 catalog controls: [A2 — action placement and shared active states](CHECKPOINT-A2.md).
+Checkpoint A3 catalog actions: [A3 — smaller, quieter action surfaces](CHECKPOINT-A3.md).
 Checkpoint H1 viewport controls: [H1 — XYZ gizmo and Y-Layer stepper](CHECKPOINT-H1.md).
 Checkpoint H2 viewport follow-up: [H2 — signed gizmo and compact Quick Bar](CHECKPOINT-H2.md).
 Checkpoint H3 viewport visual refinement: [H3 — separated feedback and themed gizmo surfaces](CHECKPOINT-H3.md).
@@ -117,6 +118,10 @@ bilingual Camera navigation Help.
 
 User follow-up, 2026-10-20: remove the visible hover-name popup from the Quick Bar
 to keep the compact toolbar clear. Keep each slot's full accessible button name.
+
+User follow-up, 2026-10-20: the catalog info and Quick Add buttons still looked
+too large and heavy. Reduce their visible surfaces while preserving the 44 px
+interaction targets and the existing keyboard/touch behavior.
 
 User follow-up, 2026-10-20: separate the placement-status label and live X/Y/Z
 readout more clearly. Keep the status chip semantically tinted and the coordinate

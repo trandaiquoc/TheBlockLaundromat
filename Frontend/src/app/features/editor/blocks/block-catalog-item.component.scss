@@ -186,8 +186,10 @@ button:disabled {
   content: '';
   position: absolute;
   z-index: -1;
-  width: 1.25rem;
-  height: 1.25rem;
+  inset: 0;
+  margin: auto;
+  width: 1.125rem;
+  height: 1.125rem;
   box-sizing: border-box;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
@@ -202,8 +204,7 @@ button:disabled {
   color: var(--text);
 }
 :host(:not(.detail-item)) .item-actions button:hover:not(:disabled)::before {
-  background: var(--surface-hover);
-  border-color: var(--border-strong);
+  background: color-mix(in srgb, var(--text) 9%, transparent);
 }
 :host(.active:not(.detail-item)) .details-action {
   color: inherit;

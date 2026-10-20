@@ -42,11 +42,29 @@ describe('BlockCatalogItemComponent', () => {
   it('balances grid action placement while retaining centered detail actions', () => {
     const styles = String(
       readFileSync('src/app/features/editor/blocks/block-catalog-item.component.scss', 'utf8'),
-    );
+    ).replace(/\r\n/g, '\n');
     expect(styles).toContain(
       '.item-actions {\n  display: flex;\n  justify-content: space-between;',
     );
     expect(styles).toContain(':host(.detail-item) .item-actions {\n  justify-content: center;');
+  });
+  it('keeps catalog actions compact inside independent 44 px targets', () => {
+    const styles = String(
+      readFileSync('src/app/features/editor/blocks/block-catalog-item.component.scss', 'utf8'),
+    ).replace(/\r\n/g, '\n');
+    const targetStyle = styles.match(
+      /:host\(:not\(\.detail-item\)\) \.item-actions button \{([\s\S]*?)\n\}/,
+    )?.[1];
+    const surfaceStyle = styles.match(
+      /:host\(:not\(\.detail-item\)\) \.item-actions button::before \{([\s\S]*?)\n\}/,
+    )?.[1];
+
+    expect(targetStyle).toContain('width: max(44px, 2.75rem)');
+    expect(targetStyle).toContain('height: max(44px, 2.75rem)');
+    expect(surfaceStyle).toContain('width: 1.125rem');
+    expect(surfaceStyle).toContain('height: 1.125rem');
+    expect(surfaceStyle).toContain('inset: 0');
+    expect(styles).not.toContain('border-color: var(--border-strong)');
   });
   it('shares canonical selection, fallback and Quick Add across layouts without selecting on add/details', () => {
     const { fixture, library, item, quick } = create();
