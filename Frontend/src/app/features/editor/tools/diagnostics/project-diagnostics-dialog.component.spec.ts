@@ -129,7 +129,7 @@ describe('ProjectDiagnosticsDialogComponent', () => {
     expect(close.hasAttribute('cdkfocusinitial')).toBe(false);
   });
 
-  it('keeps the asset audit action above secondary renderer metrics', () => {
+  it('keeps the audit action before renderer metrics and collapses technical details', () => {
     fixture.componentRef.setInput('rendererEvidence', {
       renderableBlocks: 0,
       interiorBlocksCulled: 0,
@@ -172,12 +172,26 @@ describe('ProjectDiagnosticsDialogComponent', () => {
     const rendererSection = fixture.nativeElement.querySelector(
       '.renderer-performance',
     ) as HTMLElement;
+    const performanceDetails = rendererSection.querySelector(
+      '.performance-details',
+    ) as HTMLDetailsElement;
     expect(auditSection).not.toBeNull();
     expect(rendererSection).not.toBeNull();
+    expect(rendererSection.querySelectorAll('.performance-overview span')).toHaveLength(4);
+    expect(performanceDetails.open).toBe(false);
+    expect(performanceDetails.querySelector('summary')?.textContent).toContain(
+      'en:rendererTechnicalDetails',
+    );
+    expect(performanceDetails.querySelectorAll('.performance-grid span')).toHaveLength(31);
     expect(
       (auditSection.compareDocumentPosition(rendererSection) & Node.DOCUMENT_POSITION_FOLLOWING) !==
         0,
     ).toBe(true);
+
+    performanceDetails.querySelector('summary')?.dispatchEvent(new MouseEvent('click'));
+    fixture.detectChanges();
+
+    expect(performanceDetails.open).toBe(true);
   });
 
   it('filters the collected project report without rescanning blocks for each query', () => {

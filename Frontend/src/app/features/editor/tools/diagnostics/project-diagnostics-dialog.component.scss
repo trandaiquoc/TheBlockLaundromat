@@ -396,11 +396,13 @@
   color: var(--text-muted);
   font-size: 0.68rem;
 }
+.performance-overview,
 .performance-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.35rem;
 }
+.performance-overview span,
 .performance-grid span {
   display: grid;
   gap: 0.12rem;
@@ -409,23 +411,37 @@
   border-radius: var(--radius-sm);
   background: var(--surface-muted);
 }
+.performance-overview small,
 .performance-grid small {
   color: var(--text-muted);
   font-size: 0.66rem;
   overflow-wrap: anywhere;
 }
+.performance-overview b,
 .performance-grid b {
   color: var(--text);
   font-size: 0.88rem;
   font-variant-numeric: tabular-nums;
 }
+.performance-details {
+  border-top: 1px solid var(--border);
+}
+.performance-details > summary {
+  min-height: 2.4rem;
+  padding: 0.4rem 0.1rem;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+.performance-details[open] > summary {
+  margin-bottom: 0.45rem;
+}
 @media (max-width: 620px) {
-  .performance-grid {
+  .performance-overview {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
-@media (max-width: 380px) {
   .performance-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

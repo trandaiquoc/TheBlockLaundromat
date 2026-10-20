@@ -564,6 +564,8 @@ export const translations = {
     auditBehaviorUnknown: 'Unknown behavior',
     auditThumbnails: 'Thumbnails',
     rendererPerformance: 'Renderer performance',
+    rendererOverview: 'Key render metrics',
+    rendererTechnicalDetails: 'Technical details',
     renderCpuHint:
       'CPU submission time, not GPU frame time. Render intervals are smoothed and include idle time.',
     logicalBlocks: 'Logical blocks',
@@ -1557,6 +1559,8 @@ export const translations = {
     auditBehaviorUnknown: 'Hành vi chưa biết',
     auditThumbnails: 'Ảnh thu nhỏ',
     rendererPerformance: 'Hiệu năng renderer',
+    rendererOverview: 'Chỉ số render chính',
+    rendererTechnicalDetails: 'Chi tiết kỹ thuật',
     renderCpuHint:
       'Thời gian CPU gửi lệnh render, không phải GPU. Khoảng cách render được làm mượt và tính cả lúc rảnh.',
     logicalBlocks: 'Block logic',
