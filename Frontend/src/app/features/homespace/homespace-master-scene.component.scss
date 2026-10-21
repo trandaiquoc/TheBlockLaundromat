@@ -15,8 +15,7 @@
   pointer-events: none;
 }
 
-.homespace-surroundings-image,
-.homespace-surroundings-tint {
+.homespace-surroundings-image {
   position: absolute;
   inset: 0;
   display: block;
@@ -28,11 +27,6 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-.homespace-surroundings-tint--cool-night {
-  background: rgb(20 31 65);
-  mix-blend-mode: multiply;
 }
 
 .homespace-viewport {
@@ -98,11 +92,6 @@
   z-index: 400;
   inset: 0;
   pointer-events: none;
-}
-
-.scene-lighting--cool-night {
-  background: rgb(20 31 65);
-  mix-blend-mode: multiply;
 }
 
 .scene-object-slot {

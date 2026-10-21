@@ -6,7 +6,7 @@ import type {
   HomespaceSceneDefinition,
   HomespaceSemanticAnchor,
 } from './homespace-scene-contract';
-import { DARK_HOMESPACE_SCENE, MINECRAFT_HOMESPACE_SCENE } from './homespace-scene-contract';
+import { MINECRAFT_HOMESPACE_SCENE } from './homespace-scene-contract';
 import { replaceHomespaceInstanceAsset, resolveHomespaceScene } from './homespace-scene-placement';
 
 describe('Homespace scene placement', () => {
@@ -116,16 +116,6 @@ describe('Homespace scene placement', () => {
     expect(resolved.instances[1].depth).toBeGreaterThan(resolved.instances[0].depth);
   });
 
-  it('keeps Minecraft and Dark surfaces on one resolved geometry contract', () => {
-    const minecraft = resolveHomespaceScene(MINECRAFT_HOMESPACE_SCENE);
-    const dark = resolveHomespaceScene(DARK_HOMESPACE_SCENE);
-
-    expect(minecraft.projectedSurfaces).toEqual(dark.projectedSurfaces);
-    expect(
-      minecraft.imageLayers.map(({ position, scale, asset }) => [asset.id, position, scale]),
-    ).toEqual(dark.imageLayers.map(({ position, scale, asset }) => [asset.id, position, scale]));
-  });
-
   it('rejects unknown replacement assets without changing the source scene', () => {
     const definition = fixtureScene();
     const before = structuredClone(definition);
@@ -167,7 +157,7 @@ function fixtureScene(): HomespaceSceneDefinition {
         },
       },
     ],
-    lighting: { preset: 'natural', opacity: 0 },
+    lighting: { opacity: 0 },
   };
 }
 

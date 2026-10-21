@@ -74,10 +74,7 @@ export interface HomespaceSceneDefinition {
   readonly theme: Theme;
   readonly artboard: { readonly width: number; readonly height: number };
   readonly instances: readonly HomespaceAssetInstance[];
-  readonly lighting: {
-    readonly preset: 'natural' | 'cool-night';
-    readonly opacity: number;
-  };
+  readonly lighting: { readonly opacity: number };
 }
 
 export interface HomespaceProjectionSurface {
@@ -123,12 +120,10 @@ const noImageAppearance: HomespaceAssetAppearance = {
 
 const outsideAppearances: readonly HomespaceAssetAppearance[] = [
   { id: 'minecraft-day', theme: 'craft', image: outsideImage },
-  { id: 'dark-night', theme: 'dark', image: outsideImage },
 ];
 
 const roomShellAppearances: readonly HomespaceAssetAppearance[] = [
   { id: 'minecraft-day', theme: 'craft', image: roomShellImage },
-  { id: 'dark-night', theme: 'dark', image: roomShellImage },
 ];
 
 const projectBoardPlane: HomespaceProjectedPlane = {
@@ -211,45 +206,34 @@ const basePlacements = {
   },
 } as const;
 
-function createMinecraftScene(theme: 'craft' | 'dark'): HomespaceSceneDefinition {
-  const appearanceId = theme === 'dark' ? 'dark-night' : 'minecraft-day';
-
-  return {
-    theme,
-    artboard: HOMESPACE_ARTBOARD,
-    instances: [
-      {
-        id: 'minecraft-outside-panorama-instance',
-        assetId: HOMESPACE_ASSETS['minecraft-outside-panorama'].id,
-        appearanceId,
-        placement: basePlacements.outside,
-      },
-      {
-        id: 'minecraft-room-shell-instance',
-        assetId: HOMESPACE_ASSETS['minecraft-room-shell'].id,
-        appearanceId,
-        placement: basePlacements.roomShell,
-      },
-      {
-        id: 'minecraft-project-board-instance',
-        assetId: HOMESPACE_ASSETS['project-board-surface'].id,
-        appearanceId: noImageAppearance.id,
-        placement: basePlacements.projectBoard,
-      },
-    ],
-    lighting:
-      theme === 'dark'
-        ? { preset: 'cool-night', opacity: 0.82 }
-        : { preset: 'natural', opacity: 0 },
-  };
-}
-
-export const MINECRAFT_HOMESPACE_SCENE = createMinecraftScene('craft');
-export const DARK_HOMESPACE_SCENE = createMinecraftScene('dark');
+export const MINECRAFT_HOMESPACE_SCENE: HomespaceSceneDefinition = {
+  theme: 'craft',
+  artboard: HOMESPACE_ARTBOARD,
+  instances: [
+    {
+      id: 'minecraft-outside-panorama-instance',
+      assetId: HOMESPACE_ASSETS['minecraft-outside-panorama'].id,
+      appearanceId: 'minecraft-day',
+      placement: basePlacements.outside,
+    },
+    {
+      id: 'minecraft-room-shell-instance',
+      assetId: HOMESPACE_ASSETS['minecraft-room-shell'].id,
+      appearanceId: 'minecraft-day',
+      placement: basePlacements.roomShell,
+    },
+    {
+      id: 'minecraft-project-board-instance',
+      assetId: HOMESPACE_ASSETS['project-board-surface'].id,
+      appearanceId: noImageAppearance.id,
+      placement: basePlacements.projectBoard,
+    },
+  ],
+  lighting: { opacity: 0 },
+};
 
 const sceneByTheme: Partial<Record<Theme, HomespaceSceneDefinition>> = {
   craft: MINECRAFT_HOMESPACE_SCENE,
-  dark: DARK_HOMESPACE_SCENE,
 };
 
 export function homespaceSceneForTheme(theme: Theme): HomespaceSceneDefinition | null {

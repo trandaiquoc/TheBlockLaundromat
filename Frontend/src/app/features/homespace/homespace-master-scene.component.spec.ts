@@ -6,7 +6,6 @@ import { ThemeService } from '../../core/ui/theme/theme.service';
 import type { Theme } from '../../core/ui/theme/theme.service';
 import { HomespaceMasterSceneComponent } from './homespace-master-scene.component';
 import {
-  DARK_HOMESPACE_SCENE,
   HOMESPACE_ARTBOARD,
   HOMESPACE_ASSETS,
   MINECRAFT_HOMESPACE_SCENE,
@@ -44,45 +43,29 @@ describe('HomespaceMasterSceneComponent', () => {
     fixture.destroy();
   });
 
-  it('uses one artboard and matching asset instances for Minecraft and Dark', () => {
+  it('keeps the scene implementation scoped to Minecraft', () => {
     const minecraft = resolveHomespaceScene(MINECRAFT_HOMESPACE_SCENE);
-    const dark = resolveHomespaceScene(DARK_HOMESPACE_SCENE);
 
     expect(HOMESPACE_ARTBOARD).toEqual({ width: 1672, height: 941 });
     expect(MINECRAFT_HOMESPACE_SCENE.theme).toBe('craft');
-    expect(DARK_HOMESPACE_SCENE.theme).toBe('dark');
-    expect(MINECRAFT_HOMESPACE_SCENE.artboard).toEqual(DARK_HOMESPACE_SCENE.artboard);
-    expect(minecraft.instances.map(({ instance, asset }) => [instance.id, asset.id])).toEqual(
-      dark.instances.map(({ instance, asset }) => [instance.id, asset.id]),
-    );
-    expect(MINECRAFT_HOMESPACE_SCENE.lighting).toEqual({ preset: 'natural', opacity: 0 });
-    expect(DARK_HOMESPACE_SCENE.lighting).toEqual({ preset: 'cool-night', opacity: 0.82 });
+    expect(MINECRAFT_HOMESPACE_SCENE.lighting).toEqual({ opacity: 0 });
+    expect(homespaceSceneForTheme('dark')).toBeNull();
     expect(homespaceSceneForTheme('light')).toBeNull();
     expect(homespaceSceneForTheme('raccoon')).toBeNull();
     expect(HOMESPACE_ASSETS['minecraft-room-shell'].bounds.width).toBe(1671);
     expect(minecraft.projectedSurfaces[0].instanceId).toBe('minecraft-project-board-instance');
   });
 
-  it('changes only the lighting appearance when switching from Minecraft to Dark', async () => {
+  it('removes the scene when switching to an unimplemented theme', async () => {
     const theme = signal<Theme>('craft');
     await configureScene(theme);
     const fixture = TestBed.createComponent(HomespaceMasterSceneComponent);
     fixture.detectChanges();
 
-    const outside = fixture.nativeElement.querySelector('.scene-outside') as HTMLImageElement;
-    const room = fixture.nativeElement.querySelector('.scene-interior') as HTMLImageElement;
-    const originalSources = [outside.getAttribute('src'), room.getAttribute('src')];
-    expect(fixture.nativeElement.querySelector('.scene-lighting--cool-night')).toBeNull();
-
     theme.set('dark');
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('.scene-lighting--cool-night')).not.toBeNull();
-    expect(fixture.nativeElement.querySelector('.scene-lighting')?.style.opacity).toBe('0.82');
-    expect([
-      fixture.nativeElement.querySelector('.scene-outside')?.getAttribute('src'),
-      fixture.nativeElement.querySelector('.scene-interior')?.getAttribute('src'),
-    ]).toEqual(originalSources);
+    expect(fixture.nativeElement.querySelector('.homespace-viewport')).toBeNull();
     fixture.destroy();
   });
 
