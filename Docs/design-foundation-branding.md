@@ -1,9 +1,9 @@
 # The Block Laundromat Design Foundation
 
 This is the current product-facing brand and visual-direction reference. The
-four supplied designs inform the Homespace scene and shared application UI;
-Angular components and current application behavior remain authoritative. The
-Project Screen keeps its project-management controls over a layered scene.
+four supplied designs inform future visual direction and shared application
+UI; Angular components and current application behavior remain authoritative.
+The Project Screen uses its traditional project-management layout.
 
 ## Brand
 
@@ -85,10 +85,9 @@ authentication or cloud-sync behavior is implied. Current implementation and
 historical records are documented in
 [Homepage and Project Screen](design/homepage-renovation/README.md).
 
-The reference artwork also depicts a project board, washer, logo, raccoons, and
-other scene objects. Those items are not part of the current scene layer. The
-Minecraft implementation currently contains only the outside panorama and
-empty room shell; the other three themes do not reuse that artwork.
+The reference artwork depicts a project board, washer, logo, raccoons, and
+other illustrated objects. These concepts are retained as design references;
+the application does not load the reference artwork as a scene.
 
 ## References
 
@@ -100,9 +99,9 @@ and are not loaded directly by the application:
 3. [Raccoon](design/references/03-raccoon.png)
 4. [Dark](design/references/04-dark.png)
 
-They are used as visual references for scene assets and control presentation.
-Current Project Screen and Homespace implementation status is tracked in the
-[Homepage renovation notes](design/homepage-renovation/README.md).
+They remain visual references for future design work and shared control
+presentation. Current Project Screen behavior is documented in the
+[Homepage and Project Screen notes](design/homepage-renovation/README.md).
 
 ## Compatibility and Scope
 

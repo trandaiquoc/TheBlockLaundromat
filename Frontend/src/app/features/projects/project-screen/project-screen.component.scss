@@ -9,14 +9,6 @@
   padding: clamp(0.65rem, 1.8vw, 1.25rem) clamp(0.75rem, 2.4vw, 2rem);
   overflow: hidden;
   font-family: var(--font-ui);
-  position: relative;
-  isolation: isolate;
-}
-.outer-topbar,
-.project-page-content,
-.project-page-footer {
-  position: relative;
-  z-index: 1;
 }
 .outer-topbar {
   display: flex;
@@ -57,12 +49,10 @@
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
-  pointer-events: none;
 }
 .project-intro {
   max-width: 720px;
   margin-bottom: clamp(2rem, 5vw, 3.25rem);
-  pointer-events: auto;
 }
 .eyebrow {
   margin: 0;
@@ -88,7 +78,6 @@
   grid-template-columns: minmax(20rem, 0.95fr) minmax(20rem, 1.05fr);
   gap: clamp(1rem, 2.5vw, 1.5rem);
   align-items: start;
-  pointer-events: none;
 }
 .project-page-footer {
   display: flex;
@@ -104,7 +93,6 @@
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-panel);
-  pointer-events: auto;
 }
 .project-form {
   display: grid;
@@ -725,50 +713,5 @@
   }
   .project-row-cta {
     justify-self: start;
-  }
-}
-
-@media (min-width: 861px) and (max-height: 950px) {
-  .project-page {
-    padding-block: 0.5rem;
-  }
-
-  .outer-topbar {
-    min-height: 3rem;
-    padding-block: 0.25rem;
-  }
-
-  .project-page-content {
-    padding-block: 0.55rem;
-  }
-
-  .project-intro {
-    margin-bottom: 1rem;
-  }
-
-  .project-intro h1 {
-    margin-block: 0.35rem 0.65rem;
-    font-size: clamp(2rem, 2.8vw, 2.8rem);
-  }
-
-  .project-intro > p:last-child {
-    font-size: 0.95rem;
-  }
-
-  .project-form {
-    gap: 0.7rem;
-    padding: 1rem;
-  }
-
-  .recent-projects {
-    padding: 1rem;
-  }
-
-  .project-list-controls {
-    margin-block: 0.7rem 0.55rem;
-  }
-
-  .project-page-footer {
-    min-height: 2.75rem;
   }
 }

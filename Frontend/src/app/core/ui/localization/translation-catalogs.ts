@@ -96,8 +96,6 @@ export const translations = {
     behaviorSupport: 'Behavior',
     specialRenderer: 'Special',
     appName: 'The Block Laundromat',
-    homespaceSceneDescription:
-      'Minecraft room background. Use the left and right arrow keys to pan when needed.',
     applicationMenu: 'Application menu',
     projectTitle: 'Your building workspace',
     selectedProject: 'Selected project',
@@ -1104,8 +1102,6 @@ export const translations = {
     behaviorSupport: 'Hành vi',
     specialRenderer: 'Đặc biệt',
     appName: 'The Block Laundromat',
-    homespaceSceneDescription:
-      'Phông nền căn phòng Minecraft. Dùng phím mũi tên trái và phải để di chuyển khi cần.',
     applicationMenu: 'Menu ứng dụng',
     projectTitle: 'Không gian xây dựng của bạn',
     selectedProject: 'Dự án đang chọn',

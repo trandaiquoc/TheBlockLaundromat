@@ -88,22 +88,14 @@ choices. The workspace background supports Dark, Light, and Reality independentl
 of the application theme. Theme values and component states use shared semantic
 tokens; see the [palette contract](../workspace-color-palette.md).
 
-The Project Screen keeps its existing workflows above the Homespace visual
-layer. Minecraft (`craft`) and Dark share one scene geometry and current
-artwork; Dark applies cool-night lighting. Light and Raccoon keep their existing
-page backgrounds. The scene uses one 1672 × 941 artboard, transparent
-door/window openings, a separate outside panorama, and independent object,
-lighting, and projected-UI layers. It scales uniformly to viewport height and
-allows horizontal panning when the scene is wider than the viewport. Vertical
-scene panning is disabled. Dragging pans the overflowing scene; ArrowLeft and
-ArrowRight pan it only when the scene region is targeted, and horizontal touch
-swipes pan the scene. Projected interactive controls retain their native
-arrow-key behavior. Narrow layouts keep the existing page scrolling and compact
-spacing so create actions remain
-reachable without browser fullscreen. Current generated plates are stored under
-`Frontend/public/assets/homespace/temporary/`; they are placeholders under
-visual review. Browser verification covers scene geometry and interaction;
-the generated artwork is not claimed as final or as exact source-reference art.
+The Project Screen uses its traditional application layout and keeps the
+existing project-management workflows. It supports inline project creation,
+recent-project search and sorting, Open and Delete actions, validated Structure
+JSON import, project backup import/export, Settings, the local account
+presentation, English and Vietnamese, and all four application themes. The
+four original visual concepts are references only and are not loaded by the
+application. See the [Project Screen contract](../homepage-renovation/README.md)
+for its current responsibilities.
 
 ## Verified limits
 

@@ -15,11 +15,10 @@ const templatePath = 'src/app/features/projects/project-screen/project-screen.co
 describe('ProjectScreenComponent', () => {
   afterEach(() => localStorage.removeItem('the-block-laundromat.ui-preferences'));
 
-  it('keeps the current Project Screen structure and adds the shared Homespace background', () => {
+  it('uses the traditional Project Screen structure and keeps project creation inline', () => {
     const template = String(readFileSync(templatePath, 'utf8'));
 
     expect(template).toContain('assets/brand/the-block-laundromat-logo.svg');
-    expect(template).toContain('<app-homespace-master-scene');
     expect(template).toContain('class="project-intro"');
     expect(template).toContain('class="project-form"');
     expect(template).toContain('class="recent-projects"');
