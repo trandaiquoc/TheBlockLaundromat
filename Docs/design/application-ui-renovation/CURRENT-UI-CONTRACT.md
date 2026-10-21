@@ -95,12 +95,15 @@ page backgrounds. The scene uses one 1672 × 941 artboard, transparent
 door/window openings, a separate outside panorama, and independent object,
 lighting, and projected-UI layers. It scales uniformly to viewport height and
 allows horizontal panning when the scene is wider than the viewport. Vertical
-scene panning is disabled. Dragging and arrow keys pan only the overflowing
-scene horizontally without moving Project Screen controls. Narrow layouts keep
-the existing page scrolling and compact spacing so create actions remain
+scene panning is disabled. Dragging pans the overflowing scene; ArrowLeft and
+ArrowRight pan it only when the scene region is targeted, and horizontal touch
+swipes pan the scene. Projected interactive controls retain their native
+arrow-key behavior. Narrow layouts keep the existing page scrolling and compact
+spacing so create actions remain
 reachable without browser fullscreen. Current generated plates are stored under
 `Frontend/public/assets/homespace/temporary/`; they are placeholders under
-visual review and do not yet meet the source-reference fidelity requirement.
+visual review. Browser verification covers scene geometry and interaction;
+the generated artwork is not claimed as final or as exact source-reference art.
 
 ## Verified limits
 

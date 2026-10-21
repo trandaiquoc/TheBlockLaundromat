@@ -110,6 +110,17 @@ describe('HomespaceMasterSceneComponent', () => {
     expect(viewport.scrollLeft).toBe(320);
     expect(right.defaultPrevented).toBe(true);
 
+    const input = document.createElement('input');
+    viewport.querySelector('.projective-surface')?.append(input);
+    const inputArrow = new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      bubbles: true,
+      cancelable: true,
+    });
+    input.dispatchEvent(inputArrow);
+    expect(viewport.scrollLeft).toBe(320);
+    expect(inputArrow.defaultPrevented).toBe(false);
+
     const down = new KeyboardEvent('keydown', {
       key: 'ArrowDown',
       bubbles: true,

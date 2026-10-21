@@ -2,8 +2,9 @@
 
 **Status:** the existing Project Screen is integrated with a layered Minecraft
 Homespace scene. Minecraft and Dark share geometry and current temporary plates;
-Dark applies cool-night lighting. The plates do not yet match the reference
-closely enough for visual acceptance. Light and Raccoon scenes remain
+Dark applies cool-night lighting. Browser checks verify the scene geometry,
+projection, and responsive behavior; generated plates remain temporary and are
+not presented as final visual artwork. Light and Raccoon scenes remain
 unimplemented.
 
 ## Current screen
@@ -28,12 +29,15 @@ animation. Project Screen controls and workflows remain in their existing page
 layer. A CSS projective surface contract maps future HTML content to a scene
 quadrilateral, including transformed pointer hit testing. The scene scales
 uniformly to viewport height and can pan horizontally when wider than the
-viewport; vertical scene panning is disabled. Dragging and the arrow keys pan
-horizontally while Project Screen content keeps its own page scrolling. Narrow
+viewport; vertical scene panning is disabled. Dragging and ArrowLeft/ArrowRight
+pan the scene when its region is targeted; horizontal touch swipes pan the
+scene, and projected interactive controls retain their native arrow-key
+behavior. Project Screen content keeps its own vertical scrolling. Narrow
 layouts use denser spacing so the create actions remain reachable without
 browser fullscreen. Current generated plates live under
 `Frontend/public/assets/homespace/temporary/` and remain temporary pending
-reference-fidelity work.
+visual-art review. Browser verification covers scene alignment and interaction;
+it does not claim final reference-art fidelity.
 
 Minecraft (`craft`) and Dark share one scene geometry and current artwork; Dark
 applies cool-night lighting. Light and Raccoon retain their existing page

@@ -81,6 +81,7 @@ export class HomespaceMasterSceneComponent {
   protected panWithKeyboard(event: KeyboardEvent): void {
     if (
       (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') ||
+      this.isInteractiveTarget(event.target) ||
       event.altKey ||
       event.ctrlKey ||
       event.metaKey ||
