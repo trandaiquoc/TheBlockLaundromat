@@ -15,7 +15,8 @@
   pointer-events: none;
 }
 
-.homespace-surroundings-image {
+.homespace-surroundings-image,
+.homespace-surroundings-tint {
   position: absolute;
   inset: 0;
   display: block;
@@ -27,6 +28,11 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.homespace-surroundings-tint--cool-night {
+  background: rgb(20 31 65);
+  mix-blend-mode: multiply;
 }
 
 .homespace-viewport {
@@ -94,6 +100,11 @@
   pointer-events: none;
 }
 
+.scene-lighting--cool-night {
+  background: rgb(20 31 65);
+  mix-blend-mode: multiply;
+}
+
 .scene-object-slot {
   z-index: 350;
   inset: 0;
@@ -102,6 +113,7 @@
 .scene-interactive-ui-slot {
   z-index: 500;
   inset: 0;
+  pointer-events: none;
 }
 
 .is-dragging {

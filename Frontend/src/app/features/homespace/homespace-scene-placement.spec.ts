@@ -6,7 +6,11 @@ import type {
   HomespaceSceneDefinition,
   HomespaceSemanticAnchor,
 } from './homespace-scene-contract';
-import { MINECRAFT_HOMESPACE_SCENE } from './homespace-scene-contract';
+import {
+  DARK_HOMESPACE_SCENE,
+  HOMESPACE_ASSETS,
+  MINECRAFT_HOMESPACE_SCENE,
+} from './homespace-scene-contract';
 import { replaceHomespaceInstanceAsset, resolveHomespaceScene } from './homespace-scene-placement';
 
 describe('Homespace scene placement', () => {
@@ -116,6 +120,49 @@ describe('Homespace scene placement', () => {
     expect(resolved.instances[1].depth).toBeGreaterThan(resolved.instances[0].depth);
   });
 
+  it('keeps projected surfaces and asset placements identical in Dark', () => {
+    const minecraft = resolveHomespaceScene(MINECRAFT_HOMESPACE_SCENE);
+    const dark = resolveHomespaceScene(DARK_HOMESPACE_SCENE);
+
+    expect(minecraft.projectedSurfaces).toEqual(dark.projectedSurfaces);
+    expect(
+      minecraft.imageLayers.map(({ position, scale, asset }) => [asset.id, position, scale]),
+    ).toEqual(dark.imageLayers.map(({ position, scale, asset }) => [asset.id, position, scale]));
+  });
+
+  it('orders environment, room shell, foreground objects, and projected UI by render plane', () => {
+    const foreground = parentAsset('foreground-fixture', []);
+    const scene = {
+      ...MINECRAFT_HOMESPACE_SCENE,
+      instances: [
+        ...MINECRAFT_HOMESPACE_SCENE.instances,
+        {
+          id: 'foreground-fixture-instance',
+          assetId: foreground.id,
+          appearanceId: 'maple',
+          placement: {
+            parentInstanceId: null,
+            anchorId: null,
+            localPosition: { x: 900, y: 450 },
+            scale: 1,
+            depth: 0,
+          },
+        },
+      ],
+    };
+    const resolved = resolveHomespaceScene(scene, {
+      ...HOMESPACE_ASSETS,
+      [foreground.id]: foreground,
+    });
+
+    expect(resolved.instances.map(({ instance, depth }) => [instance.id, depth])).toEqual([
+      ['minecraft-outside-panorama-instance', 0],
+      ['minecraft-room-shell-instance', 200],
+      ['foreground-fixture-instance', 300],
+      ['minecraft-project-board-instance', 500],
+    ]);
+  });
+
   it('rejects unknown replacement assets without changing the source scene', () => {
     const definition = fixtureScene();
     const before = structuredClone(definition);
@@ -157,7 +204,7 @@ function fixtureScene(): HomespaceSceneDefinition {
         },
       },
     ],
-    lighting: { opacity: 0 },
+    lighting: { preset: 'natural', opacity: 0 },
   };
 }
 

@@ -4,6 +4,7 @@ import {
   type HomespaceAssetInstance,
   type HomespaceImageSource,
   type HomespacePoint,
+  type HomespaceRenderPlane,
   type HomespaceResolvedProjectionSurface,
   type HomespaceSceneDefinition,
   type HomespaceSemanticAnchor,
@@ -57,7 +58,7 @@ export interface HomespaceAssetReplacement {
   readonly unresolved: readonly HomespacePlacementIssue[];
 }
 
-const RENDER_PLANE_DEPTH: Readonly<Record<string, number>> = {
+const RENDER_PLANE_DEPTH: Readonly<Record<HomespaceRenderPlane, number>> = {
   environment: 0,
   'behind-shell': 100,
   'room-shell': 200,
@@ -219,7 +220,8 @@ export function resolveHomespaceScene(
   );
   const imageLayers = instances.filter(
     ({ asset, image }) =>
-      image !== null && ['environment', 'room-shell', 'object'].includes(asset.role),
+      image !== null &&
+      (asset.role === 'environment' || asset.role === 'room-shell' || asset.role === 'object'),
   );
   const environmentalImage =
     imageLayers.find(({ asset }) => asset.role === 'environment')?.image ?? null;
@@ -306,7 +308,7 @@ function resolveProjectedSurface(
 }
 
 function planeDepth(asset: HomespaceAssetDefinition): number {
-  return RENDER_PLANE_DEPTH[asset.renderPlane] ?? 0;
+  return RENDER_PLANE_DEPTH[asset.renderPlane];
 }
 
 function isCompatible(asset: HomespaceAssetDefinition, anchor: HomespaceSemanticAnchor): boolean {

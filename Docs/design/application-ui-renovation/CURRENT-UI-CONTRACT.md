@@ -89,8 +89,9 @@ of the application theme. Theme values and component states use shared semantic
 tokens; see the [palette contract](../workspace-color-palette.md).
 
 The Project Screen keeps its existing workflows above the Homespace visual
-layer. Only Minecraft (`craft`) currently has a scene; Dark, Light, and Raccoon
-keep their existing page backgrounds. The scene uses one 1672 × 941 artboard, transparent
+layer. Minecraft (`craft`) and Dark share one scene geometry and current
+artwork; Dark applies cool-night lighting. Light and Raccoon keep their existing
+page backgrounds. The scene uses one 1672 × 941 artboard, transparent
 door/window openings, a separate outside panorama, and independent object,
 lighting, and projected-UI layers. It scales uniformly to viewport height and
 allows horizontal panning when the scene is wider than the viewport. Vertical

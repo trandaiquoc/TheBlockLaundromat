@@ -1,8 +1,9 @@
 # Homepage and Project Screen
 
 **Status:** the existing Project Screen is integrated with a layered Minecraft
-Homespace scene. The generated plates are temporary and do not yet match the
-Minecraft reference closely enough for acceptance. Other theme scenes remain
+Homespace scene. Minecraft and Dark share geometry and current temporary plates;
+Dark applies cool-night lighting. The plates do not yet match the reference
+closely enough for visual acceptance. Light and Raccoon scenes remain
 unimplemented.
 
 ## Current screen
@@ -34,8 +35,9 @@ browser fullscreen. Current generated plates live under
 `Frontend/public/assets/homespace/temporary/` and remain temporary pending
 reference-fidelity work.
 
-Only Minecraft (`craft`) has a scene. Light, Raccoon, and Dark retain their
-existing page backgrounds and do not reuse the Minecraft artwork.
+Minecraft (`craft`) and Dark share one scene geometry and current artwork; Dark
+applies cool-night lighting. Light and Raccoon retain their existing page
+backgrounds.
 
 The bottom-left account card is a local presentation demo that starts as
 `rakoon` on the Free Plan and uses one local raccoon avatar in every theme.

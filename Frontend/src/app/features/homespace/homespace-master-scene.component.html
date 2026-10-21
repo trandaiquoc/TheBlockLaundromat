@@ -5,6 +5,13 @@
         class="homespace-surroundings-image"
         [style.background-image]="'url(' + environment.src + ')'"
       ></div>
+      <div
+        class="homespace-surroundings-tint"
+        [class.homespace-surroundings-tint--cool-night]="
+          activeScene.definition.lighting.preset === 'cool-night'
+        "
+        [style.opacity]="activeScene.definition.lighting.opacity"
+      ></div>
     </div>
   }
   <div
@@ -51,6 +58,9 @@
         }
         <div
           class="scene-layer scene-lighting"
+          [class.scene-lighting--cool-night]="
+            activeScene.definition.lighting.preset === 'cool-night'
+          "
           [style.opacity]="activeScene.definition.lighting.opacity"
           aria-hidden="true"
         ></div>
