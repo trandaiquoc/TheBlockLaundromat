@@ -1,4 +1,4 @@
-import type { HomespaceProjectionSurface, ScenePoint } from './homespace-scene-contract';
+import type { HomespacePoint, HomespaceProjectionSurface } from './homespace-scene-contract';
 
 export type CssMatrix3d = readonly [
   number,
@@ -72,7 +72,10 @@ export function projectiveMatrixForSurface(surface: HomespaceProjectionSurface):
   ];
 }
 
-export function projectPointThroughMatrix(matrix: CssMatrix3d, point: ScenePoint): ScenePoint {
+export function projectPointThroughMatrix(
+  matrix: CssMatrix3d,
+  point: HomespacePoint,
+): HomespacePoint {
   const denominator = matrix[3] * point.x + matrix[7] * point.y + matrix[15];
   if (Math.abs(denominator) < EPSILON) {
     throw new RangeError('Point projects to an undefined position.');

@@ -1,4 +1,19 @@
 @if (scene(); as activeScene) {
+  @if (activeScene.environmentalImage; as environment) {
+    <div class="homespace-surroundings" aria-hidden="true">
+      <div
+        class="homespace-surroundings-image"
+        [style.background-image]="'url(' + environment.src + ')'"
+      ></div>
+      <div
+        class="homespace-surroundings-tint"
+        [class.homespace-surroundings-tint--cool-night]="
+          activeScene.definition.lighting.preset === 'cool-night'
+        "
+        [style.opacity]="activeScene.definition.lighting.opacity"
+      ></div>
+    </div>
+  }
   <div
     #viewport
     class="homespace-viewport"
@@ -8,50 +23,57 @@
     [attr.aria-label]="i18n.t('homespaceSceneDescription')"
     (keydown)="panWithKeyboard($event)"
   >
-    <div class="homespace-stage">
-      <img
-        class="scene-layer scene-outside"
-        [ngSrc]="activeScene.layers.outside.src"
-        [width]="activeScene.layers.outside.width"
-        [height]="activeScene.layers.outside.height"
-        alt=""
-        priority
-        draggable="false"
-      />
-      <img
-        class="scene-layer scene-interior"
-        [ngSrc]="activeScene.layers.interior.src"
-        [width]="activeScene.layers.interior.width"
-        [height]="activeScene.layers.interior.height"
-        alt=""
-        priority
-        draggable="false"
-      />
-      @for (object of activeScene.layers.objects; track object.src) {
-        <img
-          class="scene-layer scene-object"
-          [ngSrc]="object.src"
-          [width]="object.width"
-          [height]="object.height"
-          alt=""
-          draggable="false"
-        />
-      }
+    <div
+      class="homespace-stage"
+      [style.width.px]="layout().stageWidth"
+      [style.height.px]="layout().stageHeight"
+    >
       <div
-        class="scene-layer scene-lighting"
-        [class.scene-lighting--warm-daylight]="
-          activeScene.layers.lighting.preset === 'warm-daylight'
-        "
-        [style.opacity]="activeScene.layers.lighting.opacity"
-        aria-hidden="true"
-      ></div>
-      <div class="scene-layer scene-object-slot">
-        <ng-content select="[homespaceObject]" />
-      </div>
-      <div class="scene-layer scene-interactive-ui-slot">
-        <app-homespace-projective-surface [plane]="activeScene.layers.interactiveUi.projectBoard">
-          <ng-content select="[homespaceProjectedUi]" />
-        </app-homespace-projective-surface>
+        class="homespace-artboard"
+        [style.width.px]="activeScene.definition.artboard.width"
+        [style.height.px]="activeScene.definition.artboard.height"
+        [style.transform]="'scale(' + layout().scale + ')'"
+      >
+        @for (layer of activeScene.imageLayers; track layer.instance.id) {
+          @if (layer.image; as image) {
+            <img
+              class="scene-layer"
+              [class.scene-outside]="layer.asset.role === 'environment'"
+              [class.scene-interior]="layer.asset.role === 'room-shell'"
+              [class.scene-object]="layer.asset.role === 'object'"
+              [ngSrc]="image.src"
+              [width]="image.width"
+              [height]="image.height"
+              [style.left.px]="layer.position.x"
+              [style.top.px]="layer.position.y"
+              [style.width.px]="layer.asset.bounds.width * layer.scale"
+              [style.height.px]="layer.asset.bounds.height * layer.scale"
+              [style.zIndex]="layer.depth"
+              [style.objectFit]="layer.asset.role === 'room-shell' ? 'contain' : 'fill'"
+              alt=""
+              priority
+              draggable="false"
+            />
+          }
+        }
+        <div
+          class="scene-layer scene-lighting"
+          [class.scene-lighting--cool-night]="
+            activeScene.definition.lighting.preset === 'cool-night'
+          "
+          [style.opacity]="activeScene.definition.lighting.opacity"
+          aria-hidden="true"
+        ></div>
+        <div class="scene-layer scene-object-slot">
+          <ng-content select="[homespaceObject]" />
+        </div>
+        <div class="scene-layer scene-interactive-ui-slot">
+          @if (activeScene.projectedSurfaces[0]; as surface) {
+            <app-homespace-projective-surface [plane]="surface">
+              <ng-content select="[homespaceProjectedUi]" />
+            </app-homespace-projective-surface>
+          }
+        </div>
       </div>
     </div>
   </div>

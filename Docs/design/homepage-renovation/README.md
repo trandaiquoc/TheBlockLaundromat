@@ -1,9 +1,10 @@
 # Homepage and Project Screen
 
 **Status:** the existing Project Screen is integrated with a layered Minecraft
-Homespace scene. The scene artwork is under visual review; the current generated
-plates do not yet match all reference geometry closely enough for acceptance.
-Other theme scenes remain unimplemented.
+Homespace scene. Minecraft and Dark share scene geometry and current artwork;
+Dark applies cool-night lighting. The generated plates are temporary and do not
+yet match the Minecraft reference closely enough for acceptance. Light and
+Raccoon scene artwork remains unimplemented.
 
 ## Current screen
 
@@ -25,16 +26,18 @@ shell on a shared 1672 × 941 artboard. Objects and projected UI have separate
 layers; the current scene adds no washer, raccoon, board content, logo, or
 animation. Project Screen controls and workflows remain in their existing page
 layer. A CSS projective surface contract maps future HTML content to a scene
-quadrilateral, including transformed pointer hit testing. Narrow screens can
-pan the scene horizontally, while short desktop viewports fill the width and
-allow vertical panning across the scene's 16:9 crop. Dragging or the arrow keys
-pan only the overflowing scene axis; Project Screen controls remain fixed and
-usable. Short desktop viewports use denser spacing so the create actions stay
-visible without browser fullscreen.
+quadrilateral, including transformed pointer hit testing. The scene scales
+uniformly to viewport height and can pan horizontally when wider than the
+viewport; vertical scene panning is disabled. Dragging and the arrow keys pan
+horizontally while Project Screen content keeps its own page scrolling. Narrow
+layouts use denser spacing so the create actions remain reachable without
+browser fullscreen. Current generated plates live under
+`Frontend/public/assets/homespace/temporary/` and remain temporary pending
+reference-fidelity work.
 
-Only the Minecraft (`craft`) scene has assets. Light, Raccoon, and Dark retain
-their existing page backgrounds until their scene-specific assets are created;
-they do not reuse the Minecraft artwork.
+Minecraft (`craft`) and Dark share the same scene geometry and current artwork;
+Dark applies a cool-night lighting overlay. Light and Raccoon retain their
+existing page backgrounds and do not reuse the Minecraft artwork.
 
 The bottom-left account card is a local presentation demo that starts as
 `rakoon` on the Free Plan and uses one local raccoon avatar in every theme.

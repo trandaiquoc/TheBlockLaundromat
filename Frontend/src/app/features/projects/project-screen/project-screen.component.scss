@@ -58,10 +58,12 @@
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
+  pointer-events: none;
 }
 .project-intro {
   max-width: 720px;
   margin-bottom: clamp(2rem, 5vw, 3.25rem);
+  pointer-events: auto;
 }
 .eyebrow {
   margin: 0;
@@ -87,6 +89,7 @@
   grid-template-columns: minmax(20rem, 0.95fr) minmax(20rem, 1.05fr);
   gap: clamp(1rem, 2.5vw, 1.5rem);
   align-items: start;
+  pointer-events: none;
 }
 .project-page-footer {
   display: flex;
@@ -102,6 +105,7 @@
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-panel);
+  pointer-events: auto;
 }
 .project-form {
   display: grid;
