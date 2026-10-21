@@ -60,7 +60,7 @@ const AXES = [
     :host {
       position: absolute;
       z-index: 3;
-      top: 0.75rem;
+      bottom: 4.5rem;
       right: 0.75rem;
       pointer-events: none;
     }

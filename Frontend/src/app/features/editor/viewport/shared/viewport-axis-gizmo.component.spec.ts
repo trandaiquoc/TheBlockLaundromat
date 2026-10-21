@@ -3,6 +3,18 @@ import { describe, expect, it } from 'vitest';
 import { ViewportAxisGizmoComponent } from './viewport-axis-gizmo.component';
 
 describe('ViewportAxisGizmoComponent', () => {
+  it('anchors the camera controls at the lower right of the viewport', () => {
+    TestBed.configureTestingModule({ imports: [ViewportAxisGizmoComponent] });
+    const fixture = TestBed.createComponent(ViewportAxisGizmoComponent);
+    fixture.detectChanges();
+
+    const style = getComputedStyle(fixture.nativeElement as HTMLElement);
+    expect(style.position).toBe('absolute');
+    expect(style.top).toBe('');
+    expect(style.bottom).toBe('4.5rem');
+    expect(style.right).toBe('0.75rem');
+  });
+
   it('exposes all six Minecraft axis views and emits the selected camera preset', () => {
     TestBed.configureTestingModule({ imports: [ViewportAxisGizmoComponent] });
     const fixture = TestBed.createComponent(ViewportAxisGizmoComponent);
