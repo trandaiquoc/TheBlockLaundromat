@@ -41,6 +41,7 @@ import {
   isProjectScreenProjectOrder,
 } from './project-screen-project-list';
 import type { ProjectScreenProjectOrder } from './project-screen-project-list';
+import { HomespaceMasterSceneComponent } from '../../homespace/homespace-master-scene.component';
 
 @Component({
   selector: 'app-project-screen',
@@ -59,6 +60,7 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
     ProjectScreenControlsComponent,
     ProjectScreenAccountComponent,
     SettingsDialogComponent,
+    HomespaceMasterSceneComponent,
   ],
   templateUrl: './project-screen.component.html',
   styleUrl: './project-screen.component.scss',

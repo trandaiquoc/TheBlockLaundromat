@@ -1,9 +1,9 @@
 # Homepage and Project Screen
 
-**Status:** traditional Project Screen restored. The laundromat scene direction
-was discontinued on 2026-10-19. The four approved concept images remain visual
-references for Homepage control and account placement/material; their
-illustrated scene and page composition are not active implementation work.
+**Status:** the existing Project Screen is integrated with a layered Minecraft
+Homespace scene. The scene artwork is under visual review; the current generated
+plates do not yet match all reference geometry closely enough for acceptance.
+Other theme scenes remain unimplemented.
 
 ## Current screen
 
@@ -19,6 +19,22 @@ validation, and persistence to the current workflows. Recent project search and
 sorting are available when saved projects exist. Thumbnail capture and
 persistence remain owned by the editor/persistence workflow; the Project Screen
 does not render thumbnails.
+
+The Minecraft scene is composed from an outside panorama and a transparent room
+shell on a shared 1672 × 941 artboard. Objects and projected UI have separate
+layers; the current scene adds no washer, raccoon, board content, logo, or
+animation. Project Screen controls and workflows remain in their existing page
+layer. A CSS projective surface contract maps future HTML content to a scene
+quadrilateral, including transformed pointer hit testing. Narrow screens can
+pan the scene horizontally, while short desktop viewports fill the width and
+allow vertical panning across the scene's 16:9 crop. Dragging or the arrow keys
+pan only the overflowing scene axis; Project Screen controls remain fixed and
+usable. Short desktop viewports use denser spacing so the create actions stay
+visible without browser fullscreen.
+
+Only the Minecraft (`craft`) scene has assets. Light, Raccoon, and Dark retain
+their existing page backgrounds until their scene-specific assets are created;
+they do not reuse the Minecraft artwork.
 
 The bottom-left account card is a local presentation demo that starts as
 `rakoon` on the Free Plan and uses one local raccoon avatar in every theme.
@@ -42,13 +58,12 @@ tokens remain authoritative.
 
 ## Visual references and historical evidence
 
-The four original approved concepts remain in
+The four original concepts remain in
 [`../references/`](../references/): Minecraft, Light, Raccoon, and Dark. They
-guide control/account placement and translucent panel treatment. They remain
-documentation images and are not loaded by the application.
+guide control/account placement, translucent panel treatment, and the scene
+artwork. The reference files themselves are not loaded by the application.
 
 Dated captures and interaction notes are retained under
-[`evidence/`](evidence/) as historical records of the discontinued scene
-implementation. They are not evidence of the current screen. No scene asset
-registry, laundromat artwork, scene-level raccoon motion, or layered composition
-is active.
+[`evidence/`](evidence/) as historical records of earlier screen reviews. They
+are not evidence of the current layered scene implementation. The current
+Minecraft scene uses separately owned outside and interior assets.

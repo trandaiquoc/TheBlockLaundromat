@@ -88,6 +88,18 @@ choices. The workspace background supports Dark, Light, and Reality independentl
 of the application theme. Theme values and component states use shared semantic
 tokens; see the [palette contract](../workspace-color-palette.md).
 
+The Project Screen keeps its existing workflows above the Homespace visual
+layer. Only the Minecraft (`craft`) theme currently has a scene; other themes do
+not reuse its artwork. The scene uses one 1672 × 941 artboard, transparent
+door/window openings, a separate outside panorama, and independent object,
+lighting, and projected-UI layers. Narrow viewports can pan the scene
+horizontally; short desktop viewports fill their width and can pan vertically
+over the 16:9 scene crop. Dragging and arrow keys pan only the overflowing scene
+axis without moving Project Screen controls. Short desktop viewports compact
+spacing so the full create form remains reachable without browser fullscreen.
+The generated Minecraft plates are still under visual review against the source
+reference.
+
 ## Verified limits
 
 - Fabric mod support imports static resources only; it does not run mod code or

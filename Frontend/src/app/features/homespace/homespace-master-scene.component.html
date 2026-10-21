@@ -1,0 +1,58 @@
+@if (scene(); as activeScene) {
+  <div
+    #viewport
+    class="homespace-viewport"
+    [class.is-dragging]="dragging()"
+    role="region"
+    tabindex="0"
+    [attr.aria-label]="i18n.t('homespaceSceneDescription')"
+    (keydown)="panWithKeyboard($event)"
+  >
+    <div class="homespace-stage">
+      <img
+        class="scene-layer scene-outside"
+        [ngSrc]="activeScene.layers.outside.src"
+        [width]="activeScene.layers.outside.width"
+        [height]="activeScene.layers.outside.height"
+        alt=""
+        priority
+        draggable="false"
+      />
+      <img
+        class="scene-layer scene-interior"
+        [ngSrc]="activeScene.layers.interior.src"
+        [width]="activeScene.layers.interior.width"
+        [height]="activeScene.layers.interior.height"
+        alt=""
+        priority
+        draggable="false"
+      />
+      @for (object of activeScene.layers.objects; track object.src) {
+        <img
+          class="scene-layer scene-object"
+          [ngSrc]="object.src"
+          [width]="object.width"
+          [height]="object.height"
+          alt=""
+          draggable="false"
+        />
+      }
+      <div
+        class="scene-layer scene-lighting"
+        [class.scene-lighting--warm-daylight]="
+          activeScene.layers.lighting.preset === 'warm-daylight'
+        "
+        [style.opacity]="activeScene.layers.lighting.opacity"
+        aria-hidden="true"
+      ></div>
+      <div class="scene-layer scene-object-slot">
+        <ng-content select="[homespaceObject]" />
+      </div>
+      <div class="scene-layer scene-interactive-ui-slot">
+        <app-homespace-projective-surface [plane]="activeScene.layers.interactiveUi.projectBoard">
+          <ng-content select="[homespaceProjectedUi]" />
+        </app-homespace-projective-surface>
+      </div>
+    </div>
+  </div>
+}

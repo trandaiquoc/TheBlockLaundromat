@@ -9,6 +9,15 @@
   padding: clamp(0.65rem, 1.8vw, 1.25rem) clamp(0.75rem, 2.4vw, 2rem);
   overflow: hidden;
   font-family: var(--font-ui);
+  position: relative;
+  isolation: isolate;
+  touch-action: pan-y;
+}
+.outer-topbar,
+.project-page-content,
+.project-page-footer {
+  position: relative;
+  z-index: 1;
 }
 .outer-topbar {
   display: flex;
@@ -713,5 +722,50 @@
   }
   .project-row-cta {
     justify-self: start;
+  }
+}
+
+@media (min-width: 861px) and (max-height: 950px) {
+  .project-page {
+    padding-block: 0.5rem;
+  }
+
+  .outer-topbar {
+    min-height: 3rem;
+    padding-block: 0.25rem;
+  }
+
+  .project-page-content {
+    padding-block: 0.55rem;
+  }
+
+  .project-intro {
+    margin-bottom: 1rem;
+  }
+
+  .project-intro h1 {
+    margin-block: 0.35rem 0.65rem;
+    font-size: clamp(2rem, 2.8vw, 2.8rem);
+  }
+
+  .project-intro > p:last-child {
+    font-size: 0.95rem;
+  }
+
+  .project-form {
+    gap: 0.7rem;
+    padding: 1rem;
+  }
+
+  .recent-projects {
+    padding: 1rem;
+  }
+
+  .project-list-controls {
+    margin-block: 0.7rem 0.55rem;
+  }
+
+  .project-page-footer {
+    min-height: 2.75rem;
   }
 }

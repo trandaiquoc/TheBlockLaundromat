@@ -1,9 +1,9 @@
 # The Block Laundromat Design Foundation
 
 This is the current product-facing brand and visual-direction reference. The
-four approved Workspace designs establish visual treatment only; Angular
-components and current application behavior remain authoritative. The
-Project Screen uses the traditional project-management presentation.
+four supplied designs inform the Homespace scene and shared application UI;
+Angular components and current application behavior remain authoritative. The
+Project Screen keeps its project-management controls over a layered scene.
 
 ## Brand
 
@@ -85,23 +85,24 @@ authentication or cloud-sync behavior is implied. Current implementation and
 historical records are documented in
 [Homepage and Project Screen](design/homepage-renovation/README.md).
 
-The four approved Homepage concepts below remain visual references for
-Project Screen control/account placement and panel material. Their laundromat
-scene, project board artwork, washer presentation, and scene-level raccoon
-animation were discontinued and are not active product direction.
+The reference artwork also depicts a project board, washer, logo, raccoons, and
+other scene objects. Those items are not part of the current scene layer. The
+Minecraft implementation currently contains only the outside panorama and
+empty room shell; the other three themes do not reuse that artwork.
 
 ## References
 
-The source images are preserved byte-for-byte in [design references](design/references/):
+The source images are preserved byte-for-byte in [design references](design/references/)
+and are not loaded directly by the application:
 
 1. [Minecraft](design/references/01-minecraft.png)
 2. [Light](design/references/02-light.png)
 3. [Raccoon](design/references/03-raccoon.png)
 4. [Dark](design/references/04-dark.png)
 
-They are documentation-only and are not loaded by the application. Current
-Project Screen implementation status is tracked in the [Homepage renovation
-notes](design/homepage-renovation/README.md).
+They are used as visual references for scene assets and control presentation.
+Current Project Screen and Homespace implementation status is tracked in the
+[Homepage renovation notes](design/homepage-renovation/README.md).
 
 ## Compatibility and Scope
 
