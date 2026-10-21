@@ -29,7 +29,6 @@ import { CameraPreset } from '../../../core/editor/camera/camera';
 import { SelectionService } from '../../../core/editor/selection/selection.service';
 import { GroupService } from '../../../core/editor/groups/group.service';
 import { StructureEditorService } from '../../../core/editor/structure/structure-editor.service';
-import { BlockLibraryService } from '../../../core/blocks/catalog/block-library.service';
 import { HistoryService } from '../../../core/editor/history/history.service';
 import {
   isEditableKeyboardTarget,
@@ -158,7 +157,6 @@ export class EditorShellComponent implements OnDestroy {
     initialValue: this.activatedRoute.snapshot.queryParamMap,
   });
   private readonly leaveCoordinator = inject(EditorLeaveCoordinator);
-  private readonly library = inject(BlockLibraryService);
   private readonly projectDeletion = inject(ProjectDeletionService);
   private readonly projectPreviews = inject(ProjectPreviewService);
   private readonly threeDViewport = viewChild(ViewportComponent);

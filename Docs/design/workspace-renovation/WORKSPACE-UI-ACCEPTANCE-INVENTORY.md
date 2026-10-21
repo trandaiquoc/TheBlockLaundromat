@@ -1,10 +1,10 @@
 # Workspace UI Acceptance and Audit
 
-**Status:** the current browser audit verified the four-theme shell, empty and
-populated viewport states, representative inspector controls, narrow side
-drawers, and Settings navigation. Full visual acceptance remains open for
-unverified dialog and async workflows, including Mod JAR import states that
-require a compatible external fixture.
+**Status:** the Application UI/UX Renovation is complete and accepted. This
+inventory describes the Workspace contract and records which browser states
+were exercised; unverified combinations are coverage notes, not open
+implementation or acceptance work. No compatible Fabric JAR fixture is
+available for a local browser import pass.
 
 ## Keep / Refine / Redesign inventory
 
@@ -76,7 +76,7 @@ new 340/920/340 desktop split, all four themes, Vietnamese text, the opened
 no temporary screenshots were retained. The approved sources remain the four
 files under `references/`.
 
-## Acceptance gaps
+## Browser coverage notes
 
 ### Mod JAR fixture
 
@@ -87,15 +87,17 @@ standard `fabric.mod.json` metadata and static block resources. No such fixture
 is checked into this repository. A supplied fixture can be imported through
 the browser-local workflow; JAR code is never loaded or executed. The importer
 contract is documented in [Minecraft asset support](../../minecraft-assets.md).
-On 2026-10-18, the user confirmed no compatible fixture is available yet, so
-those importer states remain **NOT VERIFIED**.
+On 2026-10-18, the user confirmed no compatible fixture was available. Those
+importer states remain **NOT VERIFIED** in a local browser fixture run; the
+current import contract and automated coverage are documented in
+[Minecraft asset support](../../minecraft-assets.md).
 
 ### Other unreviewed dialog states
 
-This current-run capture set does not visually recheck every JSON/NBT, Asset
-Manager, Diagnostics, Create with AI, External AI, or specialized-inspector
-state. Existing dated captures and automated tests remain useful context, but
-they are not treated as new browser acceptance for this audit.
+This capture set does not visually recheck every JSON/NBT, Asset Manager,
+Diagnostics, Create with AI, External AI, or specialized-inspector state.
+Existing dated captures and automated tests remain useful context. This is a
+record of verification coverage, not an unresolved UI acceptance item.
 
 ## Historical technical checkpoints
 

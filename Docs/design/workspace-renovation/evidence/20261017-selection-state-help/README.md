@@ -1,5 +1,8 @@
 # Selection State and Help Review - 2026-10-17
 
+This is a dated verification record. The renovation is now accepted; the
+fixture limitation below describes browser coverage at the time of this review.
+
 ## Scope
 
 The active `minecraft:oak_stairs` BlockState inspector was reviewed at 1600 x
@@ -24,8 +27,8 @@ within the viewport.
 - The Help dialog stays within desktop and narrow viewports. Mouse and keyboard
   sections remain available through internal scrolling.
 - The Mods empty state and the Mod JAR Import menu destination were reviewed
-  earlier. Import preflight, progress, result, and error states remain pending:
-  the repository contains no real compatible mod JAR fixture.
+  earlier. Import preflight, progress, result, and error states were not
+  browser-verified here because the repository had no compatible mod JAR fixture.
 
 ## Captures
 

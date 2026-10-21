@@ -1,162 +1,50 @@
-# Workspace Renovation
+# Workspace renovation
 
-## Current status
+The Workspace UI renovation is complete and accepted. This page maps the
+current layout and behavior contracts; it does not track implementation
+checkpoints.
 
-The [P3 Groups Panel contract](GROUPS-PANEL.md) defines compact rows, direct
-visibility/lock, contextual selection actions, inline naming and row menus.
+## Current contracts
 
-The [P2 Block Browser Grid/List contract](BLOCK-BROWSER-GRID-LIST.md) defines the
-responsive virtual grid, compact list, counted source dropdown, Quick Add and
-explicit full-ID inspection. Both views retain one catalog and thumbnail pipeline.
+- [Responsive layout and contextual Inspector](RESPONSIVE-LAYOUT-AND-CONTEXTUAL-INSPECTOR.md)
+  defines the Workspace shell, narrow Menu and drawers, Layer options,
+  Placement/Selection contexts, and metadata-driven property controls.
+- [Block Browser Grid/List](BLOCK-BROWSER-GRID-LIST.md) defines the responsive
+  virtualized views, shared catalog, source selection, full-ID details, and
+  selection/action states.
+- [Groups Panel](GROUPS-PANEL.md) defines group selection, visibility/lock,
+  naming, move, and row actions.
+- [Interaction design principles](INTERACTION-DESIGN-PRINCIPLES.md) defines
+  shared interaction and accessibility expectations.
+- [Workspace color palette](../workspace-color-palette.md) owns the four-theme
+  values and semantic tokens.
+- [Application UI contract](../application-ui-renovation/CURRENT-UI-CONTRACT.md)
+  summarizes shared navigation, Settings, Help, dialogs, and import/export
+  ownership.
 
-The [responsive layout and contextual Inspector contract](RESPONSIVE-LAYOUT-AND-CONTEXTUAL-INSPECTOR.md)
-describes the P0/P1 redesign: one narrow application Menu, compact Layer options,
-an Inspector bottom sheet, explicit Placement/Selection contexts, and
-metadata-driven property controls. Desktop docked resizing and the existing
-editor, history, specialized-inspector, and renderer ownership remain intact.
+Editor commands, project data, history, persistence, specialized inspectors,
+and renderer ownership remain with their existing feature and core services.
+Workspace presentation must preserve those boundaries and the renderer's
+large-project lifecycle.
 
-The 2026-10-19 Workspace redesign follow-up gives the 3D viewport more default
-space, increases catalog density and Quick Add reach, and removes repeated card
-framing from the Selection Inspector summary. These presentation changes use
-the existing four-theme tokens and leave saved sidebar sizes and editor
-workflows intact; current browser verification is summarized in the acceptance
-inventory below.
+## Verification records
 
-Workspace visual acceptance remains open for unreviewed dialog and async states,
-including Mod JAR workflows that need a compatible external fixture. The
-[2026-10-19 Workspace UI audit](evidence/20261019-workspace-full-audit/README.md)
-records fresh Chrome checks across all four themes, representative viewport and
-inspector states, narrow drawers, and Settings flows. It confirms the redundant
-empty-viewport card is absent. The [2026-10-19 Workspace cleanup review](evidence/20261019-workspace-cleanup/README.md)
-records the earlier focused cleanup checkpoint. The [Decorations picker review](evidence/20261017-decoration-picker/README.md)
-checks the painting catalog, selected-state feedback, no-results message, and
-narrow drawer. The [Groups panel review](evidence/20261017-groups-panel/README.md)
-records the empty state, a selected two-block group in Dark and Minecraft, and
-the narrow Dark drawer. The [Group Move panel review](evidence/20261017-group-move/README.md)
-covers its empty and populated states at desktop and narrow widths, including a
-saved move in the isolated browser project. The
-[compact toolbar review](evidence/20261017-compact-toolbar/README.md) checks
-the 390 px two-row layout and a 320 px viewport, keeping actions named while
-reducing toolbar height. The
-[Status Bar responsive review](evidence/20261017-statusbar-responsive/README.md)
-checks its two-row hierarchy at 390 and 320 px, pairing editor context and save
-state separately from project metrics and asset readiness. The
-[Vietnamese Status Bar label review](evidence/20261018-statusbar-vietnamese-label/README.md)
-fixes the clipped leading words in the 320 px asset-readiness label and checks
-the layout across all themes and locales. The
-[Create with AI mobile review](evidence/20261017-ai-workspace-responsive/README.md)
-checks the five-section prompt workspace and its Vietnamese labels at narrow
-widths. The [starter-card review](evidence/20261017-viewport-empty-starter/README.md)
-is a historical report; its card is removed by the latest audit. Earlier browser
-reviews also cover the
-Settings dialog at a narrow viewport, JSON import/export, Structure NBT and
-Datapack export, Asset Manager, and Diagnostics. The
-[Settings navigation responsive review](evidence/20261018-settings-navigation-responsive/README.md)
-keeps all five sections visible at 390 px and 320 px and gives Save & Close a
-full-width action row at 320 px. The
-[Y-Layer compact controls review](evidence/20261017-y-layer-compact-controls/README.md)
-checks that the reference-opacity value remains visible at 320 px without
-reducing the controls to multiple rows.
-The [Workspace interaction review](evidence/20261017-workspace-interactions/README.md)
-records those responsive states and the fixes found in the import and Mod JAR
-entry paths, plus the Tools-menu collision with the narrow project-name chip.
-The [Structure export desktop layout review](evidence/20261017-structure-export-desktop-layout/README.md)
-places install guidance alongside the form on wide screens and checks the
-Vietnamese narrow layout across the Workspace themes.
-The [shared alert dialog motion review](evidence/20261017-alert-dialog-motion/README.md)
-checks confirm/notice overlay entry and exit, all four theme surfaces, reduced
-motion, and the narrow dialog layout.
-The [Workspace dialog host transition review](evidence/20261017-dialog-host-motion/README.md)
-checks that conditionally mounted Workspace dialogs fade out before their
-component hosts are removed.
-The [shared tab surface review](evidence/20261017-tab-surface-interaction/README.md)
-checks that each selected tab owns its theme-aware surface across all four
-themes, while the toolbar's segmented controls keep their separate track.
-The [Workspace presentation audit](evidence/20261017-workspace-presentation-audit/README.md)
-compares the current shell against the approved frames in all four themes and
-checks the Settings menu at 320 px in English and Vietnamese. It fixed the
-clipped End-key focus target and added the active project's saved Minecraft
-version to the desktop header.
-The [compact translated menu review](evidence/20261018-workspace-menu-compact/README.md)
-places all six Workspace menus in two balanced rows at 320 px, avoiding the
-single-item Vietnamese Help row while keeping the project context visible.
-The [Selection Inspector action surface review](evidence/20261017-inspector-action-surfaces/README.md)
-fixes the Dark theme Quick Actions card blending into its buttons and checks the
-same surface in all four themes. Full Workspace acceptance remains open.
-The [Project Diagnostics hierarchy review](evidence/20261017-diagnostics-hierarchy/README.md)
-uses a current unresolved-renderer warning to verify that the Asset Audit
-action appears before the long renderer metrics section.
-The [Create with AI desktop inset review](evidence/20261017-ai-workspace-desktop-inset/README.md)
-aligns the prompt workspace with the import dialog's other content surfaces
-and checks its 390 px and 320 px layouts.
-The [External AI dialog mode review](evidence/20261017-external-ai-mode-context/README.md)
-keeps the dialog title, instructions, and project-change note aligned with the
-selected Import JSON or Create with AI tab in English and Vietnamese.
-The [Asset Manager empty-state review](evidence/20261017-asset-manager-empty-state/README.md)
-adds import guidance to the empty Mods tab and checks its desktop and narrow
-layouts.
-The [Missing Assets handoff review](evidence/20261018-missing-assets-handoff/README.md)
-checks the direct route from the Status Bar warning to Asset Manager on Mods.
-The [Workspace menu feedback review](evidence/20261017-menu-feedback/README.md)
-checks persistent checked states, hover, and press feedback in all four themes.
-The [Quick Bar review](evidence/20261017-quick-bar-responsive/README.md)
-confirms all ten slots remain reachable at a narrow viewport. The
-[active BlockState and Help review](evidence/20261017-selection-state-help/README.md)
-checks state editing in all four themes, the narrow Selection drawer, and the
-Controls & Shortcuts dialog. The sign text and keyboard/mouse shortcut tabs
-support Arrow, Home, and End navigation. Full Workspace acceptance remains
-open. A concrete
-remaining checkpoint is the Mod JAR import preflight and progress/error states,
-which need a real compatible fixture. Automated tests, keyboard checks, and
-contrast checks do not establish that the full interface matches the approved
-compositions.
+The [coverage inventory](WORKSPACE-UI-ACCEPTANCE-INVENTORY.md) records the
+current contract and distinguishes accepted implementation from browser states
+that were not independently exercised. In particular, a compatible Fabric JAR
+fixture is not available for a local import-state browser run; this is a
+verification limit, not unfinished UI work. The [evidence index](evidence/README.md)
+links dated records and approved references. Dated captures document only the
+states they show and are not current implementation instructions.
 
-The [Block Browser density review](evidence/20261019-block-browser-density/README.md)
-records the earlier 68 px row and 32 px Quick Add checkpoint. The current
-catalog follow-up uses compact separated rows, delimiter-aware registry ID
-wrapping, and a 40 px Quick Add target. Search, virtualization, asset thumbnail
-scheduling, and editor behavior remain unchanged.
+The four approved Workspace compositions are
+[Minecraft](references/approved-workspace-minecraft.png),
+[Raccoon](references/approved-workspace-raccoon.png),
+[Light](references/approved-workspace-light.png), and
+[Dark](references/approved-workspace-dark.png). They are design references,
+separate from browser captures and application content.
 
-The [2026-10-19 Workspace scanning follow-up](evidence/20261019-workspace-scanning/README.md)
-records the current four-theme and three-font browser pass, English and
-Vietnamese responsive checks, keyboard activation, and contextual Selection
-Inspector actions. It refines catalog hierarchy and preserves the existing
-editor layout and workflows.
-
-The [inventory item thumbnail review](evidence/20261017-inventory-item-thumbnails/README.md)
-shows real Diamond, Apple, and Oak Planks previews in the compact chest slot
-grid, with counts, slot numbers, and accessible item names preserved.
-
-The Project Screen now has current browser review for its four themed scenes,
-project selection, creation, import, and narrow layout. Its full concept
-acceptance remains tracked separately in the
-[Homepage renovation notes](../homepage-renovation/README.md).
-
-## Current contracts and acceptance
-
-- [Canonical four-theme palette](../workspace-color-palette.md)
-- [Design foundation and approved direction](../../design-foundation-branding.md)
-- [Interaction design principles](INTERACTION-DESIGN-PRINCIPLES.md)
-- [Current acceptance gaps](WORKSPACE-UI-ACCEPTANCE-INVENTORY.md)
-- [Homepage and Project Screen status](../homepage-renovation/README.md)
-
-## Approved Workspace compositions
-
-These four source frames are approved design references. They are separate from
-browser screenshots and their canvas content is not application behavior.
-
-| Theme     | Approved reference                                       |
-| --------- | -------------------------------------------------------- |
-| Minecraft | [Minecraft](references/approved-workspace-minecraft.png) |
-| Raccoon   | [Raccoon](references/approved-workspace-raccoon.png)     |
-| Light     | [Light](references/approved-workspace-light.png)         |
-| Dark      | [Dark](references/approved-workspace-dark.png)           |
-
-## Historical browser evidence
-
-The [browser evidence index](evidence/README.md) links selected captures in two
-dated archives. These captures document earlier browser states and do not
-establish current visual acceptance.
-
-The four Block Usage screenshots are retained as a record of the positively
-reviewed panel. Block Usage is not an active redesign task.
+The [Homepage and Project Screen contract](../homepage-renovation/README.md)
+covers the restored traditional project-management screen. The earlier
+laundromat-scene composition is historical and is not current implementation
+work.

@@ -1,5 +1,8 @@
 # Workspace Cleanup Review - 2026-10-19
 
+This is a dated verification record. The renovation is now accepted; the
+fixture limitation below describes browser coverage at the time of this review.
+
 ## Scope and setup
 
 Fresh Chrome captures were taken from a temporary isolated profile using a
@@ -38,6 +41,6 @@ empty 3D viewport in Minecraft, Raccoon, Light, and Dark; one placed Chain in
 
 ## Remaining limitation
 
-The Mod JAR import preflight, progress, completion, and failure screens remain
-**NOT VERIFIED** because no compatible Fabric 1.21.1 mod JAR fixture is
+The Mod JAR import preflight, progress, completion, and failure screens were
+**NOT VERIFIED** because no compatible Fabric 1.21.1 mod JAR fixture was
 available. See the [Workspace acceptance inventory](../../WORKSPACE-UI-ACCEPTANCE-INVENTORY.md).

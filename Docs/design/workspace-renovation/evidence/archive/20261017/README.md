@@ -2,7 +2,7 @@
 
 **Evidence status:** selected historical browser captures from before commit
 `ed7b1a5`. They do not establish current visual acceptance and are not an
-active task list. Current acceptance gaps live in the
+active task list. Current status and browser coverage notes live in the
 [Workspace acceptance inventory](../../../WORKSPACE-UI-ACCEPTANCE-INVENTORY.md).
 
 This archive retains 24 captures whose rendered state adds evidence beyond

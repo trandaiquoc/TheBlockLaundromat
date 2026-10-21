@@ -1,5 +1,8 @@
 # Workspace UI Audit — 2026-10-19
 
+This is a dated verification record. The renovation is now accepted; its
+fixture and capture limits below describe this audit's coverage only.
+
 ## Setup
 
 Fresh Chrome captures were taken from an isolated local profile. Desktop views
@@ -47,6 +50,6 @@ one Chain placed only in that profile.
 
 These captures cover the current shell and representative editor controls; they
 do not establish visual acceptance for every modal or async workflow. Mod JAR
-import preflight, progress, success, and error states remain **NOT VERIFIED**
+import preflight, progress, success, and error states were **NOT VERIFIED**
 because no compatible Fabric 1.21.1 fixture is available. Earlier dated captures
 remain historical context and are not counted as current-run PASS evidence.

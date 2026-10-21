@@ -2,7 +2,8 @@
 
 This index separates historical captures from current implementation evidence.
 The dated archives predate commit ed7b1a5 and do not establish visual
-acceptance for later changes.
+acceptance for later changes. Some dated reports say broader acceptance was
+open at the time; those statements are historical snapshots, not current status.
 
 ## Dated archives
 
@@ -126,11 +127,11 @@ desktop and narrow widths.
 The [Missing Assets handoff review](20261018-missing-assets-handoff/README.md)
 checks the warning details and its direct transition to Asset Manager on the
 Mods tab.
-Full Workspace visual acceptance across surfaces, responsive states, and
-workflows remains open in the
-[Workspace acceptance status](../WORKSPACE-UI-ACCEPTANCE-INVENTORY.md). The
-Project Screen concept remains open in the
-[Homepage/Project Screen notes](../../homepage-renovation/README.md).
+The [Workspace acceptance inventory](../WORKSPACE-UI-ACCEPTANCE-INVENTORY.md)
+records the accepted contract and any states lacking independent browser
+coverage. The [Homepage/Project Screen contract](../../homepage-renovation/README.md)
+describes the restored traditional Project Screen and marks the former scene
+direction as discontinued.
 
 ## Retention policy
 

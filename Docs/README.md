@@ -10,8 +10,10 @@ historical evidence, and reproducible local audit output.
 - [Workspace color palette](design/workspace-color-palette.md) — canonical
   four-theme Workspace tokens and accessibility contract.
 - [Workspace renovation status](design/workspace-renovation/README.md) and
-  [active acceptance inventory](design/workspace-renovation/WORKSPACE-UI-ACCEPTANCE-INVENTORY.md)
-  — current status and only unresolved visual acceptance gaps.
+  [Workspace acceptance coverage](design/workspace-renovation/WORKSPACE-UI-ACCEPTANCE-INVENTORY.md)
+  — current contract and browser-verification coverage notes.
+- [Application UI renovation](design/application-ui-renovation/README.md) —
+  accepted current UI ownership and workflow contracts.
 - [Homepage and Project Screen](design/homepage-renovation/README.md) — current
   traditional screen contract and retained historical scene evidence.
 - [Requirements baseline](MinecraftBuilder_Requirements_VI.docx) — version 0.2
