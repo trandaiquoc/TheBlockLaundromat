@@ -4,7 +4,6 @@ import { editorCanDeactivate } from './core/persistence/editor-leave-coordinator
 
 export const routes: Routes = [
   { path: '', component: ProjectScreenComponent },
-  { path: 'home-preview', component: ProjectScreenComponent, data: { homePreview: true } },
   {
     path: 'editor',
     loadComponent: () =>

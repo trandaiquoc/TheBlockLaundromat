@@ -1,23 +1,4 @@
-<main
-  class="project-page"
-  [class.home-preview]="homePreview"
-  [style.--board-left.px]="boardLayout()?.left"
-  [style.--board-top.px]="boardLayout()?.top"
-  [style.--board-width.px]="boardLayout()?.width"
->
-  @if (homePreview) {
-    @defer (on immediate) {
-      <app-home-scene (boardLayout)="boardLayout.set($event)" />
-    }
-    <img
-      class="home-preview-brand"
-      ngSrc="assets/brand/the-block-laundromat-logo.svg"
-      width="1774"
-      height="887"
-      alt=""
-      aria-hidden="true"
-    />
-  }
+<main class="project-page">
   <header class="outer-topbar">
     <div class="outer-brand">
       <img
@@ -36,31 +17,11 @@
     <header class="project-intro">
       <p class="eyebrow">{{ i18n.t('appName') }}</p>
       <h1>{{ i18n.t('projectTitle') }}</h1>
-      @if (homePreview) {
-        <a class="preview-traditional-link" routerLink="/">{{
-          i18n.t('traditionalProjectScreen')
-        }}</a>
-      }
       <p>{{ i18n.t('projectSubtitle') }}</p>
     </header>
 
-    @if (homePreview) {
-      <button
-        class="preview-create-trigger ui-button ui-button--primary"
-        type="button"
-        [attr.aria-expanded]="previewCreateOpen()"
-        (click)="previewCreateOpen.set(!previewCreateOpen())"
-      >
-        {{ i18n.t('newProject') }}
-      </button>
-    }
-
     <section class="project-grid" [attr.aria-label]="i18n.t('projectActions')">
-      <form
-        class="project-form"
-        [class.preview-create-closed]="homePreview && !previewCreateOpen()"
-        (submit)="$event.preventDefault(); createProject()"
-      >
+      <form class="project-form" (submit)="$event.preventDefault(); createProject()">
         <div class="form-section form-section--identity">
           <h2>{{ i18n.t('newProject') }}</h2>
           <label class="field-label"

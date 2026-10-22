@@ -102,9 +102,10 @@ and are not loaded directly by the application:
 They remain visual references for future design work and shared control
 presentation. Current Project Screen behavior is documented in the
 [Homepage and Project Screen notes](design/homepage-renovation/README.md).
-Layered source cutouts and masks for a future 3D study are also retained under
-`Frontend/source-assets/homepage/`; the traditional Project Screen does
-not load them. The original images above remain the canonical references.
+Layered source cutouts, masks, and the scene manifest are retained under
+`Frontend/source-assets/homepage/` as material for future homepage illustration
+work; the traditional Project Screen does not load them. The former 3D design
+proposal is retired. The original images above remain the canonical references.
 
 ## Compatibility and Scope
 

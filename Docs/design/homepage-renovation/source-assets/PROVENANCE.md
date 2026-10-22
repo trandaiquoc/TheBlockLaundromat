@@ -24,8 +24,10 @@
 
 `Docs/design/homepage-renovation/source-assets/asset-inventory.csv` is the
 human-readable inventory (331 rows). This is the only imported inventory copy.
-The complete semantic design/mapping table is maintained separately in
-[`../3d-asset-plan.csv`](../3d-asset-plan.csv).
+The retired 3D planning table in [`../3d-asset-plan.csv`](../3d-asset-plan.csv)
+is preserved as historical reference data for semantic IDs, source paths, and
+theme coverage. Its proposed geometry, pivots, and implementation details are
+not current contracts.
 
 The source package README, source-supplied QA records, and all 37 previews are
 kept in `Docs/design/homepage-renovation/evidence/phase1-source-assets/`;

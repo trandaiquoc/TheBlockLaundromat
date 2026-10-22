@@ -1,4 +1,9 @@
-# Phase 1 — 3D Homepage Technical Design
+# Retired Phase 1 — 3D Homepage Technical Design
+
+> **Retired 2026-10-22.** This was a design proposal, not the current product
+> contract. The prototype route, renderer, and runtime assets have been removed.
+> The source layers, masks, manifest, and references remain preserved under
+> `Frontend/source-assets/homepage/` for future design work.
 
 **Status:** Phase 1 design proposal. The traditional Project Screen remains the
 default route. A separate, incomplete Phase 2 browser prototype is documented

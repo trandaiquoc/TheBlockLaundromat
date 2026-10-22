@@ -1,9 +1,6 @@
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { HomeSceneComponent } from '../home-preview/home-scene.component';
-import type { HomeBoardRect } from '../home-preview/home-scene-view';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
 import {
   DEFAULT_MINECRAFT_VERSION,
@@ -62,17 +59,11 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
     ProjectScreenControlsComponent,
     ProjectScreenAccountComponent,
     SettingsDialogComponent,
-    HomeSceneComponent,
-    RouterLink,
   ],
   templateUrl: './project-screen.component.html',
   styleUrl: './project-screen.component.scss',
 })
 export class ProjectScreenComponent {
-  protected readonly homePreview =
-    inject(ActivatedRoute, { optional: true })?.snapshot.data['homePreview'] === true;
-  protected readonly previewCreateOpen = signal(false);
-  protected readonly boardLayout = signal<HomeBoardRect | undefined>(undefined);
   protected readonly i18n = inject(I18nService);
   private readonly preferences = inject(UiPreferencesService);
   protected readonly workflow = inject(ProjectScreenWorkflow);

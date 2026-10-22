@@ -142,16 +142,6 @@
   }
 }
 
-:host-context(.home-preview) .screen-control-button {
-  font-size: 0.875rem;
-}
-
-@media (max-width: 360px) {
-  :host-context(.home-preview) .screen-control-button {
-    padding-inline: 0.28rem;
-  }
-}
-
 @media (max-width: 360px) {
   .screen-control-bar {
     gap: 0.2rem 0.35rem;

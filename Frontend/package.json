@@ -9,7 +9,6 @@
     "test": "ng test",
     "test:tools": "node --test tools/registry-generators.test.mjs",
     "check:encoding": "node scripts/check-frontend-encoding.mjs",
-    "check:home-preview": "node scripts/check-home-preview.mjs",
     "check:home-assets": "node scripts/check-home-assets.mjs",
     "benchmark:renderer": "node src/app/core/renderer/benchmark/renderer-benchmark-runner.cjs"
   },

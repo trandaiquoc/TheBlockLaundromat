@@ -1,9 +1,10 @@
 # Homepage and Project Screen
 
-**Current status:** the default Project Screen keeps its traditional
-project-management layout. An in-progress Three.js prototype is available at
-`/home-preview`; it uses the same Project Screen workflow and has its own
-renderer lifecycle. See [Phase 2 prototype status](phase2-prototype.md).
+**Current status:** `/` renders the traditional Project Screen. The obsolete
+Three.js homepage prototype, its route, and runtime assets have been removed.
+The 2D homepage has not been implemented. The original concepts and extracted
+source assets remain preserved as design materials and are not loaded by the
+application.
 
 ## Current screen
 
@@ -41,11 +42,13 @@ Inventory and ZIP provenance are in
 images are retained under
 [`evidence/phase1-source-assets/`](evidence/phase1-source-assets/).
 
-The proposed shared room, semantic asset contracts, theme treatments, workflow
-boundary, and Phase 2 acceptance criteria are in
+The former 3D technical proposal and Phase 2 implementation report are
+retained as retired historical records in
 [`3d-homepage-spec.md`](3d-homepage-spec.md) and
-[`3d-asset-plan.csv`](3d-asset-plan.csv). Phase 1 created no GLB, renderer,
-route change, or replacement UI; the new prototype is a separate Phase 2 change.
+[`phase2-prototype.md`](phase2-prototype.md). The 3D asset plan is also retired
+as an implementation contract; its semantic IDs, source paths, and theme
+coverage remain useful reference data. None of these documents describes a
+current renderer or runnable screen.
 
 Dated screenshots and interaction notes under [`evidence/`](evidence/) are
 historical records of earlier Project Screen reviews, not current UI contracts.

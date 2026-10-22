@@ -15,8 +15,8 @@ historical evidence, and reproducible local audit output.
 - [Application UI renovation](design/application-ui-renovation/README.md) —
   accepted current UI ownership and workflow contracts.
 - [Homepage and Project Screen](design/homepage-renovation/README.md) — current
-  traditional screen contract, Phase 1 source assets, and the future 3D
-  homepage design proposal.
+  traditional screen contract, preserved source assets, and retired 3D design
+  history.
 - [Requirements baseline](MinecraftBuilder_Requirements_VI.docx) — version 0.2
   local-first MVP requirements; this is intended scope, not implementation
   status.

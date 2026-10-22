@@ -1,86 +1,160 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { join, relative, resolve, sep } from 'node:path';
 
 const frontend = resolve(import.meta.dirname, '..');
 const repository = resolve(frontend, '..');
 const source = join(frontend, 'source-assets/homepage');
-const runtime = join(frontend, 'public/assets/homepage/runtime');
-const manifest = JSON.parse(readFileSync(join(source, 'scene-manifest.json'), 'utf8'));
-const expectedDetails = [
-  'washer-body',
-  'washer-portal',
-  'shelf-wood',
-  'outside-door',
-  'outside-window',
-  'awning',
-  'chalkboard',
-  'vine-left',
-  'board-top-vines',
-  'basket-body',
-  'raccoon-standing',
-  'raccoon-seated',
-  'shelf-bottles-green',
-  'shelf-bottles-lower',
-  'shelf-bottles-top',
-  'shelf-towels-upper',
-  'shelf-towels-lower',
-  'board-grass-planter',
-  'washer-towel-green',
-  'vine-right',
-];
-const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const png = (path) => {
-  const bytes = readFileSync(path);
-  if (bytes.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a')
-    throw new Error(`Invalid PNG: ${path}`);
-  return bytes;
+const manifestPath = join(source, 'scene-manifest.json');
+const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+const expectedThemes = {
+  minecraft: 'reference/01-minecraft.png',
+  light: 'reference/02-light.png',
+  raccoon: 'reference/03-raccoon.png',
+  dark: 'reference/04-dark.png',
 };
-const countFiles = (directory) =>
-  readdirSync(directory, { withFileTypes: true }).reduce((total, entry) => {
-    const path = join(directory, entry.name);
-    return total + (entry.isDirectory() ? countFiles(path) : entry.isFile() ? 1 : 0);
-  }, 0);
+const expectedLayerCounts = { minecraft: 82, light: 82, raccoon: 84, dark: 83 };
+const expectedCanvas = { width: 1672, height: 941 };
+const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
-if (existsSync(join(frontend, 'public/assets/homepage/source')))
-  throw new Error('Source package is still inside Angular public');
-for (const [name, expectedHash] of [
-  ['plaster', 'd6e358a806e1e70da269676e5d0fd4624d75854d8aa1f2e0af8f44383eabf133'],
-  ['wood-grain', '551221deab78694e6c8ebc5e4b4e1c5059eac80308002626ad409f7f61097051'],
-]) {
-  const material = png(join(runtime, 'shared', `${name}.png`));
+function sourcePath(path) {
   if (
-    sha256(material) !== expectedHash ||
-    material.readUInt32BE(16) !== 1254 ||
-    material.readUInt32BE(20) !== 1254
-  )
-    throw new Error(`Shared ${name} texture differs from the selected generated material`);
+    typeof path !== 'string' ||
+    path.length === 0 ||
+    path.includes('\\') ||
+    path.startsWith('/') ||
+    path.split('/').includes('..')
+  ) {
+    throw new Error(`Invalid source asset path: ${path}`);
+  }
+
+  const resolved = resolve(source, path);
+  if (!resolved.startsWith(source + sep)) throw new Error(`Source path escapes package: ${path}`);
+  return resolved;
 }
-let layers = 0;
-for (const [theme, themeManifest] of Object.entries(manifest.themes)) {
-  const reference = png(join(source, themeManifest.source));
-  const original = png(
-    join(repository, 'Docs/design/references', themeManifest.source.split('/').at(-1)),
+
+function readPng(path, expectedDimensions) {
+  const bytes = readFileSync(path);
+  if (bytes.length < 24 || bytes.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a') {
+    throw new Error(`Invalid PNG: ${relative(source, path)}`);
+  }
+
+  const dimensions = { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
+  if (
+    expectedDimensions &&
+    (dimensions.width !== expectedDimensions.width ||
+      dimensions.height !== expectedDimensions.height)
+  ) {
+    throw new Error(
+      `PNG dimensions differ: ${relative(source, path)} (${dimensions.width}x${dimensions.height})`,
+    );
+  }
+  return { bytes, dimensions };
+}
+
+function filesUnder(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name);
+    return entry.isDirectory() ? filesUnder(path) : entry.isFile() ? [path] : [];
+  });
+}
+
+if (existsSync(join(frontend, 'public/assets/homepage/source'))) {
+  throw new Error('Source package is still inside Angular public');
+}
+if (
+  manifest.canvas?.width !== expectedCanvas.width ||
+  manifest.canvas?.height !== expectedCanvas.height
+) {
+  throw new Error('Homepage manifest canvas dimensions changed unexpectedly');
+}
+
+const themes = Object.keys(manifest.themes ?? {}).sort();
+if (themes.join(',') !== Object.keys(expectedThemes).sort().join(',')) {
+  throw new Error(`Unexpected manifest themes: ${themes.join(', ')}`);
+}
+
+let layerCount = 0;
+const manifestLayers = new Set();
+const referencedMasks = new Set();
+for (const [theme, expectedReference] of Object.entries(expectedThemes)) {
+  const themeManifest = manifest.themes[theme];
+  if (themeManifest.source !== expectedReference) {
+    throw new Error(`Unexpected canonical reference path for ${theme}: ${themeManifest.source}`);
+  }
+
+  const referencePath = sourcePath(themeManifest.source);
+  const { bytes: reference } = readPng(referencePath, expectedCanvas);
+  const canonicalPath = join(
+    repository,
+    'Docs/design/references',
+    expectedReference.split('/').at(-1),
   );
-  if (sha256(reference) !== sha256(original)) throw new Error(`Reference differs: ${theme}`);
+  const { bytes: canonical } = readPng(canonicalPath, expectedCanvas);
+  if (sha256(reference) !== sha256(canonical)) throw new Error(`Reference differs: ${theme}`);
+
+  if (
+    !Array.isArray(themeManifest.assets) ||
+    themeManifest.assets.length !== expectedLayerCounts[theme]
+  ) {
+    throw new Error(`Unexpected layer count for ${theme}`);
+  }
+
   for (const asset of themeManifest.assets) {
-    const bytes = png(join(source, asset.file));
+    if (typeof asset.file !== 'string' || !asset.file.startsWith(`assets/${theme}/`)) {
+      throw new Error(`Unexpected ${theme} layer path: ${asset.file}`);
+    }
+    if (manifestLayers.has(asset.file))
+      throw new Error(`Duplicate manifest layer path: ${asset.file}`);
+    manifestLayers.add(asset.file);
+    const assetPath = sourcePath(asset.file);
+    const { bytes, dimensions } = readPng(assetPath, {
+      width: asset.width,
+      height: asset.height,
+    });
     if (sha256(bytes) !== asset.sha256) throw new Error(`Source hash differs: ${asset.file}`);
-    layers++;
-  }
-  for (const name of expectedDetails) {
-    const originalDetail = png(join(source, 'assets', theme, `${name}.png`));
-    const runtimeDetail = png(join(runtime, theme, `${name}.png`));
-    if (sha256(originalDetail) !== sha256(runtimeDetail))
-      throw new Error(`Runtime detail differs: ${theme}/${name}`);
+    if (dimensions.width <= 0 || dimensions.height <= 0) {
+      throw new Error(`Invalid layer dimensions: ${asset.file}`);
+    }
+    layerCount++;
+
+    if (asset.mask !== undefined) {
+      if (typeof asset.mask !== 'string' || !asset.mask.startsWith(`masks/${theme}/`)) {
+        throw new Error(`Unexpected ${theme} mask path: ${asset.mask}`);
+      }
+      const maskPath = sourcePath(asset.mask);
+      readPng(maskPath, expectedCanvas);
+      referencedMasks.add(asset.mask);
+    }
   }
 }
-if (layers !== 331 || countFiles(source) !== 618 || countFiles(runtime) !== 82) {
-  throw new Error('Homepage source/runtime inventory changed unexpectedly');
+
+const layerFiles = filesUnder(join(source, 'assets'));
+const maskFiles = filesUnder(join(source, 'masks'));
+const referenceFiles = filesUnder(join(source, 'reference'));
+const sourceFiles = filesUnder(source);
+const sourceLayerPaths = new Set(
+  layerFiles.map((path) => relative(source, path).split(sep).join('/')),
+);
+if (
+  layerCount !== 331 ||
+  layerFiles.length !== 331 ||
+  manifestLayers.size !== 331 ||
+  [...sourceLayerPaths].some((path) => !manifestLayers.has(path)) ||
+  maskFiles.length !== 282 ||
+  referenceFiles.length !== 4 ||
+  referencedMasks.size !== 278 ||
+  sourceFiles.length !== 618 ||
+  sourceFiles.some((path) => !path.toLowerCase().endsWith('.png') && path !== manifestPath)
+) {
+  throw new Error('Homepage source package inventory changed unexpectedly');
 }
-const dist = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage');
-if (existsSync(dist) && existsSync(join(dist, 'source')))
-  throw new Error('Source package leaked into production dist');
+
+for (const path of maskFiles) readPng(path, expectedCanvas);
+
+const distSource = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage/source');
+if (existsSync(distSource)) throw new Error('Source package leaked into production dist');
+
 console.log(
-  'Homepage assets: 331 source layer hashes, 4 canonical references, 82 runtime PNGs, and production exclusion verified.',
+  'Homepage source assets: 331 layer SHA-256 hashes, 282 masks, manifest paths and PNG dimensions, four canonical references, and production exclusion verified.',
 );
