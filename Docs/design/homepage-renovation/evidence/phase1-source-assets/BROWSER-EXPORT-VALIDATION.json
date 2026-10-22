@@ -1,0 +1,20 @@
+{
+  "minecraft": {
+    "dimensions": [
+      1672,
+      941
+    ],
+    "differentPixels": 0,
+    "maxChannelError": 0,
+    "browserFile": "previews/minecraft-browser-export-native.png"
+  },
+  "raccoon": {
+    "dimensions": [
+      1672,
+      941
+    ],
+    "differentPixels": 0,
+    "maxChannelError": 0,
+    "browserFile": "previews/raccoon-browser-export-native.png"
+  }
+}

@@ -1,8 +1,9 @@
 # Homepage and Project Screen
 
 **Current status:** the Project Screen uses its traditional project-management
-layout. The four original visual concepts remain references only; the screen
-does not load scene artwork.
+layout. Phase 1 source artwork and a technical design proposal are available
+for a possible future 3D homepage; no scene code loads these assets and no UI
+behavior has changed.
 
 ## Current screen
 
@@ -29,6 +30,22 @@ The four original concepts remain in
 [`../references/`](../references/): Minecraft, Light, Raccoon, and Dark. They
 are preserved byte-for-byte as design references and are not loaded by the
 application.
+
+Phase 1 keeps the supplied cutouts, masks, repairs, manifest, and four exact
+reference copies under
+[`../../../Frontend/public/assets/homepage/source/`](../../../Frontend/public/assets/homepage/source/).
+The existing originals in `../references/` remain unchanged and canonical.
+The public source directory is not consumed by the current Project Screen.
+Inventory and ZIP provenance are in
+[`source-assets/`](source-assets/); source-supplied QA records and preview
+images are retained under
+[`evidence/phase1-source-assets/`](evidence/phase1-source-assets/).
+
+The proposed shared room, semantic asset contracts, theme treatments, future
+workflow boundary, and Phase 2 acceptance criteria are in
+[`3d-homepage-spec.md`](3d-homepage-spec.md) and
+[`3d-asset-plan.csv`](3d-asset-plan.csv). They are design artifacts only:
+Phase 1 creates no GLB, renderer, route change, or replacement UI.
 
 Dated screenshots and interaction notes under [`evidence/`](evidence/) are
 historical records of earlier Project Screen reviews, not current UI contracts.
