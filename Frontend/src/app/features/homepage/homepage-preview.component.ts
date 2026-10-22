@@ -44,11 +44,7 @@ const rasterControlsReplacedByDom = new Set(['navigation', 'account']);
 
 @Component({
   selector: 'app-homepage-preview',
-  imports: [
-    ProjectScreenControlsComponent,
-    ProjectScreenAccountComponent,
-    SettingsDialogComponent,
-  ],
+  imports: [ProjectScreenControlsComponent, ProjectScreenAccountComponent, SettingsDialogComponent],
   templateUrl: './homepage-preview.component.html',
   styleUrl: './homepage-preview.component.scss',
 })
@@ -127,8 +123,9 @@ export class HomepagePreviewComponent {
       const runtimeAssets = themeManifest.assets.filter(
         (asset) => !rasterControlsReplacedByDom.has(asset.id),
       );
-      const loaded = await this.assetLoader.load(runtimeAssets, (asset) =>
-        new URL(`assets/homepage/runtime/${asset.file}`, this.document.baseURI),
+      const loaded = await this.assetLoader.load(
+        runtimeAssets,
+        (asset) => new URL(`assets/homepage/runtime/${asset.file}`, this.document.baseURI),
       );
       if (generation !== this.requestGeneration || this.destroyed) return;
 
@@ -212,9 +209,7 @@ export class HomepagePreviewComponent {
     const startTime = globalThis.performance.now();
     drawHomepageScene(context, graph, images, new Map(), rasterControlsReplacedByDom);
     const renderDurationMs = globalThis.performance.now() - startTime;
-    this.metrics.update((current) =>
-      current ? { ...current, renderDurationMs } : current,
-    );
+    this.metrics.update((current) => (current ? { ...current, renderDurationMs } : current));
   }
 
   private clearCanvas(canvas: HTMLCanvasElement): void {

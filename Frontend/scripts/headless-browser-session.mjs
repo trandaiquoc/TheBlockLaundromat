@@ -8,7 +8,8 @@ export function findBrowser() {
   const candidates = [
     process.env['CHROME_BIN'],
     process.env['EDGE_BIN'],
-    process.env['PROGRAMFILES'] && join(process.env['PROGRAMFILES'], 'Google/Chrome/Application/chrome.exe'),
+    process.env['PROGRAMFILES'] &&
+      join(process.env['PROGRAMFILES'], 'Google/Chrome/Application/chrome.exe'),
     process.env['PROGRAMFILES(X86)'] &&
       join(process.env['PROGRAMFILES(X86)'], 'Microsoft/Edge/Application/msedge.exe'),
     '/usr/bin/chromium',
@@ -100,10 +101,7 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory) {
     pageSocket?.close();
     try {
       if (browserSocket?.readyState === WebSocket.OPEN) {
-        await Promise.race([
-          createDebuggerSender(browserSocket)('Browser.close'),
-          delay(1500),
-        ]);
+        await Promise.race([createDebuggerSender(browserSocket)('Browser.close'), delay(1500)]);
       }
     } catch {
       child.kill();

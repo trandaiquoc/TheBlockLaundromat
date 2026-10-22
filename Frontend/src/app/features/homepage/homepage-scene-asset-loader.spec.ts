@@ -5,14 +5,13 @@ import { HomepageSceneAssetLoader } from './homepage-scene-asset-loader';
 describe('homepage scene asset loader', () => {
   it('loads only the requested theme layers and reports resource size and duration', async () => {
     const bitmap = createBitmap(10, 20);
-    const fetchAsset = vi.fn(async () =>
-      responseFor(new Blob(['image bytes'])),
-    );
+    const fetchAsset = vi.fn(async () => responseFor(new Blob(['image bytes'])));
     const decodeImage = vi.fn(async () => bitmap);
     const loader = new HomepageSceneAssetLoader(fetchAsset, decodeImage, () => 25);
 
-    const result = await loader.load([createAsset('washer')], (asset) =>
-      new URL(asset.file, 'https://example.test/'),
+    const result = await loader.load(
+      [createAsset('washer')],
+      (asset) => new URL(asset.file, 'https://example.test/'),
     );
 
     expect(fetchAsset).toHaveBeenCalledOnce();
@@ -37,8 +36,9 @@ describe('homepage scene asset loader', () => {
     );
     const loader = new HomepageSceneAssetLoader(fetchAsset, decodeImage);
 
-    const loading = loader.load([createAsset('washer')], (asset) =>
-      new URL(asset.file, 'https://example.test/'),
+    const loading = loader.load(
+      [createAsset('washer')],
+      (asset) => new URL(asset.file, 'https://example.test/'),
     );
     await vi.waitFor(() => expect(decodeImage).toHaveBeenCalledOnce());
     loader.dispose();

@@ -60,12 +60,16 @@ Run the asset and pixel fidelity checks from `Frontend/`:
 ```sh
 npm run check:home-assets
 npm run check:home-composition
+npm run check:homepage-browser
 ```
 
 The composition check uses the production canvas drawing function in a browser,
 at the native 1672 × 941 artboard size, and compares the rendered RGB pixels to
 all four canonical source references. It runs separately from the production
-preview.
+preview. The browser check verifies theme switching, controls, desktop and
+mobile framing, and the traditional Project Screen at `/`. It writes current
+screenshots to the ignored `Frontend/.artifacts/homepage-preview/screenshots/`
+directory.
 
 ## Visual references and historical evidence
 

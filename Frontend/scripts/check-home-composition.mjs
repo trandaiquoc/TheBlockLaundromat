@@ -55,7 +55,8 @@ const server = createServer((request, response) => {
 await mkdir(artifacts, { recursive: true });
 const profile = await mkdtemp(join(artifacts, 'composition-profile-'));
 const profileRoot = resolve(artifacts) + sep;
-if (!resolve(profile).startsWith(profileRoot)) throw new Error('Browser profile escaped artifacts.');
+if (!resolve(profile).startsWith(profileRoot))
+  throw new Error('Browser profile escaped artifacts.');
 
 try {
   const address = await listen(server);
@@ -71,9 +72,13 @@ try {
     );
   }
 
-  const failures = report.filter((result) => result.differingRgbPixels !== 0 || result.maxRgbDelta !== 0);
+  const failures = report.filter(
+    (result) => result.differingRgbPixels !== 0 || result.maxRgbDelta !== 0,
+  );
   if (failures.length) {
-    throw new Error(`Pixel fidelity check failed for: ${failures.map((result) => result.theme).join(', ')}.`);
+    throw new Error(
+      `Pixel fidelity check failed for: ${failures.map((result) => result.theme).join(', ')}.`,
+    );
   }
 } finally {
   await new Promise((resolveClose) => server.close(resolveClose));

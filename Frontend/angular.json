@@ -34,10 +34,7 @@
                 "glob": "assets/**/*.png",
                 "input": "source-assets/homepage",
                 "output": "assets/homepage/runtime",
-                "ignore": [
-                  "assets/**/navigation.png",
-                  "assets/**/account.png"
-                ]
+                "ignore": ["assets/**/navigation.png", "assets/**/account.png"]
               },
               {
                 "glob": "scene-manifest.json",

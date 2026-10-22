@@ -1,10 +1,7 @@
 export type HomepageArtworkTheme = 'minecraft' | 'light' | 'raccoon' | 'dark';
 
 export type HomepageLayerKind =
-  | 'inferred-hidden-fill'
-  | 'source-visible-background'
-  | 'source-visible'
-  | 'source-visible-edge';
+  'inferred-hidden-fill' | 'source-visible-background' | 'source-visible' | 'source-visible-edge';
 
 export interface HomepageSceneAsset {
   readonly id: string;
@@ -30,12 +27,7 @@ export interface HomepageSceneManifest {
   readonly themes: Readonly<Record<HomepageArtworkTheme, HomepageThemeManifest>>;
 }
 
-const artworkThemes: readonly HomepageArtworkTheme[] = [
-  'minecraft',
-  'light',
-  'raccoon',
-  'dark',
-];
+const artworkThemes: readonly HomepageArtworkTheme[] = ['minecraft', 'light', 'raccoon', 'dark'];
 
 const layerKinds: readonly HomepageLayerKind[] = [
   'inferred-hidden-fill',
@@ -161,7 +153,10 @@ function parseAsset(
   };
 }
 
-function validateParentChains(theme: HomepageArtworkTheme, assets: readonly HomepageSceneAsset[]): void {
+function validateParentChains(
+  theme: HomepageArtworkTheme,
+  assets: readonly HomepageSceneAsset[],
+): void {
   const byId = new Map(assets.map((asset) => [asset.id, asset]));
   for (const asset of assets) {
     const visited = new Set([asset.id]);

@@ -8,9 +8,9 @@ describe('homepage scene manifest', () => {
 
     expect(manifest.canvas).toEqual({ width: 1672, height: 941 });
     expect(Object.keys(manifest.themes)).toEqual(['minecraft', 'light', 'raccoon', 'dark']);
-    expect(Object.values(manifest.themes).reduce((sum, theme) => sum + theme.assets.length, 0)).toBe(
-      331,
-    );
+    expect(
+      Object.values(manifest.themes).reduce((sum, theme) => sum + theme.assets.length, 0),
+    ).toBe(331);
     expect(manifest.groups).toHaveProperty('washer');
     expect(manifest.themes.minecraft.assets[0]?.id).toBe('room-hidden-fill');
   });

@@ -26,9 +26,7 @@ interface SceneBounds {
   readonly bottom: number;
 }
 
-export function buildHomepageSceneGraph(
-  assets: readonly HomepageSceneAsset[],
-): HomepageSceneGraph {
+export function buildHomepageSceneGraph(assets: readonly HomepageSceneAsset[]): HomepageSceneGraph {
   const assetsById = new Map(assets.map((asset) => [asset.id, asset]));
   const boundsById = new Map<string, SceneBounds>();
 
@@ -49,9 +47,7 @@ export function buildHomepageSceneGraph(
 
   return {
     layers,
-    anchors: new Map(
-      [...boundsById].map(([id, bounds]) => [id, center(bounds)]),
-    ),
+    anchors: new Map([...boundsById].map(([id, bounds]) => [id, center(bounds)])),
   };
 }
 

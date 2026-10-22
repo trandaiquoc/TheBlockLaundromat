@@ -17,7 +17,8 @@ if (!existsSync(join(webRoot, 'index.html'))) {
 await mkdir(screenshots, { recursive: true });
 const profile = await mkdtemp(join(artifacts, 'preview-profile-'));
 const artifactPrefix = artifacts + sep;
-if (!resolve(profile).startsWith(artifactPrefix)) throw new Error('Browser profile escaped artifacts.');
+if (!resolve(profile).startsWith(artifactPrefix))
+  throw new Error('Browser profile escaped artifacts.');
 
 const server = createServer((request, response) => {
   const url = new URL(request.url ?? '/', 'http://127.0.0.1');
@@ -28,9 +29,10 @@ const server = createServer((request, response) => {
     response.end();
     return;
   }
-  const file = existsSync(requestedFile) && statSync(requestedFile).isFile()
-    ? requestedFile
-    : join(webRoot, 'index.html');
+  const file =
+    existsSync(requestedFile) && statSync(requestedFile).isFile()
+      ? requestedFile
+      : join(webRoot, 'index.html');
   response.writeHead(200, {
     'content-type': contentType(file),
     'cache-control': 'no-store',
@@ -67,37 +69,60 @@ try {
     await settleViewport(session);
     await verifyLayout(session, 1440, 900, 'desktop');
     await capture(session, screenshots, `${theme}-1440x900.png`, screenshotsTaken);
+
+    await session.setViewport(1366, 768);
+    await settleViewport(session);
+    await verifyLayout(session, 1366, 768, 'desktop');
+
+    await session.setViewport(1280, 720);
+    await settleViewport(session);
+    await verifyLayout(session, 1280, 720, 'desktop');
+
     await session.setViewport(1672, 941);
     await settleViewport(session);
   }
 
-  await session.evaluate("document.querySelector('[data-locale=\"vi\"]').click()");
+  await session.evaluate('document.querySelector(\'[data-locale="vi"]\').click()');
   const localeState = await waitForLocale(session, 'vi');
   if (!localeState.localizedDescription || localeState.theme !== 'dark') {
-    throw new Error(`Vietnamese locale changed unexpected Homepage state: ${JSON.stringify(localeState)}.`);
+    throw new Error(
+      `Vietnamese locale changed unexpected Homepage state: ${JSON.stringify(localeState)}.`,
+    );
   }
-  await session.evaluate("document.querySelector('[data-locale=\"en\"]').click()");
+  await session.evaluate('document.querySelector(\'[data-locale="en"]\').click()');
   await waitForLocale(session, 'en');
 
   await session.evaluate("document.querySelector('.settings-button').click()");
-  const settingsOpened = await session.evaluate("Boolean(document.querySelector('.settings-dialog[role=dialog]'))");
+  const settingsOpened = await session.evaluate(
+    "Boolean(document.querySelector('.settings-dialog[role=dialog]'))",
+  );
   if (!settingsOpened) throw new Error('Settings did not open from the Homepage controls.');
   await session.evaluate("document.querySelector('.settings-close').click()");
-  await waitForCondition(session, "!document.querySelector('.settings-dialog')", 'Settings did not close.');
+  await waitForCondition(
+    session,
+    "!document.querySelector('.settings-dialog')",
+    'Settings did not close.',
+  );
 
   await session.evaluate("document.querySelector('.account-card').click()");
-  const accountOpened = await session.evaluate("document.querySelector('.account-card')?.getAttribute('aria-expanded') === 'true'");
+  const accountOpened = await session.evaluate(
+    "document.querySelector('.account-card')?.getAttribute('aria-expanded') === 'true'",
+  );
   if (!accountOpened) throw new Error('The account menu did not open.');
-  await session.evaluate("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))");
+  await session.evaluate(
+    "document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))",
+  );
   await waitForCondition(
     session,
     "document.querySelector('.account-card')?.getAttribute('aria-expanded') === 'false'",
     'The account menu did not close on Escape.',
   );
-  await session.evaluate('document.activeElement instanceof HTMLElement && document.activeElement.blur()');
+  await session.evaluate(
+    'document.activeElement instanceof HTMLElement && document.activeElement.blur()',
+  );
 
   await session.evaluate('performance.clearResourceTimings()');
-  await session.evaluate("document.querySelector('[data-theme-option=\"craft\"]').click()");
+  await session.evaluate('document.querySelector(\'[data-theme-option="craft"]\').click()');
   await waitForPreview(session, 60_000, 'craft');
   await verifyThemeRequests(session, 'craft');
   await session.setViewport(390, 844, 1, true);
@@ -110,7 +135,36 @@ try {
   await verifyLayout(session, 320, 700, 'mobile');
   await capture(session, screenshots, 'craft-mobile-320x700.png', screenshotsTaken);
 
-  console.log('Homepage browser verification passed: four-theme switching, selected-theme-only image requests, EN/VI, Settings, account keyboard close, responsive framing, and overflow checks.');
+  await session.setViewport(1440, 900);
+  await session.evaluate("location.assign('/')");
+  await waitForCondition(
+    session,
+    "location.pathname === '/' && Boolean(document.querySelector('.project-page'))",
+    'The traditional Project Screen did not load at /.',
+    30_000,
+  );
+  const projectScreen = await session.evaluate(`(() => ({
+    hasProjectCreation: Boolean(document.querySelector('.project-form .create-action')),
+    hasStructureAndBackupImports:
+      document.querySelectorAll('.project-form .structure-json-create-action').length === 2,
+    hasRecentProjects: Boolean(document.querySelector('.project-page .recent-projects')),
+    hasPreview: Boolean(document.querySelector('.homepage-preview')),
+  }))()`);
+  if (
+    !projectScreen.hasProjectCreation ||
+    !projectScreen.hasStructureAndBackupImports ||
+    !projectScreen.hasRecentProjects ||
+    projectScreen.hasPreview
+  ) {
+    throw new Error(
+      `The default Project Screen did not retain its existing structure: ${JSON.stringify(projectScreen)}.`,
+    );
+  }
+  await capture(session, screenshots, 'project-screen-root.png', screenshotsTaken);
+
+  console.log(
+    'Browser verification passed: 2D preview, four themes, selected-theme-only image requests, EN/VI, Settings, account keyboard close, all required viewport sizes, and the traditional Project Screen at /.',
+  );
   console.log(`Screenshots: ${screenshotsTaken.join(', ')}`);
 } finally {
   await session?.close();
@@ -157,7 +211,9 @@ async function verifyThemeRequests(session, theme) {
     };
   })()`);
   if (result.count === 0 || !result.onlySelectedTheme) {
-    throw new Error(`The ${theme} selection fetched unexpected theme layers: ${JSON.stringify(result)}.`);
+    throw new Error(
+      `The ${theme} selection fetched unexpected theme layers: ${JSON.stringify(result)}.`,
+    );
   }
 }
 
@@ -196,7 +252,9 @@ async function capture(session, directory, name, captured) {
 }
 
 async function settleViewport(session) {
-  await session.evaluate('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))');
+  await session.evaluate(
+    'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
+  );
   await waitForCondition(
     session,
     "document.querySelector('.homepage-preview__scene-window')?.getAttribute('aria-busy') === 'false'",
@@ -208,7 +266,9 @@ async function waitForCondition(session, expression, message, timeoutMs = 10_000
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (await session.evaluate(expression)) return;
-    const failure = await session.evaluate("document.querySelector('[role=alert]')?.textContent?.trim() ?? null");
+    const failure = await session.evaluate(
+      "document.querySelector('[role=alert]')?.textContent?.trim() ?? null",
+    );
     if (failure) throw new Error(`Homepage reported a rendering error: ${failure}`);
     await new Promise((resolveWait) => setTimeout(resolveWait, 100));
   }

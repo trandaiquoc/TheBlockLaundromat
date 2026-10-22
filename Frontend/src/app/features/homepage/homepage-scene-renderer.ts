@@ -26,13 +26,7 @@ export function drawHomepageScene(
     for (const node of layer.transformPath) {
       applyTransform(context, node, transforms.get(node.id));
     }
-    context.drawImage(
-      image,
-      layer.asset.x,
-      layer.asset.y,
-      layer.asset.width,
-      layer.asset.height,
-    );
+    context.drawImage(image, layer.asset.x, layer.asset.y, layer.asset.width, layer.asset.height);
     context.restore();
   }
 }
