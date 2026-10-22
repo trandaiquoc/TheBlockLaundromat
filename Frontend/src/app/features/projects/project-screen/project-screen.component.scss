@@ -89,6 +89,18 @@
 .home-preview .recent-projects {
   background: var(--surface-floating);
 }
+:host-context([data-theme='craft']) .home-preview .recent-projects {
+  --surface: #f4dbb3;
+  --surface-raised: #f7e9cf;
+  --surface-muted: #f6e6c9;
+  --surface-hover: #f1d9ad;
+  --text: #3c2b1e;
+  --text-muted: #6c513c;
+  --border: #b7804b;
+  --border-strong: #97643c;
+  background: #edcc9b;
+  color: var(--text);
+}
 @media (max-width: 700px) {
   .home-preview .home-preview-brand {
     display: none;

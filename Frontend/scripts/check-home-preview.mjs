@@ -45,9 +45,15 @@ try {
   let nextId = 0;
   const pending = new Map();
   const requests = [];
+  const runtimeErrors = [];
   socket.addEventListener('message', (event) => {
     const message = JSON.parse(event.data);
     if (message.method === 'Network.requestWillBeSent') requests.push(message.params.request.url);
+    if (message.method === 'Runtime.exceptionThrown')
+      runtimeErrors.push(
+        message.params.exceptionDetails.exception?.description ??
+          message.params.exceptionDetails.text,
+      );
     if (message.id && pending.has(message.id)) {
       const { resolve, reject } = pending.get(message.id);
       pending.delete(message.id);
@@ -86,6 +92,7 @@ try {
     { theme: 'light', width: 1280, height: 720 },
     { theme: 'raccoon', width: 1280, height: 720 },
     { theme: 'dark', width: 1280, height: 720 },
+    { theme: 'craft', width: 1672, height: 941 },
     { theme: 'craft', width: 1366, height: 768 },
     { theme: 'craft', width: 390, height: 844 },
     { theme: 'craft', width: 320, height: 700 },
@@ -105,7 +112,14 @@ try {
       ready = await evaluate(`!!document.querySelector('app-home-scene canvas')?.dataset.theme`);
       if (ready) break;
     }
-    if (!ready) throw new Error(`Homepage canvas did not render at ${check.width}x${check.height}`);
+    if (!ready) {
+      const pageState = await evaluate(
+        `({url: location.href, title: document.title, scene: !!document.querySelector('app-home-scene'), canvas: !!document.querySelector('app-home-scene canvas'), alert: document.querySelector('[role="alert"]')?.textContent?.trim(), text: document.body?.innerText?.slice(0, 250)})`,
+      );
+      throw new Error(
+        `Homepage canvas did not render at ${check.width}x${check.height}: ${JSON.stringify(pageState)} ${runtimeErrors.join(' | ')}`,
+      );
+    }
     await evaluate(`document.querySelector('[data-theme-option="${check.theme}"]').click()`);
     for (let attempt = 0; attempt < 30; attempt++) {
       await delay(200);
@@ -139,6 +153,9 @@ try {
     const valid =
       state.canvas &&
       Number(state.canvas.drawCalls) > 0 &&
+      Number(state.canvas.drawCalls) <= 150 &&
+      Number(state.canvas.triangles) <= 200000 &&
+      Number(state.canvas.estimatedTextureMiB) > 0 &&
       state.scrollWidth <= check.width &&
       state.controls.left >= 0 &&
       state.controls.right <= check.width &&
@@ -172,7 +189,7 @@ try {
     );
     await delay(180);
     const metrics = await evaluate(
-      `(() => { const { dataset } = document.querySelector('app-home-scene canvas'); return { calls: Number(dataset.drawCalls), triangles: Number(dataset.triangles), textures: Number(dataset.textureCount), geometries: Number(dataset.geometryCount) }; })()`,
+      `(() => { const { dataset } = document.querySelector('app-home-scene canvas'); return { calls: Number(dataset.drawCalls), triangles: Number(dataset.triangles), textures: Number(dataset.textureCount), geometries: Number(dataset.geometryCount), estimatedTextureMiB: Number(dataset.estimatedTextureMiB), renderMs: Number(dataset.renderMs) }; })()`,
     );
     const newRequests = requests
       .slice(requestStart)
@@ -291,6 +308,8 @@ try {
           calls: state.canvas?.drawCalls,
           triangles: state.canvas?.triangles,
           textures: state.canvas?.textureCount,
+          estimatedTextureMiB: state.canvas?.estimatedTextureMiB,
+          renderMs: state.canvas?.renderMs,
           scrollWidth: state.scrollWidth,
           minControlFont: state.minControlFont,
         })),

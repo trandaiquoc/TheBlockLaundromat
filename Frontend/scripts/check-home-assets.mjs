@@ -20,6 +20,14 @@ const expectedDetails = [
   'basket-body',
   'raccoon-standing',
   'raccoon-seated',
+  'shelf-bottles-green',
+  'shelf-bottles-lower',
+  'shelf-bottles-top',
+  'shelf-towels-upper',
+  'shelf-towels-lower',
+  'board-grass-planter',
+  'washer-towel-green',
+  'vine-right',
 ];
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const png = (path) => {
@@ -36,6 +44,18 @@ const countFiles = (directory) =>
 
 if (existsSync(join(frontend, 'public/assets/homepage/source')))
   throw new Error('Source package is still inside Angular public');
+for (const [name, expectedHash] of [
+  ['plaster', 'd6e358a806e1e70da269676e5d0fd4624d75854d8aa1f2e0af8f44383eabf133'],
+  ['wood-grain', '551221deab78694e6c8ebc5e4b4e1c5059eac80308002626ad409f7f61097051'],
+]) {
+  const material = png(join(runtime, 'shared', `${name}.png`));
+  if (
+    sha256(material) !== expectedHash ||
+    material.readUInt32BE(16) !== 1254 ||
+    material.readUInt32BE(20) !== 1254
+  )
+    throw new Error(`Shared ${name} texture differs from the selected generated material`);
+}
 let layers = 0;
 for (const [theme, themeManifest] of Object.entries(manifest.themes)) {
   const reference = png(join(source, themeManifest.source));
@@ -55,12 +75,12 @@ for (const [theme, themeManifest] of Object.entries(manifest.themes)) {
       throw new Error(`Runtime detail differs: ${theme}/${name}`);
   }
 }
-if (layers !== 331 || countFiles(source) !== 618 || countFiles(runtime) !== 48) {
+if (layers !== 331 || countFiles(source) !== 618 || countFiles(runtime) !== 82) {
   throw new Error('Homepage source/runtime inventory changed unexpectedly');
 }
 const dist = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage');
 if (existsSync(dist) && existsSync(join(dist, 'source')))
   throw new Error('Source package leaked into production dist');
 console.log(
-  'Homepage assets: 331 source layer hashes, 4 canonical references, 48 runtime PNGs, and production exclusion verified.',
+  'Homepage assets: 331 source layer hashes, 4 canonical references, 82 runtime PNGs, and production exclusion verified.',
 );

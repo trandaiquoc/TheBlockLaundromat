@@ -21,6 +21,7 @@ import {
   Raycaster,
   Scene,
   SphereGeometry,
+  SpotLight,
   SRGBColorSpace,
   RepeatWrapping,
   Texture,
@@ -119,6 +120,14 @@ const detailNames = [
   'basket-body',
   'raccoon-standing',
   'raccoon-seated',
+  'shelf-bottles-green',
+  'shelf-bottles-lower',
+  'shelf-bottles-top',
+  'shelf-towels-upper',
+  'shelf-towels-lower',
+  'board-grass-planter',
+  'washer-towel-green',
+  'vine-right',
 ] as const;
 type DetailName = (typeof detailNames)[number];
 
@@ -127,6 +136,7 @@ export interface HomeSceneMetrics {
   readonly triangles: number;
   readonly textures: number;
   readonly geometries: number;
+  readonly estimatedTextureMiB: number;
 }
 
 export interface HomeBoardRect {
@@ -148,9 +158,12 @@ export class HomeSceneView {
   private readonly detailSurfaces = new Map<DetailName, Mesh>();
   private readonly paintedTextures = new Map<MaterialRole, CanvasTexture>();
   private exteriorTexture?: CanvasTexture;
+  private plasterTexture?: Texture;
+  private woodGrainTexture?: Texture;
   private readonly moon = new DirectionalLight('#b3d4ff', 0);
   private readonly sun = new DirectionalLight('#fff0c0', 2);
   private readonly lamp = new PointLight('#ffc86b', 0, 20);
+  private readonly sunbeam = new SpotLight('#ffd4a1', 0, 30, Math.PI / 5, 0.65);
   private readonly bulbs: MeshStandardMaterial[] = [];
   private readonly resizeObserver: ResizeObserver;
   private activeTextures: Texture[] = [];
@@ -178,7 +191,16 @@ export class HomeSceneView {
     this.sun.shadow.camera.bottom = -12;
     this.moon.position.set(8, 8, -10);
     this.lamp.position.set(-1, 8, 1);
-    this.scene.add(new AmbientLight('#ffffff', 0.8), this.sun, this.moon, this.lamp);
+    this.sunbeam.position.set(-7.5, 7.5, -1);
+    this.sunbeam.target.position.set(0, 0, 3);
+    this.scene.add(
+      new AmbientLight('#ffffff', 0.8),
+      this.sun,
+      this.moon,
+      this.lamp,
+      this.sunbeam,
+      this.sunbeam.target,
+    );
     this.buildRoom();
     this.buildWasher();
     this.buildBoard();
@@ -200,6 +222,8 @@ export class HomeSceneView {
     const paths = detailNames.map(
       (name) => `assets/homepage/runtime/${theme === 'craft' ? 'minecraft' : theme}/${name}.png`,
     );
+    if (!this.plasterTexture) paths.push('assets/homepage/runtime/shared/plaster.png');
+    if (!this.woodGrainTexture) paths.push('assets/homepage/runtime/shared/wood-grain.png');
     const loaded = await Promise.allSettled(
       paths.map((path) => this.loadTexture(path, loadAbort.signal)),
     );
@@ -218,6 +242,22 @@ export class HomeSceneView {
     if (this.disposed || epoch !== this.epoch) {
       textures.forEach((texture) => texture.dispose());
       return;
+    }
+    const woodGrain = this.woodGrainTexture ? undefined : textures.pop();
+    if (woodGrain) {
+      this.woodGrainTexture = woodGrain;
+      woodGrain.center.set(0.5, 0.5);
+      woodGrain.rotation = Math.PI / 2;
+      const floor = this.material('floor');
+      floor.map = woodGrain;
+      floor.needsUpdate = true;
+    }
+    const plaster = this.plasterTexture ? undefined : textures.pop();
+    if (plaster) {
+      this.plasterTexture = plaster;
+      const wall = this.material('wall');
+      wall.map = plaster;
+      wall.needsUpdate = true;
     }
     textures.forEach((texture, index) => {
       texture.colorSpace = SRGBColorSpace;
@@ -252,6 +292,7 @@ export class HomeSceneView {
     this.sun.intensity = theme === 'dark' ? 0 : theme === 'raccoon' ? 1.35 : 2;
     this.moon.intensity = theme === 'dark' ? 1.65 : 0;
     this.lamp.intensity = theme === 'dark' ? 0 : 1.15;
+    this.sunbeam.intensity = theme === 'dark' ? 0 : theme === 'raccoon' ? 65 : 180;
     this.bulbs.forEach((bulb) => {
       bulb.color.set(theme === 'dark' ? '#263644' : '#ffe6a6');
       bulb.emissiveIntensity = theme === 'dark' ? 0 : 2.5;
@@ -270,11 +311,23 @@ export class HomeSceneView {
   }
 
   getMetrics(): HomeSceneMetrics {
+    const textures = [
+      ...this.activeTextures,
+      ...this.paintedTextures.values(),
+      this.exteriorTexture,
+      this.plasterTexture,
+      this.woodGrainTexture,
+    ];
+    const estimatedTextureBytes = textures.reduce((total, texture) => {
+      const image = texture?.image as { width?: number; height?: number } | undefined;
+      return total + (image?.width ?? 0) * (image?.height ?? 0) * 4 * (4 / 3);
+    }, 0);
     return {
       calls: this.renderer.info.render.calls,
       triangles: this.renderer.info.render.triangles,
       textures: this.renderer.info.memory.textures,
       geometries: this.renderer.info.memory.geometries,
+      estimatedTextureMiB: Math.round((estimatedTextureBytes / 1048576) * 100) / 100,
     };
   }
 
@@ -311,6 +364,8 @@ export class HomeSceneView {
     this.activeTextures.forEach((texture) => texture.dispose());
     this.paintedTextures.forEach((texture) => texture.dispose());
     this.exteriorTexture?.dispose();
+    this.plasterTexture?.dispose();
+    this.woodGrainTexture?.dispose();
     this.sun.shadow.map?.dispose();
     this.renderer.dispose();
   }
@@ -333,8 +388,8 @@ export class HomeSceneView {
   private material(role: MaterialRole): MeshStandardMaterial {
     let material = this.materials.get(role);
     if (!material) {
-      const map = this.paintSurface(role);
-      this.paintedTextures.set(role, map);
+      const map = role === 'wall' || role === 'floor' ? undefined : this.paintSurface(role);
+      if (map) this.paintedTextures.set(role, map);
       material = new MeshStandardMaterial({
         color: palettes.craft[role],
         map,
@@ -460,42 +515,62 @@ export class HomeSceneView {
         positions,
       );
     }
-    this.box(room, 'wall.left', 'wall', 0.38, 9, 12, -8, 4.5, 0);
-    this.box(room, 'wall.right', 'wall', 0.38, 9, 12, 8, 4.5, 0);
+    this.box(room, 'wall.left.back', 'wall', 0.38, 9, 4.4, -8, 4.5, -3.8);
+    this.box(room, 'wall.left.front', 'wall', 0.38, 9, 4.4, -8, 4.5, 3.8);
+    this.box(room, 'wall.left.above-door', 'wall', 0.38, 2.5, 3.2, -8, 7.75, 0);
+    this.box(room, 'wall.right.back', 'wall', 0.38, 9, 2.4, 8, 4.5, -4.8);
+    this.box(room, 'wall.right.front', 'wall', 0.38, 9, 4.8, 8, 4.5, 3.6);
+    this.box(room, 'wall.right.below-window', 'wall', 0.38, 2.35, 4.8, 8, 1.175, -1.2);
+    this.box(room, 'wall.right.above-window', 'wall', 0.38, 2.5, 4.8, 8, 7.75, -1.2);
     this.box(room, 'ceiling', 'woodDark', 16, 0.3, 12, 0, 9, 0);
     for (let z = -5.8; z <= 5.8; z += 3.8)
       this.box(room, `ceiling.beam.${z}`, 'wood', 16, 0.42, 0.5, 0, 8.72, z);
-    // The rear wall has physical door and window gaps; exterior sits behind them.
-    this.box(room, 'wall.rear.left', 'wall', 1, 9, 0.35, -7.5, 4.5, -6);
-    this.box(room, 'wall.rear.middle', 'wall', 8.2, 9, 0.35, -0.3, 4.5, -6);
-    this.box(room, 'wall.rear.right', 'wall', 1, 9, 0.35, 7.5, 4.5, -6);
-    this.box(room, 'wall.over-door', 'wall', 2.3, 2.6, 0.35, -5.85, 7.7, -6);
-    this.box(room, 'wall.below-window', 'wall', 3.8, 2.35, 0.35, 5.35, 1.175, -6);
-    this.box(room, 'wall.above-window', 'wall', 3.8, 2.5, 0.35, 5.35, 7.75, -6);
+    // Physical apertures in the side walls reveal the exterior.
+    this.box(room, 'wall.rear', 'wall', 16, 9, 0.35, 0, 4.5, -6);
+    const wallTimbers = [
+      { position: new Vector3(-7.75, 4.5, -5.65), scale: new Vector3(0.32, 9, 0.38) },
+      { position: new Vector3(-4.5, 4.5, -5.65), scale: new Vector3(0.32, 9, 0.38) },
+      { position: new Vector3(3.25, 4.5, -5.65), scale: new Vector3(0.32, 9, 0.38) },
+      { position: new Vector3(7.75, 4.5, -5.65), scale: new Vector3(0.32, 9, 0.38) },
+      { position: new Vector3(0, 8.52, -5.65), scale: new Vector3(16, 0.38, 0.38) },
+      { position: new Vector3(0, 0.66, -5.65), scale: new Vector3(8.2, 1.32, 0.38) },
+    ];
+    this.instances(room, 'wall.timbers', new BoxGeometry(1, 1, 1), 'wood', wallTimbers);
     const exterior = this.group('exterior');
     exterior.name = 'exterior';
     const sky = this.box(exterior, 'exterior.sky', 'glass', 16, 9, 0.1, 0, 4.5, -8);
     sky.material = new MeshStandardMaterial({ color: '#ffffff', roughness: 1, side: DoubleSide });
-    this.paintedSurface(
+    const sideSky = this.box(exterior, 'exterior.side-sky', 'glass', 0.1, 9, 12, -9.2, 4.5, 0);
+    sideSky.material = sky.material;
+    const rightSky = this.box(exterior, 'exterior.right-sky', 'glass', 0.1, 9, 12, 9.2, 4.5, 0);
+    rightSky.material = sky.material;
+    const doorPainting = this.paintedSurface(
       exterior,
       'exterior.door-painting',
       'outside-door',
-      2.4,
+      2.85,
       6.35,
-      -5.85,
+      -8.2,
       3.18,
-      -6.85,
+      -0.7,
     );
-    this.paintedSurface(
+    doorPainting.rotation.y = 0.6;
+    const windowPainting = this.paintedSurface(
       exterior,
       'exterior.window-painting',
       'outside-window',
-      3.2,
+      5.4,
       4.4,
-      5.35,
+      8.65,
       4.35,
-      -6.85,
+      -0.85,
     );
+    windowPainting.rotation.y = -0.6;
+    const windowUvs = windowPainting.geometry.getAttribute('uv');
+    for (let index = 0; index < windowUvs.count; index++) {
+      windowUvs.setX(index, 0.52 + windowUvs.getX(index) * 0.48);
+    }
+    windowUvs.needsUpdate = true;
     for (let i = 0; i < 7; i++) {
       const tree = this.add(
         exterior,
@@ -509,28 +584,32 @@ export class HomeSceneView {
       tree.castShadow = false;
     }
     const door = this.group('room.door-opening', room);
-    door.position.set(-5.85, 0, -5.65);
+    door.position.set(-7.78, 0, 0);
+    door.rotation.y = 0.6;
+    door.scale.x = 1.15;
     this.paintedSurface(door, 'door.painted-awning', 'awning', 2.8, 1.35, 0, 6.95, 0.48);
     this.box(door, 'door.jamb.left', 'woodDark', 0.28, 6.5, 0.4, -1.2, 3.25, 0);
     this.box(door, 'door.jamb.right', 'woodDark', 0.28, 6.5, 0.4, 1.2, 3.25, 0);
     this.box(door, 'door.lintel', 'wood', 2.7, 0.32, 0.45, 0, 6.5, 0);
-    const leaf = this.box(door, 'door.leaf', 'wood', 1.85, 5.9, 0.18, -1.05, 2.95, 0.75);
+    const leaf = this.box(door, 'door.leaf', 'wood', 1.05, 5.9, 0.18, -1.25, 2.95, 0.45);
     leaf.castShadow = true;
-    leaf.rotation.y = -0.78;
+    leaf.rotation.y = -0.1;
     for (let y = 1.5; y < 5.8; y += 1.45)
       this.box(
         door,
         `door.crosspiece.${y}`,
         'woodDark',
-        1.8,
+        1.05,
         0.16,
         0.24,
-        -1.05,
+        -1.25,
         y,
-        0.88,
-      ).rotation.y = -0.78;
+        0.57,
+      ).rotation.y = -0.1;
     const window = this.group('room.window-opening', room);
-    window.position.set(5.35, 4.35, -5.6);
+    window.position.set(7.78, 4.35, -0.4);
+    window.rotation.y = -0.6;
+    window.scale.x = 1.3;
     this.box(window, 'window.frame.left', 'woodDark', 0.28, 4.2, 0.48, -2, 0, 0);
     this.box(window, 'window.frame.right', 'woodDark', 0.28, 4.2, 0.48, 2, 0, 0);
     this.box(window, 'window.frame.top', 'woodDark', 4.25, 0.3, 0.48, 0, 2.1, 0);
@@ -539,6 +618,7 @@ export class HomeSceneView {
       this.box(window, `window.mullion.${x}`, 'wood', 0.16, 4, 0.3, x, 0, 0.2);
     this.box(window, 'window.crossbar', 'wood', 4, 0.17, 0.3, 0, 0.35, 0.2);
     this.paintedSurface(room, 'wall.chalkboard', 'chalkboard', 0.95, 1.9, -3.65, 5.55, -5.62);
+    this.paintedSurface(room, 'wall.hanging-vine', 'vine-right', 1.6, 2.5, 6.6, 7.5, -5.3);
     for (const x of [-3.8, 3.7]) {
       const light = this.group(`lamp.${x}`, room);
       light.position.set(x, 8.7, 1.7);
@@ -615,8 +695,7 @@ export class HomeSceneView {
       }
     } else {
       for (let i = 0; i < 1300; i++) {
-        const shade = role === 'wall' ? 'rgba(104,71,51,.075)' : 'rgba(68,61,49,.10)';
-        ctx.fillStyle = shade;
+        ctx.fillStyle = 'rgba(68,61,49,.10)';
         ctx.beginPath();
         ctx.ellipse(
           random() * 256,
@@ -629,7 +708,7 @@ export class HomeSceneView {
         );
         ctx.fill();
       }
-      if (role === 'wall' || role === 'linen') {
+      if (role === 'linen') {
         for (let i = 0; i < 36; i++) {
           ctx.strokeStyle = 'rgba(255,255,255,.16)';
           ctx.lineWidth = 3 + random() * 8;
@@ -801,11 +880,21 @@ export class HomeSceneView {
         ),
       })),
     );
+    this.paintedSurface(
+      top,
+      'washer.folded-towel-detail',
+      'washer-towel-green',
+      1.25,
+      0.58,
+      -0.52,
+      0.24,
+      0.65,
+    );
   }
 
   private buildBoard(): void {
     const board = this.group('board');
-    board.position.set(2.3, 3.35, -3.6);
+    board.position.set(3.45, 3.35, -3.6);
     this.box(board, 'board.substrate', 'woodDark', 7.55, 5.3, 0.4, 0, 0, 0.12).castShadow = true;
     this.box(board, 'board.surface', 'wood', 7.1, 4.86, 0.08, 0, 0, 0.24);
     for (const x of [-3.7, 3.7])
@@ -822,6 +911,17 @@ export class HomeSceneView {
       1.75,
       2.75,
       0.55,
+    );
+    this.box(board, 'board.planter.support', 'wood', 1.05, 0.34, 0.7, -2.3, 2.84, 0.25);
+    this.paintedSurface(
+      board,
+      'board.planter-detail',
+      'board-grass-planter',
+      1.08,
+      0.86,
+      -2.3,
+      3.05,
+      0.65,
     );
   }
 
@@ -877,6 +977,16 @@ export class HomeSceneView {
     });
     this.detailSurfaces.set('shelf-wood', paintedFront);
     this.paintedSurface(shelf, 'shelf.painted-vine', 'vine-left', 1.25, 3.1, 0.05, 5.18, 1.02);
+    const shelfDetails = [
+      ['shelf-bottles-top', 0.55, 5.6, 0.7, 0.5],
+      ['shelf-bottles-green', 0.36, 4.15, 0.8, 0.76],
+      ['shelf-bottles-lower', 0.05, 2.75, 1.3, 0.82],
+      ['shelf-towels-upper', -0.55, 4.14, 0.55, 0.78],
+      ['shelf-towels-lower', -0.4, 1.45, 0.95, 0.86],
+    ] as const;
+    for (const [detail, x, y, width, height] of shelfDetails) {
+      this.paintedSurface(shelf, `shelf.detail.${detail}`, detail, width, height, x, y, 1.06);
+    }
   }
 
   private buildBasket(): void {
@@ -1022,12 +1132,17 @@ export class HomeSceneView {
     if (this.frame || this.disposed) return;
     this.frame = requestAnimationFrame(() => {
       this.frame = 0;
+      const renderStart = performance.now();
       this.renderer.render(this.scene, this.camera);
+      this.canvas.dataset['renderMs'] = String(
+        Math.round((performance.now() - renderStart) * 100) / 100,
+      );
       const metrics = this.getMetrics();
       this.canvas.dataset['drawCalls'] = String(metrics.calls);
       this.canvas.dataset['triangles'] = String(metrics.triangles);
       this.canvas.dataset['textureCount'] = String(metrics.textures);
       this.canvas.dataset['geometryCount'] = String(metrics.geometries);
+      this.canvas.dataset['estimatedTextureMiB'] = String(metrics.estimatedTextureMiB);
     });
   }
 }
