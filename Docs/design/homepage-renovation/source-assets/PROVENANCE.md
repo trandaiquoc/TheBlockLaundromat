@@ -12,7 +12,7 @@
 
 ## Imported source tree
 
-`Frontend/public/assets/homepage/source/` contains 618 files totaling
+`Frontend/source-assets/homepage/` contains 618 files totaling
 55,026,645 bytes:
 
 | Content                                  | Files | Notes                                                                                                                                                                 |
@@ -29,7 +29,7 @@ The complete semantic design/mapping table is maintained separately in
 
 The source package README, source-supplied QA records, and all 37 previews are
 kept in `Docs/design/homepage-renovation/evidence/phase1-source-assets/`;
-they total 54,528,426 bytes. The four source references in `public/` are
+they total 54,528,426 bytes. The four source references in the source package are
 manifest-resolving copies, not replacement canonical documentation images.
 
 ## Integrity checks performed

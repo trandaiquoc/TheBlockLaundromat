@@ -1,9 +1,9 @@
 # Homepage and Project Screen
 
-**Current status:** the Project Screen uses its traditional project-management
-layout. Phase 1 source artwork and a technical design proposal are available
-for a possible future 3D homepage; no scene code loads these assets and no UI
-behavior has changed.
+**Current status:** the default Project Screen keeps its traditional
+project-management layout. An in-progress Three.js prototype is available at
+`/home-preview`; it uses the same Project Screen workflow and has its own
+renderer lifecycle. See [Phase 2 prototype status](phase2-prototype.md).
 
 ## Current screen
 
@@ -33,7 +33,7 @@ application.
 
 Phase 1 keeps the supplied cutouts, masks, repairs, manifest, and four exact
 reference copies under
-[`../../../Frontend/public/assets/homepage/source/`](../../../Frontend/public/assets/homepage/source/).
+[`../../../Frontend/source-assets/homepage/`](../../../Frontend/source-assets/homepage/).
 The existing originals in `../references/` remain unchanged and canonical.
 The public source directory is not consumed by the current Project Screen.
 Inventory and ZIP provenance are in
@@ -41,11 +41,11 @@ Inventory and ZIP provenance are in
 images are retained under
 [`evidence/phase1-source-assets/`](evidence/phase1-source-assets/).
 
-The proposed shared room, semantic asset contracts, theme treatments, future
-workflow boundary, and Phase 2 acceptance criteria are in
+The proposed shared room, semantic asset contracts, theme treatments, workflow
+boundary, and Phase 2 acceptance criteria are in
 [`3d-homepage-spec.md`](3d-homepage-spec.md) and
-[`3d-asset-plan.csv`](3d-asset-plan.csv). They are design artifacts only:
-Phase 1 creates no GLB, renderer, route change, or replacement UI.
+[`3d-asset-plan.csv`](3d-asset-plan.csv). Phase 1 created no GLB, renderer,
+route change, or replacement UI; the new prototype is a separate Phase 2 change.
 
 Dated screenshots and interaction notes under [`evidence/`](evidence/) are
 historical records of earlier Project Screen reviews, not current UI contracts.

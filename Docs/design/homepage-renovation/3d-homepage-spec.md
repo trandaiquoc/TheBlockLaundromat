@@ -1,8 +1,8 @@
 # Phase 1 — 3D Homepage Technical Design
 
-**Status:** design proposal for Phase 2. The current Angular homepage remains
-the traditional Project Screen. This phase imports source artwork and defines
-contracts; it adds no scene, GLB, route, or UI behavior.
+**Status:** Phase 1 design proposal. The traditional Project Screen remains the
+default route. A separate, incomplete Phase 2 browser prototype is documented
+in [phase2-prototype.md](phase2-prototype.md).
 
 ## Goal and boundaries
 
@@ -13,7 +13,7 @@ Project Screen remains the owner of project data and every existing workflow.
 
 Phase 1 does not change the Editor, persistence, Undo/Redo, project formats,
 settings, themes, localization, or account behavior. Source PNGs are stored
-under `Frontend/public/assets/homepage/source/` and are not referenced by the
+under `Frontend/source-assets/homepage/` and are not referenced by the
 application.
 
 ## Decisions and assumptions
@@ -263,10 +263,9 @@ owner of editor camera, renderer, and GPU resources.
   fail on a new material.
 - The board is a dynamic UI plane in perspective. Its font size, focus ring,
   occlusion, and touch targets need browser verification on narrow screens.
-- Putting 55,026,645 bytes of source PNGs under Angular `public/` means the
-  production build copies them into its browser output even though the current
-  app does not load them. Phase 2 should select files by request and review
-  deployment/CDN caching before enabling runtime fetches.
+- Phase 1 initially put 55,026,645 bytes of source PNGs under Angular
+  `public/`. Phase 2 moved them to `Frontend/source-assets/homepage/`; the
+  preview copies only 48 selected detail PNGs into the runtime asset tree.
 - Source-package standalone browser claims were not independently rerun.
   Hardware GPU frame time, exact physical dimensions, mask quality on final
   materials, and browser accessibility remain Phase 2 verification work.
