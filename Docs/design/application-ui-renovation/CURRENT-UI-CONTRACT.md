@@ -93,9 +93,11 @@ existing project-management workflows. It supports inline project creation,
 recent-project search and sorting, Open and Delete actions, validated Structure
 JSON import, project backup import/export, Settings, the local account
 presentation, English and Vietnamese, and all four application themes. The
-four original visual concepts are references only and are not loaded by the
-application. See the [Project Screen contract](../homepage-renovation/README.md)
-for its current responsibilities.
+four canonical reference PNGs are not loaded directly. The separate
+`/homepage-2d-preview` route composes extracted source layers as a static design
+concept and does not connect sample artwork to project data. See the
+[Homepage and Project Screen contract](../homepage-renovation/README.md) for
+its current responsibilities.
 
 ## Verified limits
 

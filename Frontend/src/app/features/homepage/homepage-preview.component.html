@@ -1,0 +1,45 @@
+<main class="homepage-preview">
+  <div
+    #sceneWindow
+    class="homepage-preview__scene-window"
+    [attr.aria-busy]="loading()"
+    [attr.data-load-ms]="metrics()?.loadDurationMs ?? null"
+    [attr.data-render-ms]="metrics()?.renderDurationMs ?? null"
+    [attr.data-encoded-bytes]="metrics()?.encodedBytes ?? null"
+    [attr.data-decoded-bytes-estimate]="metrics()?.decodedBytesEstimate ?? null"
+  >
+    <canvas
+      #sceneCanvas
+      class="homepage-preview__scene"
+      role="img"
+      [attr.aria-label]="i18n.t('homepageSceneDescription')"
+    ></canvas>
+  </div>
+
+  @if (loading()) {
+    <p class="homepage-preview__status" role="status" aria-live="polite">
+      {{ i18n.t('homepageSceneLoading') }}
+    </p>
+  }
+
+  @if (loadFailed()) {
+    <div class="homepage-preview__error" role="alert">
+      <span>{{ i18n.t('homepageSceneLoadFailed') }}</span>
+      <button type="button" (click)="retryLoading()">
+        {{ i18n.t('homepageSceneRetry') }}
+      </button>
+    </div>
+  }
+
+  <div class="homepage-preview__controls">
+    <app-project-screen-controls (settingsRequested)="openSettings()" />
+  </div>
+
+  <div class="homepage-preview__account">
+    <app-project-screen-account />
+  </div>
+
+  @if (settingsDialogOpen()) {
+    <app-settings-dialog (closed)="closeSettings()" />
+  }
+</main>

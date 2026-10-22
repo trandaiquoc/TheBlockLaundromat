@@ -12,5 +12,12 @@ export const routes: Routes = [
       ),
     canDeactivate: [editorCanDeactivate],
   },
+  {
+    path: 'homepage-2d-preview',
+    loadComponent: () =>
+      import('./features/homepage/homepage-preview.component').then(
+        ({ HomepagePreviewComponent }) => HomepagePreviewComponent,
+      ),
+  },
   { path: '**', redirectTo: '' },
 ];

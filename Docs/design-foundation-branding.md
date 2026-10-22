@@ -86,8 +86,9 @@ historical records are documented in
 [Homepage and Project Screen](design/homepage-renovation/README.md).
 
 The reference artwork depicts a project board, washer, logo, raccoons, and
-other illustrated objects. These concepts are retained as design references;
-the application does not load the reference artwork as a scene.
+other illustrated objects. The standalone 2D preview composes the extracted
+layers; it does not load a reference image as a flattened scene or as live
+project data.
 
 ## References
 
@@ -99,13 +100,13 @@ and are not loaded directly by the application:
 3. [Raccoon](design/references/03-raccoon.png)
 4. [Dark](design/references/04-dark.png)
 
-They remain visual references for future design work and shared control
-presentation. Current Project Screen behavior is documented in the
-[Homepage and Project Screen notes](design/homepage-renovation/README.md).
-Layered source cutouts, masks, and the scene manifest are retained under
-`Frontend/source-assets/homepage/` as material for future homepage illustration
-work; the traditional Project Screen does not load them. The former 3D design
-proposal is retired. The original images above remain the canonical references.
+They remain canonical visual references and are not loaded directly by the
+application. Current Project Screen and 2D preview behavior are documented in
+the [Homepage and Project Screen notes](design/homepage-renovation/README.md).
+Layered source cutouts, masks, and the scene manifest are preserved under
+`Frontend/source-assets/homepage/`; the 2D preview build exports only its
+runtime PNG layers and manifest. The traditional Project Screen does not load
+those assets. The former 3D design proposal is retired.
 
 ## Compatibility and Scope
 

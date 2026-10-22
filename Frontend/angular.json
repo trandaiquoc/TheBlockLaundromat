@@ -29,6 +29,20 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "assets/**/*.png",
+                "input": "source-assets/homepage",
+                "output": "assets/homepage/runtime",
+                "ignore": [
+                  "assets/**/navigation.png",
+                  "assets/**/account.png"
+                ]
+              },
+              {
+                "glob": "scene-manifest.json",
+                "input": "source-assets/homepage",
+                "output": "assets/homepage/runtime"
               }
             ],
             "styles": [

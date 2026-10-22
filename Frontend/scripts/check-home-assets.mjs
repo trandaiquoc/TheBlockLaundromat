@@ -136,10 +136,14 @@ const sourceFiles = filesUnder(source);
 const sourceLayerPaths = new Set(
   layerFiles.map((path) => relative(source, path).split(sep).join('/')),
 );
+const semanticIds = new Set(
+  Object.values(manifest.themes).flatMap((theme) => theme.assets.map((asset) => asset.id)),
+);
 if (
   layerCount !== 331 ||
   layerFiles.length !== 331 ||
   manifestLayers.size !== 331 ||
+  semanticIds.size !== 86 ||
   [...sourceLayerPaths].some((path) => !manifestLayers.has(path)) ||
   maskFiles.length !== 282 ||
   referenceFiles.length !== 4 ||
@@ -155,6 +159,44 @@ for (const path of maskFiles) readPng(path, expectedCanvas);
 const distSource = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage/source');
 if (existsSync(distSource)) throw new Error('Source package leaked into production dist');
 
+const distRuntime = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage/runtime');
+let runtimeSummary = 'Production runtime packaging not checked because dist is absent.';
+if (existsSync(distRuntime)) {
+  const expectedRuntime = new Map();
+  for (const theme of Object.values(manifest.themes)) {
+    for (const asset of theme.assets) {
+      if (asset.id === 'navigation' || asset.id === 'account') continue;
+      expectedRuntime.set(asset.file, sourcePath(asset.file));
+    }
+  }
+  const runtimeFiles = filesUnder(distRuntime);
+  const actualRuntimePaths = new Set(
+    runtimeFiles.map((path) => relative(distRuntime, path).split(sep).join('/')),
+  );
+  const expectedRuntimePaths = new Set([...expectedRuntime.keys(), 'scene-manifest.json']);
+  if (
+    actualRuntimePaths.size !== expectedRuntimePaths.size ||
+    [...expectedRuntimePaths].some((path) => !actualRuntimePaths.has(path))
+  ) {
+    throw new Error('Production Homepage runtime contains missing or unexpected files.');
+  }
+
+  const runtimeManifest = readFileSync(join(distRuntime, 'scene-manifest.json'));
+  if (sha256(runtimeManifest) !== sha256(readFileSync(manifestPath))) {
+    throw new Error('Production Homepage runtime manifest differs from the source manifest.');
+  }
+
+  for (const [runtimePath, sourceAssetPath] of expectedRuntime) {
+    const distAssetPath = join(distRuntime, ...runtimePath.split('/'));
+    if (sha256(readFileSync(distAssetPath)) !== sha256(readFileSync(sourceAssetPath))) {
+      throw new Error(`Production Homepage runtime layer differs from source: ${runtimePath}`);
+    }
+  }
+
+  const runtimeBytes = runtimeFiles.reduce((total, path) => total + readFileSync(path).length, 0);
+  runtimeSummary = `Production runtime verified: ${expectedRuntime.size} required layer PNGs and manifest only (${runtimeBytes} bytes; no masks, references, or DOM-replaced control artwork).`;
+}
+
 console.log(
-  'Homepage source assets: 331 layer SHA-256 hashes, 282 masks, manifest paths and PNG dimensions, four canonical references, and production exclusion verified.',
+  `Homepage source assets: 331 layer SHA-256 hashes, 282 masks, 86 semantic IDs, manifest paths and PNG dimensions, four canonical references verified. ${runtimeSummary}`,
 );

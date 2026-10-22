@@ -10,6 +10,8 @@
     "test:tools": "node --test tools/registry-generators.test.mjs",
     "check:encoding": "node scripts/check-frontend-encoding.mjs",
     "check:home-assets": "node scripts/check-home-assets.mjs",
+    "check:home-composition": "node scripts/check-home-composition.mjs",
+    "check:homepage-browser": "node scripts/check-homepage-preview.mjs",
     "benchmark:renderer": "node src/app/core/renderer/benchmark/renderer-benchmark-runner.cjs"
   },
   "private": true,

@@ -643,6 +643,11 @@ export const translations = {
     toolsMenu: 'Tools',
     settingsMenu: 'Settings',
     projectScreenControls: 'Project screen controls',
+    homepageSceneDescription:
+      'Static illustrated homepage concept. Project names and screens shown are artwork, not live project data.',
+    homepageSceneLoading: 'Loading the illustrated homepage…',
+    homepageSceneLoadFailed: 'The homepage illustration could not be loaded.',
+    homepageSceneRetry: 'Retry loading illustration',
     languageEnglish: 'English',
     languageVietnamese: 'Vietnamese',
     themeMinecraft: 'Minecraft',
@@ -1648,6 +1653,11 @@ export const translations = {
     toolsMenu: 'Công cụ',
     settingsMenu: 'Cài đặt',
     projectScreenControls: 'Tùy chọn màn hình dự án',
+    homepageSceneDescription:
+      'Bản minh họa Homepage tĩnh. Tên dự án và màn hình trong tranh là artwork, không phải dữ liệu dự án thật.',
+    homepageSceneLoading: 'Đang tải minh họa Homepage…',
+    homepageSceneLoadFailed: 'Không thể tải minh họa Homepage.',
+    homepageSceneRetry: 'Thử tải lại minh họa',
     languageEnglish: 'Tiếng Anh',
     languageVietnamese: 'Tiếng Việt',
     themeMinecraft: 'Minecraft',

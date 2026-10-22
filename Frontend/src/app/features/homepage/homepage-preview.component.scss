@@ -1,0 +1,138 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.homepage-preview {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--app-bg);
+}
+
+.homepage-preview__scene-window {
+  position: absolute;
+  inset: 4.75rem 1rem 6.45rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.homepage-preview__scene {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: min(calc(100vw - 2rem), calc((100svh - 11.2rem) * 1672 / 941));
+  height: auto;
+  aspect-ratio: 1672 / 941;
+  transform: translate(-50%, -50%);
+}
+
+.homepage-preview__controls {
+  position: absolute;
+  z-index: 2;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  max-width: calc(100% - 2rem);
+}
+
+.homepage-preview__account {
+  position: absolute;
+  z-index: 2;
+  left: max(1rem, env(safe-area-inset-left));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  max-width: calc(100% - 2rem);
+}
+
+.homepage-preview__status,
+.homepage-preview__error {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  color: var(--text);
+  text-align: center;
+}
+
+.homepage-preview__status {
+  font-size: 0.9rem;
+}
+
+.homepage-preview__error {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+  max-width: min(28rem, calc(100% - 2rem));
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border-floating);
+  border-radius: var(--radius-lg);
+  background: var(--surface-floating-raised);
+  box-shadow: var(--shadow-control-raised);
+  backdrop-filter: blur(var(--backdrop-blur-floating));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur-floating));
+}
+
+.homepage-preview__error button {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--control-normal);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.homepage-preview__error button:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+@media (max-width: 620px) {
+  .homepage-preview__scene-window {
+    inset: 8rem 0 6.25rem;
+  }
+
+  .homepage-preview__scene {
+    width: auto;
+    height: 100%;
+    max-width: none;
+    /* Portrait crop keeps the logo and washer together in the focal frame. */
+    transform: translate(-43%, -50%);
+  }
+
+  .homepage-preview__controls {
+    right: max(0.75rem, env(safe-area-inset-right));
+    left: max(0.75rem, env(safe-area-inset-left));
+    display: flex;
+    justify-content: center;
+    max-width: none;
+  }
+
+  .homepage-preview__controls app-project-screen-controls {
+    width: min(100%, 36rem);
+  }
+
+  .homepage-preview__account {
+    left: max(0.75rem, env(safe-area-inset-left));
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 360px) {
+  .homepage-preview__scene-window {
+    inset-block-start: 7.75rem;
+    inset-block-end: 5.75rem;
+  }
+}
