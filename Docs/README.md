@@ -17,6 +17,10 @@ historical evidence, and reproducible local audit output.
 - [Homepage and Project Screen](design/homepage-renovation/README.md) — the
   traditional default screen, separate 2D illustration preview, preserved
   source assets, and retired 3D design history.
+- [Illustrated Homepage Phase 1 decisions](design/homepage-renovation/illustrated-homepage-phase-1.md)
+  — approved PixiJS + Angular DOM design direction, composition, ownership,
+  missing artwork, and acceptance inputs. **PARTIAL**; PixiJS and animation
+  are proposed, not implemented.
 - [Requirements baseline](MinecraftBuilder_Requirements_VI.docx) — version 0.2
   local-first MVP requirements; this is intended scope, not implementation
   status.
