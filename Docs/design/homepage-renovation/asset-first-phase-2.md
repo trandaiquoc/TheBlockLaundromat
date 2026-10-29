@@ -16,8 +16,8 @@ The existing application contract remains in [Homepage and Project Screen](READM
   [ooa_raccoon](https://www.instagram.com/ooa_raccoon/). They show compact
   characters with large heads and eyes, short limbs, brown eye patches and
   striped tails, with warm muted colors, dark irregular outlines, flat color
-  shapes and subtle texture. Check saw the logo but has not independently
-  inspected these posts. Exact numerical proportions and hex colors below remain
+  shapes and subtle texture. Check inspected screenshots of both posts and the
+  logo. Exact numerical proportions and hex colors below remain
   proposals, not measurements from the reference.
 - Four earlier scene concepts remain product references, not requirements to
   reconstruct their pixels. Every new object must be a complete, coherent
@@ -32,7 +32,7 @@ will be revised after reviewing actual files together:
 | Property | Working direction |
 | --- | --- |
 | Shape and line | Clear silhouette, rounded contours and dark warm outlines; preserve recognizable geometry on machines and boards. Restrained texture and detail. |
-| Character | Round, large head; small ears and short body; warm gray fur, cream face, darker eye mask and striped tail. Check proposed a head around 55–60% of character height; this is a starting estimate, not an artist measurement. |
+| Character | Large head; small ears and short body; warm gray fur, cream face, darker eye mask and striped tail. Proportions remain flexible across poses. |
 | Palette | Check's starting colors: outline `#51423F`, fur `#B8ABA5`, cream `#F7EFE2`, mask `#76615A`, grass `#9FBE72`, wood `#BA8055`, water `#93C6D9`, stone `#C6C3BB`. These are experimental artwork colors, not replacements for logo colors or application theme tokens. |
 | Perspective | Predominantly frontal with a gentle three-quarter view; align visible top and side surfaces across objects. |
 | Light | Soft, consistent light from upper left as a starting point; keep contact and scene shadows adjustable as separate layers where practical. |
@@ -69,10 +69,9 @@ is coherent at its edges and behind any future overlap; inspect alpha, resolutio
 silhouette, style and suitability beside the logo; then have Check review the
 actual file after Codex's first review. A flat PNG is not a rig or separated
 animation layers. Review the four sample objects together in Figma before scaling
-up production. Phase 3 requires an explicit request under repository instructions.
+up production. The user explicitly started Phase 3; see the [progress record](asset-first-phase-3.md).
 
-Check has specified an initial raccoon brief, but has not yet provided a final
-Generate prompt. The first sample should be one complete raccoon, with clear
+Check has provided the first raccoon prompt to Generate. The first sample should be one complete raccoon, with clear
 space around ears, feet and tail, no text or props, and transparency if the
 generator can provide it. Confirm actual output dimensions and alpha from the
 downloaded file rather than assuming the requested format was delivered.

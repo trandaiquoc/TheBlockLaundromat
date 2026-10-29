@@ -1,6 +1,6 @@
 # Homepage asset-first redesign
 
-**Status: Phase 2 design proposal prepared; visual approval is pending.** This is the
+**Status: Phase 3 started; the first raccoon candidate failed Codex review and a revision is in generation.** This is the
 new design workflow agreed
 in the [Homepage discussion](https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6adab75f-719c-83ec-aa57-cb7297bde2a1).
 It supersedes the earlier plan to reconstruct assets to match the four source
