@@ -1,6 +1,6 @@
 # Homepage asset-first redesign: Phase 3 progress
 
-**Status: in progress — Raccoon Master 004 Clean is approved by Check and Codex. Washer Master round 001 passed Codex review after transparent-margin cleanup and is awaiting Check's second review.**
+**Status: in progress — Raccoon Master 004 Clean and Washer Master 001 are approved by Check and Codex. Project Board Master is the next sample; its prompt is pending from Check.**
 
 The user explicitly started Phase 3. The sample set is raccoon, washer, project
 board and plant. Each asset requires a first review by Codex and a second review
@@ -63,7 +63,7 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   It matches the clean file SHA-256 above. The original and intermediate
   rounds remain preserved in ignored local artifacts.
 
-## Washer master — round 001 awaiting Check review
+## Washer master — round 001 approved
 
 - After the user explicitly authorized continuing Phase 3, Check prepared the
   Washer Master brief and returned **READY FOR GENERATE**. It specifies one
@@ -97,6 +97,25 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   (67, 62, 1243, 1147), giving margins of 67 px left, 62 px top, 72 px right
   and 61 px bottom; all exceed the 5% threshold.
 - Codex has sent the cleaned original-resolution PNG to Check for its second
-  review. Check's verdict is pending; the asset is not approved yet.
-- After Washer Master is accepted by both reviewers, the next sample is Project
-  Board Master, followed by Plant Master.
+  review. Check's review: **PASS — Design and output**. It confirmed the
+  complete cabinet, door, drum, controls and feet; one standalone object; the
+  3/4 view; consistency with Raccoon Master 004 Clean; and no cropping,
+  patchwork, background, extra objects or text. It accepted the transparent
+  margins and noted that the top face is broad but still proportionate.
+- Check reported a different SHA-256 for the file received in chat:
+  `f18aa659639c65e2ddca3d2b7672eaf8e6da1014c30890932f449c51ffe83bf5`,
+  compared with Codex's submitted clean copy
+  (`43d4edf564111237f81d055f1a88fd6c758b61550725a93d71bb56234bf0e1df`).
+  Codex retrieved the exact received PNG and compared decoded pixels. Both are
+  1315 × 1208 RGBA and have identical alpha values; all fully opaque RGB pixels
+  are identical. RGB differs only on partially transparent pixels: 62,504
+  pixels, with a maximum channel delta of 1 for 62,459 pixels and a maximum
+  delta of 4. No silhouette, alpha boundary or fully opaque artwork pixel
+  changed. The exact file reviewed by Check is preserved as
+  [washer-master.png](../../../Frontend/source-assets/homepage-redesign/approved/washer-master.png)
+  with Check's received-file SHA-256 above. The exact submitted Codex-clean
+  file remains in the ignored candidate directory for provenance.
+- Check's final state: **Asset 02 — APPROVED**; no Generate revision is needed.
+- Next sample: Project Board Master. The user has authorized the complete
+  Phase 3 sample set; Codex has requested the Project Board prompt from Check.
+  The Plant Master follows after the board review.
