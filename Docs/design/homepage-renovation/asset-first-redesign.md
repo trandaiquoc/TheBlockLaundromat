@@ -1,6 +1,6 @@
 # Homepage asset-first redesign
 
-**Status: Phase 3 in progress; Raccoon Master 004 Clean, Washer Master 001 and Project Board Master 002 are approved by Check and Codex. Plant Master prompt is sent to Generate; first candidate is pending.** This is the
+**Status: Phase 3 sample set complete; all four assets are approved by Check and Codex. Phase 4/Figma has not started.** This is the
 new design workflow agreed
 in the [Homepage discussion](https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6adab75f-719c-83ec-aa57-cb7297bde2a1).
 It supersedes the earlier plan to reconstruct assets to match the four source

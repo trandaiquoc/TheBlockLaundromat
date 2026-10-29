@@ -1,6 +1,6 @@
 # Phase 3 — Asset 04 — Plant Master
 
-**Status: Check prompt sent unchanged to Generate; awaiting the first candidate.**
+**Status: Plant Master 001 approved by Check and Codex.**
 
 Check specified a compact, upright Heartleaf Philodendron (trầu bà lá tim) in a low, softly rounded terracotta ceramic pot. The plant should have roughly 7–10 primary heart-shaped leaves in 3–4 readable clusters, connected by 3–5 short stems. Use muted sage, olive and moss greens; show only a simple soil line inside the pot. Target foliage/pot height proportions of about 60/40 and foliage width 1.3–1.5 times the pot width. Use a near-front view with a slight three-quarter turn. Keep the full plant and pot complete, with no trailing long stems.
 
@@ -240,6 +240,35 @@ Generate the illustration only.
 
 Check will independently review the actual PNG for design completeness and natural plant structure, leaf grouping and future Figma layer readiness; style harmony and color; genuine alpha and ≥5% margins; and file/hash consistency with Codex's report. Verdict: PASS / PARTIAL / FAIL with direct evidence. A flat PNG is not to be treated as an editable layer file.
 
-## Generate status
+## Round 001 — reviews and approved file
 
-Prompt sent to the Generate conversation with the three approved master PNGs. No Plant candidate has been reviewed yet.
+- Generate returned one complete transparent potted plant. Original download:
+  `.artifacts/homepage-redesign/candidates/plant-master/round-001/original.png`;
+  SHA-256 `d2e6999335e1f3021b335429e6efcc7ef8db14d318f54bd0679bb7a3c8298c44`;
+  PNG RGBA, 1122 × 1402 px.
+- Codex first review: **PASS after alpha cleanup**. The original contained
+  22 isolated alpha=1 pixels outside the 5% safe area. Codex preserved the
+  original and cleared only those alpha values. No RGB, dimensions or other
+  artwork pixels changed. Submitted clean file SHA-256:
+  `656c9e298c017fec3c13082cff0bebda85d6660d25bcb7f580537ace3b1fbe4e`.
+  Bounds: (65, 103, 1054, 1243); margins left/top/right/bottom:
+  65/103/68/159 px.
+- Check's second review: **PASS — APPROVED**. It found the heart-shaped leaves
+  complete, the stems connected to the pot, the terracotta pot fully intact,
+  the leaf groups clear enough for future Figma reconstruction, and the
+  style coherent with Raccoon 004 Clean, Washer 001 and Project Board 002.
+  Check verified actual RGBA data, transparent corners, zero alpha outside the
+  5% region and the same alpha bounds. No visual change or Generate rerun is
+  needed.
+- Check reported received SHA-256
+  `bbeae10e4a0fc9645d45eee5b4332d62af7d24b65c76edc79739015430722c95`,
+  differing from Codex's submitted hash. Codex retrieved the exact PNG Check
+  received. Both files are 1122 × 1402 RGBA with byte-identical alpha and
+  identical RGB on all fully opaque pixels. RGB differs on 38,988 partially
+  transparent pixels: maximum channel delta 1 on 38,962 pixels, 2 on 20
+  pixels and 3 on 6 pixels. No silhouette or opaque artwork changed.
+- The exact Check-received file is stored as
+  `Frontend/source-assets/homepage-redesign/approved/plant-master.png`.
+  The original, Codex-clean and Check-received copies remain preserved under
+  the ignored candidate path.
+- All four Phase 3 sample assets are approved. Phase 4/Figma has not started.

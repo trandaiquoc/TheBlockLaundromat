@@ -1,6 +1,6 @@
 # Homepage asset-first redesign: Phase 3 progress
 
-**Status: in progress — Raccoon Master 004 Clean, Washer Master 001 and Project Board Master 002 are approved by Check and Codex. Plant Master prompt is sent to Generate; awaiting the first candidate.**
+**Status: Phase 3 sample set complete — Raccoon Master 004 Clean, Washer Master 001, Project Board Master 002 and Plant Master 001 are approved by Check and Codex. Phase 4/Figma has not started.**
 
 The user explicitly started Phase 3. The sample set is raccoon, washer, project
 board and plant. Each asset requires a first review by Codex and a second review
@@ -177,7 +177,7 @@ by Check using the actual original file. Figma composition follows in Phase 4.
 - Check confirms **Asset 03 — APPROVED**; no Generate rerun is needed. Next is
   Plant Master.
 
-## Plant Master — prompt sent; generation pending
+## Plant Master — round 001 approved
 
 - Check selected a compact Heartleaf Philodendron in a softly rounded
   terracotta pot: about 7–10 main leaves, 3–4 readable clusters and 3–5 short
@@ -187,5 +187,33 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   approved Raccoon, Washer and Project Board PNGs in that order. The optional
   logo reference was not needed.
 - The prompt and both review criteria are archived in
-  [phase-3-plant-master.md](prompts/phase-3-plant-master.md). No candidate has
-  been generated or reviewed yet.
+  [phase-3-plant-master.md](prompts/phase-3-plant-master.md).
+- Original download:
+  `.artifacts/homepage-redesign/candidates/plant-master/round-001/original.png`;
+  SHA-256 `d2e6999335e1f3021b335429e6efcc7ef8db14d318f54bd0679bb7a3c8298c44`;
+  PNG RGBA, 1122 × 1402 px.
+- Codex first review: **PASS after alpha cleanup**. One complete, readable
+  potted Heartleaf Philodendron with connected stems, full leaves, visible soil,
+  complete pot and 3–4 distinct foliage groups. Color, warm outline and texture
+  fit the approved masters. The original had 22 isolated alpha=1 pixels outside
+  the 5% safe region. Codex set only those alpha values to zero; RGB, dimensions
+  and all remaining artwork pixels were preserved. Clean file SHA-256:
+  `656c9e298c017fec3c13082cff0bebda85d6660d25bcb7f580537ace3b1fbe4e`.
+  Its alpha bounds are (65, 103, 1054, 1243), with margins 65/103/68/159 px
+  left/top/right/bottom.
+- Check's second review: **PASS — APPROVED**. It confirmed all leaves, stems,
+  pot opening, body and base are complete; clusters remain readable and
+  reconstructable for later Figma animation; and style consistency passes
+  against all three masters. It found no cropping, patchwork, props, background
+  or missing parts. No Generate rerun is needed.
+- Check received hash
+  `bbeae10e4a0fc9645d45eee5b4332d62af7d24b65c76edc79739015430722c95`
+  differs from the submitted clean PNG. Codex retrieved the exact attachment
+  and compared pixels: both are 1122 × 1402 RGBA with identical alpha and
+  identical RGB on fully opaque pixels. RGB differs on 38,988 partially
+  transparent pixels; the maximum channel delta is 1 on 38,962 pixels, 2 on
+  20 pixels and 3 on 6 pixels. The alpha silhouette and opaque artwork are
+  unchanged. The exact Check-received image is the official
+  [plant-master.png](../../../Frontend/source-assets/homepage-redesign/approved/plant-master.png);
+  original and cleaned Codex versions remain in ignored artifacts.
+- Phase 3 sample set is complete. Phase 4/Figma remains unstarted.
