@@ -4,21 +4,28 @@
 Canvas 2D illustration preview is available at `/homepage-2d-preview`; it does
 not replace the default screen or connect artwork to project data.
 
-## Approved design direction — Phase 1 PARTIAL
+## Asset-first redesign — setup in progress
+
+The [asset-first redesign workflow](asset-first-redesign.md) records the newer
+direction: retain the logo, create individual assets around a consistent raccoon
+style, and assemble them in Figma. Its first phase is workflow setup; no new
+style, asset set, or Figma composition has been approved yet. This direction
+replaces the earlier requirement to reconstruct artwork to match the original
+scene. The existing application and preview described below are unchanged.
+
+## Earlier illustrated design analysis — historical
 
 The [Illustrated Interactive Homepage Phase 1 decisions](illustrated-homepage-phase-1.md)
-record the approved PixiJS 2D/2.5D direction, Angular DOM interaction boundary,
-reuse of existing Project workflows, landscape/portrait composition, asset gaps,
-and acceptance conditions. Minecraft is the representative theme for future work.
+record the previous source-matching plan and its PixiJS 2D/2.5D and Angular DOM
+analysis. Its original-art fidelity and roadmap are historical for the new
+asset-first redesign; retain its implementation observations as dated evidence.
 
-This is a design direction, not the current renderer: PixiJS and the proposed
-animation are not implemented. Phase 1 remains **PARTIAL** because clean artwork
-and complete responsive visual evidence are missing. The record stops after
-Phase 1 and does not authorize Phase 2 implementation.
+PixiJS and the proposed animation are not the current renderer. The earlier
+analysis was **PARTIAL** and did not establish responsive visual acceptance.
 
 The implementation sections below describe the existing Canvas 2D preview and
 traditional Project Screen. The historical section identifies retired proposals
-and dated evidence; those records do not override the Phase 1 design direction.
+and dated evidence; those records do not override the new redesign workflow.
 
 ## Project Screen
 
