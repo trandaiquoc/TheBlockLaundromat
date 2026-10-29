@@ -4,12 +4,13 @@
 Canvas 2D illustration preview is available at `/homepage-2d-preview`; it does
 not replace the default screen or connect artwork to project data.
 
-## Asset-first redesign — setup complete
+## Asset-first redesign — Phase 2 proposal
 
 The [asset-first redesign workflow](asset-first-redesign.md) records the newer
 direction: retain the logo, create individual assets around a consistent raccoon
-style, and assemble them in Figma. Its first phase prepared the workflow; no new
-style, asset set, or Figma composition has been approved yet. This direction
+style, and assemble them in Figma. The [Phase 2 proposal](asset-first-phase-2.md)
+sets working visual rules and an inventory; no new style, asset set, or Figma
+composition has been approved yet. This direction
 replaces the earlier requirement to reconstruct artwork to match the original
 scene. The existing application and preview described below are unchanged.
 
