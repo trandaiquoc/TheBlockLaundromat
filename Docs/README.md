@@ -1,62 +1,25 @@
-# Documentation Map
+# Documentation
 
-This directory separates current product contracts, active design acceptance,
-historical evidence, and reproducible local audit output.
+## Current contracts
 
-## Current source of truth
+- [Requirements baseline](MinecraftBuilder_Requirements_VI.docx) — original MVP scope; current code and the contracts below describe implemented behavior.
+- [Minecraft assets](minecraft-assets.md) — asset sources, supported formats, cache policy, and audit procedure.
+- [Verified vanilla behavior](vanilla-behavior-golden-1.21.1.md) — Java 1.21.1 behavior matrix and editor-policy deviations.
+- [Structure NBT contract](minecraft-structure-nbt-1.21.1.md) — exporter, entities, and datapack packaging.
+- [Structure JSON contract](structure-json.md) — public shape, validation, and import semantics.
+- [Renderer baseline](renderer-baseline.md) — viewport lifecycle, diagnostics, and benchmark contract.
 
-- [Design foundation](design-foundation-branding.md) — brand, approved visual
-  direction, references, and implementation boundaries.
-- [Workspace color palette](design/workspace-color-palette.md) — canonical
-  four-theme Workspace tokens and accessibility contract.
-- [Workspace renovation status](design/workspace-renovation/README.md) and
-  [Workspace acceptance coverage](design/workspace-renovation/WORKSPACE-UI-ACCEPTANCE-INVENTORY.md)
-  — current contract and browser-verification coverage notes.
-- [Application UI renovation](design/application-ui-renovation/README.md) —
-  accepted current UI ownership and workflow contracts.
-- [Homepage and Project Screen](design/homepage-renovation/README.md) — the
-  traditional default screen, separate 2D illustration preview, preserved
-  source assets, and retired 3D design history.
-- [Homepage asset-first redesign](design/homepage-renovation/asset-first-redesign.md)
-  — the newer individual-asset and Figma workflow, its eleven phases, and
-  current setup state. It has not yet produced an approved design.
-- [Requirements baseline](MinecraftBuilder_Requirements_VI.docx) — version 0.2
-  local-first MVP requirements; this is intended scope, not implementation
-  status.
-- [Minecraft assets](minecraft-assets.md) — asset sources, cache policy,
-  provider boundaries, supported formats, and audit procedure.
-- [Verified vanilla behavior](vanilla-behavior-golden-1.21.1.md) — Java 1.21.1
-  behavior matrix and editor-policy deviations.
-- [Structure NBT contract](minecraft-structure-nbt-1.21.1.md) — exporter,
-  entities, and datapack packaging.
-- [Structure JSON contract](structure-json.md) — public shape, validation,
-  and import semantics.
-- [Renderer baseline](renderer-baseline.md) — viewport lifecycle, diagnostics,
-  and benchmark contract.
+## Homepage references
 
-## Historical records
+These four original images are the only design files retained in `Docs/`:
 
-- [Earlier illustrated Homepage Phase 1 analysis](design/homepage-renovation/illustrated-homepage-phase-1.md)
-  records the previous source-matching artwork direction and dated technical
-  analysis. The new asset-first workflow supersedes its artwork roadmap.
-- [Original prompt roadmap](MinecraftBuilder_Codex_Gemini_Prompt_Roadmap_VI.docx)
-  is retained as planning history. Its old prompts are not an active task list.
-- [Change history](history/changed.md) is a chronological decision log. Its
-  status markers are historical snapshots, not current tasks; present facts and
-  open work belong in the canonical documents above.
-- [Workspace visual QA snapshot](history/workspace-design-qa-2026-10-16.md)
-  records a dated, superseded assessment. It does not define current status.
-- [Workspace browser evidence](design/workspace-renovation/evidence/README.md)
-  is historical and does not establish visual acceptance for changes after
-  commit ed7b1a5.
+1. [Minecraft](design/references/01-minecraft.png)
+2. [Light](design/references/02-light.png)
+3. [Raccoon](design/references/03-raccoon.png)
+4. [Dark](design/references/04-dark.png)
 
-## Generated and local-only output
+The application does not load these `Docs/` images directly. Its source asset package remains under `Frontend/source-assets/homepage/`.
 
-Vanilla coverage reports are reproducible audit output under the ignored local
-directory .artifacts/vanilla-asset-coverage/. Temporary audit specs are
-created under .artifacts/vanilla-asset-audit/ and removed by the command.
-They are not canonical source or documentation.
+## Local audit output
 
-Only fixtures that provide independent compatibility evidence or protect a
-contract that cannot be regenerated from the code under test are tracked.
-Exporter smoke tests generate their NBT/ZIP bytes at test time.
+Reproducible vanilla coverage reports and temporary audit files belong under the ignored `.artifacts/` directory, outside canonical documentation.

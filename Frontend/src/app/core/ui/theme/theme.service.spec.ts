@@ -36,6 +36,35 @@ const workspaceTokens: Readonly<Record<string, string>> = {
   'Destructive Hover': '--workspace-danger-button-hover',
 };
 
+// Approved color values remain regression evidence after the design-doc cleanup.
+const approvedPalette = new Map<string, readonly string[]>([
+  ['App Background', ['#241B14', '#F7F7F6', '#181A1C', '#08090C']],
+  ['Header / Status bar', ['#315E27', '#FFFFFF', '#202326', '#050608']],
+  ['Sidebar', ['#36281D', '#F1F1F0', '#292D30', '#0F1115']],
+  ['Panel / Dialog', ['#403D37', '#FFFFFF', '#35393D', '#13161B']],
+  ['Input / Raised', ['#4D4941', '#FAFAFA', '#42474C', '#1A1D24']],
+  ['Surface Muted', ['#302C26', '#EEEEED', '#2C3034', '#0E1014']],
+  ['Surface Hover', ['#5A5146', '#E8E8E7', '#4D545A', '#222630']],
+  ['Selected Surface', ['#365A29', '#DEDEDD', '#596068', '#2C333D']],
+  ['Border', ['#B8A17B', '#CCCCCA', '#687178', '#343A45']],
+  ['Primary Text', ['#FFF3DC', '#171717', '#F5F4F1', '#F2F3F5']],
+  ['Secondary Text', ['#D8C9AE', '#535353', '#C5C9CD', '#B7BEC9']],
+  ['Header Text', ['#F3F7EB', '#171717', '#F8F7F4', '#F1F3F5']],
+  ['Sidebar Text', ['#FFF1D4', '#202020', '#EFEFED', '#E6E9EF']],
+  ['Disabled Text', ['#C9B996', '#848484', '#95999F', '#858B96']],
+  ['Primary / Accent', ['#3D742D', '#252525', '#D1D5D7', '#A7B7CF']],
+  ['Primary Hover', ['#316224', '#111111', '#ECEBE7', '#C2D0E3']],
+  ['Text on Primary', ['#FFFBEC', '#FFFFFF', '#1B1D20', '#0D121A']],
+  ['Secondary Accent', ['#A7783F', '#777777', '#B7BEC2', '#8D9AAF']],
+  ['Focus / Outline', ['#E3B950', '#424242', '#ECEBE7', '#B1C3DE']],
+  ['Success', ['#8ADB99', '#237044', '#8BD0A0', '#80C89F']],
+  ['Warning', ['#FFD176', '#8A5A1B', '#E5B978', '#E0B77C']],
+  ['Danger / Error', ['#FF9188', '#AB333C', '#F29BA2', '#F08A98']],
+  ['Info', ['#B4D8EE', '#424242', '#98BACB', '#B2C4E0']],
+  ['Destructive Button', ['#8E352F', '#AB333C', '#F29BA2', '#F08A98']],
+  ['Destructive Hover', ['#A7463D', '#AB333C', '#F29BA2', '#F08A98']],
+]);
+
 const relativeLuminance = (hex: string): number => {
   const channels = hex
     .slice(1)
@@ -101,29 +130,9 @@ describe('Workspace color palette contract', () => {
 
   it('matches the approved 100 colors and maps shared semantic tokens globally', () => {
     const stylesheet = String(readFileSync('src/styles.scss', 'utf8'));
-    const designContract = String(
-      readFileSync('../Docs/design/workspace-color-palette.md', 'utf8'),
-    );
     const paletteStyles = stylesheet.slice(stylesheet.indexOf('/* Workspace V2 palette'));
     const themeNames = ['craft', 'light', 'raccoon', 'dark'] as const;
-    const themeColumns = ['Minecraft (`craft`)', 'Light', 'Raccoon', 'Dark'];
-    const tableHeader = designContract
-      .split(/\r?\n/)
-      .find((line) => /^\|\s*Semantic role\s*\|/.test(line));
-    expect(tableHeader).toBeDefined();
-
-    const documentedThemes = tableHeader!.split('|').map((cell) => cell.trim());
-    expect(documentedThemes.slice(2, 6)).toEqual(themeColumns);
-
-    const documentedPalette = new Map<string, readonly string[]>();
-    for (const row of designContract.split(/\r?\n/).filter((line) => /^\| [^|]+ \| #/.test(line))) {
-      const [role, ...colors] = row
-        .split('|')
-        .slice(1, -1)
-        .map((cell) => cell.trim());
-      documentedPalette.set(role, colors);
-    }
-    expect(documentedPalette.size).toBe(25);
+    expect(approvedPalette.size).toBe(25);
 
     for (const [themeIndex, themeName] of themeNames.entries()) {
       const themeBlock = paletteStyles.match(
@@ -131,7 +140,7 @@ describe('Workspace color palette contract', () => {
       )?.[1];
       expect(themeBlock, `missing ${themeName} Workspace palette`).toBeDefined();
       for (const [role, token] of Object.entries(workspaceTokens)) {
-        const expected = documentedPalette.get(role)?.[themeIndex];
+        const expected = approvedPalette.get(role)?.[themeIndex];
         const actual = themeBlock!.match(new RegExp(`${token}:\\s*(#[0-9A-Fa-f]{6});`))?.[1];
         expect(actual?.toUpperCase(), `${themeName}: ${role}`).toBe(expected?.toUpperCase());
       }
@@ -490,9 +499,6 @@ describe('Workspace color palette contract', () => {
 
   it('keeps interactive text, focus, danger, and status combinations accessible', () => {
     const stylesheet = String(readFileSync('src/styles.scss', 'utf8'));
-    const designContract = String(
-      readFileSync('../Docs/design/workspace-color-palette.md', 'utf8'),
-    );
     const paletteStyles = stylesheet.slice(stylesheet.indexOf('/* Workspace V2 palette'));
     const themeNames = ['craft', 'light', 'raccoon', 'dark'] as const;
     const axisTokenRules = [
@@ -509,19 +515,8 @@ describe('Workspace color palette contract', () => {
   color: var(--text-muted);
   opacity: 1;
 }`);
-    const paletteRows = new Map<string, readonly string[]>();
-    for (const row of designContract
-      .split(/\r?\n/)
-      .filter((line) => /^\|\s*[^|]+\s*\|\s*#/.test(line))) {
-      const [role, ...colors] = row
-        .split('|')
-        .slice(1, -1)
-        .map((cell) => cell.trim());
-      paletteRows.set(role, colors);
-    }
-
     for (const [themeIndex, themeName] of themeNames.entries()) {
-      const value = (role: string): string => paletteRows.get(role)![themeIndex].toLowerCase();
+      const value = (role: string): string => approvedPalette.get(role)![themeIndex].toLowerCase();
       const header = value('Header / Status bar');
       const headerText = value('Header Text');
       const panel = value('Panel / Dialog');
