@@ -1,6 +1,7 @@
 # Homepage asset-first redesign
 
-**Status: Phase 1 setup in progress.** This is the new design workflow agreed
+**Status: Phase 1 setup complete; design work has not started.** This is the
+new design workflow agreed
 in the [Homepage discussion](https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6adab75f-719c-83ec-aa57-cb7297bde2a1).
 It supersedes the earlier plan to reconstruct assets to match the four source
 images. It is a design plan, not a description of the implemented Homepage.
@@ -8,7 +9,12 @@ images. It is a design plan, not a description of the implemented Homepage.
 ## Direction
 
 - Create complete objects individually and compose the room in Figma. Preserve
-  the existing logo; its exact source file has yet to be identified.
+  the existing logo. The documented original brand source is
+  [`the-block-laundromat-logo.svg`](../../../Frontend/public/assets/brand/the-block-laundromat-logo.svg);
+  its SHA-256 is `7c4d64d5ed5612724bab359a1610163355145ec484412045ee17d62072838b5a`
+  and it contains an embedded raster image. Four scene-specific logo PNGs also
+  exist under `Frontend/source-assets/homepage/assets/`. Confirm the intended
+  version when the style and logo are reviewed.
 - Use the raccoon as the visual reference for a consistent set of objects.
   The user identified [ooa_raccoon](https://www.instagram.com/ooa_raccoon/)
   as a reference. The discussion did not establish the account's precise
@@ -63,20 +69,35 @@ of the image-generation tool in the Generate conversation.
   Both confirmed their roles; neither has generated artwork yet. The earlier
   conversation URLs did not open in new tabs during this check.
 - A Figma tab reached the signed-in Recents page. Search input was entered and
-  cleared through DevTools, and the user confirmed Figma was ready. The Figma
-  connector also responded to an identity check. A target Figma design file and
-  editing access to that file have not yet been established.
+  cleared through DevTools, and the user confirmed Figma was ready. The user
+  selected the personal team for the new
+  [Homepage Redesign Figma file](https://www.figma.com/design/ESqNCTN9XWIacmdVEjzJkZ).
+  The file opened in the dedicated Chrome instance. A temporary rectangle was
+  created and removed through the Figma connector; a subsequent read confirmed
+  the page is empty. This verifies edit access, not a finished design.
 - The old `Docs/phase2` working directory was removed at the user's request.
   It is not the storage location for this new workflow.
 - The local Git remote uses the former `MinecraftBuilderWeb` name. GitHub
   resolves both that name and `TheBlockLaundromat` to repository ID
   `1373821221`, whose current name is `trandaiquoc/TheBlockLaundromat`.
 
+## Asset and version storage
+
+- Preserve existing logo and reference files unchanged. Keep their source paths
+  and SHA-256 hashes with each relevant asset decision.
+- Keep temporary generation outputs and reviews under the ignored local path
+  `.artifacts/homepage-redesign/candidates/<asset-id>/round-###/`, preserving
+  the original downloaded files and identifying each round and review verdict.
+  This local directory is not pushed and must not be treated as a backup.
+- Record current decisions, output hashes, review results, unresolved issues
+  and Figma asset versions in tracked design documentation. Choose the permanent
+  product-owned location for accepted art as the deliverables are defined; do
+  not put temporary candidate files in application `src/`.
+
 ## Open setup items
 
-1. Identify the intended Figma file and verify edit access in that file.
-2. Identify the original logo, reference images and an asset/version storage
-   convention for the new direction.
-3. Record each phase's decisions, approved asset versions, Figma usage and
-   unresolved issues as work proceeds. Do not treat the setup check as Phase 2
-   design approval or begin later phases automatically.
+1. Confirm the intended logo version and obtain or inspect the raccoon style
+   references when the design phase is explicitly started.
+2. Record each phase's decisions, approved asset versions, Figma usage and
+   unresolved issues as work proceeds. The setup check is not Phase 2 design
+   approval and does not start later phases automatically.
