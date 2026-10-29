@@ -18,8 +18,8 @@ images. It is a design plan, not a description of the implemented Homepage.
 - Use the raccoon as the visual reference for a consistent set of objects.
   The user identified [ooa_raccoon](https://www.instagram.com/ooa_raccoon/)
   as a reference. The discussion did not establish the account's precise
-  visual rules: public thumbnails have been inspected, while full posts remain
-  inaccessible without login. See the [Phase 2 proposal](asset-first-phase-2.md).
+  visual rules: representative posts have been inspected in the dedicated
+  signed-in browser. See the [Phase 2 proposal](asset-first-phase-2.md).
 - Keep each object as a separate layer or group. Keep editable UI text and
   controls separate from raster artwork. Prepare moving parts and shadows
   separately when needed; an imported PNG remains raster artwork.
@@ -96,8 +96,8 @@ of the image-generation tool in the Generate conversation.
 
 ## Open setup items
 
-1. Review the Phase 2 visual proposal and validate it against representative
-   full-size raccoon references and the first sample assets when available.
+1. Validate the Phase 2 visual proposal against the first sample assets when
+   available, including their appearance beside the logo.
 2. Record each phase's decisions, approved asset versions, Figma usage and
    unresolved issues as work proceeds. The setup check is not Phase 2 design
    approval and does not start later phases automatically.

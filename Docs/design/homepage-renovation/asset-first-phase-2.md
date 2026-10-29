@@ -10,14 +10,15 @@ The existing application contract remains in [Homepage and Project Screen](READM
   is the documented original: an SVG containing a 1774 × 887 raster PNG. SHA-256
   of the SVG: `7c4d64d5ed5612724bab359a1610163355145ec484412045ee17d62072838b5a`.
   A copy of its embedded PNG was sent to Check for visual inspection.
-- Codex inspected small public search previews attributed to
-  [ooa_raccoon](https://www.instagram.com/ooa_raccoon/), including
-  [this post](https://www.instagram.com/p/Ddg8UkKo6DB/) and
-  [this post](https://www.instagram.com/p/De7CD3kIw15/). The previews show
-  compact raccoons with rounded heads and ears, short bodies, eye masks and
-  striped tails. Instagram requested login, so full-size posts were not reviewed.
-  Check saw the logo but could not independently inspect full Instagram posts.
-  Do not treat exact proportions, colors or brushwork below as measured from them.
+- After the user signed in to Instagram on the dedicated browser, Codex
+  inspected [the watermelon post](https://www.instagram.com/p/Ddg8UkKo6DB/)
+  and [the sword post](https://www.instagram.com/p/De7CD3kIw15/) by
+  [ooa_raccoon](https://www.instagram.com/ooa_raccoon/). They show compact
+  characters with large heads and eyes, short limbs, brown eye patches and
+  striped tails, with warm muted colors, dark irregular outlines, flat color
+  shapes and subtle texture. Check saw the logo but has not independently
+  inspected these posts. Exact numerical proportions and hex colors below remain
+  proposals, not measurements from the reference.
 - Four earlier scene concepts remain product references, not requirements to
   reconstruct their pixels. Every new object must be a complete, coherent
   standalone asset, even if another layer later covers part of it.
@@ -35,7 +36,7 @@ will be revised after reviewing actual files together:
 | Palette | Check's starting colors: outline `#51423F`, fur `#B8ABA5`, cream `#F7EFE2`, mask `#76615A`, grass `#9FBE72`, wood `#BA8055`, water `#93C6D9`, stone `#C6C3BB`. These are experimental artwork colors, not replacements for logo colors or application theme tokens. |
 | Perspective | Predominantly frontal with a gentle three-quarter view; align visible top and side surfaces across objects. |
 | Light | Soft, consistent light from upper left as a starting point; keep contact and scene shadows adjustable as separate layers where practical. |
-| Detail | Recognizable at intended display size; avoid busy textures, embedded functional text and photorealistic rendering. |
+| Detail | Recognizable at intended display size; allow restrained hand-drawn texture while avoiding busy texture, embedded functional text and photorealistic rendering. |
 
 ## Initial asset inventory
 
