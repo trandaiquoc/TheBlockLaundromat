@@ -8,3 +8,4 @@ Generation candidates and rejected rounds remain in the ignored local .artifacts
 
 - approved/raccoon-master.png — Raccoon Master 004 Clean, approved by Check and Codex. PNG RGBA, 1254 × 1254 px. SHA-256: 89ac605140da1964911d1fc4fa3f21b640018b795a79ccb446622ab778c1cbee.
 - approved/washer-master.png — Washer Master 001, approved by Check and Codex. PNG RGBA, 1315 × 1208 px. This is the exact PNG received by Check for its second review. SHA-256: f18aa659639c65e2ddca3d2b7672eaf8e6da1014c30890932f449c51ffe83bf5.
+- approved/project-board-master.png — Project Board Master 002, approved by Check and Codex. PNG RGBA, 1586 × 992 px. This is the exact PNG received by Check for its second review. SHA-256: 881a44673660f61638de4f7f6eb932178a1d1c3bf93bae9a86d05cb867dccec6.

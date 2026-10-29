@@ -1,6 +1,6 @@
 # Homepage asset-first redesign: Phase 3 progress
 
-**Status: in progress — Raccoon Master 004 Clean and Washer Master 001 are approved. Project Board Master round 002 passed Codex's first review and is awaiting Check. Plant Master has not started.**
+**Status: in progress — Raccoon Master 004 Clean, Washer Master 001 and Project Board Master 002 are approved by Check and Codex. Plant Master is next; its brief is pending from Check.**
 
 The user explicitly started Phase 3. The sample set is raccoon, washer, project
 board and plant. Each asset requires a first review by Codex and a second review
@@ -156,5 +156,23 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   RGB, dimensions, and the rest of the artwork are unchanged. Clean PNG SHA-256:
   `976546766b97bc788cda4afc8110377a76428cb46537be97e1b3ba416207f9de`.
   Its alpha bounds are (129, 50, 1460, 942), with margins 129/50/126/50 px
-  left/top/right/bottom. The exact clean PNG has been sent to Check; its
-  second-review verdict is pending.
+  left/top/right/bottom.
+- Check's second review: **PASS — Approved**. It verified the attached image
+  directly, confirmed the complete frame, clear cream UI surface, restrained
+  wood grain, style harmony and 4/4 safe margins. The report notes top and
+  bottom margins exceed the mathematical 5% threshold by about 0.4 px. It
+  accepted a slightly wider board than the initial 1.5–1.7:1 target because
+  it gives project cards and Create/Import controls more room without harming
+  the perspective or UI surface.
+- Check reported the received-file hash
+  `881a44673660f61638de4f7f6eb932178a1d1c3bf93bae9a86d05cb867dccec6`,
+  which differs from the submitted clean PNG. Codex retrieved the exact PNG
+  Check received and compared decoded pixels: dimensions and all alpha values
+  are identical; fully opaque RGB pixels match. RGB differs on 18,850
+  partially transparent pixels, with a maximum channel delta of 1 for 18,843
+  pixels and 2 for 7 pixels. There is no silhouette or opaque artwork change.
+  The exact Check-received PNG is preserved as the official
+  [project-board-master.png](../../../Frontend/source-assets/homepage-redesign/approved/project-board-master.png);
+  the original and submitted clean PNGs remain in ignored candidate artifacts.
+- Check confirms **Asset 03 — APPROVED**; no Generate rerun is needed. Next is
+  Plant Master; Codex is requesting its brief from Check.
