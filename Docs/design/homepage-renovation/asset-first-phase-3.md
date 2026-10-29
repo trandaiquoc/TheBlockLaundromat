@@ -1,6 +1,6 @@
 # Homepage asset-first redesign: Phase 3 progress
 
-**Status: in progress — Raccoon Master 004 Clean, Washer Master 001 and Project Board Master 002 are approved by Check and Codex. Plant Master is next; its brief is pending from Check.**
+**Status: in progress — Raccoon Master 004 Clean, Washer Master 001 and Project Board Master 002 are approved by Check and Codex. Plant Master prompt is sent to Generate; awaiting the first candidate.**
 
 The user explicitly started Phase 3. The sample set is raccoon, washer, project
 board and plant. Each asset requires a first review by Codex and a second review
@@ -175,4 +175,17 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   [project-board-master.png](../../../Frontend/source-assets/homepage-redesign/approved/project-board-master.png);
   the original and submitted clean PNGs remain in ignored candidate artifacts.
 - Check confirms **Asset 03 — APPROVED**; no Generate rerun is needed. Next is
-  Plant Master; Codex is requesting its brief from Check.
+  Plant Master.
+
+## Plant Master — prompt sent; generation pending
+
+- Check selected a compact Heartleaf Philodendron in a softly rounded
+  terracotta pot: about 7–10 main leaves, 3–4 readable clusters and 3–5 short
+  connected stems. The foliage/pot target is approximately 60/40 by height;
+  foliage width is about 1.3–1.5 times the pot width.
+- Codex sent Check's complete prompt unchanged to Generate, attaching the
+  approved Raccoon, Washer and Project Board PNGs in that order. The optional
+  logo reference was not needed.
+- The prompt and both review criteria are archived in
+  [phase-3-plant-master.md](prompts/phase-3-plant-master.md). No candidate has
+  been generated or reviewed yet.
