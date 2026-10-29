@@ -1,6 +1,6 @@
 # Homepage asset-first redesign: Phase 3 progress
 
-**Status: in progress — Raccoon Master 004 Clean and Washer Master 001 are approved by Check and Codex. Project Board Master is the next sample; its prompt is pending from Check.**
+**Status: in progress — Raccoon Master 004 Clean and Washer Master 001 are approved. Project Board Master round 001 failed Codex's first review; round 002 generation is underway. Plant Master has not started.**
 
 The user explicitly started Phase 3. The sample set is raccoon, washer, project
 board and plant. Each asset requires a first review by Codex and a second review
@@ -116,6 +116,26 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   with Check's received-file SHA-256 above. The exact submitted Codex-clean
   file remains in the ignored candidate directory for provenance.
 - Check's final state: **Asset 02 — APPROVED**; no Generate revision is needed.
-- Next sample: Project Board Master. The user has authorized the complete
-  Phase 3 sample set; Codex has requested the Project Board prompt from Check.
-  The Plant Master follows after the board review.
+- Next asset after the board: Plant Master. The user has authorized the
+  complete Phase 3 sample set.
+
+## Project Board master — round 001 failed
+
+- Check supplied the design brief and complete Generate prompt. Codex sent the
+  prompt unchanged, attaching the approved Raccoon Master 004 Clean and Washer
+  Master 001. The exact prompt is recorded in
+  [phase-3-project-board-master.md](prompts/phase-3-project-board-master.md).
+- Original download:
+  `.artifacts/homepage-redesign/candidates/project-board-master/round-001/original.png`,
+  SHA-256 `e0a556c31294c4cdb0bc48abcbce8218523b190d5d027e78f8d54e5bd9598ecd`;
+  PNG RGBA, 1536 × 1024 px.
+- Codex first review: **FAIL**. The board object is complete, but the file
+  contains a broad dark vignette/backdrop rather than a clean cutout. Nonzero
+  alpha covers 1,160,457 pixels and reaches the top, left and bottom edges;
+  margins are 0 px top/left/bottom and 19 px right (required: at least 52 px
+  vertical and 77 px horizontal). The wood grain is also too strong and
+  realistic compared with the approved masters.
+- Not sent to Check because Codex's first review failed. Removing the
+  semi-transparent background would modify a large area and risk damaging the
+  object edge. Codex sent a fresh-generation correction for round 002; it is
+  archived with the Check prompt in the linked prompt file.
