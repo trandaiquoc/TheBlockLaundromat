@@ -1,6 +1,6 @@
 # Homepage asset-first redesign
 
-**Status: Phase 3 started; raccoon round 003 received Check PARTIAL and a refinement is in generation.** This is the
+**Status: Phase 3 in progress; Raccoon Master 004 Clean is approved, and Washer Master round 001 passed Codex review and awaits Check.** This is the
 new design workflow agreed
 in the [Homepage discussion](https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6adab75f-719c-83ec-aa57-cb7297bde2a1).
 It supersedes the earlier plan to reconstruct assets to match the four source
@@ -96,8 +96,9 @@ of the image-generation tool in the Generate conversation.
 
 ## Open setup items
 
-1. Validate the Phase 2 visual proposal against the first sample assets when
-   available, including their appearance beside the logo.
+1. Check the Phase 2 visual proposal against the washer, project board and
+   plant samples as they are approved, including their appearance beside the
+   logo and Raccoon Master.
 2. Record each phase's decisions, approved asset versions, Figma usage and
    unresolved issues as work proceeds. The setup check is not Phase 2 design
    approval and does not start later phases automatically.

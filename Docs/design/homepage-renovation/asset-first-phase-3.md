@@ -1,6 +1,6 @@
 # Homepage asset-first redesign: Phase 3 progress
 
-**Status: in progress — rounds 001 and 002 rejected by Codex; round 003 received Check PARTIAL; round 004 design PASS, final alpha verification pending.**
+**Status: in progress — Raccoon Master 004 Clean is approved by Check and Codex. Washer Master round 001 passed Codex review after transparent-margin cleanup and is awaiting Check's second review.**
 
 The user explicitly started Phase 3. The sample set is raccoon, washer, project
 board and plant. Each asset requires a first review by Codex and a second review
@@ -52,4 +52,51 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   other pixel were preserved. Final PNG SHA-256:
   `89ac605140da1964911d1fc4fa3f21b640018b795a79ccb446622ab778c1cbee`.
   Codex verification: 1254 × 1254 RGBA; zero non-transparent pixels outside
-  the 5% safe margin. Check's confirmation of this cleaned file is pending.
+  the 5% safe margin. Check's final review confirmed transparent corners,
+  zero non-transparent pixels outside the margin, and margins of 73 px left,
+  85 px top, 86 px right and 72 px bottom. It compared the clean PNG against
+  round 004 and confirmed that exactly 28 alpha values changed from 1 to 0;
+  all RGB values and the rest of the artwork are unchanged. Check's verdict:
+  **PASS — Approved as the official Character Master**.
+- Durable approved copy:
+  [raccoon-master.png](../../../Frontend/source-assets/homepage-redesign/approved/raccoon-master.png).
+  It matches the clean file SHA-256 above. The original and intermediate
+  rounds remain preserved in ignored local artifacts.
+
+## Washer master — round 001 awaiting Check review
+
+- After the user explicitly authorized continuing Phase 3, Check prepared the
+  Washer Master brief and returned **READY FOR GENERATE**. It specifies one
+  complete front-loading washer, gentle three-quarter view, full cabinet,
+  attached circular door with visible glass and drum, simple control panel,
+  complete feet, transparent background, and at least 5% safe margin. It
+  excludes scenery, text, extra objects, cropped parts, glossy 3D and patchwork.
+- Codex sent Check's prompt unchanged to the Generate conversation, with the
+  approved Raccoon Master PNG attached. The logo and two Instagram style
+  references had already been supplied in that conversation.
+- The complete prompt is recorded in the Phase 3 Washer Master prompt file.
+- Original download:
+  `.artifacts/homepage-redesign/candidates/washer-master/round-001/original.png`,
+  SHA-256 `d1e607a06fe68e7127901e147bb05a66cd910bdfa2d42d856c672b57a4181411`.
+  It is a readable 1315 × 1196 RGBA PNG with transparency.
+- Codex's direct review found one complete front-loading washer: the cabinet,
+  front door and drum, rotary dial and controls, visible right side, and both
+  front feet are clear. It has no text, room, extra object or detached part.
+  The front remains dominant in a gentle three-quarter view. Warm cream, blue
+  glass, brown outlines and subtle grain fit the raccoon master. Codex noted
+  the top face is fairly visible but not enough to make the perspective
+  exaggerated. **Codex first review: PASS after technical cleanup.**
+- The original alpha included isolated pixels beyond the 5% safety area,
+  including edge noise. Codex preserved the original and created a clean copy
+  at `.artifacts/homepage-redesign/candidates/washer-master/round-001/codex-clean.png`.
+  Cleanup kept all RGB values unchanged, cleared 1080 nonzero alpha pixels
+  outside the final safe area, and added 12 transparent rows at the bottom
+  without scaling or cropping the washer. Clean output SHA-256:
+  `43d4edf564111237f81d055f1a88fd6c758b61550725a93d71bb56234bf0e1df`;
+  1315 × 1208 RGBA. The full alpha bounding box is
+  (67, 62, 1243, 1147), giving margins of 67 px left, 62 px top, 72 px right
+  and 61 px bottom; all exceed the 5% threshold.
+- Codex has sent the cleaned original-resolution PNG to Check for its second
+  review. Check's verdict is pending; the asset is not approved yet.
+- After Washer Master is accepted by both reviewers, the next sample is Project
+  Board Master, followed by Plant Master.
