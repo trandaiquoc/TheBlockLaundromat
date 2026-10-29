@@ -1,6 +1,6 @@
 # Homepage asset-first redesign: Phase 3 progress
 
-**Status: in progress — rounds 001 and 002 rejected by Codex; round 003 received Check PARTIAL; round 004 is generating.**
+**Status: in progress — rounds 001 and 002 rejected by Codex; round 003 received Check PARTIAL; round 004 design PASS, final alpha verification pending.**
 
 The user explicitly started Phase 3. The sample set is raccoon, washer, project
 board and plant. Each asset requires a first review by Codex and a second review
@@ -42,7 +42,14 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   natural eye highlight. Alpha inspection found sparse low-opacity pixels at
   the canvas edge although the solid silhouette has ample margin; the round 004
   prompt explicitly asks Generate to clean these stray pixels and add padding.
-- Next: download round 004's original file; assess anatomy, style, margins,
-  alpha, resolution, small-scale legibility and compatibility with the logo.
-  If it passes Codex's first check, upload it to Check for second review.
-  No candidate is approved yet.
+- Round 004 original: `.artifacts/homepage-redesign/candidates/raccoon-master/round-004/original.png`;
+  SHA-256 `e10c3a255e201cd5d669ec2175b3fd75dbdb6758f25047390f26c064110e6fd7`;
+  1254 × 1254 RGBA. Check second review: **PASS — Artwork**, then clarified
+  28 alpha=1/255 pixels outside the 5% margin are the only remaining technical
+  issue. The strong silhouette has at least 5% margin on all sides. Codex
+  created `.artifacts/homepage-redesign/approved/raccoon-master/round-004.png`
+  by setting alpha to zero on only those 28 out-of-margin pixels; RGB and every
+  other pixel were preserved. Final PNG SHA-256:
+  `89ac605140da1964911d1fc4fa3f21b640018b795a79ccb446622ab778c1cbee`.
+  Codex verification: 1254 × 1254 RGBA; zero non-transparent pixels outside
+  the 5% safe margin. Check's confirmation of this cleaned file is pending.
