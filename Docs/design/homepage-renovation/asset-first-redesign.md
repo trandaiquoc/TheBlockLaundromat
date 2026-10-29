@@ -1,6 +1,6 @@
 # Homepage asset-first redesign
 
-**Status: Phase 3 in progress; Raccoon Master 004 Clean and Washer Master 001 are approved by Check and Codex. Project Board Master round 001 failed Codex's first review; a fresh round 002 has been requested.** This is the
+**Status: Phase 3 in progress; Raccoon Master 004 Clean and Washer Master 001 are approved by Check and Codex. Project Board Master round 002 passed Codex's first review and awaits Check's second review.** This is the
 new design workflow agreed
 in the [Homepage discussion](https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6adab75f-719c-83ec-aa57-cb7297bde2a1).
 It supersedes the earlier plan to reconstruct assets to match the four source

@@ -1,6 +1,6 @@
 # Homepage asset-first redesign: Phase 3 progress
 
-**Status: in progress — Raccoon Master 004 Clean and Washer Master 001 are approved. Project Board Master round 001 failed Codex's first review; round 002 generation is underway. Plant Master has not started.**
+**Status: in progress — Raccoon Master 004 Clean and Washer Master 001 are approved. Project Board Master round 002 passed Codex's first review and is awaiting Check. Plant Master has not started.**
 
 The user explicitly started Phase 3. The sample set is raccoon, washer, project
 board and plant. Each asset requires a first review by Codex and a second review
@@ -139,3 +139,22 @@ by Check using the actual original file. Figma composition follows in Phase 4.
   semi-transparent background would modify a large area and risk damaging the
   object edge. Codex sent a fresh-generation correction for round 002; it is
   archived with the Check prompt in the linked prompt file.
+
+## Project Board master — round 002 awaiting Check
+
+- Generate created a new complete board from scratch. Original download:
+  `.artifacts/homepage-redesign/candidates/project-board-master/round-002/original.png`,
+  SHA-256 `7e4e17f9beaa9716d11e9078a7c8b694b55e4556c16fe2c4a07fb6eddbd13792`;
+  PNG RGBA, 1586 × 992 px.
+- Codex first review: **PASS to Check after alpha cleanup**. The board is
+  complete and stands alone, with its full frame and all four corners visible.
+  The background is transparent, the cream face is uninterrupted and suitable
+  for editable UI, and the color/outline style is compatible with the
+  approved raccoon and washer. The wood grain is visible but restrained.
+- Before cleanup, the only alpha outside the required safe margin was 152
+  isolated pixels with alpha=1. Codex set only those alpha values to zero.
+  RGB, dimensions, and the rest of the artwork are unchanged. Clean PNG SHA-256:
+  `976546766b97bc788cda4afc8110377a76428cb46537be97e1b3ba416207f9de`.
+  Its alpha bounds are (129, 50, 1460, 942), with margins 129/50/126/50 px
+  left/top/right/bottom. The exact clean PNG has been sent to Check; its
+  second-review verdict is pending.

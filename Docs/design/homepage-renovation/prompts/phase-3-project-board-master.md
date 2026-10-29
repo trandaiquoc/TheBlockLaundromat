@@ -224,3 +224,13 @@ RETAIN
 - No text, letters, numbers, buttons, icons, cards, paper, pins, tape, props, plants, raccoon, washer, Minecraft blocks, or extra objects.
 
 Generate a new complete illustration only.
+
+## Round 002 — Codex first review: PASS to Check
+
+- Original download: `.artifacts/homepage-redesign/candidates/project-board-master/round-002/original.png`.
+- SHA-256: `7e4e17f9beaa9716d11e9078a7c8b694b55e4556c16fe2c4a07fb6eddbd13792`.
+- PNG RGBA, 1586 × 992 px, with real alpha transparency.
+- The complete board is clear of the canvas edges, has all four corners and an uninterrupted cream face. Its front is dominant with only a slight top/right perspective. Brown outlines and subdued palette fit the approved masters; the visible wood grain is restrained enough to retain the hand-drawn storybook character. Check is asked to assess grain and proportions closely.
+- Before cleanup, only 152 alpha=1 pixels were present outside the 5% safe region. Codex preserved the original and cleared those pixels only; no RGB, dimensions or artwork pixels changed.
+- Submitted cleaned file SHA-256: `976546766b97bc788cda4afc8110377a76428cb46537be97e1b3ba416207f9de`. It remains RGBA at 1586 × 992. Nonzero-alpha bounds: (129, 50, 1460, 942); margins left/top/right/bottom: 129/50/126/50 px. All meet the 5% threshold.
+- Codex sent this exact cleaned PNG to Check for the second review. Its verdict is pending.
