@@ -1,0 +1,50 @@
+{
+  "phase": 2,
+  "status": "phase-2-complete-concept-only",
+  "items": [
+    {
+      "id": "concept.light.desktop",
+      "version": 2,
+      "scope": "composition-reference-only",
+      "file": "approved/desktop-concept-v2.png",
+      "originalDownloadName": "Xưởng giặt ấm áp bên làng quê.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "hasAlpha": false,
+      "sha256": "38e24f7f38d23c76eb9924764433d8f619a6bc43ba56d7282b686bc254c59463",
+      "theme": "light",
+      "role": "whole-room visual target, never runtime flattened scene",
+      "codex": "PASS",
+      "check": "PASS",
+      "checkConversation": "https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6ae30c55-c97c-83ec-8510-210da7e3bf5e",
+      "anchor": null,
+      "parent": null,
+      "drawOrder": null,
+      "figmaUsage": [],
+      "runtimePath": null
+    },
+    {
+      "id": "concept.light.portrait",
+      "version": 7,
+      "scope": "composition-reference-only",
+      "file": "approved/portrait-concept-v7.png",
+      "originalDownloadName": "Phòng giặt nắng ấm với gấu mèo đáng yêu.png",
+      "width": 730,
+      "height": 2155,
+      "mode": "RGB",
+      "hasAlpha": false,
+      "sha256": "b096a6207c3d5d9fc187a7716b0c071abcb194d8f3d321e4bb874f466754a423",
+      "theme": "light",
+      "role": "reflowed portrait room target with supported blank brand plaque; never flattened runtime scene",
+      "codex": "PASS",
+      "check": "PASS",
+      "checkConversation": "https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6ae30c55-c97c-83ec-8510-210da7e3bf5e",
+      "anchor": null,
+      "parent": null,
+      "drawOrder": null,
+      "figmaUsage": [],
+      "runtimePath": null
+    }
+  ]
+}

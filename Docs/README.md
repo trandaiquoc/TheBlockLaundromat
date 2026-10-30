@@ -11,14 +11,14 @@
 
 ## Homepage references
 
-These four original images are the only design files retained in `Docs/`:
+These four original images remain the visual references for the Homepage:
 
 1. [Minecraft](design/references/01-minecraft.png)
 2. [Light](design/references/02-light.png)
 3. [Raccoon](design/references/03-raccoon.png)
 4. [Dark](design/references/04-dark.png)
 
-The application does not load these `Docs/` images directly. Its source asset package remains under `Frontend/source-assets/homepage/`.
+The application does not load these `Docs/` images directly. Its existing source asset package remains under `Frontend/source-assets/homepage/`. The illustrated rebuild has a [Phase1 baseline](design/homepage/phase1/README.md) and [locked Phase2 art direction](design/homepage/phase2/README.md); new concept images there are references, not runtime scenes.
 
 ## Local audit output
 

@@ -1,5 +1,7 @@
 # Phase 1 — Khôi phục bối cảnh và thiết lập quy trình
 
+> Continuation update (2026-10-29): the user's subsequent goal authorizes automatic sequential completion of Phase 2–11. Historical instructions below to stop after each phase for model selection are superseded; keep phase gates and commit/push, then continue. See [Phase 2](../phase2/README.md).
+
 Ngày xác minh: 2026-10-29 (Asia/Ho_Chi_Minh). Phạm vi: Homepage minh họa tương tác; chỉ Phase 1. Đây là nền tảng hiện hành cho đợt làm lại, không phải báo cáo nghiệm thu artwork cũ.
 
 ## Kết quả và quyết định

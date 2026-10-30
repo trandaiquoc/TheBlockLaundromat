@@ -1,5 +1,7 @@
 # Bàn giao — kết thúc Phase 1
 
+> Superseded continuation rule (2026-10-29): the user now authorizes Phase 2–11 sequentially, with automatic continuation after each verified phase commit/push. Do not stop for model switching. This file otherwise records the Phase 1 checkpoint; current work resumes at [Phase 2](../phase2/README.md).
+
 Ngày: 2026-10-29 (Asia/Ho_Chi_Minh). Branch: `homepage/illustrated-rebuild`. Base: `bf9532338e24aa154a0c66c79b084c474e99b204` trên main. Chỉ có thay đổi thuộc Docs/design/homepage/phase1/ trong phase này. Commit chứa tài liệu này là mốc Phase 1; xem `git show -s --format=%H` trên branch và đối chiếu origin sau push. Không tự ghi SHA của chính commit vào file.
 
 ## Đã hoàn thành
