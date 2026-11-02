@@ -1,0 +1,10 @@
+# Geometry-reference reset after isolated panel v1
+
+PHASE 3 — panel-only v1 still Codex FAIL; change geometry reference method, no approval review.
+Actual original1619×971RGBA, SHA f7fc1a87437b596673d91a547e0d1d1295edacba1e798d2aabfd68e8d705409d. Attached exact image. Alpha0..255, bbox8(57,69,1563,889). Cream face~1320×610 (~2.16), at660outerwidth gives579×267CSS; fails355height. Material/completeframe/alpha good. No supports, yet geometry still follows the very wide board in room references despite your1.45–1.50 prompt.
+Do not repeat same refs+numbers. Likely whole-room reference board silhouette dominates written geometry; independent generation in a new chat alone did not solve it.
+Please choose a changed geometry-control method and supply ONE full next prompt:
+A) Remove all room/failed-board images from generation input, use only washer/raccoon for style plus a simple neutral measured geometry guide (not artwork, not a production asset). Codex can author a vector box/frame guide with correct proportions and take a browser screenshot as geometry reference only; original generated artwork still comes exclusively through Generate–Check. This is not manual raster synthesis or screenshot-as-production.
+B) If better, specify modular frame corner/straight rail artwork that can be assembled without stretching the whole image, with exact measurement/occlusion proof later. Preserve original final goal and UI quality, no passing a non-fitting master as complete.
+Preferred A: a visual reference that actually encodes outerpanel100×75 and innerface90×61, so numbers and dominant shape agree; attach only neutral guide + approved washer/raccoon style, NOT room concept bitmaps containing the wrong aspect. Whole-room style/layout remains documented and checked in assembly later. Confirm geometry-guide construction and exact refs before next generation. No need to ask user or start Figma/code; diagnostic guide stays ignored, not runtime.
+Return concise root cause/method + complete Generate prompt. No other assets, no Phase4.

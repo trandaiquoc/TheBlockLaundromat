@@ -1,0 +1,20 @@
+# Full Generate02 context transfer
+
+Sent the complete [shared brief](../../phase1/prompts/shared-brief.md), updated to Phase3 and Generate02, replacing the historical stop/model gate with automatic sequential continuation. Replaced contaminated logo-cutout reference with unchanged clean brand and replaced unselected-style wording with the three actually viewed posts. This initialization contains no image job. Nine references: four original rooms, sword/autumn/string actual-post screenshots, clean brand and rejected Figma. Four approved concept/master originals follow with the separate Check job. No failed board image transferred.
+
+The current-state/role suffix sent in full:
+
+## Locked direction and current transfer
+
+Light: warm cream plaster, honey oak beams/planked floor, sage enamel washer, terracotta/olive foliage. Near-frontal2.5D with upright verticals, mild top/right planes; upper-left daylight, warm pendants subtle fill, cast/contact shadows down-right. Matte drawn furniture and mascot, no hyperreal CGI. Objects have complete hidden edges and physical support; no attached unrelated props.
+Desktop conceptv2:1672×941RGB SHA38e24f7f38d23c76eb9924764433d8f619a6bc43ba56d7282b686bc254c59463. Full room architecture/exterior/shelves/floor; washer left-center, raccoon to its right facing left, clean nearlyfront board on right, clean wall for unchanged logo.
+Portrait conceptv7:730×2155RGB SHAb096a6207c3d5d9fc187a7716b0c071abcb194d8f3d321e4bb874f466754a423. One shared supported workstation top for washer+raccoon, board on vertical front, one bottom floor, two-hanger oak/cream blank brand plaque. At390CSS sceneheight1151.3; logo200×100 centered on actual245–255×145–150clear face. Uniform artwork scaling, final320 readability proof later; no repeated room/floor or flattened runtime concept.
+Approved production raccoonv1:1122×1402RGBA SHA9e03d41f34bcf0c2f70f35dac17adcda9ee8e05bad849f5d5b05c5320d485cdc. Neutral three-quarter-left fullbody/empty raised compact paws, cream/taupe/warmbrown masks/ringed tail, matte grain, full ears/feet/tail, truealpha. Flat tiny catchlights accepted; no glossy3D. Identity master, not rig/parts.
+Approved washerv1:1254×1254RGBA SHAeae56cf336e32bbc46809bf43de3c03965daed3c7e528c18c029246ea008d3fa. Same cream/sage nearfront machine, right handle, full base/feet, isolated truealpha central preview aperture, no props/floor/shadow/reflection. Future thumbnail behind rim/handle, no painted project.
+These four exact approved images follow with the active board job. Initial attached nine images are four original rooms, three real style posts, unchanged brand and rejected Figma only.
+Current issue: long Generate01 edit chain failed board geometry and eventually produced painted checkerboard RGB. No failed board is approved or supplied as input here. Check01 prescribed CLEAN generation: invariant primary clean face/frame first, secondary supports adapt below; separate canvas ratio from face ratio. New job must be generated fresh, not inherited from failed boards.
+Phase3 remaining: desktop board, companion portrait workstation/board with shared materials/layout-specific supports, plant and enough environment to assemble complete room. Later animation parts/poses/tickets/shadows Phase5; other themes Phase7. No mass production or code before Phase4 complete-room desktop/portrait gate.
+Existing Check01: https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6ae30c55-c97c-83ec-8510-210da7e3bf5e
+Generate01 retained provenance: https://chatgpt.com/g/g-p-6aaa3cffff7c8191855cea64ad58ff2f/c/6ae30c44-f568-83ec-a93d-df6ae428bb7b
+Figma fileESqNCTN9XWIacmdVEjzJkZ unchanged; oldpage0:1/desktop6:13/portrait6:56 remain rejected, not new approval.
+Your role: Generate02 creates/edits imagery ONLY when Codex supplies active Check-authored job. Do not review/approve assets, write code, browse other chats, redesign scope or generate now. Acknowledge title “The Block Laundromat — Generate 02”, references you actually see, currentPhase3, approved versions (pending attachment next), and WAIT for first clean-generation prompt.
