@@ -11,7 +11,7 @@
 
 ## Homepage references
 
-These four original images are the only design files retained in `Docs/`:
+These four original images are the retained homepage concept references:
 
 1. [Minecraft](design/references/01-minecraft.png)
 2. [Light](design/references/02-light.png)
@@ -19,6 +19,8 @@ These four original images are the only design files retained in `Docs/`:
 4. [Dark](design/references/04-dark.png)
 
 The application does not load these `Docs/` images directly. Its source asset package remains under `Frontend/source-assets/homepage/`.
+
+See [Creative Interactive Homepage research and prototype gates](design/homepage/README.md) and [ADR 001: Homepage rendering engine](design/homepage/ADR-001-rendering-engine.md) for the Goal 01 audit and proposed technical direction. The locally retained Tooplate reference ZIP is excluded from Git pending clarification of its redistribution terms.
 
 ## Local audit output
 
