@@ -1,6 +1,6 @@
 # ADR 001: Homepage rendering engine
 
-- **Status:** Implemented for the isolated Goal 02 preview; production homepage adoption remains pending art and product review.
+- **Status:** Implemented for the isolated Goal 02 preview; production homepage adoption remains pending Raccoon art review, theme-specific art, and product review.
 - **Date:** 2026-11-16.
 - **Scope:** Goal 01 engine decision; Goal 02 applies that decision to a separate, non-production preview route.
 
@@ -27,7 +27,8 @@ Do not add PixiJS or combine renderers for this prototype.
 
 - Reuses installed engine and existing expertise; no dependency change.
 - Supports real depth, camera framing, bounded character poses and object picking.
-- Procedural-first is not geometry-only; Raccoon silhouette and material quality remain subject to review.
+- Procedural-first is not geometry-only; the isolated Raccoon now uses source-proportioned cuboids and a custom pixel atlas. Its geometry follows measurements and attachment relationships from the Alex's Mobs model reference, while the texture and implementation are original. User visual acceptance remains pending; evidence and licensing notes are in the [research report](README.md).
+- A shared Three.js scene can change lighting and materials for the four app themes, but this has not yet reproduced the distinct compositions and atmospheres in the four retained theme references. Theme art remains an explicit gate before production adoption.
 - The preview implements explicit lifecycle/disposal, semantic DOM alternatives, reduced-motion behavior, WebGL fallback, and browser verification. Representative performance and formal art review remain open.
 - Keep the raster and diorama previews separate until production parity is demonstrated, then maintain one production homepage path.
 

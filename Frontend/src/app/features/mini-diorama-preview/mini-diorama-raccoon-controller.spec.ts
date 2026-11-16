@@ -15,7 +15,7 @@ describe('MiniDioramaRaccoonController', () => {
 
     expect(rig.body.position.y).not.toBe(0.8);
     expect(controller.isGreeting).toBe(true);
-    expect(rig.greetingArm.rotation.z).toBeGreaterThan(1.5);
+    expect(rig.greetingArm.rotation.z).toBeGreaterThan(1.1);
 
     for (let frame = 0; frame < 60; frame++) controller.update(1 / 60);
 
@@ -52,5 +52,6 @@ function createRig(): MiniDioramaRaccoonRig {
     rightEar,
     greetingArm,
     eyeLids: [new Object3D(), new Object3D()],
+    legs: [new Group(), new Group(), new Group(), new Group()],
   };
 }

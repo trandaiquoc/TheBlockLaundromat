@@ -2,18 +2,21 @@ import * as THREE from 'three';
 import type { MiniDioramaTarget } from './mini-diorama-contracts';
 import type { MiniDioramaRaccoonRig } from './mini-diorama-raccoon-controller';
 import {
+  applyMiniDioramaTheme,
   createMiniDioramaSceneMaterials,
   type MiniDioramaSceneMaterials,
+  type MiniDioramaSceneThemeTargets,
 } from './mini-diorama-scene-materials';
 import { addFocusMarker } from './mini-diorama-scene-geometry';
 import { buildMiniDioramaProjectBoard } from './mini-diorama-project-board';
 import { buildMiniDioramaRaccoon } from './mini-diorama-raccoon-asset';
-import { buildMiniDioramaRoom, buildMiniDioramaRoomAccents } from './mini-diorama-room-assets';
+import { buildMiniDioramaRoom } from './mini-diorama-room-assets';
 import { buildMiniDioramaWasher } from './mini-diorama-washer-asset';
 
 export interface MiniDioramaSceneAssets {
   readonly scene: THREE.Scene;
   readonly materials: MiniDioramaSceneMaterials;
+  readonly themeTargets: MiniDioramaSceneThemeTargets;
   readonly interactionRoots: readonly {
     readonly object: THREE.Object3D;
     readonly target: MiniDioramaTarget;
@@ -54,12 +57,20 @@ export function buildMiniDioramaScene(): MiniDioramaSceneAssets {
   const room = new THREE.Group();
   room.name = 'laundromat-room';
   scene.add(room);
-  buildMiniDioramaRoom(room, materials);
+  const roomThemeTargets = buildMiniDioramaRoom(room, materials);
+
+  const themeTargets: MiniDioramaSceneThemeTargets = {
+    hemisphere,
+    keyLight,
+    fillLight,
+    warmBounce,
+    pendantLights: roomThemeTargets.pendantLights,
+    window: roomThemeTargets.window,
+  };
 
   const board = buildMiniDioramaProjectBoard(room, materials);
   const washer = buildMiniDioramaWasher(room, materials);
   const raccoon = buildMiniDioramaRaccoon(room, materials);
-  buildMiniDioramaRoomAccents(room, materials);
 
   const focusMarkers = {
     washer: addFocusMarker(scene, materials.terracotta, [1.45, 0.035, -0.28]),
@@ -67,9 +78,12 @@ export function buildMiniDioramaScene(): MiniDioramaSceneAssets {
     raccoon: addFocusMarker(scene, materials.sage, [-1.28, 0.035, 0.72]),
   };
 
+  applyMiniDioramaTheme(scene, materials, 'craft', themeTargets);
+
   return {
     scene,
     materials,
+    themeTargets,
     raccoon,
     focusMarkers,
     interactionRoots: [

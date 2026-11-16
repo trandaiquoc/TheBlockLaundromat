@@ -156,7 +156,12 @@ export class MiniDioramaSceneRuntime {
 
   setTheme(theme: Theme): void {
     if (this.disposed || !this.assets) return;
-    applyMiniDioramaTheme(this.assets.scene, this.assets.materials, theme);
+    applyMiniDioramaTheme(
+      this.assets.scene,
+      this.assets.materials,
+      theme,
+      this.assets.themeTargets,
+    );
     this.render();
   }
 
