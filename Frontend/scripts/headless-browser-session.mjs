@@ -20,24 +20,29 @@ export function findBrowser() {
   return browser;
 }
 
-export async function startHeadlessBrowser(browser, url, userDataDirectory) {
-  const child = spawn(
-    browser,
-    [
-      '--headless=new',
-      '--disable-gpu',
-      '--disable-extensions',
-      '--no-sandbox',
-      '--disable-dev-shm-usage',
-      '--no-first-run',
-      '--no-default-browser-check',
-      '--remote-allow-origins=*',
-      '--remote-debugging-port=0',
-      `--user-data-dir=${userDataDirectory}`,
-      'about:blank',
-    ],
-    { windowsHide: true, stdio: 'ignore' },
-  );
+export async function startHeadlessBrowser(browser, url, userDataDirectory, options = {}) {
+  const browserFlags = [
+    '--headless=new',
+    ...(options.webglEnabled
+      ? [
+          '--use-gl=angle',
+          '--use-angle=swiftshader',
+          '--enable-webgl',
+          '--ignore-gpu-blocklist',
+          '--enable-unsafe-swiftshader',
+        ]
+      : ['--disable-gpu', '--disable-webgl']),
+    '--disable-extensions',
+    '--no-sandbox',
+    '--disable-dev-shm-usage',
+    '--no-first-run',
+    '--no-default-browser-check',
+    '--remote-allow-origins=*',
+    '--remote-debugging-port=0',
+    `--user-data-dir=${userDataDirectory}`,
+    'about:blank',
+  ];
+  const child = spawn(browser, browserFlags, { windowsHide: true, stdio: 'ignore' });
   let spawnError;
   let resolveChildClose;
   const childClosed = new Promise((resolveClose) => (resolveChildClose = resolveClose));
@@ -82,6 +87,29 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory) {
           deviceScaleFactor,
           mobile,
         }),
+      setReducedMotion: (reducedMotion) =>
+        send('Emulation.setEmulatedMedia', {
+          features: [
+            {
+              name: 'prefers-reduced-motion',
+              value: reducedMotion ? 'reduce' : 'no-preference',
+            },
+          ],
+        }),
+      pressKey: async (key, code, windowsVirtualKeyCode) => {
+        await send('Input.dispatchKeyEvent', {
+          type: 'keyDown',
+          key,
+          code,
+          windowsVirtualKeyCode,
+        });
+        await send('Input.dispatchKeyEvent', {
+          type: 'keyUp',
+          key,
+          code,
+          windowsVirtualKeyCode,
+        });
+      },
       captureScreenshot: async (path) => {
         const response = await send('Page.captureScreenshot', {
           format: 'png',

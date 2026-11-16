@@ -1,8 +1,8 @@
 # ADR 001: Homepage rendering engine
 
-- **Status:** Proposed for prototype 1; not implemented.
+- **Status:** Implemented for the isolated Goal 02 preview; production homepage adoption remains pending art and product review.
 - **Date:** 2026-11-16.
-- **Scope:** Goal 01 technical direction for the Creative Interactive Homepage.
+- **Scope:** Goal 01 engine decision; Goal 02 applies that decision to a separate, non-production preview route.
 
 ## Context
 
@@ -10,9 +10,11 @@ The root route is the real Angular project screen backed by existing workflows a
 
 Three.js already powers the editor. The supplied Spatial Diorama uses procedural Three.js geometry, bespoke character motion, raycasting and DOM integration, but source inspection found no complete route teardown or performance evidence. Its engine choice is reference evidence, not the basis for ours.
 
+Goal 02 is limited to a separate presentation-only route: it does not integrate Project workflows or claim production parity.
+
 ## Decision
 
-Use the existing Three.js dependency for prototype 1, procedural-first, with Angular DOM as semantic and workflow owner. Put the scene behind a route-scoped Angular host. Emit typed interaction intents to existing workflows; renderer code does not read or mutate IndexedDB, editor sessions or project documents. Use authored texture or a rigged character if art review shows procedural shapes fail the Raccoon fidelity gate.
+Use the existing Three.js dependency for the isolated preview, procedural-first, with Angular DOM as the owner of semantic controls and preferences. Put the scene behind a route-scoped Angular host. The current preview emits typed presentation intents only; it does not integrate Project workflows or read/write IndexedDB, editor sessions, or project documents. Use authored texture or a rigged character if independent art review finds procedural shapes fail the Raccoon fidelity gate.
 
 Do not add PixiJS or combine renderers for this prototype.
 
@@ -24,10 +26,10 @@ Do not add PixiJS or combine renderers for this prototype.
 ## Consequences
 
 - Reuses installed engine and existing expertise; no dependency change.
-- Supports real depth, camera framing, character movement and object picking.
+- Supports real depth, camera framing, bounded character poses and object picking.
 - Procedural-first is not geometry-only; Raccoon silhouette and material quality remain subject to review.
-- Requires explicit lifecycle/disposal, semantic DOM alternatives, reduced-motion behavior, WebGL fallback and browser/performance verification.
-- Keep the raster preview as a reference until parity is demonstrated, then maintain one production homepage path.
+- The preview implements explicit lifecycle/disposal, semantic DOM alternatives, reduced-motion behavior, WebGL fallback, and browser verification. Representative performance and formal art review remain open.
+- Keep the raster and diorama previews separate until production parity is demonstrated, then maintain one production homepage path.
 
 ## Revisit conditions
 

@@ -19,5 +19,12 @@ export const routes: Routes = [
         ({ HomepagePreviewComponent }) => HomepagePreviewComponent,
       ),
   },
+  {
+    path: 'mini-diorama-preview',
+    loadComponent: () =>
+      import('./features/mini-diorama-preview/mini-diorama-preview.component').then(
+        ({ MiniDioramaPreviewComponent }) => MiniDioramaPreviewComponent,
+      ),
+  },
   { path: '**', redirectTo: '' },
 ];
