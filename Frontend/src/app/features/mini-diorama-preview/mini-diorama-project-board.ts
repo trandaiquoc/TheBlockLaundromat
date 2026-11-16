@@ -7,39 +7,41 @@ export function buildMiniDioramaProjectBoard(
   materials: MiniDioramaSceneMaterials,
 ): THREE.Group {
   const board = addGroup(parent, [-0.45, 3.03, -2.96]);
-  const outerFrame = addRoundedBox(board, 2.68, 1.78, 0.2, materials.coral, [0, 0, 0], 0.11);
-  outerFrame.castShadow = true;
-  addRoundedBox(board, 2.43, 1.52, 0.12, materials.darkTeal, [0, 0, 0.13], 0.07);
-  addRoundedBox(board, 2.22, 1.31, 0.025, materials.teal, [0, 0, 0.206], 0.045);
+  const frame = addRoundedBox(board, 2.74, 1.84, 0.2, materials.oakDark, [0, 0, 0], 0.09);
+  frame.castShadow = true;
+  addRoundedBox(board, 2.48, 1.58, 0.11, materials.oakLight, [0, 0, 0.12], 0.055);
+  addRoundedBox(board, 2.32, 1.42, 0.035, materials.cork, [0, 0, 0.19], 0.025);
 
   const cardPositions = [-0.72, 0, 0.72];
-  const cardMaterials = [materials.paper, materials.paperPink, materials.paperBlue];
+  const cardMaterials = [materials.linen, materials.linenRose, materials.linenBlue];
   cardPositions.forEach((x, index) => {
-    const card = addGroup(board, [x, 0.03, 0.255]);
-    const tilt = index - 1;
-    card.rotation.z = tilt * 0.045;
-    addRoundedBox(card, 0.58, 0.8, 0.035, cardMaterials[index], [0, -0.05, 0], 0.035);
-    addSphere(
+    const card = addGroup(board, [x, 0.02, 0.255]);
+    card.rotation.z = (index - 1) * 0.035;
+    const sheet = addRoundedBox(
       card,
-      0.065,
-      index === 1 ? materials.butter : materials.coral,
-      [0, 0.34, 0.07],
-      [1, 0.62, 1],
+      0.59,
+      0.82,
+      0.035,
+      cardMaterials[index],
+      [0, -0.045, 0],
+      0.025,
     );
-    addRoundedBox(card, 0.33, 0.045, 0.018, materials.ink, [0, -0.11, 0.03], 0.018);
-    addRoundedBox(card, 0.39, 0.035, 0.018, materials.ink, [0, -0.23, 0.03], 0.014);
-    addRoundedBox(card, 0.25, 0.035, 0.018, materials.ink, [0, -0.34, 0.03], 0.014);
+    sheet.castShadow = true;
+    addSphere(card, 0.052, materials.brass, [0, 0.33, 0.055], [0.85, 0.85, 0.62]);
+    addRoundedBox(card, 0.33, 0.032, 0.018, materials.ink, [0, -0.13, 0.028], 0.012);
+    addRoundedBox(card, 0.4, 0.028, 0.018, materials.ink, [0, -0.25, 0.028], 0.012);
+    addRoundedBox(card, 0.25, 0.028, 0.018, materials.ink, [0, -0.36, 0.028], 0.012);
   });
 
   for (const x of [-1.16, 1.16]) {
     for (const y of [-0.72, 0.72]) {
-      addSphere(board, 0.035, materials.butter, [x, y, 0.29], [1, 1, 0.65]);
+      addSphere(board, 0.03, materials.brass, [x, y, 0.29], [1, 1, 0.65]);
     }
   }
 
-  addRoundedBox(board, 0.86, 0.12, 0.08, materials.wallLight, [0, 0.98, 0.03], 0.035);
-  addSphere(board, 0.09, materials.mint, [-0.26, 0.98, 0.09], [1, 1, 0.4]);
-  addSphere(board, 0.09, materials.butter, [0, 0.98, 0.09], [1, 1, 0.4]);
-  addSphere(board, 0.09, materials.coral, [0.26, 0.98, 0.09], [1, 1, 0.4]);
+  addRoundedBox(board, 0.86, 0.12, 0.08, materials.oakDark, [0, 0.98, 0.03], 0.035);
+  addSphere(board, 0.06, materials.sage, [-0.26, 0.98, 0.09], [1, 1, 0.5]);
+  addSphere(board, 0.06, materials.brass, [0, 0.98, 0.09], [1, 1, 0.5]);
+  addSphere(board, 0.06, materials.terracotta, [0.26, 0.98, 0.09], [1, 1, 0.5]);
   return board;
 }

@@ -20,4 +20,34 @@ describe('mini diorama scene assets', () => {
     );
     disposeMiniDioramaScene(assets.scene);
   });
+
+  it('builds the Raccoon from a compact head and body with a continuous soft tail', () => {
+    const assets = buildMiniDioramaScene();
+    const raccoonRoot = assets.interactionRoots.find(({ target }) => target === 'raccoon')?.object;
+    if (!raccoonRoot) throw new Error('Raccoon interaction root was not built.');
+
+    const getMesh = (name: string): THREE.Mesh => {
+      const object = raccoonRoot.getObjectByName(name);
+      if (!(object instanceof THREE.Mesh)) throw new Error(`Raccoon mesh '${name}' was not built.`);
+      return object;
+    };
+    const head = getMesh('raccoon-head-shell');
+    const body = getMesh('raccoon-body-shell');
+    const tail = getMesh('raccoon-soft-striped-tail');
+    const raccoonMeshes: THREE.Mesh[] = [];
+    raccoonRoot.traverse((object) => {
+      if (object instanceof THREE.Mesh) raccoonMeshes.push(object);
+    });
+
+    const headBounds = new THREE.Box3().setFromObject(head).getSize(new THREE.Vector3());
+    const bodyBounds = new THREE.Box3().setFromObject(body).getSize(new THREE.Vector3());
+    expect(headBounds.x).toBeGreaterThan(bodyBounds.x);
+    expect(tail.geometry.getAttribute('color').count).toBeGreaterThan(500);
+    expect(tail.material).toMatchObject({ vertexColors: true });
+    expect(raccoonMeshes.some(({ geometry }) => geometry.type === 'TorusGeometry')).toBe(false);
+    expect(assets.raccoon.eyeLids.every((eye) => eye.children.length === 2)).toBe(true);
+    expect(assets.materials.raccoonEye.roughness).toBeGreaterThanOrEqual(0.9);
+
+    disposeMiniDioramaScene(assets.scene);
+  });
 });

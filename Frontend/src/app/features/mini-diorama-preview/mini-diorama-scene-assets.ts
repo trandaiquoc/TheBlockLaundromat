@@ -25,13 +25,13 @@ export interface MiniDioramaSceneAssets {
 export function buildMiniDioramaScene(): MiniDioramaSceneAssets {
   const materials = createMiniDioramaSceneMaterials();
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xb9d7d2);
-  scene.fog = new THREE.Fog(0xb9d7d2, 15, 28);
+  scene.background = new THREE.Color(0xd7c4a6);
+  scene.fog = new THREE.Fog(0xd7c4a6, 15, 28);
 
-  const hemisphere = new THREE.HemisphereLight(0xfff3df, 0x435d61, 2.15);
+  const hemisphere = new THREE.HemisphereLight(0xffecd4, 0x604833, 1.9);
   scene.add(hemisphere);
 
-  const keyLight = new THREE.DirectionalLight(0xfff0d9, 3.2);
+  const keyLight = new THREE.DirectionalLight(0xffe6c7, 2.6);
   keyLight.position.set(-4.5, 8.5, 6.5);
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(512, 512);
@@ -43,11 +43,11 @@ export function buildMiniDioramaScene(): MiniDioramaSceneAssets {
   keyLight.shadow.normalBias = 0.035;
   scene.add(keyLight);
 
-  const fillLight = new THREE.DirectionalLight(0xb8dcff, 1.15);
+  const fillLight = new THREE.DirectionalLight(0xffd9b2, 0.62);
   fillLight.position.set(5, 4, -4);
   scene.add(fillLight);
 
-  const warmBounce = new THREE.PointLight(0xffb986, 16, 9, 2);
+  const warmBounce = new THREE.PointLight(0xffc486, 8, 9, 2);
   warmBounce.position.set(-2.2, 4.3, 1.4);
   scene.add(warmBounce);
 
@@ -62,9 +62,9 @@ export function buildMiniDioramaScene(): MiniDioramaSceneAssets {
   buildMiniDioramaRoomAccents(room, materials);
 
   const focusMarkers = {
-    washer: addFocusMarker(scene, materials.coral, [1.45, 0.035, -0.28]),
-    'project-board': addFocusMarker(scene, materials.butter, [-0.42, 0.035, -1.55]),
-    raccoon: addFocusMarker(scene, materials.mint, [-1.28, 0.035, 0.72]),
+    washer: addFocusMarker(scene, materials.terracotta, [1.45, 0.035, -0.28]),
+    'project-board': addFocusMarker(scene, materials.brass, [-0.42, 0.035, -1.55]),
+    raccoon: addFocusMarker(scene, materials.sage, [-1.28, 0.035, 0.72]),
   };
 
   return {
@@ -87,7 +87,7 @@ export function updateMiniDioramaFeedback(
 ): void {
   for (const target of Object.keys(markers) as MiniDioramaTarget[]) {
     const material = markers[target].material as THREE.MeshStandardMaterial;
-    material.opacity = target === selected ? 0.76 : target === hovered ? 0.48 : 0.11;
-    markers[target].scale.setScalar(target === selected ? 1.15 : target === hovered ? 1.06 : 1);
+    material.opacity = target === selected ? 0.46 : target === hovered ? 0.3 : 0.015;
+    markers[target].scale.setScalar(target === selected ? 1.08 : target === hovered ? 1.04 : 1);
   }
 }

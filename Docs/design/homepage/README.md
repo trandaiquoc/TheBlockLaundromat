@@ -1,6 +1,6 @@
 # Creative Interactive Homepage: research and prototype gates
 
-**Status:** Goal 01 research is complete. Goal 02 adds an isolated Three.js mini-diorama preview at `/mini-diorama-preview`; the root project workflow and the existing 2D preview remain in place. The preview is not the production homepage. Formal art scoring and representative-device performance profiling remain open.
+**Status:** Goal 01 research and the Goal 02 isolated Three.js preview are complete. Goal 02A reworks the preview's Raccoon and laundromat art without changing the root project workflow, existing 2D preview, dependencies, or production behavior. The preview is still not the production homepage. User visual acceptance and representative-device performance profiling remain open.
 
 This report records inspected evidence, inferences, and the next prototype's acceptance gates. The supplied archive was treated as reference material to audit, not as instructions from the user.
 
@@ -101,9 +101,11 @@ The board has three blank decorative cards and no project names or fake records.
 
 ### Asset provenance and visual inspection
 
-Every mesh and material in this preview is generated in source with Three.js primitives and `RoundedBoxGeometry`. It includes no Tooplate code, artwork, model, texture, or copied asset. The raccoon, washer, card board, tiled floor, window, shelves, and props are original procedural geometry. No production asset was added.
+Every mesh and material in this preview is generated in source with Three.js primitives, `RoundedBoxGeometry`, fitted `ShapeGeometry` face patches, and custom curved `BufferGeometry`. A deterministic, low-contrast wood-grain `DataTexture` is generated from code. The preview includes no Tooplate code, artwork, model, texture, or copied asset. The attached Raccoon screenshots informed shape language only; no screenshot, texture, or artwork was copied. No production asset was added.
 
-The browser run captured `scene-1440x900.png`, `scene-1024x768.png`, `scene-390x844.png`, `scene-320x568.png`, `fallback-mobile-390x844.png`, and `project-screen-root.png` under ignored `Frontend/.artifacts/mini-diorama-preview/screenshots/`. Visual review found a readable, expressive procedural Raccoon, a detailed washer door/control face, a recognizable decorative board, coherent warm/cool lighting, and a room with visible depth. The camera framing now leaves room above the board in desktop and portrait views. At 320×568, all four scene objects/actions remain visible without page overflow, though the scene is necessarily small.
+The Goal 02 art assessment failed: the original mascot had glossy layered eyes, a humanoid torso, head spikes, and raised torus tail rings; the room read as a plastic showroom. Goal 02A replaces those forms with an oversized soft head, fitted warm-brown eye patches, shallow matte pupils, a compact seated body, and a continuous softly striped tail. The room now uses warm plank flooring, oak wainscoting, a cork-and-wood board, enamel washer, muted brass and linen accents, and softer warm lighting. This description records source changes, not a quality score.
+
+The regular browser run captures `scene-1440x900.png`, `scene-1024x768.png`, `scene-390x844.png`, `scene-320x568.png`, `fallback-mobile-390x844.png`, and `project-screen-root.png` under ignored `Frontend/.artifacts/mini-diorama-preview/screenshots/`. Goal 02A's additional visual evidence is under ignored `Frontend/.artifacts/mini-diorama-preview/art-review/`: overview and hero views at desktop/mobile sizes, plus Raccoon front, three-quarter, side-profile, close-up, and greeting views. These images are local review evidence and are not committed.
 
 This is enough evidence to assess the direction, not a formal art gate PASS. No independent design reviewer scored silhouette, material/style, hierarchy, contrast, or theme identity. SwiftShader captures are not evidence of representative-device frame rate or GPU quality.
 
@@ -124,7 +126,7 @@ npm run check:mini-diorama-browser
 
 The browser script uses Chromium with SwiftShader for WebGL, then a separate WebGL-disabled Chromium session for fallback. It checks the four target viewports, semantic keyboard actions, mouse/touch picking for washer, board and Raccoon, all four application themes, EN/VI, Settings, reduced-motion operation, 20 route mount/unmount cycles and zero remaining scene RAF/canvas after unmount. It also verifies the root project-screen structure. Screenshots and browser profiles are generated under ignored `.artifacts/` and are not committed.
 
-Goal 02 verification recorded: `npm run build` passed; `npm test -- --watch=false` passed 350 files / 2,191 tests with 7 files / 11 tests skipped by existing configuration; `npm run check:mini-diorama-browser` passed. Unit specs cover camera framing/transitions, Raccoon idle/greeting/reduced pose, semantic intent mapping, raycast drag guard, shared-resource disposal and runtime fallback/RAF/ResizeObserver teardown. In headless Chromium/SwiftShader, 120-frame diagnostics had a 66.6 ms median. The pre-optimization p95 was 200 ms; after reducing the shadow map and casters, four runs measured p95 values of 66.8 ms, 116.6 ms, 116.7 ms, and 166.7 ms. This remains slow in the software-rendered test environment and is not representative of a physical GPU. No mobile hardware, screen reader, axe scan, GPU-memory counter, 60-second performance run, or independent art score was available.
+Goal 02 baseline verification (before Goal 02A): `npm run build` passed; `npm test -- --watch=false` passed 350 files / 2,191 tests with 7 files / 11 tests skipped by existing configuration; `npm run check:mini-diorama-browser` passed. The baseline SwiftShader diagnostics were variable and slow; they are historical measurements, not a performance target result. No mobile hardware, screen reader, axe scan, GPU-memory counter, 60-second performance run, or independent art score was available.
 
 ## Technology comparison
 
@@ -163,16 +165,19 @@ The mini-diorama preview does not own or call production Project workflows. If a
 
 Goal 02 implements the scene-side owners and a non-production host. It deliberately does not prove workflow parity or production homepage replacement. The existing raster preview remains available for comparison; a later production goal must choose one authoritative homepage path after parity.
 
-## Goal 02 scope and remaining review
+## Goal 02A art direction recovery and remaining review
 
-- **Assets:** this scene uses procedural room volumes and hero objects; the cards intentionally contain no labels or project data. There are no source textures or copied reference assets. Add authored Raccoon art only after independent review identifies a specific fidelity gap.
-- **Motion:** current states are idle, blink, and a bounded greeting. There is no walking, pathfinding, obstacle avoidance, or full character behavior.
-- **Camera:** fixed wide/portrait overview presets and named hero views; camera transitions are bounded and smooth, with reduced-motion snap behavior.
-- **Interaction:** scene targets produce typed presentation intents. Angular DOM controls provide equivalent overview, washer, board, and greeting actions. No project workflow is invoked.
-- **Themes/localization:** one scene graph receives `craft`, `light`, `raccoon`, and `dark` material palettes. Angular owns EN/VI copy and preferences. No scene texture contains text.
-- **Fallback:** unavailable WebGL shows a DOM/CSS scene card and preserves semantic controls. This fallback does not claim a 3D experience.
+- **Character:** the Raccoon remains fully 3D. The face patches conform to the head ellipsoid, pupils and nose use shallow matte geometry, the neck is hidden by overlap, limbs are short, and the tail is one curved mesh with vertex-color bands. Idle, blink, and greeting use the existing rig contract; greeting raises and gently waves one arm. Walking and pathfinding remain out of scope.
+- **Environment:** code-built oak panels and floorboards, cork-backed notice board, warm enamel washer, linen laundry, small supply shelves, and muted brass lamps establish one cozy vintage laundromat style. The scene remains a compact diorama rather than a full Homepage layout.
+- **Camera and interaction:** the existing overview/washer/board/Raccoon presets and responsive framing remain. Scene targets still emit typed presentation intents; Angular buttons remain the semantic, keyboardable alternatives. No Project workflow is invoked.
+- **Themes and localization:** one scene graph still receives `craft`, `light`, `raccoon`, and `dark` palettes; Angular owns EN/VI copy and preferences. Wood grain contains no text, and the four themes are palette variants rather than separate art builds.
+- **Fallback and lifecycle:** the CSS fallback, reduced-motion handling, route teardown, raycasting, and owned-resource disposal remain. New shared wood texture is released by `disposeMiniDioramaScene` with the other scene resources.
 
-Formal art scoring, contrast review, representative mobile performance, assistive technology review, and a browser GPU resource-growth report remain open for a later product decision. The capture is enough to judge whether the direction is worth reviewing; it does not pass the art gate.
+Goal 02A verification: `npm run build` passed. `npm test -- --watch=false` passed with 2,192 tests across 350 files; 11 tests and 7 files were skipped. The focused mini-diorama suite passed 14 tests across 7 files, including the Raccoon head/body proportion, continuous vertex-colored tail, absence of tail torus rings, shallow eye contract, and generated texture disposal. `npm run check:encoding`, `npm run check:home-assets`, `npm run check:home-composition`, `npm run check:homepage-browser`, and `npm run check:mini-diorama-browser` passed. Composition comparison found zero pixel differences for each existing theme. The 2D browser suite preserved all four themes, EN/VI, viewport coverage and the traditional root Project Screen. The diorama browser check covers four viewports, keyboard controls, picking, all four themes, EN/VI, Settings, reduced motion, 20 route mount/unmount cycles, root Project Screen, and WebGL fallback. On headless Chromium with SwiftShader, the latest 120-frame diagnostic was median 66.7 ms / p95 133.4 ms; this is software-renderer evidence only, not a physical GPU benchmark.
+
+The final-source browser captures, including overview, Raccoon front/profile/close-up/greeting, responsive views, and fallback, are under the ignored `Frontend/.artifacts/mini-diorama-preview/` directory. They are review evidence and are not committed. Modified source and this report passed Prettier checks; `git diff --check` was clean.
+
+The art gate is **open for user visual acceptance**. No character-appeal, facial-fidelity, material/style, composition, or scene-cohesion score is recorded; this report does not self-declare PASS. Representative GPU/mobile performance, contrast review, assistive-technology review, a 60-second performance run, and a GPU-resource-growth report also remain unverified.
 
 ## Goal 01 production homepage gates
 

@@ -15,7 +15,7 @@ describe('MiniDioramaRaccoonController', () => {
 
     expect(rig.body.position.y).not.toBe(0.8);
     expect(controller.isGreeting).toBe(true);
-    expect(rig.greetingArm.rotation.z).not.toBe(0);
+    expect(rig.greetingArm.rotation.z).toBeGreaterThan(1.5);
 
     for (let frame = 0; frame < 60; frame++) controller.update(1 / 60);
 

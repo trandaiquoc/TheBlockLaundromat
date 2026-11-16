@@ -68,8 +68,11 @@ export class MiniDioramaRaccoonController {
 
     const greetingProgress = 1 - this.greetingRemainingSeconds / greetingDurationSeconds;
     const greetingWeight =
-      this.greetingRemainingSeconds > 0 ? Math.sin(greetingProgress * Math.PI) : 0;
-    this.rig.greetingArm.rotation.z = this.armRestRotationZ + greetingWeight * 0.72;
+      this.greetingRemainingSeconds > 0
+        ? smoothStep(0, 0.16, greetingProgress) * (1 - smoothStep(0.74, 1, greetingProgress))
+        : 0;
+    const wave = Math.sin(greetingProgress * Math.PI * 8) * 0.08;
+    this.rig.greetingArm.rotation.z = this.armRestRotationZ + greetingWeight * (2.05 + wave);
 
     const blinkPhase = this.elapsedSeconds % 4.7;
     const blinkScale = blinkPhase > 4.48 && blinkPhase < 4.62 ? 0.12 : 1;
@@ -86,4 +89,9 @@ export class MiniDioramaRaccoonController {
     this.rig.greetingArm.rotation.z = this.armRestRotationZ;
     for (const eyelid of this.rig.eyeLids) eyelid.scale.y = 1;
   }
+}
+
+function smoothStep(start: number, end: number, value: number): number {
+  const amount = Math.max(0, Math.min(1, (value - start) / (end - start)));
+  return amount * amount * (3 - 2 * amount);
 }

@@ -1,6 +1,6 @@
 import {
   ACESFilmicToneMapping,
-  PCFSoftShadowMap,
+  PCFShadowMap,
   SRGBColorSpace,
   PerspectiveCamera,
   WebGLRenderer,
@@ -119,7 +119,7 @@ export class MiniDioramaSceneRuntime {
       this.raccoonController.setReducedMotion(this.reducedMotion);
 
       renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = PCFSoftShadowMap;
+      renderer.shadowMap.type = PCFShadowMap;
       renderer.outputColorSpace = SRGBColorSpace;
       renderer.toneMapping = ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.08;
