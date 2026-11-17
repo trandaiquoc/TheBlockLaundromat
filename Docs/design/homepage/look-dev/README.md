@@ -30,19 +30,19 @@ At narrow widths, keep the app bar and semantic controls in the DOM, reframe the
 
 ### A — Checker stage (recommended)
 
-![Buildable room composition A](concepts/room-checker-stage.png)
+![Buildable room composition A](concepts/room-a-checker-stage.png)
 
 The washer and blank board sit across the back corner, with the checker floor open in front. This is the most balanced option for a small viewport. Keep the ivy to a few repeated leaf clusters; represent the plant as a pot plus shared leaf cubes.
 
 ### B — Board left, washer right
 
-![Buildable room composition B](concepts/room-board-left-washer-right.png)
+![Buildable room composition B](concepts/room-b-board-left-washer-right.png)
 
 The board gets a broad left-wall surface for the Angular overlay, while the washer remains a clear hero prop on the right. The window stays near the corner to preserve the forest view without crowding the board.
 
 ### C — Window left, washer center, board right
 
-![Buildable room composition C](concepts/room-window-washer-left-board-right.png)
+![Buildable room composition C](concepts/room-c-window-washer-left-board-right.png)
 
 The window and centered washer make the shop feel lived in; the right-side board remains separate. Keep the Raccoon small enough to sit on the platform without obscuring the washer or floor.
 
