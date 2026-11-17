@@ -48,21 +48,21 @@ The window and centered washer make the shop feel lived in; the right-side board
 
 All three concepts use the same core scene kit: one platform, 25 tiles sharing geometry/materials, two walls, a few timber beams, one window, one shelf, towels, one washer, one blank board, a lantern, a few plants, a simple basket, and the Raccoon. Avoid the reference image's fireplace, dining furniture, deep shelf maze, and many unique small props. None of those are needed to retain its visual style.
 
-| Composition | Focal hierarchy | Framing trade-off |
-| --- | --- | --- |
+| Composition       | Focal hierarchy                                                                        | Framing trade-off                                                                                             |
+| ----------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | A — Checker stage | Washer and blank board share the back wall; open checker floor anchors the foreground. | Most balanced on desktop; portrait framing can keep both heroes visible above the Raccoon. **User-approved.** |
-| B — Board left | Wide blank board is the main left-wall surface; washer balances it on the right. | Best space for Angular DOM on desktop; a narrow portrait view may need to prioritize the board or washer. |
-| C — Window left | Window adds depth, washer centers the room, board stays distinct on the right. | Strongest environmental storytelling; three focal points are the busiest option on mobile. |
+| B — Board left    | Wide blank board is the main left-wall surface; washer balances it on the right.       | Best space for Angular DOM on desktop; a narrow portrait view may need to prioritize the board or washer.     |
+| C — Window left   | Window adds depth, washer centers the room, board stays distinct on the right.         | Strongest environmental storytelling; three focal points are the busiest option on mobile.                    |
 
 ## Raccoon options
 
 The user preferred the small seated Raccoon in the [four-theme room image](concepts/themes-four-way-buildable.png) over the earlier character sheets. The three updated turnarounds now use that low, compact Minecraft voxel style, with gray fur, a strong charcoal eye mask, short muzzle, and floor-resting striped tail. The user-selected in-scene Raccoon remains the art-direction source; the turnarounds expand it into front, three-quarter, side, and greeting/seated views for review.
 
-| Option | Appeal, expression, and silhouette | Minecraft identity and room fit | Rig/build trade-off |
-| --- | --- | --- | --- |
+| Option                                                 | Appeal, expression, and silhouette                                                                       | Minecraft identity and room fit                                                                                                 | Rig/build trade-off                                                                                                    |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | [Puddlepaw](concepts/raccoon-puddlepaw-turnaround.png) | Low seated quadruped; broad mask, compact cheeks, and a calm curious look. **User-preferred direction.** | Gray block fur and floor-resting ring tail match the selected scene Raccoon; fits beside the washer without covering the board. | Best match to the selected idle pose; simple head/body and four-limb hierarchy with a segmented tail. **Recommended.** |
-| [Tumble](concepts/raccoon-tumble-turnaround.png) | Low walking body, alert gaze, and raised arched tail make the silhouette more active. | The tail gives the clearest classic raccoon outline and reads well against the tile floor. | More limb and tail movement than the seated direction; needs a walk cycle to deliver its appeal. |
-| [Pebble](concepts/raccoon-pebble-turnaround.png) | Broad, loaf-like sit with tucked paws and a looped tail; soft, relaxed expression. | Smallest floor footprint and strongest cozy idle pose for the cottage room. | Easiest idle rig; a convincing walk is less natural with the wrapped tail and tucked legs. |
+| [Tumble](concepts/raccoon-tumble-turnaround.png)       | Low walking body, alert gaze, and raised arched tail make the silhouette more active.                    | The tail gives the clearest classic raccoon outline and reads well against the tile floor.                                      | More limb and tail movement than the seated direction; needs a walk cycle to deliver its appeal.                       |
+| [Pebble](concepts/raccoon-pebble-turnaround.png)       | Broad, loaf-like sit with tucked paws and a looped tail; soft, relaxed expression.                       | Smallest floor footprint and strongest cozy idle pose for the cottage room.                                                     | Easiest idle rig; a convincing walk is less natural with the wrapped tail and tucked legs.                             |
 
 These are original design explorations, not reproductions of the supplied Raccoon reference, the Sketchfab `ooa_raccoon`, or Alex’s Mobs model/texture. Use the same voxel surface language as the room when authoring a production model.
 
@@ -72,12 +72,12 @@ These are original design explorations, not reproductions of the supplied Raccoo
 
 The room geometry and props stay consistent. These retained references have notably different color treatments; preserve those differences instead of applying one palette to every theme:
 
-| Theme | Reference | Time | Color direction |
-| --- | --- | --- | --- |
-| Light | [02-light.png](../../references/02-light.png) | Early morning | Bright, airy cream and pale oak, fresh green foliage, and a clear blue-green view. **User-approved.** |
-| Minecraft | [01-minecraft.png](../../references/01-minecraft.png) | Sunset | Strong orange-gold window light, richer honey oak, and vivid Minecraft greens. **User-approved.** |
-| Raccoon | [03-raccoon.png](../../references/03-raccoon.png) | Around 6–7 PM | Muted taupe and gray-brown timber, violet-blue dusk view, and distinct amber lamps. **User-approved.** |
-| Dark | [04-dark.png](../../references/04-dark.png) | Late night | Deep navy-blue shadows and exterior, cyan moonlight at the windows, and restrained amber lights. **User-approved.** |
+| Theme     | Reference                                             | Time          | Color direction                                                                                                     |
+| --------- | ----------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Light     | [02-light.png](../../references/02-light.png)         | Early morning | Bright, airy cream and pale oak, fresh green foliage, and a clear blue-green view. **User-approved.**               |
+| Minecraft | [01-minecraft.png](../../references/01-minecraft.png) | Sunset        | Strong orange-gold window light, richer honey oak, and vivid Minecraft greens. **User-approved.**                   |
+| Raccoon   | [03-raccoon.png](../../references/03-raccoon.png)     | Around 6–7 PM | Muted taupe and gray-brown timber, violet-blue dusk view, and distinct amber lamps. **User-approved.**              |
+| Dark      | [04-dark.png](../../references/04-dark.png)           | Late night    | Deep navy-blue shadows and exterior, cyan moonlight at the windows, and restrained amber lights. **User-approved.** |
 
 The comparison board keeps one geometry while pushing those four color identities farther apart. The matching [palette source](four-theme-palette.svg) is an editable scene-art proposal, not a change to existing application CSS tokens. Minecraft continues to use the existing internal theme key `craft`.
 
@@ -90,3 +90,9 @@ The washer and Raccoon are hero assets. The washer shell can stay procedural if 
 ## Review gate
 
 **PASS — concept art accepted by the user on 2026-11-17.** The accepted direction is the compact seated Raccoon shown in the theme board, composition A (Checker stage), and the four distinct time-of-day themes above. This approval closes the Goal 02C art gate only. It does not authorize production scene implementation or approve the Project Screen mockup as a production UI; those remain outside Goal 02C.
+
+## Goal 02D checkpoint
+
+Goal 02D created an original editable Puddlepaw Raccoon model, 64 × 64 atlas, and GLB candidate and integrated the GLB into the separate `/mini-diorama-preview` route. **Art Gate A remains pending user approval.** The candidate render and runtime behavior are review evidence, not an art PASS. Room A, Washer and Project Board production, and the four-theme art pass remain paused until the user approves the character. The earlier statements above describe Goal 02C scope and remain historical.
+
+The browser verification passed route loading, the four existing theme controls, EN/VI, keyboard and pointer input, reduced motion, WebGL fallback, the root Project Screen, and 20 route mount/unmount cycles. Its 120 headless SwiftShader frame intervals measured 33.3 ms median and 33.4 ms p95; this is diagnostic software-rendering data, not representative physical-GPU performance. Review captures are kept in the ignored `Frontend/.artifacts/goal-02d/raccoon-review/` directory.

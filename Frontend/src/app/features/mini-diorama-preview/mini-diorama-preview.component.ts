@@ -105,6 +105,8 @@ export class MiniDioramaPreviewComponent {
         this.previewState.set('fallback');
         this.runtime?.dispose();
       },
+      onRaccoonLoaded: () => this.previewState.set('ready'),
+      onRaccoonLoadFailed: () => this.previewState.set('fallback'),
     });
 
     if (!this.runtime.mount(host)) {
@@ -112,7 +114,6 @@ export class MiniDioramaPreviewComponent {
       return;
     }
     this.runtime.setTheme(this.themeService.theme());
-    this.previewState.set('ready');
   }
 
   private handleSceneIntent(intent: MiniDioramaIntent): void {

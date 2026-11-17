@@ -1,57 +1,66 @@
-import { Group, Object3D } from 'three';
+import { AnimationClip, Group } from 'three';
 import { describe, expect, it } from 'vitest';
-import {
-  MiniDioramaRaccoonController,
-  type MiniDioramaRaccoonRig,
-} from './mini-diorama-raccoon-controller';
+import { MiniDioramaRaccoonController } from './mini-diorama-raccoon-controller';
 
 describe('MiniDioramaRaccoonController', () => {
-  it('animates idle pose and a bounded greeting gesture', () => {
-    const rig = createRig();
-    const controller = new MiniDioramaRaccoonController(rig);
+  it('plays the authored clips and returns one-shot gestures to idle', () => {
+    const controller = new MiniDioramaRaccoonController(createRoot(), createClips());
+
+    expect(controller.currentAnimation).toBe('idle');
     controller.greet();
-
-    for (let frame = 0; frame < 12; frame++) controller.update(1 / 60);
-
-    expect(rig.body.position.y).not.toBe(0.8);
     expect(controller.isGreeting).toBe(true);
-    expect(rig.greetingArm.rotation.z).toBeGreaterThan(1.1);
+    advance(controller, 0.6);
+    expect(controller.currentAnimation).toBe('idle');
 
-    for (let frame = 0; frame < 60; frame++) controller.update(1 / 60);
+    controller.sit();
+    expect(controller.currentAnimation).toBe('sit');
+    advance(controller, 0.3);
+    expect(controller.currentAnimation).toBe('idle');
 
-    expect(controller.isGreeting).toBe(false);
-    expect(rig.greetingArm.rotation.z).toBe(0);
+    controller.dispose();
   });
 
-  it('holds a static pose and keeps interaction usable with reduced motion', () => {
-    const rig = createRig();
-    const controller = new MiniDioramaRaccoonController(rig);
+  it('holds the bind pose while reduced motion is enabled', () => {
+    const controller = new MiniDioramaRaccoonController(createRoot(), createClips());
     controller.setReducedMotion(true);
     controller.greet();
-    controller.update(1);
+    controller.sit();
+    advance(controller, 1);
 
+    expect(controller.currentAnimation).toBeUndefined();
     expect(controller.isGreeting).toBe(false);
-    expect(rig.body.position.y).toBe(0.8);
-    expect(rig.greetingArm.rotation.z).toBe(0);
+
+    controller.setReducedMotion(false);
+    expect(controller.currentAnimation).toBe('idle');
+    controller.dispose();
+  });
+
+  it('rejects an authored model that omits a required clip', () => {
+    expect(
+      () => new MiniDioramaRaccoonController(createRoot(), [new AnimationClip('idle', 1, [])]),
+    ).toThrow("missing the required 'sit' animation");
   });
 });
 
-function createRig(): MiniDioramaRaccoonRig {
-  const body = new Group();
-  body.position.y = 0.8;
-  const head = new Group();
-  const tail = new Group();
-  const leftEar = new Group();
-  const rightEar = new Group();
-  const greetingArm = new Group();
-  return {
-    body,
-    head,
-    tail,
-    leftEar,
-    rightEar,
-    greetingArm,
-    eyeLids: [new Object3D(), new Object3D()],
-    legs: [new Group(), new Group(), new Group(), new Group()],
-  };
+function createRoot(): Group {
+  const root = new Group();
+  for (const name of ['body_pivot', 'head_pivot', 'foreleg_left', 'tail_base']) {
+    const pivot = new Group();
+    pivot.name = name;
+    root.add(pivot);
+  }
+  return root;
+}
+
+function createClips(): AnimationClip[] {
+  return [
+    new AnimationClip('idle', 1, []),
+    new AnimationClip('sit', 0.2, []),
+    new AnimationClip('greet', 0.5, []),
+  ];
+}
+
+function advance(controller: MiniDioramaRaccoonController, seconds: number): void {
+  const steps = Math.ceil(seconds / 0.05);
+  for (let index = 0; index < steps; index++) controller.update(0.05);
 }

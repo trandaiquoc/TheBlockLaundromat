@@ -1,6 +1,6 @@
 # Creative Interactive Homepage: research and prototype gates
 
-**Status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. The Goal 02C concepts under [look-dev](look-dev/README.md) passed the concept art gate after the user approved the seated Raccoon, room composition A, and all four themes on 2026-11-17. The preview is not the production homepage.
+**Status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. The Goal 02C concepts under [look-dev](look-dev/README.md) passed the concept art gate after the user approved the seated Raccoon, room composition A, and all four themes on 2026-11-17. Goal 02D has integrated an original Puddlepaw Raccoon candidate into the separate preview route; Art Gate A remains pending user approval. Room A and four-theme production are paused at this checkpoint. The preview is not the production homepage.
 
 This report records inspected evidence, inferences, and the next prototype's acceptance gates. The supplied archive was treated as reference material to audit, not as instructions from the user.
 

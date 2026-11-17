@@ -1,98 +1,103 @@
-import type { Group, Object3D } from 'three';
+import {
+  AnimationMixer,
+  LoopOnce,
+  LoopRepeat,
+  type AnimationAction,
+  type AnimationClip,
+  type Object3D,
+} from 'three';
 
-export interface MiniDioramaRaccoonRig {
-  readonly body: Group;
-  readonly head: Group;
-  readonly tail: Group;
-  readonly leftEar: Group;
-  readonly rightEar: Group;
-  readonly greetingArm: Group;
-  readonly eyeLids: readonly Object3D[];
-  readonly legs: readonly Group[];
-}
-
-const greetingDurationSeconds = 0.9;
+const requiredAnimationNames = ['idle', 'sit', 'greet'] as const;
+const crossFadeSeconds = 0.14;
+const maximumAnimationDeltaSeconds = 0.05;
 
 export class MiniDioramaRaccoonController {
-  private elapsedSeconds = 0;
-  private greetingRemainingSeconds = 0;
+  private readonly mixer: AnimationMixer;
+  private readonly actions: ReadonlyMap<string, AnimationAction>;
+  private activeAction?: AnimationAction;
   private reducedMotion = false;
-  private readonly bodyRestY: number;
-  private readonly bodyRestScaleY: number;
-  private readonly headRestRotationZ: number;
-  private readonly tailRestRotationY: number;
-  private readonly leftEarRestRotationZ: number;
-  private readonly rightEarRestRotationZ: number;
-  private readonly armRestRotationZ: number;
+  private disposed = false;
 
-  constructor(private readonly rig: MiniDioramaRaccoonRig) {
-    this.bodyRestY = rig.body.position.y;
-    this.bodyRestScaleY = rig.body.scale.y;
-    this.headRestRotationZ = rig.head.rotation.z;
-    this.tailRestRotationY = rig.tail.rotation.y;
-    this.leftEarRestRotationZ = rig.leftEar.rotation.z;
-    this.rightEarRestRotationZ = rig.rightEar.rotation.z;
-    this.armRestRotationZ = rig.greetingArm.rotation.z;
+  private readonly onAnimationFinished = (event: { action: AnimationAction }): void => {
+    if (event.action !== this.activeAction || this.reducedMotion || this.disposed) return;
+    if (event.action.getClip().name !== 'idle') this.play('idle');
+  };
+
+  constructor(
+    private readonly root: Object3D,
+    animations: readonly AnimationClip[],
+  ) {
+    const clipsByName = new Map(animations.map((clip) => [clip.name, clip]));
+    for (const name of requiredAnimationNames) {
+      if (!clipsByName.has(name)) {
+        throw new Error(`The Raccoon GLB is missing the required '${name}' animation.`);
+      }
+    }
+
+    this.mixer = new AnimationMixer(root);
+    this.actions = new Map(
+      [...clipsByName].map(([name, clip]) => [name, this.mixer.clipAction(clip)]),
+    );
+    this.mixer.addEventListener('finished', this.onAnimationFinished);
+    this.play('idle');
+  }
+
+  get currentAnimation(): string | undefined {
+    return this.activeAction?.getClip().name;
   }
 
   get isGreeting(): boolean {
-    return this.greetingRemainingSeconds > 0;
+    return this.currentAnimation === 'greet';
   }
 
   greet(): void {
-    this.greetingRemainingSeconds = this.reducedMotion ? 0 : greetingDurationSeconds;
+    this.play('greet');
+  }
+
+  sit(): void {
+    this.play('sit');
   }
 
   setReducedMotion(reducedMotion: boolean): void {
+    if (this.disposed || this.reducedMotion === reducedMotion) return;
     this.reducedMotion = reducedMotion;
     if (reducedMotion) {
-      this.greetingRemainingSeconds = 0;
-      this.applyRestPose();
+      this.mixer.stopAllAction();
+      this.activeAction = undefined;
+    } else {
+      this.play('idle');
     }
   }
 
   update(deltaSeconds: number): void {
-    if (this.reducedMotion) return;
-    const delta = Math.max(0, Math.min(deltaSeconds, 0.05));
-    this.elapsedSeconds += delta;
-    this.greetingRemainingSeconds = Math.max(0, this.greetingRemainingSeconds - delta);
-
-    const breathe = Math.sin(this.elapsedSeconds * 1.9);
-    this.rig.body.position.y = this.bodyRestY + breathe * 0.018;
-    this.rig.body.scale.y = this.bodyRestScaleY + breathe * 0.008;
-    this.rig.head.rotation.z = this.headRestRotationZ + Math.sin(this.elapsedSeconds * 0.8) * 0.025;
-    this.rig.tail.rotation.y = this.tailRestRotationY + Math.sin(this.elapsedSeconds * 1.35) * 0.11;
-    this.rig.leftEar.rotation.z =
-      this.leftEarRestRotationZ + Math.sin(this.elapsedSeconds * 1.7) * 0.045;
-    this.rig.rightEar.rotation.z =
-      this.rightEarRestRotationZ - Math.sin(this.elapsedSeconds * 1.7) * 0.04;
-
-    const greetingProgress = 1 - this.greetingRemainingSeconds / greetingDurationSeconds;
-    const greetingWeight =
-      this.greetingRemainingSeconds > 0
-        ? smoothStep(0, 0.16, greetingProgress) * (1 - smoothStep(0.74, 1, greetingProgress))
-        : 0;
-    const wave = Math.sin(greetingProgress * Math.PI * 8) * 0.08;
-    this.rig.greetingArm.rotation.z = this.armRestRotationZ + greetingWeight * (1.25 + wave);
-
-    const blinkPhase = this.elapsedSeconds % 4.7;
-    const blinkScale = blinkPhase > 4.48 && blinkPhase < 4.62 ? 0.12 : 1;
-    for (const eyelid of this.rig.eyeLids) eyelid.scale.y = blinkScale;
+    if (this.disposed || this.reducedMotion) return;
+    this.mixer.update(Math.max(0, Math.min(deltaSeconds, maximumAnimationDeltaSeconds)));
   }
 
-  private applyRestPose(): void {
-    this.rig.body.position.y = this.bodyRestY;
-    this.rig.body.scale.y = this.bodyRestScaleY;
-    this.rig.head.rotation.z = this.headRestRotationZ;
-    this.rig.tail.rotation.y = this.tailRestRotationY;
-    this.rig.leftEar.rotation.z = this.leftEarRestRotationZ;
-    this.rig.rightEar.rotation.z = this.rightEarRestRotationZ;
-    this.rig.greetingArm.rotation.z = this.armRestRotationZ;
-    for (const eyelid of this.rig.eyeLids) eyelid.scale.y = 1;
+  dispose(): void {
+    if (this.disposed) return;
+    this.disposed = true;
+    this.mixer.removeEventListener('finished', this.onAnimationFinished);
+    this.mixer.stopAllAction();
+    this.mixer.uncacheRoot(this.root);
+    this.activeAction = undefined;
   }
-}
 
-function smoothStep(start: number, end: number, value: number): number {
-  const amount = Math.max(0, Math.min(1, (value - start) / (end - start)));
-  return amount * amount * (3 - 2 * amount);
+  private play(name: string): void {
+    if (this.disposed || this.reducedMotion) return;
+    const action = this.actions.get(name);
+    if (!action) throw new Error(`The Raccoon GLB has no '${name}' animation action.`);
+    if (action === this.activeAction) {
+      action.reset().play();
+      return;
+    }
+
+    const previousAction = this.activeAction;
+    action.reset();
+    action.setLoop(name === 'idle' ? LoopRepeat : LoopOnce, name === 'idle' ? Infinity : 1);
+    action.clampWhenFinished = name !== 'idle';
+    action.play();
+    if (previousAction) action.crossFadeFrom(previousAction, crossFadeSeconds, true);
+    this.activeAction = action;
+  }
 }

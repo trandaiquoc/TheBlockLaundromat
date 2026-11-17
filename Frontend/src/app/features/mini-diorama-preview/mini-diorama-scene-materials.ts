@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import type { Theme } from '../../core/ui/theme/theme.service';
-import { createMiniDioramaRaccoonTexture } from './mini-diorama-raccoon-texture';
 
 export interface MiniDioramaSceneMaterials {
   readonly wall: THREE.MeshStandardMaterial;
@@ -19,7 +18,6 @@ export interface MiniDioramaSceneMaterials {
   readonly linenRose: THREE.MeshStandardMaterial;
   readonly ink: THREE.MeshStandardMaterial;
   readonly cork: THREE.MeshStandardMaterial;
-  readonly raccoonSkin: THREE.MeshStandardMaterial;
   readonly washerEnamel: THREE.MeshStandardMaterial;
   readonly washerShade: THREE.MeshStandardMaterial;
   readonly washerGasket: THREE.MeshStandardMaterial;
@@ -28,7 +26,7 @@ export interface MiniDioramaSceneMaterials {
   readonly shadow: THREE.MeshStandardMaterial;
 }
 
-type Palette = Readonly<Record<Exclude<keyof MiniDioramaSceneMaterials, 'raccoonSkin'>, number>>;
+type Palette = Readonly<Record<keyof MiniDioramaSceneMaterials, number>>;
 
 export interface MiniDioramaSceneThemeTargets {
   readonly hemisphere: THREE.HemisphereLight;
@@ -72,7 +70,7 @@ interface ThemeProfile {
   }>;
 }
 
-const sharedWoodAndCharacter = {
+const sharedWood = {
   floorboard: 0x92704e,
   floorboardAlt: 0xa07c57,
   floorSeam: 0x4f392b,
@@ -97,7 +95,7 @@ const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
     materials: {
       wall: 0xe8d7bd,
       wallTrim: 0xf1e4d0,
-      ...sharedWoodAndCharacter,
+      ...sharedWood,
       sage: 0x648347,
       terracotta: 0xca713d,
       brass: 0xa9824f,
@@ -171,7 +169,7 @@ const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
     materials: {
       wall: 0xe2d3ba,
       wallTrim: 0xf0e3cd,
-      ...sharedWoodAndCharacter,
+      ...sharedWood,
       sage: 0x687f6b,
       terracotta: 0xaa674b,
       brass: 0xa77e4d,
@@ -208,7 +206,7 @@ const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
     materials: {
       wall: 0x3e4860,
       wallTrim: 0x65718a,
-      ...sharedWoodAndCharacter,
+      ...sharedWood,
       floorboard: 0x594b45,
       floorboardAlt: 0x69584c,
       floorSeam: 0x302d38,
@@ -299,7 +297,6 @@ export function createMiniDioramaSceneMaterials(): MiniDioramaSceneMaterials {
     extras: THREE.MeshStandardMaterialParameters = {},
   ) => new THREE.MeshStandardMaterial({ color, roughness, metalness, ...extras });
   const pixelTexture = createPixelSurfaceTexture();
-  const raccoonTexture = createMiniDioramaRaccoonTexture();
   const voxel = (color: number, roughness = 0.94, metalness = 0) =>
     standard(color, roughness, metalness, { map: pixelTexture });
   const woodGrain = createWoodGrainTexture();
@@ -323,7 +320,6 @@ export function createMiniDioramaSceneMaterials(): MiniDioramaSceneMaterials {
     linenRose: voxel(0xc9957e, 0.98),
     ink: voxel(0x55463a, 0.97),
     cork: voxel(0x98704e, 0.98),
-    raccoonSkin: standard(0xffffff, 0.98, 0, { map: raccoonTexture }),
     washerEnamel: voxel(0xe5d9c3, 0.82),
     washerShade: voxel(0xc6b294, 0.88),
     washerGasket: voxel(0x534338, 0.94),

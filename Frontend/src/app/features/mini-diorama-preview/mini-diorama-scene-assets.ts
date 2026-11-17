@@ -1,15 +1,13 @@
 import * as THREE from 'three';
 import type { MiniDioramaTarget } from './mini-diorama-contracts';
-import type { MiniDioramaRaccoonRig } from './mini-diorama-raccoon-controller';
 import {
   applyMiniDioramaTheme,
   createMiniDioramaSceneMaterials,
   type MiniDioramaSceneMaterials,
   type MiniDioramaSceneThemeTargets,
 } from './mini-diorama-scene-materials';
-import { addFocusMarker } from './mini-diorama-scene-geometry';
+import { addCuboid, addFocusMarker, addGroup } from './mini-diorama-scene-geometry';
 import { buildMiniDioramaProjectBoard } from './mini-diorama-project-board';
-import { buildMiniDioramaRaccoon } from './mini-diorama-raccoon-asset';
 import { buildMiniDioramaRoom } from './mini-diorama-room-assets';
 import { buildMiniDioramaWasher } from './mini-diorama-washer-asset';
 
@@ -21,7 +19,7 @@ export interface MiniDioramaSceneAssets {
     readonly object: THREE.Object3D;
     readonly target: MiniDioramaTarget;
   }[];
-  readonly raccoon: MiniDioramaRaccoonRig;
+  readonly raccoonAnchor: THREE.Group;
   readonly focusMarkers: Readonly<Record<MiniDioramaTarget, THREE.Mesh>>;
 }
 
@@ -70,7 +68,11 @@ export function buildMiniDioramaScene(): MiniDioramaSceneAssets {
 
   const board = buildMiniDioramaProjectBoard(room, materials);
   const washer = buildMiniDioramaWasher(room, materials);
-  const raccoon = buildMiniDioramaRaccoon(room, materials);
+  const raccoonAnchor = addGroup(room, [-1.28, 0, 0.72]);
+  raccoonAnchor.name = 'laundromat-raccoon';
+  raccoonAnchor.scale.setScalar(2);
+  const raccoonShadow = addCuboid(room, 1.15, 0.02, 1.8, materials.shadow, [-1.28, 0.025, 0.72]);
+  raccoonShadow.name = 'raccoon-ground-shadow';
 
   const focusMarkers = {
     washer: addFocusMarker(scene, materials.terracotta, [1.45, 0.035, -0.28]),
@@ -84,12 +86,12 @@ export function buildMiniDioramaScene(): MiniDioramaSceneAssets {
     scene,
     materials,
     themeTargets,
-    raccoon,
+    raccoonAnchor,
     focusMarkers,
     interactionRoots: [
       { object: washer, target: 'washer' },
       { object: board, target: 'project-board' },
-      { object: raccoon.root, target: 'raccoon' },
+      { object: raccoonAnchor, target: 'raccoon' },
     ],
   };
 }

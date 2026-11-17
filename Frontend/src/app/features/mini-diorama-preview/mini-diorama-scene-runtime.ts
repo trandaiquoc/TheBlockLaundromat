@@ -14,8 +14,12 @@ import type {
 import { MiniDioramaCameraRig } from './mini-diorama-camera-rig';
 import { MiniDioramaInteractionController } from './mini-diorama-interaction';
 import { MiniDioramaRaccoonController } from './mini-diorama-raccoon-controller';
+import {
+  loadMiniDioramaRaccoonAsset,
+  type MiniDioramaRaccoonAssetLoader,
+} from './mini-diorama-raccoon-asset-loader';
 import { applyMiniDioramaTheme } from './mini-diorama-scene-materials';
-import { disposeMiniDioramaScene } from './mini-diorama-scene-resources';
+import { disposeMiniDioramaResources } from './mini-diorama-scene-resources';
 import {
   buildMiniDioramaScene,
   updateMiniDioramaFeedback,
@@ -25,12 +29,15 @@ import {
 export interface MiniDioramaRuntimeCallbacks {
   readonly onIntent: (intent: MiniDioramaIntent) => void;
   readonly onWebGLUnavailable: () => void;
+  readonly onRaccoonLoaded: () => void;
+  readonly onRaccoonLoadFailed: (error: unknown) => void;
 }
 
 export interface MiniDioramaRuntimeAdapters {
   readonly createRenderer: (canvas: HTMLCanvasElement) => WebGLRenderer;
   readonly requestFrame: (callback: FrameRequestCallback) => number;
   readonly cancelFrame: (handle: number) => void;
+  readonly loadRaccoonAsset: MiniDioramaRaccoonAssetLoader;
 }
 
 const browserAdapters: MiniDioramaRuntimeAdapters = {
@@ -38,6 +45,7 @@ const browserAdapters: MiniDioramaRuntimeAdapters = {
     new WebGLRenderer({ canvas, antialias: true, powerPreference: 'low-power' }),
   requestFrame: (callback) => globalThis.requestAnimationFrame(callback),
   cancelFrame: (handle) => globalThis.cancelAnimationFrame(handle),
+  loadRaccoonAsset: loadMiniDioramaRaccoonAsset,
 };
 
 const maximumPixelRatio = 1.75;
@@ -57,6 +65,7 @@ export class MiniDioramaSceneRuntime {
   private window?: Window;
   private document?: Document;
   private motionQuery?: MediaQueryList;
+  private raccoonLoadAbortController?: AbortController;
   private animationFrame?: number;
   private lastFrameTime?: number;
   private hoveredTarget?: MiniDioramaTarget;
@@ -115,8 +124,6 @@ export class MiniDioramaSceneRuntime {
       this.camera = new PerspectiveCamera(35, 1, 0.1, 45);
       this.cameraRig = new MiniDioramaCameraRig(this.camera);
       this.cameraRig.setReducedMotion(this.reducedMotion);
-      this.raccoonController = new MiniDioramaRaccoonController(this.assets.raccoon);
-      this.raccoonController.setReducedMotion(this.reducedMotion);
 
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = PCFShadowMap;
@@ -137,6 +144,7 @@ export class MiniDioramaSceneRuntime {
       this.resize();
       this.cameraRig.focus('overview', true);
       this.render();
+      this.loadRaccoon(document.baseURI);
       this.startAnimation();
       return true;
     } catch (error) {
@@ -179,6 +187,10 @@ export class MiniDioramaSceneRuntime {
     if (this.disposed) return;
     this.disposed = true;
     this.stopAnimation();
+    this.raccoonLoadAbortController?.abort();
+    this.raccoonLoadAbortController = undefined;
+    this.raccoonController?.dispose();
+    this.raccoonController = undefined;
     this.interaction?.dispose();
     this.interaction = undefined;
 
@@ -189,7 +201,7 @@ export class MiniDioramaSceneRuntime {
     this.motionQuery?.removeEventListener('change', this.onMotionChange);
     this.canvas?.removeEventListener('webglcontextlost', this.onContextLost);
 
-    if (this.assets) disposeMiniDioramaScene(this.assets.scene);
+    if (this.assets) disposeMiniDioramaResources(this.assets.scene);
     this.assets = undefined;
     this.renderer?.dispose();
     this.renderer = undefined;
@@ -197,7 +209,6 @@ export class MiniDioramaSceneRuntime {
     this.canvas = undefined;
     this.camera = undefined;
     this.cameraRig = undefined;
-    this.raccoonController = undefined;
     this.window = undefined;
     this.document = undefined;
     this.motionQuery = undefined;
@@ -220,6 +231,31 @@ export class MiniDioramaSceneRuntime {
   private attachBrowserListeners(): void {
     this.document?.addEventListener('visibilitychange', this.onVisibilityChange);
     this.motionQuery?.addEventListener('change', this.onMotionChange);
+  }
+
+  private loadRaccoon(baseURI: string): void {
+    const abortController = new AbortController();
+    this.raccoonLoadAbortController = abortController;
+
+    void Promise.resolve()
+      .then(() => this.adapters.loadRaccoonAsset(baseURI, abortController.signal))
+      .then((asset) => {
+        if (this.disposed || abortController.signal.aborted || !this.assets) {
+          disposeMiniDioramaResources(asset.root);
+          return;
+        }
+
+        this.assets.raccoonAnchor.add(asset.root);
+        this.raccoonController = new MiniDioramaRaccoonController(asset.root, asset.animations);
+        this.raccoonController.setReducedMotion(this.reducedMotion);
+        this.callbacks.onRaccoonLoaded();
+        this.render();
+      })
+      .catch((error: unknown) => {
+        if (this.disposed || abortController.signal.aborted) return;
+        this.dispose();
+        this.callbacks.onRaccoonLoadFailed(error);
+      });
   }
 
   private resize(): void {

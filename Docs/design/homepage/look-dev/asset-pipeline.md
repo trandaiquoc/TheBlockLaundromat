@@ -1,25 +1,25 @@
-# Goal 02C asset pipeline proposal
+# Homepage authored asset pipeline
 
-This is a pipeline recommendation for a future implementation after visual acceptance. Goal 02C creates concepts only; it does not create Blockbench models, glTF files, production textures, runtime loaders, or animations.
+**Status — Goal 02D checkpoint:** Goal 02C concept approval remains the visual source of truth. Goal 02D has created and integrated the original Puddlepaw Raccoon candidate, but Art Gate A is pending user review. Room A production and the four-theme art pass have not started and must wait for that approval.
 
 ## Source and runtime ownership
 
-| Asset | Editable source | Runtime owner | Notes |
-| --- | --- | --- | --- |
-| Raccoon | Original Blockbench project and original pixel atlas under Frontend/source-assets/homepage/models/raccoon/ | Route-scoped Three.js scene | Keep pivots for body, head, ears, forelegs, hind legs, tail base, and tail segments. Do not copy Alex’s Mobs geometry, UV layout, or texture. |
-| Washer hero | Blockbench source only if a procedural shell and drum do not meet the approved silhouette | Three.js scene | The shell may use one rounded box; author the circular bezel/door only if it needs controlled topology or UVs. |
-| Project Board | Four frame cuboids plus a blank board surface, or a small Blockbench asset | Three.js scene plus Angular overlay | Reserve a stable named anchor on the blank board. Angular DOM owns project names, controls, and focus. |
-| Room shell | Scene builder in the existing homepage renderer | Three.js scene | One platform, shared tile geometry, two walls, and a simple window. No new scene framework. |
-| Reusable props | Small grouped scene assets or scene-builder functions | Three.js scene | Shelf, towel cubes, pot/leaves, and basket. Avoid unique meshes for basket holes or other tiny repeats. |
-| Theme variants | Theme scene configuration | Existing theme service supplies preference; scene applies lighting/material/window presets | Minecraft keeps internal key craft. Keep geometry semantics stable across themes. |
+| Asset          | Editable source                                                                                                   | Runtime owner                                                                              | Notes                                                                                                                                       |
+| -------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Raccoon        | `puddlepaw-raccoon.bbmodel` and `puddlepaw-fur-atlas.png` under `Frontend/source-assets/homepage/models/raccoon/` | `mini-diorama-preview` GLB loader and scene runtime                                        | The current candidate preserves body, head, foreleg, hindquarter, and tail pivots. Do not copy Alex’s Mobs geometry, UV layout, or texture. |
+| Washer hero    | Blockbench source only if a procedural shell and drum do not meet the approved silhouette                         | Three.js scene                                                                             | The shell may use one rounded box; author the circular bezel/door only if it needs controlled topology or UVs.                              |
+| Project Board  | Four frame cuboids plus a blank board surface, or a small Blockbench asset                                        | Three.js scene plus Angular overlay                                                        | Reserve a stable named anchor on the blank board. Angular DOM owns project names, controls, and focus.                                      |
+| Room shell     | Scene builder in the existing homepage renderer                                                                   | Three.js scene                                                                             | One platform, shared tile geometry, two walls, and a simple window. No new scene framework.                                                 |
+| Reusable props | Small grouped scene assets or scene-builder functions                                                             | Three.js scene                                                                             | Shelf, towel cubes, pot/leaves, and basket. Avoid unique meshes for basket holes or other tiny repeats.                                     |
+| Theme variants | Theme scene configuration                                                                                         | Existing theme service supplies preference; scene applies lighting/material/window presets | Minecraft keeps internal key craft. Keep geometry semantics stable across themes.                                                           |
 
-The repository currently copies homepage PNGs and scene-manifest.json into the runtime asset directory. It does not currently copy GLB assets. If a later approved implementation adopts authored models, add a focused model asset pattern to Frontend/angular.json and extend check-home-assets.mjs to validate the packaged GLB files. Keep editable Blockbench sources out of the runtime bundle.
+Angular now copies `models/**/*.glb` into `assets/homepage/runtime`; editable `.bbmodel` and standalone texture sources stay out of the runtime bundle. `check-home-assets.mjs` validates the editable project, matching embedded/source atlas, GLB rig and clip contract, and the built runtime inventory. The loader fetches the candidate from `assets/homepage/runtime/models/raccoon/puddlepaw-raccoon.glb` and owns its loaded scene resources through route teardown.
 
 ## Blockbench authoring
 
-1. Create an original low-poly cuboid model from the selected Raccoon sheet. Author the charcoal face mask, gray muzzle, body proportions, and tail stripes as original UV regions.
+1. The current candidate is the original low-poly cuboid model `Puddlepaw Raccoon`. Its charcoal face mask, gray muzzle, body proportions, and tail stripes use the original 64 × 64 pixel atlas.
 2. Use intention-revealing node names and place pivots at joints before rigging. Separate static fur markings into the atlas so they do not require extra geometry.
-3. Build and inspect front, three-quarter, and side views before making animation clips. Keep the source project and source texture with the model.
+3. Front, three-quarter, and side candidate renders are saved under the ignored `Frontend/.artifacts/goal-02d/raccoon-review/` directory. Keep the source project and source texture beside the runtime export.
 4. Author the washer bezel only if the procedural cylinder/ring and rounded shell fail the approved visual gate. Keep the board surface blank.
 5. Record the author, source file, texture source, license, export version, and generated runtime filename beside each editable source.
 
@@ -35,11 +35,11 @@ Use GLTFLoader to load model scenes and AnimationMixer for exported clips. Keep 
 - each clip has one owner and is stopped when the scene host is destroyed;
 - the runtime loader does not import project, router, persistence, or editor-domain services.
 
-Actual clip set and dimensions remain subject to the accepted character and motion scope. This document does not add animation work to Goal 02C.
+The current candidate exports `idle`, `sit`, and `greet`; visual and motion acceptance remain pending at Art Gate A. Goal 02C did not include animation production; this candidate work belongs to Goal 02D.
 
 ## Textures and theme data
 
-- Use an original small pixel atlas for the Raccoon, initially testing 64 × 64 and increasing only when the approved face cannot remain legible.
+- Use the original 64 × 64 Raccoon atlas and keep the face details legible at the smallest supported viewport.
 - Set pixel-art textures to sRGB color space and nearest filtering; verify eye highlights and the mask remain distinct at the smallest supported viewport.
 - Keep Project Board text and project thumbnails in Angular DOM. Do not rasterize user project data into a texture or regenerate the board texture when project state changes.
 - Keep scene art values in theme presets: key light, ambient fill, window sky/landscape, wall/wood materials, and tile contrast. Theme switching changes presentation only and never project data.
@@ -47,7 +47,7 @@ Actual clip set and dimensions remain subject to the accepted character and moti
 
 ## Packaging and validation
 
-After the art gate, validate each exported GLB by loading it through GLTFLoader in an isolated preview, checking node names, scale, ground contact, expected clips, texture filtering, and the blank board anchor. Record file sizes and inspect the packaged output from the Angular build. Extend the existing homepage asset check instead of creating a second asset-pipeline test system.
+The Raccoon candidate has been loaded through GLTFLoader in the isolated preview and packaged by the Angular build. Automated asset checks verify its header, embedded atlas, geometry, rig nodes, and clips. Browser checks cover route loading, animation controls, reduced motion, fallback, and repeated mount/unmount. Room anchors and blank-board placement remain to be verified when Room A is authorized after Gate A.
 
 The preview host owns model loading and disposal. Angular owns the page shell and semantic DOM. ProjectScreenWorkflow remains the sole owner of create/open/delete/import/backup operations. The renderer may receive read-only presentation summaries and emit typed intents; it must not mutate persistence or encode project content into pixels.
 
@@ -56,7 +56,7 @@ The preview host owns model loading and disposal. Angular owns the page shell an
 - No root `LICENSE`, `COPYING`, or `NOTICE` file was found, and the frontend package does not declare an art license. Do not assume a repository-wide redistribution license for future homepage art.
 - Keep every production model and texture original or explicitly licensed for this project. Record the creator, source, license, attribution requirements, and any written grant beside the editable source. If the rights are unknown, record them as unresolved and do not package the asset.
 - The Alex’s Mobs and Sketchfab sources are technical/art-direction references only. Do not copy their geometry, UV layout, textures, or exported files into the project. Verify the exact asset license before proposing any third-party runtime asset.
-- The generated PNGs in this look-dev package are flattened review concepts, not editable models or runtime textures. The palette SVG is editable. After user acceptance, create production `.bbmodel` and texture sources as original assets and record their provenance before export.
+- The generated PNGs in this look-dev package are flattened review concepts, not editable models or runtime textures. The palette SVG is editable. Goal 02D has created original editable `.bbmodel` and texture sources plus a runtime GLB; their provenance and use record is beside the source. The candidate is not yet user-approved at Art Gate A.
 
 ## Reference and provenance
 
@@ -69,4 +69,4 @@ The preview host owns model loading and disposal. Angular owns the page shell an
 - [Three.js color management](https://threejs.org/manual/pages/color-management.html)
 - [Alex’s Mobs Raccoon model source](https://github.com/AlexModGuy/AlexsMobs/blob/1.20/src/main/java/com/github/alexthe666/alexsmobs/client/model/ModelRaccoon.java) and [texture source](https://github.com/AlexModGuy/AlexsMobs/blob/1.20/src/main/resources/assets/alexsmobs/textures/entity/raccoon.png) — inspected as a cuboid/UV reference only; neither file is redistributed in these concepts.
 
-No external dependency is proposed. The Blockbench authoring source and generated concept images have different ownership from runtime assets; the latter are not approved or packaged by this proposal.
+No external dependency was added. The Blockbench source, standalone atlas, and runtime GLB are original project assets. Runtime packaging is limited to the GLB; the editable source and standalone atlas remain authoring files. Passing automated checks does not mark Art Gate A as approved.

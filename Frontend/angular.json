@@ -37,6 +37,11 @@
                 "ignore": ["assets/**/navigation.png", "assets/**/account.png"]
               },
               {
+                "glob": "models/**/*.glb",
+                "input": "source-assets/homepage",
+                "output": "assets/homepage/runtime"
+              },
+              {
                 "glob": "scene-manifest.json",
                 "input": "source-assets/homepage",
                 "output": "assets/homepage/runtime"

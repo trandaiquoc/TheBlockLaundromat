@@ -1,6 +1,6 @@
 # ADR 001: Homepage rendering engine
 
-- **Status:** Three.js remains selected for the isolated Goal 02 preview. The user approved the Goal 02C Raccoon, room composition A, and four theme concepts; production adoption still requires the implementation and representative-device gates documented in the research report.
+- **Status:** Three.js remains selected for the isolated Goal 02 preview. Goal 02D integrated an original Puddlepaw Raccoon GLB candidate into `/mini-diorama-preview`; its Art Gate A visual approval is pending. Room A and four-theme production remain paused until that gate passes.
 - **Date:** 2026-11-16.
 - **Reviewed:** 2026-11-17.
 - **Scope:** Goal 01 engine decision; Goal 02 applies that decision to a separate, non-production preview route.
@@ -30,7 +30,7 @@ Do not add PixiJS or combine renderers for this prototype.
 - Supports real depth, camera framing, bounded character poses and object picking.
 - Procedural-first is not geometry-only. The Goal 02B Raccoon and room art were rejected by the user and are not the approved basis for further model edits. Goal 02C proposes new original concepts and a Blockbench-to-glTF pipeline in the [look-dev package](look-dev/README.md).
 - The shared Three.js scene has palette, lighting, window landscape, and exterior mood variants for Minecraft, Light, Raccoon, and Dark. The prior captures were not accepted; the separate Goal 02C same-room theme concepts are now user-approved.
-- The preview implements explicit lifecycle/disposal, semantic DOM alternatives, reduced-motion behavior, WebGL fallback, and browser verification. Representative performance and formal art review remain open.
+- The preview implements explicit lifecycle/disposal, semantic DOM alternatives, reduced-motion behavior, WebGL fallback, and browser verification. The candidate Raccoon uses GLTFLoader and AnimationMixer. Representative-device performance and formal art review remain open; the current art review is Gate A only.
 - Keep the raster and diorama previews separate until production parity is demonstrated, then maintain one production homepage path.
 
 ## Revisit conditions

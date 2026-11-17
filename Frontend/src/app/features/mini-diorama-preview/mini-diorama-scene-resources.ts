@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 
-export function disposeMiniDioramaScene(scene: THREE.Scene): void {
+export function disposeMiniDioramaResources(root: THREE.Object3D): void {
   const geometries = new Set<THREE.BufferGeometry>();
   const materials = new Set<THREE.Material>();
   const textures = new Set<THREE.Texture>();
 
-  scene.traverse((object) => {
+  root.traverse((object) => {
     const mesh = object as THREE.Mesh;
     if (!mesh.isMesh) return;
     geometries.add(mesh.geometry);
@@ -21,7 +21,7 @@ export function disposeMiniDioramaScene(scene: THREE.Scene): void {
   for (const texture of textures) texture.dispose();
   for (const material of materials) material.dispose();
   for (const geometry of geometries) geometry.dispose();
-  scene.clear();
+  root.clear();
 }
 
 function isTexture(value: unknown): value is THREE.Texture {

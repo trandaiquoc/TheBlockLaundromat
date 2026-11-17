@@ -15,6 +15,22 @@ const expectedThemes = {
 };
 const expectedLayerCounts = { minecraft: 82, light: 82, raccoon: 84, dark: 83 };
 const expectedCanvas = { width: 1672, height: 941 };
+const raccoonSourcePaths = [
+  'models/raccoon/puddlepaw-raccoon.bbmodel',
+  'models/raccoon/puddlepaw-fur-atlas.png',
+  'models/raccoon/puddlepaw-raccoon.glb',
+  'models/raccoon/README.md',
+];
+const raccoonRigNodes = [
+  'body_pivot',
+  'head_pivot',
+  'foreleg_left',
+  'foreleg_right',
+  'tail_base',
+  'tail_tip',
+  'hindquarters',
+];
+const raccoonAnimations = ['greet', 'idle', 'sit'];
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 function sourcePath(path) {
@@ -50,6 +66,31 @@ function readPng(path, expectedDimensions) {
     );
   }
   return { bytes, dimensions };
+}
+
+function readGlb(path) {
+  const bytes = readFileSync(path);
+  if (
+    bytes.length < 20 ||
+    bytes.subarray(0, 4).toString('ascii') !== 'glTF' ||
+    bytes.readUInt32LE(4) !== 2 ||
+    bytes.readUInt32LE(8) !== bytes.length
+  ) {
+    throw new Error(`Invalid GLB header or length: ${relative(source, path)}`);
+  }
+
+  const jsonLength = bytes.readUInt32LE(12);
+  if (bytes.readUInt32LE(16) !== 0x4e4f534a || 20 + jsonLength > bytes.length) {
+    throw new Error(`GLB is missing its JSON document: ${relative(source, path)}`);
+  }
+  const document = JSON.parse(
+    bytes
+      .subarray(20, 20 + jsonLength)
+      .toString('utf8')
+      .replace(/\u0000+$/, '')
+      .trimEnd(),
+  );
+  return { bytes, document };
 }
 
 function filesUnder(directory) {
@@ -133,9 +174,59 @@ const layerFiles = filesUnder(join(source, 'assets'));
 const maskFiles = filesUnder(join(source, 'masks'));
 const referenceFiles = filesUnder(join(source, 'reference'));
 const sourceFiles = filesUnder(source);
+const raccoonTexturePath = sourcePath('models/raccoon/puddlepaw-fur-atlas.png');
+const { bytes: raccoonTexture } = readPng(raccoonTexturePath, { width: 64, height: 64 });
+const raccoonModelPath = sourcePath('models/raccoon/puddlepaw-raccoon.bbmodel');
+const raccoonModel = JSON.parse(readFileSync(raccoonModelPath, 'utf8'));
+const embeddedRaccoonTexture = raccoonModel.textures?.find(
+  (texture) => texture.name === 'puddlepaw_fur_atlas.png',
+);
+if (
+  raccoonModel.meta?.model_format !== 'free' ||
+  !Array.isArray(raccoonModel.elements) ||
+  raccoonModel.elements.length === 0 ||
+  !Array.isArray(raccoonModel.groups) ||
+  raccoonRigNodes.some((name) => !raccoonModel.groups.some((group) => group.name === name)) ||
+  raccoonModel.animations
+    ?.map((animation) => animation.name)
+    .sort()
+    .join(',') !== raccoonAnimations.join(',') ||
+  !embeddedRaccoonTexture?.source?.startsWith('data:image/png;base64,') ||
+  embeddedRaccoonTexture.width !== 64 ||
+  embeddedRaccoonTexture.height !== 64 ||
+  sha256(Buffer.from(embeddedRaccoonTexture.source.split(',')[1], 'base64')) !==
+    sha256(raccoonTexture)
+) {
+  throw new Error('Editable Raccoon source does not match its embedded texture or clip contract.');
+}
+
+const raccoonGlbPath = sourcePath('models/raccoon/puddlepaw-raccoon.glb');
+const { bytes: raccoonGlb, document: raccoonGltf } = readGlb(raccoonGlbPath);
+const raccoonNodeNames = new Set(raccoonGltf.nodes?.map((node) => node.name));
+if (
+  raccoonAnimations.some(
+    (name) => !raccoonGltf.animations?.some((animation) => animation.name === name),
+  ) ||
+  raccoonRigNodes.some((name) => !raccoonNodeNames.has(name)) ||
+  (raccoonGltf.images?.length ?? 0) !== 1 ||
+  (raccoonGltf.meshes?.length ?? 0) === 0
+) {
+  throw new Error('Raccoon runtime GLB is missing its texture, geometry, rig nodes, or clips.');
+}
+
 const sourceLayerPaths = new Set(
   layerFiles.map((path) => relative(source, path).split(sep).join('/')),
 );
+const actualSourcePaths = new Set(
+  sourceFiles.map((path) => relative(source, path).split(sep).join('/')),
+);
+const expectedSourcePaths = new Set([
+  ...manifestLayers,
+  ...maskFiles.map((path) => relative(source, path).split(sep).join('/')),
+  ...referenceFiles.map((path) => relative(source, path).split(sep).join('/')),
+  'scene-manifest.json',
+  ...raccoonSourcePaths,
+]);
 const semanticIds = new Set(
   Object.values(manifest.themes).flatMap((theme) => theme.assets.map((asset) => asset.id)),
 );
@@ -148,8 +239,9 @@ if (
   maskFiles.length !== 282 ||
   referenceFiles.length !== 4 ||
   referencedMasks.size !== 278 ||
-  sourceFiles.length !== 618 ||
-  sourceFiles.some((path) => !path.toLowerCase().endsWith('.png') && path !== manifestPath)
+  sourceFiles.length !== 622 ||
+  actualSourcePaths.size !== expectedSourcePaths.size ||
+  [...expectedSourcePaths].some((path) => !actualSourcePaths.has(path))
 ) {
   throw new Error('Homepage source package inventory changed unexpectedly');
 }
@@ -169,6 +261,7 @@ if (existsSync(distRuntime)) {
       expectedRuntime.set(asset.file, sourcePath(asset.file));
     }
   }
+  expectedRuntime.set('models/raccoon/puddlepaw-raccoon.glb', raccoonGlbPath);
   const runtimeFiles = filesUnder(distRuntime);
   const actualRuntimePaths = new Set(
     runtimeFiles.map((path) => relative(distRuntime, path).split(sep).join('/')),
@@ -189,14 +282,14 @@ if (existsSync(distRuntime)) {
   for (const [runtimePath, sourceAssetPath] of expectedRuntime) {
     const distAssetPath = join(distRuntime, ...runtimePath.split('/'));
     if (sha256(readFileSync(distAssetPath)) !== sha256(readFileSync(sourceAssetPath))) {
-      throw new Error(`Production Homepage runtime layer differs from source: ${runtimePath}`);
+      throw new Error(`Production Homepage runtime asset differs from source: ${runtimePath}`);
     }
   }
 
   const runtimeBytes = runtimeFiles.reduce((total, path) => total + readFileSync(path).length, 0);
-  runtimeSummary = `Production runtime verified: ${expectedRuntime.size} required layer PNGs and manifest only (${runtimeBytes} bytes; no masks, references, or DOM-replaced control artwork).`;
+  runtimeSummary = `Production runtime verified: ${expectedRuntime.size - 1} required PNG layers, one authored Raccoon GLB, and manifest (${runtimeBytes} bytes; no editable model or texture sources).`;
 }
 
 console.log(
-  `Homepage source assets: 331 layer SHA-256 hashes, 282 masks, 86 semantic IDs, manifest paths and PNG dimensions, four canonical references verified. ${runtimeSummary}`,
+  `Homepage source assets: 331 layer SHA-256 hashes, 282 masks, 86 semantic IDs, four canonical references, and the editable 64x64 Raccoon source/texture/GLB contract verified. ${runtimeSummary}`,
 );
