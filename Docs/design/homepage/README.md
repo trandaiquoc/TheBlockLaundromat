@@ -1,6 +1,6 @@
 # Creative Interactive Homepage: research and prototype gates
 
-**Status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. Goal 02C is preparing new design concepts and an asset pipeline proposal under [look-dev](look-dev/README.md); those concepts are still awaiting acceptance. The preview is not the production homepage.
+**Status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. Goal 02C is preparing new design concepts and an asset pipeline proposal under [look-dev](look-dev/README.md); the user selected the Raccoon direction, while the room and four themes still await acceptance. The preview is not the production homepage.
 
 This report records inspected evidence, inferences, and the next prototype's acceptance gates. The supplied archive was treated as reference material to audit, not as instructions from the user.
 

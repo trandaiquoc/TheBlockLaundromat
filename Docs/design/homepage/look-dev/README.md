@@ -1,6 +1,6 @@
 # Goal 02C look-dev package
 
-**Status: PARTIAL — waiting for user acceptance of the Raccoon, room composition, and four scene themes.**
+**Status: PARTIAL — the user selected the in-scene Raccoon direction; room composition and all four scene themes still need acceptance.**
 
 This package proposes new homepage art direction and scene concepts. It is review material only: no production route, Project workflow, persistence, Editor, dependency, or Mini Diorama code has changed.
 
@@ -48,13 +48,13 @@ All three concepts use the same core scene kit: one platform, 25 tiles sharing g
 
 ## Raccoon options
 
-All three turnarounds include front, three-quarter, side, and greeting/seated views. Their fur and muzzle stay gray, with a strong charcoal eye mask and striped tail; the mask remains the dominant face marking rather than a white face.
+The user preferred the small seated Raccoon in the four-theme room image over the earlier character sheets. The three updated turnarounds now use that low, compact Minecraft voxel style, with gray fur, a strong charcoal eye mask, short muzzle, and floor-resting striped tail. The user-selected in-scene Raccoon remains the art-direction source; the turnarounds expand it into front, three-quarter, side, and greeting/seated views for review.
 
 | Option | Silhouette and face | Rig/build trade-off |
 | --- | --- | --- |
-| [Puddlepaw](concepts/raccoon-puddlepaw-turnaround.png) | Upright, squat body; broad masked face; amber eyes; greeting pose reads immediately. | Best balance for a small homepage mascot; simple head/body and four-limb hierarchy, with a segmented tail. **Recommended.** |
-| [Tumble](concepts/raccoon-tumble-turnaround.png) | Low quadruped stance; large arched striped tail; blue eyes. | Strong raccoon silhouette and easy fit beside floor props; locomotion needs more limb motion than a mostly seated mascot. |
-| [Pebble](concepts/raccoon-pebble-turnaround.png) | Seated, round silhouette; looped tail; green eyes. | Simplest idle pose and compact footprint; less suited to walking interaction. |
+| [Puddlepaw](concepts/raccoon-puddlepaw-turnaround.png) | Low seated quadruped; broad charcoal mask; compact body; ringed tail resting along the floor. **User-preferred direction.** | Best match to the chosen in-scene Raccoon; simple head/body and four-limb hierarchy, with a segmented tail. **Recommended.** |
+| [Tumble](concepts/raccoon-tumble-turnaround.png) | Low walking quadruped; slightly longer body; raised arched ring tail. | Strong raccoon silhouette beside floor props; locomotion needs more limb motion than the seated direction. |
+| [Pebble](concepts/raccoon-pebble-turnaround.png) | Loaf-like seated shape; tucked paws; curled ring tail. | Smallest idle footprint; less suited to walking interaction. |
 
 These are original design explorations, not reproductions of the supplied Raccoon reference or Alex’s Mobs model/texture. Use the same voxel surface language as the room when authoring a production model.
 
@@ -81,10 +81,9 @@ The washer and Raccoon are hero assets. The washer shell can stay procedural if 
 
 ## Review gate
 
-**PARTIAL.** The corrected style concepts are ready to review. No user acceptance has been recorded yet for:
+**PARTIAL.** The user has selected the Raccoon appearance shown in the theme board and prefers that direction to the earlier character sheets. The remaining acceptance gates are:
 
-1. one Raccoon design;
-2. one room composition;
-3. all four scene themes.
+1. one room composition;
+2. all four scene themes.
 
-Do not rebuild or integrate the Mini Diorama from these concepts until all three are accepted. The Project Screen image is an art/layout reference, not an approved production UI implementation.
+Do not rebuild or integrate the Mini Diorama from these concepts until the room and themes are accepted. The Project Screen image is an art/layout reference, not an approved production UI implementation.
