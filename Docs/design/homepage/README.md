@@ -27,7 +27,7 @@ The unmodified archive is retained locally at `Docs/design/references/2171_spati
 - `unzip -t`: passed.
 - Contents include `index.html`, `css/style.css`, `js/app.js`, `js/diorama.js`, six gallery JPEGs, and a bundled Three.js vendor file/license.
 
-Tooplate's [About page](https://www.tooplate.com/about) describes personal and commercial use and allows removal of credit, while also restricting redistribution of the template file. This wording does not clearly authorize committing the original ZIP to this repository. The archive is thus kept at the requested local path and excluded from Git by `Docs/design/references/.gitignore`. This is a conservative handling choice, not a legal interpretation. `js/vendor/LICENSE-three.txt` covers the bundled Three.js code only; it does not grant rights to redistribute the template or its artwork. Recheck the terms before publishing or redistributing the archive.
+Tooplate's [About page](https://www.tooplate.com/about) permits personal and commercial website use and removal of credit, while prohibiting redistribution of the template file on template websites or template collection websites. At the user's request, the unmodified ZIP is tracked in this project repository for a Linux-to-Windows handoff. The repository is public, so pushing makes the archive publicly downloadable; the About page does not explicitly resolve redistribution from a general source-code repository. This is recorded as an unresolved licensing boundary, not a grant of broader rights. `js/vendor/LICENSE-three.txt` covers the bundled Three.js code only; it does not grant rights to redistribute the template or its artwork. Recheck the terms before any further distribution. Adding a future ignore rule will not remove the archive from commits already in Git history.
 
 ## Spatial Diorama source audit
 
@@ -205,7 +205,7 @@ If a gate depends on unavailable hardware/browser, record the exact environment 
 - Live Tooplate interaction and device behavior remain unverified; its archived source audit is not a live-browser test.
 - The current captures do not establish a formal art score, representative hardware/browser frame rate, GPU-memory growth, or assistive-technology quality.
 - Four images do not explain prior rejection reasons. The 54 MB source asset package is a packaging/runtime risk to measure, not a demonstrated performance failure.
-- Permission to redistribute the full template ZIP is unclear; it remains local and ignored.
+- The public repository now contains the unmodified template ZIP at the user's direction for machine migration. The scope of permission for public source-repository distribution remains unverified.
 - Goal 02 adds one preview route and localization strings; it does not change root project behavior, dependencies, persistence, or Editor. Existing homepage tests still cover the raster preview only.
 
 ## Research references
