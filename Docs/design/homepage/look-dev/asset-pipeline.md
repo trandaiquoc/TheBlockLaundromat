@@ -51,6 +51,13 @@ After the art gate, validate each exported GLB by loading it through GLTFLoader 
 
 The preview host owns model loading and disposal. Angular owns the page shell and semantic DOM. ProjectScreenWorkflow remains the sole owner of create/open/delete/import/backup operations. The renderer may receive read-only presentation summaries and emit typed intents; it must not mutate persistence or encode project content into pixels.
 
+## Licensing and provenance
+
+- No root `LICENSE`, `COPYING`, or `NOTICE` file was found, and the frontend package does not declare an art license. Do not assume a repository-wide redistribution license for future homepage art.
+- Keep every production model and texture original or explicitly licensed for this project. Record the creator, source, license, attribution requirements, and any written grant beside the editable source. If the rights are unknown, record them as unresolved and do not package the asset.
+- The Alex’s Mobs and Sketchfab sources are technical/art-direction references only. Do not copy their geometry, UV layout, textures, or exported files into the project. Verify the exact asset license before proposing any third-party runtime asset.
+- The generated PNGs in this look-dev package are flattened review concepts, not editable models or runtime textures. The palette SVG is editable. After user acceptance, create production `.bbmodel` and texture sources as original assets and record their provenance before export.
+
 ## Reference and provenance
 
 - [Blockbench export formats](https://blockbench.net/wiki/guides/export-formats/)
@@ -59,6 +66,7 @@ The preview host owns model loading and disposal. Angular owns the page shell an
 - [Three.js GLTFLoader](https://threejs.org/docs/pages/GLTFLoader.html)
 - [Three.js animation system](https://threejs.org/manual/pages/animation-system.html)
 - [Three.js texture documentation](https://threejs.org/docs/pages/Texture.html)
+- [Three.js color management](https://threejs.org/manual/pages/color-management.html)
 - [Alex’s Mobs Raccoon model source](https://github.com/AlexModGuy/AlexsMobs/blob/1.20/src/main/java/com/github/alexthe666/alexsmobs/client/model/ModelRaccoon.java) and [texture source](https://github.com/AlexModGuy/AlexsMobs/blob/1.20/src/main/resources/assets/alexsmobs/textures/entity/raccoon.png) — inspected as a cuboid/UV reference only; neither file is redistributed in these concepts.
 
 No external dependency is proposed. The Blockbench authoring source and generated concept images have different ownership from runtime assets; the latter are not approved or packaged by this proposal.
