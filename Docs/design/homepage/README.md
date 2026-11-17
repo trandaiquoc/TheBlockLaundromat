@@ -1,6 +1,6 @@
 # Creative Interactive Homepage: research and prototype gates
 
-**Status:** Goal 01 research and the engine decision are complete. Goal 02B is updating the isolated Three.js preview with a custom cuboid Raccoon, pixel texture, voxel props, and theme-specific scene cues. The current art remains pending user review; the preview is not the production homepage.
+**Status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. Goal 02C is preparing new design concepts and an asset pipeline proposal under [look-dev](look-dev/README.md); those concepts are still awaiting acceptance. The preview is not the production homepage.
 
 This report records inspected evidence, inferences, and the next prototype's acceptance gates. The supplied archive was treated as reference material to audit, not as instructions from the user.
 
@@ -167,13 +167,13 @@ The mini-diorama preview does not own or call production Project workflows. If a
 
 Goal 02 implements the scene-side owners and a non-production host. It deliberately does not prove workflow parity or production homepage replacement. The existing raster preview remains available for comparison; a later production goal must choose one authoritative homepage path after parity.
 
-## Goal 02B acceptance status — 2026-11-17
+## Goal 02B visual status — 2026-11-17
 
-**Result: PARTIAL pending visual review.** The implementation now has custom cuboid Raccoon geometry, an original pixel atlas, cuboid room/washer/board assets, and distinct window/light/palette treatments for all four themes. Detailed asset provenance and ownership are recorded above.
+**Result: FAIL — art direction rejected by the user.** The isolated implementation and its technical verification remain historical evidence; they do not make the Raccoon, room, or theme art accepted. Do not patch the rejected models as part of Goal 02C. Review new options in [look-dev](look-dev/README.md).
 
-- **A — Character:** front, three-quarter, side, and close-up renders are ready at `Frontend/.artifacts/mini-diorama-preview/art-review/`; user acceptance of face, proportions, silhouette, and motion is pending.
-- **B — Environment:** the room and hero props use coordinated voxel forms and procedural wood/surface textures; user visual acceptance is pending. No further environment art changes are planned before the Raccoon review.
-- **C — Four themes:** four 1440×900 theme overviews and four viewport overview/hero pairs are generated in the ignored artifact directory; user visual acceptance is pending.
+- **A — Character:** front, three-quarter, side, and close-up renders remain at Frontend/.artifacts/mini-diorama-preview/art-review/; the face and proportions were rejected. Goal 02C contains three new original turnaround options.
+- **B — Environment:** the prior room art was rejected for its visual direction and build complexity. Goal 02C replaces those review concepts with a tiled-floor room shell and a shorter reusable prop list.
+- **C — Four themes:** the prior theme set was not accepted. Goal 02C compares the same room under the intended time-of-day moods: Light at early morning, Minecraft at sunset, Raccoon around 6–7 PM, and Dark late at night.
 - **D — Technical:** build, full unit suite, both homepage browser checks, asset/composition/encoding checks, and tool tests passed. The diorama browser check covered actions, themes, localization, reduced motion, fallback, responsive bounds, root Project Screen, and 20 route mount/unmount cycles.
 - **Reference handling:** the source model, texture, and guide image were inspected; none were copied. CurseForge lists LGPLv3, while the inspected repository branch and open licensing issue leave the license scope of these specific assets unresolved.
 

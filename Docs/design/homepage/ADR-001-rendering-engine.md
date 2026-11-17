@@ -1,6 +1,6 @@
 # ADR 001: Homepage rendering engine
 
-- **Status:** Implemented for the isolated Goal 02 preview; production homepage adoption remains pending user art review and representative-device profiling.
+- **Status:** Three.js remains selected for the isolated Goal 02 preview. Goal 02B art direction was rejected; production adoption remains pending acceptance of the new Goal 02C concepts and representative-device profiling.
 - **Date:** 2026-11-16.
 - **Reviewed:** 2026-11-17.
 - **Scope:** Goal 01 engine decision; Goal 02 applies that decision to a separate, non-production preview route.
@@ -28,8 +28,8 @@ Do not add PixiJS or combine renderers for this prototype.
 
 - Reuses installed engine and existing expertise; no dependency change.
 - Supports real depth, camera framing, bounded character poses and object picking.
-- Procedural-first is not geometry-only; the isolated Raccoon now uses independently authored cuboids scaled to the Alex's Mobs proportions and an original 64×64 nearest-filtered pixel atlas. Its hierarchy, face UV approach, and pixel-art language were informed by the reference without copying its code or texture. User visual acceptance remains pending; evidence and provenance notes are in the [research report](README.md).
-- The shared Three.js scene now changes palette, lighting, window landscape, and exterior mood across Minecraft, Light, Raccoon, and Dark. Theme captures exist, but visual acceptance remains pending before production adoption.
+- Procedural-first is not geometry-only. The Goal 02B Raccoon and room art were rejected by the user and are not the approved basis for further model edits. Goal 02C proposes new original concepts and a Blockbench-to-glTF pipeline in the [look-dev package](look-dev/README.md).
+- The shared Three.js scene has palette, lighting, window landscape, and exterior mood variants for Minecraft, Light, Raccoon, and Dark. The prior captures were not accepted; the new same-room theme concepts remain pending review.
 - The preview implements explicit lifecycle/disposal, semantic DOM alternatives, reduced-motion behavior, WebGL fallback, and browser verification. Representative performance and formal art review remain open.
 - Keep the raster and diorama previews separate until production parity is demonstrated, then maintain one production homepage path.
 
