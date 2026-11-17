@@ -1,6 +1,6 @@
 # Goal 02C look-dev package
 
-**Status: PARTIAL — the user selected the in-scene Raccoon direction; room composition and all four scene themes still need acceptance.**
+**Concept art gate: PASS — the user approved the in-scene Raccoon direction, room composition A, and all four scene themes on 2026-11-17.**
 
 This package proposes new homepage art direction and scene concepts. It is review material only: no production route, Project workflow, persistence, Editor, dependency, or Mini Diorama code has changed.
 
@@ -28,11 +28,11 @@ At narrow widths, keep the app bar and semantic controls in the DOM, reframe the
 
 ## Room composition options
 
-### A — Checker stage (recommended)
+### A — Checker stage (user-approved)
 
 ![Buildable room composition A](concepts/room-a-checker-stage.png)
 
-The washer and blank board sit across the back corner, with the checker floor open in front. This is the most balanced option for a small viewport. Keep the ivy to a few repeated leaf clusters; represent the plant as a pot plus shared leaf cubes.
+The washer and blank board sit across the back corner, with the checker floor open in front. The user selected this composition. Keep the ivy to a few repeated leaf clusters; represent the plant as a pot plus shared leaf cubes.
 
 ### B — Board left, washer right
 
@@ -50,7 +50,7 @@ All three concepts use the same core scene kit: one platform, 25 tiles sharing g
 
 | Composition | Focal hierarchy | Framing trade-off |
 | --- | --- | --- |
-| A — Checker stage | Washer and blank board share the back wall; open checker floor anchors the foreground. | Most balanced on desktop; portrait framing can keep both heroes visible above the Raccoon. **Recommended.** |
+| A — Checker stage | Washer and blank board share the back wall; open checker floor anchors the foreground. | Most balanced on desktop; portrait framing can keep both heroes visible above the Raccoon. **User-approved.** |
 | B — Board left | Wide blank board is the main left-wall surface; washer balances it on the right. | Best space for Angular DOM on desktop; a narrow portrait view may need to prioritize the board or washer. |
 | C — Window left | Window adds depth, washer centers the room, board stays distinct on the right. | Strongest environmental storytelling; three focal points are the busiest option on mobile. |
 
@@ -74,10 +74,10 @@ The room geometry and props stay consistent. These retained references have nota
 
 | Theme | Reference | Time | Color direction |
 | --- | --- | --- | --- |
-| Light | [02-light.png](../../references/02-light.png) | Early morning | Bright, airy cream and pale oak, fresh green foliage, and a clear blue-green view. |
-| Minecraft | [01-minecraft.png](../../references/01-minecraft.png) | Sunset | Strong orange-gold window light, richer honey oak, and vivid Minecraft greens. |
-| Raccoon | [03-raccoon.png](../../references/03-raccoon.png) | Around 6–7 PM | Muted taupe and gray-brown timber, violet-blue dusk view, and distinct amber lamps. |
-| Dark | [04-dark.png](../../references/04-dark.png) | Late night | Deep navy-blue shadows and exterior, cyan moonlight at the windows, and restrained amber lights. |
+| Light | [02-light.png](../../references/02-light.png) | Early morning | Bright, airy cream and pale oak, fresh green foliage, and a clear blue-green view. **User-approved.** |
+| Minecraft | [01-minecraft.png](../../references/01-minecraft.png) | Sunset | Strong orange-gold window light, richer honey oak, and vivid Minecraft greens. **User-approved.** |
+| Raccoon | [03-raccoon.png](../../references/03-raccoon.png) | Around 6–7 PM | Muted taupe and gray-brown timber, violet-blue dusk view, and distinct amber lamps. **User-approved.** |
+| Dark | [04-dark.png](../../references/04-dark.png) | Late night | Deep navy-blue shadows and exterior, cyan moonlight at the windows, and restrained amber lights. **User-approved.** |
 
 The comparison board keeps one geometry while pushing those four color identities farther apart. The matching [palette source](four-theme-palette.svg) is an editable scene-art proposal, not a change to existing application CSS tokens. Minecraft continues to use the existing internal theme key `craft`.
 
@@ -89,9 +89,4 @@ The washer and Raccoon are hero assets. The washer shell can stay procedural if 
 
 ## Review gate
 
-**PARTIAL.** The user has selected the Raccoon appearance shown in the theme board and prefers that direction to the earlier character sheets. The remaining acceptance gates are:
-
-1. one room composition;
-2. all four scene themes.
-
-Do not rebuild or integrate the Mini Diorama from these concepts until the room and themes are accepted. The Project Screen image is an art/layout reference, not an approved production UI implementation.
+**PASS — concept art accepted by the user on 2026-11-17.** The accepted direction is the compact seated Raccoon shown in the theme board, composition A (Checker stage), and the four distinct time-of-day themes above. This approval closes the Goal 02C art gate only. It does not authorize production scene implementation or approve the Project Screen mockup as a production UI; those remain outside Goal 02C.
