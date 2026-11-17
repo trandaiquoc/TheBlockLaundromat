@@ -1,7 +1,8 @@
 # ADR 001: Homepage rendering engine
 
-- **Status:** Implemented for the isolated Goal 02 preview; production homepage adoption remains pending Raccoon art review, theme-specific art, and product review.
+- **Status:** Implemented for the isolated Goal 02 preview; production homepage adoption remains pending user art review and representative-device profiling.
 - **Date:** 2026-11-16.
+- **Reviewed:** 2026-11-17.
 - **Scope:** Goal 01 engine decision; Goal 02 applies that decision to a separate, non-production preview route.
 
 ## Context
@@ -27,8 +28,8 @@ Do not add PixiJS or combine renderers for this prototype.
 
 - Reuses installed engine and existing expertise; no dependency change.
 - Supports real depth, camera framing, bounded character poses and object picking.
-- Procedural-first is not geometry-only; the isolated Raccoon now uses source-proportioned cuboids and a custom pixel atlas. Its geometry follows measurements and attachment relationships from the Alex's Mobs model reference, while the texture and implementation are original. User visual acceptance remains pending; evidence and licensing notes are in the [research report](README.md).
-- A shared Three.js scene can change lighting and materials for the four app themes, but this has not yet reproduced the distinct compositions and atmospheres in the four retained theme references. Theme art remains an explicit gate before production adoption.
+- Procedural-first is not geometry-only; the isolated Raccoon now uses independently authored cuboids scaled to the Alex's Mobs proportions and an original 64×64 nearest-filtered pixel atlas. Its hierarchy, face UV approach, and pixel-art language were informed by the reference without copying its code or texture. User visual acceptance remains pending; evidence and provenance notes are in the [research report](README.md).
+- The shared Three.js scene now changes palette, lighting, window landscape, and exterior mood across Minecraft, Light, Raccoon, and Dark. Theme captures exist, but visual acceptance remains pending before production adoption.
 - The preview implements explicit lifecycle/disposal, semantic DOM alternatives, reduced-motion behavior, WebGL fallback, and browser verification. Representative performance and formal art review remain open.
 - Keep the raster and diorama previews separate until production parity is demonstrated, then maintain one production homepage path.
 

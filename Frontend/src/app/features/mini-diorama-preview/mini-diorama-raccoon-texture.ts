@@ -24,7 +24,7 @@ interface TextureRect {
 }
 
 const textureRegions: Readonly<Record<MiniDioramaRaccoonTextureRegion, TextureRect>> = {
-  face: { x: 0, y: 0, width: 16, height: 12 },
+  face: { x: 0, y: 0, width: 16, height: 16 },
   muzzle: { x: 16, y: 0, width: 8, height: 8 },
   fur: { x: 24, y: 0, width: 16, height: 16 },
   tail: { x: 40, y: 0, width: 24, height: 8 },
@@ -39,19 +39,19 @@ const textureRegions: Readonly<Record<MiniDioramaRaccoonTextureRegion, TextureRe
 };
 
 const colors = {
-  fur: [130, 121, 111],
-  furLight: [162, 151, 138],
-  furShade: [102, 94, 87],
-  cream: [231, 220, 200],
-  creamShade: [202, 187, 164],
-  mask: [58, 52, 48],
-  maskLight: [88, 78, 71],
-  ink: [28, 27, 26],
-  glint: [248, 240, 224],
-  paw: [92, 73, 60],
-  tail: [130, 118, 106],
-  tailBand: [61, 55, 51],
-  chest: [65, 59, 55],
+  fur: [137, 128, 117],
+  furLight: [172, 160, 145],
+  furShade: [105, 96, 88],
+  cream: [237, 226, 207],
+  creamShade: [207, 190, 166],
+  mask: [77, 69, 63],
+  maskLight: [108, 96, 85],
+  ink: [27, 25, 24],
+  glint: [255, 246, 222],
+  paw: [90, 69, 57],
+  tail: [151, 138, 122],
+  tailBand: [60, 55, 53],
+  chest: [91, 82, 75],
 } as const;
 
 type ColorName = keyof typeof colors;
@@ -96,56 +96,57 @@ export function raccoonTextureRegionUv(
 }
 
 function drawFace(pixels: Uint8Array): void {
-  fillRect(pixels, 'face', 0, 0, 16, 12, 'fur');
-  fillRect(pixels, 'face', 3, 0, 10, 4, 'cream');
-  setRect(pixels, 'face', 4, 0, 2, 1, 'creamShade');
-  setRect(pixels, 'face', 10, 1, 1, 1, 'furLight');
-  setRect(pixels, 'face', 2, 2, 1, 1, 'furShade');
-  setRect(pixels, 'face', 13, 3, 1, 1, 'furShade');
+  fillRect(pixels, 'face', 0, 0, 16, 16, 'fur');
+  fillRect(pixels, 'face', 3, 0, 10, 1, 'cream');
+  fillRect(pixels, 'face', 2, 1, 12, 2, 'cream');
+  fillRect(pixels, 'face', 4, 3, 8, 1, 'cream');
+  fillRect(pixels, 'face', 4, 0, 2, 1, 'creamShade');
+  fillRect(pixels, 'face', 8, 1, 2, 1, 'furLight');
+  fillRect(pixels, 'face', 11, 2, 2, 1, 'creamShade');
+  setPixel(pixels, 'face', 2, 0, 'furLight');
+  setPixel(pixels, 'face', 13, 1, 'furShade');
+  setPixel(pixels, 'face', 1, 3, 'furShade');
+  setPixel(pixels, 'face', 14, 3, 'furLight');
 
-  fillRect(pixels, 'face', 2, 4, 12, 1, 'maskLight');
+  fillRect(pixels, 'face', 2, 4, 4, 1, 'maskLight');
+  fillRect(pixels, 'face', 10, 4, 4, 1, 'maskLight');
   fillRect(pixels, 'face', 1, 5, 6, 2, 'mask');
   fillRect(pixels, 'face', 9, 5, 6, 2, 'mask');
-  fillRect(pixels, 'face', 2, 7, 4, 1, 'mask');
-  fillRect(pixels, 'face', 10, 7, 4, 1, 'mask');
-  fillRect(pixels, 'face', 3, 8, 2, 1, 'maskLight');
-  fillRect(pixels, 'face', 11, 8, 2, 1, 'maskLight');
-  fillRect(pixels, 'face', 7, 4, 2, 6, 'cream');
-  fillRect(pixels, 'face', 3, 5, 2, 2, 'creamShade');
-  fillRect(pixels, 'face', 11, 5, 2, 2, 'creamShade');
-  fillRect(pixels, 'face', 0, 8, 4, 3, 'cream');
-  fillRect(pixels, 'face', 12, 8, 4, 3, 'cream');
-  fillRect(pixels, 'face', 4, 10, 8, 2, 'creamShade');
-  setRect(pixels, 'face', 1, 9, 2, 1, 'creamShade');
-  setRect(pixels, 'face', 13, 9, 2, 1, 'creamShade');
-  setPixel(pixels, 'face', 5, 2, 'creamShade');
-  setPixel(pixels, 'face', 10, 3, 'creamShade');
-}
+  fillRect(pixels, 'face', 6, 5, 4, 1, 'maskLight');
+  fillRect(pixels, 'face', 2, 7, 4, 1, 'maskLight');
+  fillRect(pixels, 'face', 10, 7, 4, 1, 'maskLight');
+  setPixel(pixels, 'face', 0, 6, 'maskLight');
+  setPixel(pixels, 'face', 15, 6, 'maskLight');
 
-function drawFur(pixels: Uint8Array): void {
-  fillRect(pixels, 'fur', 0, 0, 16, 16, 'fur');
-  for (const [x, y] of [
-    [2, 2],
-    [7, 1],
-    [11, 4],
-    [4, 7],
-    [13, 8],
-    [1, 12],
-    [8, 11],
-    [14, 14],
-  ] as const) {
-    setPixel(pixels, 'fur', x, y, (x + y) % 2 === 0 ? 'furLight' : 'furShade');
-  }
+  fillRect(pixels, 'face', 7, 4, 2, 7, 'cream');
+  fillRect(pixels, 'face', 4, 8, 3, 2, 'cream');
+  fillRect(pixels, 'face', 9, 8, 3, 2, 'cream');
+  fillRect(pixels, 'face', 3, 10, 10, 4, 'cream');
+  fillRect(pixels, 'face', 4, 14, 8, 2, 'creamShade');
+  setPixel(pixels, 'face', 3, 9, 'creamShade');
+  setPixel(pixels, 'face', 12, 9, 'creamShade');
+  setPixel(pixels, 'face', 4, 12, 'creamShade');
+  setPixel(pixels, 'face', 11, 12, 'creamShade');
 }
 
 function drawFaceSide(pixels: Uint8Array): void {
   fillRect(pixels, 'faceSide', 0, 0, 8, 12, 'fur');
-  fillRect(pixels, 'faceSide', 5, 0, 3, 4, 'creamShade');
-  fillRect(pixels, 'faceSide', 3, 4, 5, 3, 'mask');
-  fillRect(pixels, 'faceSide', 5, 7, 3, 3, 'cream');
+  fillRect(pixels, 'faceSide', 4, 0, 4, 3, 'cream');
+  fillRect(pixels, 'faceSide', 2, 4, 6, 4, 'mask');
+  fillRect(pixels, 'faceSide', 5, 8, 3, 3, 'cream');
   setPixel(pixels, 'faceSide', 6, 3, 'furLight');
   setRect(pixels, 'faceSide', 4, 5, 2, 1, 'maskLight');
-  setPixel(pixels, 'faceSide', 7, 8, 'creamShade');
+  setPixel(pixels, 'faceSide', 7, 10, 'creamShade');
+}
+
+function drawFur(pixels: Uint8Array): void {
+  fillRect(pixels, 'fur', 0, 0, 16, 16, 'fur');
+  fillRect(pixels, 'fur', 0, 0, 16, 2, 'furLight');
+  fillRect(pixels, 'fur', 0, 14, 16, 2, 'furShade');
+  setRect(pixels, 'fur', 2, 4, 3, 1, 'furLight');
+  setRect(pixels, 'fur', 10, 6, 2, 1, 'furShade');
+  setRect(pixels, 'fur', 5, 10, 2, 1, 'furLight');
+  setRect(pixels, 'fur', 12, 12, 2, 1, 'furShade');
 }
 
 function drawMuzzle(pixels: Uint8Array): void {
@@ -153,17 +154,15 @@ function drawMuzzle(pixels: Uint8Array): void {
   fillRect(pixels, 'muzzle', 0, 6, 8, 2, 'creamShade');
   setRect(pixels, 'muzzle', 0, 2, 1, 3, 'creamShade');
   setRect(pixels, 'muzzle', 7, 2, 1, 3, 'creamShade');
+  setPixel(pixels, 'muzzle', 3, 6, 'maskLight');
 }
 
 function drawTail(pixels: Uint8Array): void {
-  const bandWidth = [4, 5, 4, 5, 6] as const;
-  let x = 0;
-  for (let band = 0; x < 24; band++) {
-    const width = Math.min(bandWidth[band % bandWidth.length], 24 - x);
+  for (let column = 0; column < 24; column++) {
+    const band = Math.floor(column / 4);
     const color: ColorName = band % 2 === 0 ? 'tail' : 'tailBand';
-    fillRect(pixels, 'tail', x, 0, width, 8, color);
-    if (band % 2 === 0) setRect(pixels, 'tail', x, 0, width, 1, 'furLight');
-    x += width;
+    fillRect(pixels, 'tail', column, 0, 1, 8, color);
+    if (band % 2 === 0) setPixel(pixels, 'tail', column, 0, 'furLight');
   }
 }
 
@@ -191,17 +190,10 @@ function drawEar(pixels: Uint8Array): void {
 
 function drawChest(pixels: Uint8Array): void {
   fillRect(pixels, 'chest', 0, 0, 16, 16, 'chest');
-  for (const [x, y] of [
-    [3, 2],
-    [11, 4],
-    [6, 7],
-    [13, 9],
-    [2, 12],
-    [9, 14],
-  ] as const) {
-    setPixel(pixels, 'chest', x, y, 'maskLight');
-  }
-  fillRect(pixels, 'chest', 0, 15, 16, 1, 'ink');
+  fillRect(pixels, 'chest', 3, 4, 10, 8, 'furShade');
+  fillRect(pixels, 'chest', 5, 5, 6, 6, 'fur');
+  setRect(pixels, 'chest', 2, 2, 2, 1, 'maskLight');
+  setRect(pixels, 'chest', 12, 13, 2, 1, 'maskLight');
 }
 
 function drawSolidRegion(

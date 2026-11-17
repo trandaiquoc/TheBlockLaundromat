@@ -43,6 +43,7 @@ export interface MiniDioramaSceneThemeTargets {
     readonly duskSun: THREE.MeshBasicMaterial;
     readonly moon: THREE.MeshBasicMaterial;
     readonly clouds: THREE.MeshBasicMaterial;
+    readonly nightAccent: THREE.MeshBasicMaterial;
     readonly stars: THREE.Group;
     readonly dayDetails: THREE.Group;
     readonly duskDetails: THREE.Group;
@@ -66,6 +67,7 @@ interface ThemeProfile {
     duskSun: number;
     moon: number;
     clouds: number;
+    nightAccent: number;
     details: 'day' | 'dusk' | 'night';
   }>;
 }
@@ -80,14 +82,24 @@ const sharedWoodAndCharacter = {
   shadow: 0x402f24,
 } as const;
 
+const lightWood = {
+  floorboard: 0xaf885d,
+  floorboardAlt: 0xc19a6c,
+  floorSeam: 0x755844,
+  oak: 0xa5764d,
+  oakLight: 0xc69a68,
+  oakDark: 0x76533b,
+  shadow: 0x574838,
+} as const;
+
 const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
   craft: {
     materials: {
       wall: 0xe8d7bd,
       wallTrim: 0xf1e4d0,
       ...sharedWoodAndCharacter,
-      sage: 0x71826a,
-      terracotta: 0xa96448,
+      sage: 0x648347,
+      terracotta: 0xca713d,
       brass: 0xa9824f,
       linen: 0xeadfc9,
       linenBlue: 0xa9b8b1,
@@ -114,6 +126,7 @@ const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
       duskSun: 0xe9a078,
       moon: 0xf2e7c0,
       clouds: 0xd8d8bd,
+      nightAccent: 0x93b9b4,
       details: 'day',
     },
   },
@@ -121,9 +134,9 @@ const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
     materials: {
       wall: 0xf0e4d0,
       wallTrim: 0xf7eddd,
-      ...sharedWoodAndCharacter,
-      sage: 0x788d77,
-      terracotta: 0xb36f55,
+      ...lightWood,
+      sage: 0x99a88c,
+      terracotta: 0xb38268,
       brass: 0xb08d5c,
       linen: 0xf0e7d6,
       linenBlue: 0xb3c3bd,
@@ -139,17 +152,18 @@ const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
     background: 0xe8dcc7,
     fogFar: 32,
     hemisphere: [0xfff8e8, 0x7f887a, 2.0],
-    key: [0xfff0d5, 2.8],
-    fill: [0xd8e8f0, 1.0],
-    bounce: [0xffe7c0, 1.8],
+    key: [0xfff0d5, 3.0],
+    fill: [0xd8e8f0, 1.15],
+    bounce: [0xffe7c0, 2.2],
     pendantIntensity: 0.85,
     window: {
-      sky: 0xb5d7d6,
-      horizon: 0x7f9b91,
+      sky: 0xa6d5e3,
+      horizon: 0xa8b790,
       sun: 0xffe69b,
       duskSun: 0xe7a68e,
       moon: 0xf4edda,
-      clouds: 0xe5e7d5,
+      clouds: 0xebf5ef,
+      nightAccent: 0xa6c6ce,
       details: 'day',
     },
   },
@@ -186,6 +200,7 @@ const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
       duskSun: 0xffa66f,
       moon: 0xe5dbef,
       clouds: 0x86728b,
+      nightAccent: 0xa5a2d5,
       details: 'dusk',
     },
   },
@@ -217,17 +232,18 @@ const themeProfiles: Readonly<Record<Theme, ThemeProfile>> = {
     background: 0x1b263d,
     fogFar: 21,
     hemisphere: [0x8da5cd, 0x232a45, 0.48],
-    key: [0x7997c6, 0.68],
-    fill: [0x8281c4, 0.42],
-    bounce: [0xffb54d, 7.2],
-    pendantIntensity: 4.0,
+    key: [0x88aee4, 1.1],
+    fill: [0x7ba3d6, 0.65],
+    bounce: [0xffbf65, 8.2],
+    pendantIntensity: 4.4,
     window: {
-      sky: 0x1d3151,
-      horizon: 0x29485c,
+      sky: 0x142443,
+      horizon: 0x1b3d50,
       sun: 0xe6ddbe,
       duskSun: 0xb890a8,
       moon: 0xe2e7f0,
       clouds: 0x455878,
+      nightAccent: 0x62c5d2,
       details: 'night',
     },
   },
@@ -268,6 +284,7 @@ export function applyMiniDioramaTheme(
   targets.window.duskSun.color.setHex(profile.window.duskSun);
   targets.window.moon.color.setHex(profile.window.moon);
   targets.window.clouds.color.setHex(profile.window.clouds);
+  targets.window.nightAccent.color.setHex(profile.window.nightAccent);
   targets.window.dayDetails.visible = profile.window.details === 'day';
   targets.window.duskDetails.visible = profile.window.details === 'dusk';
   targets.window.nightDetails.visible = profile.window.details === 'night';

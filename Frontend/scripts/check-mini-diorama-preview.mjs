@@ -9,12 +9,14 @@ const frontend = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const webRoot = resolve(frontend, 'dist/TheBlockLaundromat/browser');
 const artifacts = resolve(frontend, '.artifacts/mini-diorama-preview');
 const screenshots = join(artifacts, 'screenshots');
+const artReview = join(artifacts, 'art-review');
 const browser = findBrowser();
 if (!existsSync(join(webRoot, 'index.html'))) {
   throw new Error('Production build is missing. Run npm run build before browser verification.');
 }
 
 await mkdir(screenshots, { recursive: true });
+await mkdir(artReview, { recursive: true });
 const profiles = [];
 const server = createStaticServer(webRoot);
 let webglSession;
@@ -34,13 +36,45 @@ try {
   const frameTiming = await measureFrameTiming(webglSession);
 
   const screenshotsTaken = [];
-  await verifyLayoutAndCapture(webglSession, screenshots, screenshotsTaken, 1440, 900, false);
-  await verifyLayoutAndCapture(webglSession, screenshots, screenshotsTaken, 1024, 768, false);
-  await verifyLayoutAndCapture(webglSession, screenshots, screenshotsTaken, 390, 844, true);
-  await verifyLayoutAndCapture(webglSession, screenshots, screenshotsTaken, 320, 568, true);
+  await verifyLayoutAndCapture(
+    webglSession,
+    screenshots,
+    artReview,
+    screenshotsTaken,
+    1440,
+    900,
+    false,
+  );
+  await verifyLayoutAndCapture(
+    webglSession,
+    screenshots,
+    artReview,
+    screenshotsTaken,
+    1024,
+    768,
+    false,
+  );
+  await verifyLayoutAndCapture(
+    webglSession,
+    screenshots,
+    artReview,
+    screenshotsTaken,
+    390,
+    844,
+    true,
+  );
+  await verifyLayoutAndCapture(
+    webglSession,
+    screenshots,
+    artReview,
+    screenshotsTaken,
+    320,
+    568,
+    true,
+  );
 
   await verifySceneActions(webglSession);
-  await verifyThemesAndLocalization(webglSession);
+  await verifyThemesAndLocalization(webglSession, artReview, screenshotsTaken);
   await verifySettings(webglSession);
   await verifyReducedMotion(webglSession);
   await verifyCanvasPicking(webglSession);
@@ -141,7 +175,15 @@ async function measureFrameTiming(session) {
   })`);
 }
 
-async function verifyLayoutAndCapture(session, directory, captured, width, height, mobile) {
+async function verifyLayoutAndCapture(
+  session,
+  directory,
+  artReviewDirectory,
+  captured,
+  width,
+  height,
+  mobile,
+) {
   await session.setViewport(width, height, 1, mobile);
   await session.evaluate(
     'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
@@ -189,6 +231,17 @@ async function verifyLayoutAndCapture(session, directory, captured, width, heigh
   const name = `scene-${width}x${height}.png`;
   await session.captureScreenshot(join(directory, name));
   captured.push(name);
+  await session.evaluate(
+    "document.querySelector('.mini-diorama__actions button:last-child').click()",
+  );
+  await settleCamera(session);
+  const heroName = `art-review/scene-hero-${width}x${height}.png`;
+  await session.captureScreenshot(join(artReviewDirectory, `scene-hero-${width}x${height}.png`));
+  captured.push(heroName);
+  await session.evaluate(
+    "document.querySelector('.mini-diorama__actions button:first-child').click()",
+  );
+  await settleCamera(session);
 }
 
 async function verifySceneActions(session) {
@@ -223,11 +276,21 @@ async function verifySceneActions(session) {
   }
 }
 
-async function verifyThemesAndLocalization(session) {
+async function verifyThemesAndLocalization(session, directory, captured) {
+  await session.setViewport(1440, 900);
   for (const theme of ['craft', 'raccoon', 'light', 'dark']) {
     await session.evaluate(`document.querySelector('[data-theme-option="${theme}"]').click()`);
     const selectedTheme = await waitFor(session, 'document.documentElement.dataset.theme', theme);
     if (selectedTheme !== theme) throw new Error(`The ${theme} theme did not apply.`);
+    await session.evaluate(
+      'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
+    );
+    await session.evaluate(
+      'document.activeElement instanceof HTMLElement && document.activeElement.blur()',
+    );
+    const screenshotName = `art-review/theme-${theme}-overview-1440x900.png`;
+    await session.captureScreenshot(join(directory, `theme-${theme}-overview-1440x900.png`));
+    captured.push(screenshotName);
   }
   await session.evaluate("document.querySelector('[data-locale=vi]').click()");
   const vietnamese = await session.evaluate(`({
@@ -299,7 +362,7 @@ async function verifyCanvasPicking(session) {
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Greet the Raccoon', 0.26, 0.58, 'mouse');
+  await tapSceneTarget(session, 'Greet the Raccoon', 0.38, 0.61, 'mouse');
 
   await session.evaluate(
     "document.querySelector('.mini-diorama__actions button:first-child').click()",

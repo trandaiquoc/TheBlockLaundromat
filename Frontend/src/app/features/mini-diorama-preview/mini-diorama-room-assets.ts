@@ -11,6 +11,7 @@ export interface MiniDioramaRoomThemeTargets {
     readonly duskSun: THREE.MeshBasicMaterial;
     readonly moon: THREE.MeshBasicMaterial;
     readonly clouds: THREE.MeshBasicMaterial;
+    readonly nightAccent: THREE.MeshBasicMaterial;
     readonly stars: THREE.Group;
     readonly dayDetails: THREE.Group;
     readonly duskDetails: THREE.Group;
@@ -92,6 +93,7 @@ function buildWindow(
   const duskSun = basicMaterial(0xe9a078);
   const moon = basicMaterial(0xf2e7c0);
   const clouds = basicMaterial(0xd8d8bd);
+  const nightAccent = basicMaterial(0x93b9b4);
   addCuboid(window, 1.28, 1.2, 0.035, sky, [0, 0.04, 0.09]);
   addCuboid(window, 1.28, 0.36, 0.025, horizon, [0, -0.39, 0.12]);
   addCuboid(window, 1.28, 0.08, 0.025, materials.sage, [0, -0.12, 0.135]);
@@ -99,15 +101,18 @@ function buildWindow(
   const dayDetails = addGroup(window, [0, 0, 0]);
   addPixelSun(dayDetails, sun, [0.37, 0.36, 0.14]);
   addPixelCloud(dayDetails, clouds, [-0.42, 0.18, 0.15]);
+  addDayTrees(dayDetails, materials);
 
   const duskDetails = addGroup(window, [0, 0, 0]);
   addPixelSun(duskDetails, duskSun, [0.38, -0.1, 0.15]);
   addCuboid(duskDetails, 0.72, 0.07, 0.025, clouds, [-0.36, 0.28, 0.15]);
   addCuboid(duskDetails, 0.48, 0.06, 0.025, clouds, [-0.46, 0.37, 0.15]);
+  addDuskSkyline(duskDetails, horizon, duskSun);
 
   const nightDetails = addGroup(window, [0, 0, 0]);
   const stars = addGroup(nightDetails, [0, 0, 0]);
   addPixelMoon(nightDetails, moon, [0.36, 0.34, 0.15]);
+  addNightSkyline(nightDetails, horizon, nightAccent);
   for (const [x, y] of [
     [-0.42, 0.36],
     [-0.14, 0.18],
@@ -124,7 +129,84 @@ function buildWindow(
   addCuboid(window, 0.24, 1.25, 0.07, materials.linen, [-0.71, -0.02, 0.13]);
   addCuboid(window, 0.24, 1.25, 0.07, materials.linen, [0.71, -0.02, 0.13]);
 
-  return { sky, horizon, sun, duskSun, moon, clouds, stars, dayDetails, duskDetails, nightDetails };
+  return {
+    sky,
+    horizon,
+    sun,
+    duskSun,
+    moon,
+    clouds,
+    nightAccent,
+    stars,
+    dayDetails,
+    duskDetails,
+    nightDetails,
+  };
+}
+
+function addDayTrees(parent: THREE.Group, materials: MiniDioramaSceneMaterials): void {
+  addWindowTree(parent, materials, -0.46, 0.72);
+  addWindowTree(parent, materials, 0.44, 0.58);
+}
+
+function addWindowTree(
+  parent: THREE.Group,
+  materials: MiniDioramaSceneMaterials,
+  x: number,
+  scale: number,
+): void {
+  const groundY = -0.42;
+  const z = 0.16;
+  addCuboid(parent, 0.045 * scale, 0.21 * scale, 0.035, materials.oakDark, [x, groundY, z]);
+  addCuboid(parent, 0.2 * scale, 0.13 * scale, 0.045, materials.sage, [
+    x,
+    groundY + 0.16 * scale,
+    z,
+  ]);
+  addCuboid(parent, 0.14 * scale, 0.12 * scale, 0.045, materials.sage, [
+    x - 0.055 * scale,
+    groundY + 0.28 * scale,
+    z,
+  ]);
+  addCuboid(parent, 0.14 * scale, 0.12 * scale, 0.045, materials.sage, [
+    x + 0.055 * scale,
+    groundY + 0.28 * scale,
+    z,
+  ]);
+}
+
+function addDuskSkyline(
+  parent: THREE.Group,
+  skyline: THREE.Material,
+  windowGlow: THREE.Material,
+): void {
+  for (const [x, width, height] of [
+    [-0.43, 0.18, 0.24],
+    [-0.14, 0.24, 0.34],
+    [0.19, 0.16, 0.2],
+    [0.43, 0.22, 0.3],
+  ] as const) {
+    const baseY = -0.36;
+    addCuboid(parent, width, height, 0.035, skyline, [x, baseY + height / 2, 0.16]);
+    addCuboid(parent, 0.035, 0.045, 0.025, windowGlow, [x, baseY + height * 0.62, 0.185]);
+  }
+}
+
+function addNightSkyline(
+  parent: THREE.Group,
+  skyline: THREE.Material,
+  windowGlow: THREE.Material,
+): void {
+  for (const [x, width, height] of [
+    [-0.44, 0.2, 0.18],
+    [-0.13, 0.16, 0.28],
+    [0.16, 0.24, 0.22],
+    [0.45, 0.16, 0.34],
+  ] as const) {
+    const baseY = -0.37;
+    addCuboid(parent, width, height, 0.035, skyline, [x, baseY + height / 2, 0.16]);
+    addCuboid(parent, 0.04, 0.045, 0.025, windowGlow, [x, baseY + height * 0.58, 0.185]);
+  }
 }
 
 function addPixelSun(

@@ -7,10 +7,6 @@ import {
   type MiniDioramaRaccoonTextureRegion,
 } from './mini-diorama-raccoon-texture';
 
-const modelUnit = 0.075;
-const bodyBegAngle = (60 * Math.PI) / 180;
-const headCounterAngle = (-60 * Math.PI) / 180;
-
 type CuboidFace = 'right' | 'left' | 'top' | 'bottom' | 'back' | 'front';
 
 const cuboidFaceIndices: Readonly<Record<CuboidFace, number>> = {
@@ -30,71 +26,52 @@ export function buildMiniDioramaRaccoon(
 ): MiniDioramaRaccoonRig & { readonly root: THREE.Group } {
   const root = addGroup(parent, [-1.28, 0, 0.72]);
   root.name = 'laundromat-raccoon';
-  root.scale.setScalar(1.1);
   root.rotation.y = Math.PI;
+  root.scale.setScalar(1.05);
   addGroundShadow(root, materials);
 
-  const body = addGroup(root, [0, 16 * modelUnit, 0.5 * modelUnit]);
+  const body = addGroup(root, [0, 0.82, 0]);
   body.name = 'raccoon-body';
-  body.rotation.x = bodyBegAngle;
-  const torso = createCuboidMesh(
-    [11 * modelUnit, 8 * modelUnit, 15 * modelUnit],
-    'raccoon-torso',
-    materials.raccoonSkin,
-    { front: 'chest', back: 'fur', right: 'fur', left: 'fur', top: 'fur', bottom: 'fur' },
-  );
+  const torso = createCuboidMesh([0.92, 1.25, 0.68], 'raccoon-torso', materials.raccoonSkin, {
+    front: 'chest',
+    back: 'fur',
+    right: 'fur',
+    left: 'fur',
+    top: 'fur',
+    bottom: 'fur',
+  });
   torso.castShadow = true;
   torso.receiveShadow = true;
   body.add(torso);
 
   const legs: THREE.Group[] = [];
   let greetingArm: THREE.Group | undefined;
-  for (const z of [-5.5, 6.5] as const) {
-    for (const side of [-1, 1] as const) {
-      const isFront = z < 0;
-      const poseOffset = isFront ? -1 : 2;
-      const leg = addGroup(body, [
-        side * 3 * modelUnit,
-        (-4 + poseOffset) * modelUnit,
-        z * modelUnit,
-      ]);
-      leg.name = `raccoon-${isFront ? 'front' : 'hind'}-leg-${side < 0 ? 'left' : 'right'}`;
-      leg.rotation.x = isFront ? 0 : (-60 * Math.PI) / 180;
-      const paw = createCuboidMesh(
-        [2 * modelUnit, 7 * modelUnit, 2 * modelUnit],
-        `${leg.name}-cuboid`,
-        materials.raccoonSkin,
-        { front: 'limb', back: 'limb', right: 'limb', left: 'limb', top: 'limb', bottom: 'paw' },
-      );
-      paw.position.y = -3.5 * modelUnit;
-      paw.castShadow = true;
-      paw.receiveShadow = true;
-      leg.add(paw);
-      legs.push(leg);
-      if (isFront && side === 1) greetingArm = leg;
-    }
+  for (const side of [-1, 1] as const) {
+    const frontLeg = addFrontLeg(body, side, materials.raccoonSkin);
+    legs.push(frontLeg);
+    if (side === 1) greetingArm = frontLeg;
+    legs.push(addHindLeg(body, side, materials.raccoonSkin));
   }
 
-  const tail = addGroup(body, [0.5 * modelUnit, modelUnit, 7.5 * modelUnit]);
+  const tail = addGroup(body, [0, -0.14, 0.3]);
   tail.name = 'raccoon-tail';
-  tail.rotation.x = (-80 * Math.PI) / 180;
+  tail.rotation.x = 0.3;
   const tailMesh = createCuboidMesh(
-    [5 * modelUnit, 5 * modelUnit, 19 * modelUnit],
+    [0.42, 0.42, 1.58],
     'raccoon-banded-tail',
     materials.raccoonSkin,
     { front: 'tail', back: 'tail', right: 'tail', left: 'tail', top: 'tail', bottom: 'tail' },
   );
-  tailMesh.position.z = 9.5 * modelUnit;
+  tailMesh.position.z = 0.79;
   tailMesh.castShadow = true;
   tailMesh.receiveShadow = true;
   tail.add(tailMesh);
 
-  const head = addGroup(body, [0, -0.5 * modelUnit, -8.5 * modelUnit]);
+  const head = addGroup(body, [0, 0.89, -0.15]);
   head.name = 'raccoon-head';
-  head.rotation.x = headCounterAngle;
-  head.rotation.z = -0.16;
+  head.rotation.z = -0.055;
   const headMesh = createCuboidMesh(
-    [9 * modelUnit, 7 * modelUnit, 5 * modelUnit],
+    [0.75, 0.58, 0.42],
     'raccoon-head-cuboid',
     materials.raccoonSkin,
     {
@@ -106,15 +83,14 @@ export function buildMiniDioramaRaccoon(
       bottom: 'fur',
     },
   );
-  headMesh.position.set(0, 0.5 * modelUnit, -1.5 * modelUnit);
   headMesh.castShadow = true;
   headMesh.receiveShadow = true;
   head.add(headMesh);
 
-  const muzzle = addGroup(head, [0, -1.5 * modelUnit, -5 * modelUnit]);
+  const muzzle = addGroup(head, [0, -0.14, -0.3]);
   muzzle.name = 'raccoon-muzzle';
   const muzzleMesh = createCuboidMesh(
-    [4 * modelUnit, 3 * modelUnit, 3 * modelUnit],
+    [0.34, 0.25, 0.25],
     'raccoon-cream-snout',
     materials.raccoonSkin,
     {
@@ -126,31 +102,33 @@ export function buildMiniDioramaRaccoon(
       bottom: 'cream',
     },
   );
-  muzzleMesh.position.z = -0.5 * modelUnit;
   muzzleMesh.castShadow = true;
   muzzleMesh.receiveShadow = true;
   muzzle.add(muzzleMesh);
-  const nose = createCuboidMesh(
-    [1.1 * modelUnit, 0.75 * modelUnit, 0.35 * modelUnit],
-    'raccoon-nose-pixel',
-    materials.raccoonSkin,
-    { front: 'nose', back: 'nose', right: 'nose', left: 'nose', top: 'nose', bottom: 'nose' },
-  );
-  nose.position.set(0, 0.45 * modelUnit, -2.17 * modelUnit);
+
+  const nose = createCuboidMesh([0.075, 0.055, 0.03], 'raccoon-nose-pixel', materials.raccoonSkin, {
+    front: 'nose',
+    back: 'nose',
+    right: 'nose',
+    left: 'nose',
+    top: 'nose',
+    bottom: 'nose',
+  });
+  nose.position.set(0, 0.04, -0.14);
   nose.castShadow = true;
   muzzle.add(nose);
 
   const eyeLids: THREE.Group[] = [];
   for (const side of [-1, 1] as const) {
-    const eye = addGroup(head, [side * 2.05 * modelUnit, 0.6 * modelUnit, -4.08 * modelUnit]);
+    const eye = addGroup(head, [side * 0.17, 0.025, -0.205]);
     eye.name = side < 0 ? 'raccoon-left-eye' : 'raccoon-right-eye';
     const eyePixel = createCuboidMesh(
-      [0.8 * modelUnit, 0.65 * modelUnit, 0.2 * modelUnit],
+      [0.085, 0.075, 0.014],
       'raccoon-eye-pixel',
       materials.raccoonSkin,
       { front: 'eye', back: 'eye', right: 'eye', left: 'eye', top: 'eye', bottom: 'eye' },
     );
-    eyePixel.castShadow = true;
+    eyePixel.castShadow = false;
     eye.add(eyePixel);
     eyeLids.push(eye);
   }
@@ -160,6 +138,71 @@ export function buildMiniDioramaRaccoon(
   if (!greetingArm) throw new Error('The Raccoon greeting leg was not built.');
 
   return { root, body, head, tail, leftEar, rightEar, greetingArm, eyeLids, legs };
+}
+
+function addFrontLeg(body: THREE.Group, side: -1 | 1, skin: THREE.Material): THREE.Group {
+  const arm = addGroup(body, [side * 0.31, 0.38, -0.31]);
+  arm.name = `raccoon-front-leg-${side < 0 ? 'left' : 'right'}`;
+  arm.rotation.z = side < 0 ? 0.38 : -0.38;
+
+  const forearm = createCuboidMesh([0.17, 0.58, 0.17], `${arm.name}-cuboid`, skin, {
+    front: 'limb',
+    back: 'limb',
+    right: 'limb',
+    left: 'limb',
+    top: 'fur',
+    bottom: 'paw',
+  });
+  forearm.position.set(0, -0.27, -0.02);
+  forearm.castShadow = true;
+  forearm.receiveShadow = true;
+  arm.add(forearm);
+
+  const paw = createCuboidMesh([0.21, 0.16, 0.22], `${arm.name}-paw`, skin, {
+    front: 'paw',
+    back: 'paw',
+    right: 'paw',
+    left: 'paw',
+    top: 'paw',
+    bottom: 'paw',
+  });
+  paw.position.set(-side * 0.02, -0.4, -0.06);
+  paw.castShadow = true;
+  paw.receiveShadow = true;
+  arm.add(paw);
+  return arm;
+}
+
+function addHindLeg(body: THREE.Group, side: -1 | 1, skin: THREE.Material): THREE.Group {
+  const leg = addGroup(body, [side * 0.23, -0.28, 0.1]);
+  leg.name = `raccoon-hind-leg-${side < 0 ? 'left' : 'right'}`;
+
+  const shin = createCuboidMesh([0.17, 0.58, 0.17], `${leg.name}-cuboid`, skin, {
+    front: 'limb',
+    back: 'limb',
+    right: 'limb',
+    left: 'limb',
+    top: 'fur',
+    bottom: 'paw',
+  });
+  shin.position.y = -0.2;
+  shin.castShadow = true;
+  shin.receiveShadow = true;
+  leg.add(shin);
+
+  const paw = createCuboidMesh([0.22, 0.16, 0.28], `${leg.name}-paw`, skin, {
+    front: 'paw',
+    back: 'paw',
+    right: 'paw',
+    left: 'paw',
+    top: 'paw',
+    bottom: 'paw',
+  });
+  paw.position.set(0, -0.46, -0.055);
+  paw.castShadow = true;
+  paw.receiveShadow = true;
+  leg.add(paw);
+  return leg;
 }
 
 function createCuboidMesh(
@@ -192,23 +235,25 @@ function createCuboidMesh(
 }
 
 function createEar(head: THREE.Group, side: -1 | 1, skin: THREE.Material): THREE.Group {
-  const ear = addGroup(head, [side * 3.5 * modelUnit, 4 * modelUnit, -2 * modelUnit]);
+  const ear = addGroup(head, [side * 0.29, 0.29, -0.035]);
   ear.name = side < 0 ? 'raccoon-left-ear' : 'raccoon-right-ear';
-  const cuboid = createCuboidMesh(
-    [2 * modelUnit, 2 * modelUnit, 1 * modelUnit],
-    'raccoon-ear-cuboid',
-    skin,
-    { front: 'ear', back: 'fur', right: 'fur', left: 'fur', top: 'fur', bottom: 'fur' },
-  );
-  cuboid.position.set(0, modelUnit, 0.5 * modelUnit);
+  const cuboid = createCuboidMesh([0.17, 0.17, 0.09], `${ear.name}-cuboid`, skin, {
+    front: 'ear',
+    back: 'fur',
+    right: 'fur',
+    left: 'fur',
+    top: 'fur',
+    bottom: 'fur',
+  });
+  cuboid.position.set(0, 0.04, 0);
   cuboid.castShadow = true;
   ear.add(cuboid);
   return ear;
 }
 
 function addGroundShadow(root: THREE.Group, materials: MiniDioramaSceneMaterials): void {
-  const shadow = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.02, 1.5), materials.shadow);
+  const shadow = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.02, 1.8), materials.shadow);
   shadow.name = 'raccoon-ground-shadow';
-  shadow.position.set(-0.02, 0.025, 0.23);
+  shadow.position.set(0, 0.025, 0.18);
   root.add(shadow);
 }
