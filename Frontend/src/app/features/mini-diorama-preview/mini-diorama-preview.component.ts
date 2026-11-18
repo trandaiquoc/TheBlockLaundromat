@@ -105,8 +105,11 @@ export class MiniDioramaPreviewComponent {
         this.previewState.set('fallback');
         this.runtime?.dispose();
       },
-      onRaccoonLoaded: () => this.previewState.set('ready'),
-      onRaccoonLoadFailed: () => this.previewState.set('fallback'),
+      onSceneLoaded: () => this.previewState.set('ready'),
+      onSceneLoadFailed: (error) => {
+        console.error('Mini-diorama scene could not be loaded.', error);
+        this.previewState.set('fallback');
+      },
     });
 
     if (!this.runtime.mount(host)) {

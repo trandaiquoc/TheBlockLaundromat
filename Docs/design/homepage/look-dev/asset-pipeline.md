@@ -1,8 +1,21 @@
 # Homepage authored asset pipeline
 
-**Status — Goal 02D checkpoint:** Goal 02C concept approval remains the visual source of truth. Goal 02D has created and integrated the original Puddlepaw Raccoon candidate, but Art Gate A is pending user review. Room A production and the four-theme art pass have not started and must wait for that approval.
+**Current Goal 02E status:** The assembled asset pack is integrated into `/mini-diorama-preview` only; `/` remains the Project Screen at the user's direction. The preview loads `Frontend/source-assets/homepage/models/laundromat/Laundromat.glb` and applies the GLB's Light, Minecraft, Raccoon, and Dark material variants. Production homepage adoption is outside this pass.
 
-## Source and runtime ownership
+| Asset / contract | Source and runtime behavior |
+| --- | --- |
+| Assembled laundromat | `03-Laundromat/Laundromat.glb` from the supplied Goal-02D ZIP is copied to `models/laundromat/Laundromat.glb`. It contains the washer, board, lantern, and Raccoon. |
+| Theme variants | The custom GLTFLoader plugin reads `KHR_materials_variants`; `craft` maps to `Minecraft`, and the other three app themes map to same-named variants. Geometry stays loaded while materials switch. |
+| Parsed object names | Three.js sanitizes spaces and punctuation. The runtime binds to `Washer`, `Notice_board`, `Lantern`, `Raccoon`, `ForelegL`, `Head_•_broad_cheek_mask`, and `Tail_•_banded`. |
+| Previous Puddlepaw candidate | The three user-modified files under `models/raccoon/` remain untouched and are not loaded by this scene. The assembled GLB already contains the Raccoon. |
+
+The scene runtime owns asynchronous load cancellation, rendering, camera framing, responsive resize, theme changes, picking, reduced motion, context-loss fallback, and resource disposal. DOM controls remain the accessible action surface. The preview remains separate from project persistence and workflow services.
+
+The supplied ZIP contains no `LICENSE`, `COPYING`, `NOTICE`, or provenance text file. Asset rights and attribution are unresolved; this local preview integration does not approve production redistribution.
+
+**Historical status — Goal 02D checkpoint:** Goal 02C concept approval remains the visual source of truth. Goal 02D has created and integrated the original Puddlepaw Raccoon candidate, but Art Gate A is pending user review. Room A production and the four-theme art pass have not started and must wait for that approval.
+
+## Historical Goal 02D source and runtime ownership
 
 | Asset          | Editable source                                                                                                   | Runtime owner                                                                              | Notes                                                                                                                                       |
 | -------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -15,7 +28,7 @@
 
 Angular now copies `models/**/*.glb` into `assets/homepage/runtime`; editable `.bbmodel` and standalone texture sources stay out of the runtime bundle. `check-home-assets.mjs` validates the editable project, matching embedded/source atlas, GLB rig and clip contract, and the built runtime inventory. The loader fetches the candidate from `assets/homepage/runtime/models/raccoon/puddlepaw-raccoon.glb` and owns its loaded scene resources through route teardown.
 
-## Blockbench authoring
+## Historical Goal 02D Blockbench authoring
 
 1. The current candidate is the original low-poly cuboid model `Puddlepaw Raccoon`. Its charcoal face mask, gray muzzle, body proportions, and tail stripes use the original 64 × 64 pixel atlas.
 2. Use intention-revealing node names and place pivots at joints before rigging. Separate static fur markings into the atlas so they do not require extra geometry.
@@ -23,7 +36,7 @@ Angular now copies `models/**/*.glb` into `assets/homepage/runtime`; editable `.
 4. Author the washer bezel only if the procedural cylinder/ring and rounded shell fail the approved visual gate. Keep the board surface blank.
 5. Record the author, source file, texture source, license, export version, and generated runtime filename beside each editable source.
 
-## Export and Three.js import
+## Historical Goal 02D export and Three.js import notes
 
 Use Blockbench’s glTF or GLB exporter for authored assets. Prefer GLB for a small self-contained character model and its atlas; use glTF with external files only when source inspection and caching make that clearer. The application already depends on Three.js, so import through its GLTFLoader; do not add a separate renderer or asset library.
 
@@ -37,7 +50,7 @@ Use GLTFLoader to load model scenes and AnimationMixer for exported clips. Keep 
 
 The current candidate exports `idle`, `sit`, and `greet`; visual and motion acceptance remain pending at Art Gate A. Goal 02C did not include animation production; this candidate work belongs to Goal 02D.
 
-## Textures and theme data
+## Historical Goal 02D texture and theme notes
 
 - Use the original 64 × 64 Raccoon atlas and keep the face details legible at the smallest supported viewport.
 - Set pixel-art textures to sRGB color space and nearest filtering; verify eye highlights and the mask remain distinct at the smallest supported viewport.
@@ -45,7 +58,7 @@ The current candidate exports `idle`, `sit`, and `greet`; visual and motion acce
 - Keep scene art values in theme presets: key light, ambient fill, window sky/landscape, wall/wood materials, and tile contrast. Theme switching changes presentation only and never project data.
 - Reuse shared geometry/materials for repeated tiles and props. Give the scene runtime a clear owner for loaded models, materials, textures, animation mixers, and event listeners; dispose only resources it owns.
 
-## Packaging and validation
+## Historical Goal 02D packaging and validation
 
 The Raccoon candidate has been loaded through GLTFLoader in the isolated preview and packaged by the Angular build. Automated asset checks verify its header, embedded atlas, geometry, rig nodes, and clips. Browser checks cover route loading, animation controls, reduced motion, fallback, and repeated mount/unmount. Room anchors and blank-board placement remain to be verified when Room A is authorized after Gate A.
 
@@ -69,4 +82,4 @@ The preview host owns model loading and disposal. Angular owns the page shell an
 - [Three.js color management](https://threejs.org/manual/pages/color-management.html)
 - [Alex’s Mobs Raccoon model source](https://github.com/AlexModGuy/AlexsMobs/blob/1.20/src/main/java/com/github/alexthe666/alexsmobs/client/model/ModelRaccoon.java) and [texture source](https://github.com/AlexModGuy/AlexsMobs/blob/1.20/src/main/resources/assets/alexsmobs/textures/entity/raccoon.png) — inspected as a cuboid/UV reference only; neither file is redistributed in these concepts.
 
-No external dependency was added. The Blockbench source, standalone atlas, and runtime GLB are original project assets. Runtime packaging is limited to the GLB; the editable source and standalone atlas remain authoring files. Passing automated checks does not mark Art Gate A as approved.
+No external dependency was added. The Goal 02D Puddlepaw Blockbench source and standalone atlas are original project files. The Goal 02E assembled GLB came from the user-provided archive; its rights and attribution remain unresolved because the archive has no licensing or provenance note. Runtime packaging includes the assembled scene GLB; the previous editable source and atlas remain unbundled authoring files. Passing automated checks does not approve the art or its redistribution.

@@ -1,42 +1,13 @@
-import { PerspectiveCamera, Vector3 } from 'three';
+import { Box3, MathUtils, PerspectiveCamera, Vector3 } from 'three';
 import type { MiniDioramaFocus } from './mini-diorama-contracts';
-
-interface CameraPreset {
-  readonly lookAt: readonly [number, number, number];
-  readonly direction: readonly [number, number, number];
-  readonly wideDistance: number;
-  readonly portraitDistance: number;
-}
-
-const cameraPresets: Readonly<Record<MiniDioramaFocus, CameraPreset>> = {
-  overview: {
-    lookAt: [0, 1.7, -0.15],
-    direction: [0.5, 0.58, 1],
-    wideDistance: 9.3,
-    portraitDistance: 12.2,
-  },
-  washer: {
-    lookAt: [1.45, 1.12, -0.38],
-    direction: [0.34, 0.32, 1],
-    wideDistance: 4.5,
-    portraitDistance: 6.2,
-  },
-  'project-board': {
-    lookAt: [-0.42, 3.02, -2.15],
-    direction: [0.2, 0.25, 1],
-    wideDistance: 4.3,
-    portraitDistance: 6.1,
-  },
-  raccoon: {
-    lookAt: [-1.28, 1.38, 0.72],
-    direction: [0.32, 0.24, 1],
-    wideDistance: 4.7,
-    portraitDistance: 6.5,
-  },
-};
 
 const portraitAspectLimit = 0.82;
 const transitionRate = 7.5;
+const framePadding = 1.14;
+const cameraDirection = new Vector3(0.5, 0.58, 1).normalize();
+const worldUp = new Vector3(0, 1, 0);
+const cameraRight = new Vector3().crossVectors(worldUp, cameraDirection).normalize();
+const cameraUp = new Vector3().crossVectors(cameraDirection, cameraRight).normalize();
 
 export class MiniDioramaCameraRig {
   private readonly lookAt = new Vector3();
@@ -47,7 +18,10 @@ export class MiniDioramaCameraRig {
   private moving = false;
   private view: MiniDioramaFocus = 'overview';
 
-  constructor(private readonly camera: PerspectiveCamera) {
+  constructor(
+    private readonly camera: PerspectiveCamera,
+    private readonly focusBounds: Readonly<Record<MiniDioramaFocus, Box3>>,
+  ) {
     this.focus('overview', true);
   }
 
@@ -96,12 +70,32 @@ export class MiniDioramaCameraRig {
   }
 
   private updateDestination(): void {
-    const preset = cameraPresets[this.view];
-    this.targetLookAt.set(...preset.lookAt);
-    const direction = new Vector3(...preset.direction).normalize();
-    const portrait = this.aspect < portraitAspectLimit;
-    const distance = portrait ? preset.portraitDistance : preset.wideDistance;
-    this.targetPosition.copy(this.targetLookAt).addScaledVector(direction, distance);
+    const bounds = this.focusBounds[this.view];
+    this.targetLookAt.copy(bounds.getCenter(new Vector3()));
+
+    const verticalFov = MathUtils.degToRad(this.camera.fov);
+    const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * this.aspect);
+    const horizontalLimit = Math.tan(horizontalFov / 2);
+    const verticalLimit = Math.tan(verticalFov / 2);
+    let distance = 0;
+
+    for (const x of [bounds.min.x, bounds.max.x]) {
+      for (const y of [bounds.min.y, bounds.max.y]) {
+        for (const z of [bounds.min.z, bounds.max.z]) {
+          const offset = new Vector3(x, y, z).sub(this.targetLookAt);
+          const towardCamera = offset.dot(cameraDirection);
+          distance = Math.max(
+            distance,
+            Math.abs(offset.dot(cameraRight)) / horizontalLimit + towardCamera,
+            Math.abs(offset.dot(cameraUp)) / verticalLimit + towardCamera,
+          );
+        }
+      }
+    }
+
+    this.targetPosition
+      .copy(this.targetLookAt)
+      .addScaledVector(cameraDirection, Math.max(distance * framePadding, 0.1));
   }
 
   private applyDestination(): void {

@@ -31,6 +31,7 @@ const raccoonRigNodes = [
   'hindquarters',
 ];
 const raccoonAnimations = ['greet', 'idle', 'sit'];
+const laundromatScenePath = sourcePath('models/laundromat/Laundromat.glb');
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 function sourcePath(path) {
@@ -214,6 +215,39 @@ if (
   throw new Error('Raccoon runtime GLB is missing its texture, geometry, rig nodes, or clips.');
 }
 
+const { document: laundromatScene } = readGlb(laundromatScenePath);
+const laundromatVariantExtension = laundromatScene.extensions?.KHR_materials_variants;
+const laundromatVariants = laundromatVariantExtension?.variants;
+const laundromatVariantNames = Array.isArray(laundromatVariants)
+  ? laundromatVariants.map((variant) => variant?.name)
+  : [];
+const laundromatNodeNames = laundromatScene.nodes?.map((node) => node.name) ?? [];
+const usedLaundromatVariantIndices = new Set();
+for (const mesh of laundromatScene.meshes ?? []) {
+  for (const primitive of mesh.primitives ?? []) {
+    const mappings = primitive.extensions?.KHR_materials_variants?.mappings;
+    for (const mapping of Array.isArray(mappings) ? mappings : []) {
+      for (const index of Array.isArray(mapping.variants) ? mapping.variants : []) {
+        if (Number.isInteger(index)) usedLaundromatVariantIndices.add(index);
+      }
+    }
+  }
+}
+const requiredLaundromatNodeNames = ['Washer', 'Notice board', 'Lantern', 'Raccoon'];
+if (
+  laundromatVariantNames.sort().join(',') !== 'Dark,Light,Minecraft,Raccoon' ||
+  requiredLaundromatNodeNames.some(
+    (name) => laundromatNodeNames.filter((nodeName) => nodeName === name).length !== 1,
+  ) ||
+  (laundromatScene.meshes?.length ?? 0) === 0 ||
+  usedLaundromatVariantIndices.size !== laundromatVariantNames.length ||
+  [...usedLaundromatVariantIndices].some(
+    (index) => index < 0 || index >= laundromatVariantNames.length,
+  )
+) {
+  throw new Error('Assembled laundromat GLB is missing its scene objects or theme variants.');
+}
+
 const sourceLayerPaths = new Set(
   layerFiles.map((path) => relative(source, path).split(sep).join('/')),
 );
@@ -226,6 +260,7 @@ const expectedSourcePaths = new Set([
   ...referenceFiles.map((path) => relative(source, path).split(sep).join('/')),
   'scene-manifest.json',
   ...raccoonSourcePaths,
+  'models/laundromat/Laundromat.glb',
 ]);
 const semanticIds = new Set(
   Object.values(manifest.themes).flatMap((theme) => theme.assets.map((asset) => asset.id)),
@@ -239,7 +274,7 @@ if (
   maskFiles.length !== 282 ||
   referenceFiles.length !== 4 ||
   referencedMasks.size !== 278 ||
-  sourceFiles.length !== 622 ||
+  sourceFiles.length !== 623 ||
   actualSourcePaths.size !== expectedSourcePaths.size ||
   [...expectedSourcePaths].some((path) => !actualSourcePaths.has(path))
 ) {
@@ -261,7 +296,7 @@ if (existsSync(distRuntime)) {
       expectedRuntime.set(asset.file, sourcePath(asset.file));
     }
   }
-  expectedRuntime.set('models/raccoon/puddlepaw-raccoon.glb', raccoonGlbPath);
+  expectedRuntime.set('models/laundromat/Laundromat.glb', laundromatScenePath);
   const runtimeFiles = filesUnder(distRuntime);
   const actualRuntimePaths = new Set(
     runtimeFiles.map((path) => relative(distRuntime, path).split(sep).join('/')),
@@ -287,9 +322,9 @@ if (existsSync(distRuntime)) {
   }
 
   const runtimeBytes = runtimeFiles.reduce((total, path) => total + readFileSync(path).length, 0);
-  runtimeSummary = `Production runtime verified: ${expectedRuntime.size - 1} required PNG layers, one authored Raccoon GLB, and manifest (${runtimeBytes} bytes; no editable model or texture sources).`;
+  runtimeSummary = `Production runtime verified: ${expectedRuntime.size - 1} required PNG layers, one assembled laundromat GLB, and manifest (${runtimeBytes} bytes; no editable model or texture sources).`;
 }
 
 console.log(
-  `Homepage source assets: 331 layer SHA-256 hashes, 282 masks, 86 semantic IDs, four canonical references, and the editable 64x64 Raccoon source/texture/GLB contract verified. ${runtimeSummary}`,
+  `Homepage source assets: 331 layer SHA-256 hashes, 282 masks, 86 semantic IDs, four canonical references, the editable 64x64 Raccoon source/texture/GLB contract, and assembled laundromat variants verified. ${runtimeSummary}`,
 );

@@ -27,11 +27,17 @@ try {
   const origin = `http://127.0.0.1:${address.port}`;
   webglSession = await openSession(origin, 'webgl', { webglEnabled: true });
   await webglSession.setViewport(1440, 900);
-  await waitFor(
-    webglSession,
-    "document.querySelector('.mini-diorama__scene')?.dataset.previewState",
-    'ready',
-  );
+  try {
+    await waitFor(
+      webglSession,
+      "document.querySelector('.mini-diorama__scene')?.dataset.previewState",
+      'ready',
+    );
+  } catch (error) {
+    throw new Error(
+      `${error.message} Browser console: ${JSON.stringify(webglSession.getConsoleMessages())}`,
+    );
+  }
   await assertReadyScene(webglSession);
   const frameTiming = await measureFrameTiming(webglSession);
 
@@ -278,10 +284,26 @@ async function verifySceneActions(session) {
 
 async function verifyThemesAndLocalization(session, directory, captured) {
   await session.setViewport(1440, 900);
+  const expectedVariants = {
+    craft: 'Minecraft',
+    raccoon: 'Raccoon',
+    light: 'Light',
+    dark: 'Dark',
+  };
   for (const theme of ['craft', 'raccoon', 'light', 'dark']) {
     await session.evaluate(`document.querySelector('[data-theme-option="${theme}"]').click()`);
     const selectedTheme = await waitFor(session, 'document.documentElement.dataset.theme', theme);
     if (selectedTheme !== theme) throw new Error(`The ${theme} theme did not apply.`);
+    const selectedVariant = await waitFor(
+      session,
+      "document.querySelector('.mini-diorama__scene canvas')?.dataset.materialVariant",
+      expectedVariants[theme],
+    );
+    if (selectedVariant !== expectedVariants[theme]) {
+      throw new Error(
+        `The ${theme} theme selected ${selectedVariant} instead of ${expectedVariants[theme]}.`,
+      );
+    }
     await session.evaluate(
       'new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))',
     );
@@ -350,25 +372,25 @@ async function verifyCanvasPicking(session) {
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Washer', 0.68, 0.62, 'mouse');
+  await tapSceneTarget(session, 'Washer', 0.43, 0.57, 'mouse');
 
   await session.evaluate(
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Project board', 0.6, 0.18, 'mouse');
+  await tapSceneTarget(session, 'Project board', 0.59, 0.42, 'mouse');
 
   await session.evaluate(
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Greet the Raccoon', 0.38, 0.61, 'mouse');
+  await tapSceneTarget(session, 'Greet the Raccoon', 0.54, 0.6, 'mouse');
 
   await session.evaluate(
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Washer', 0.68, 0.62, 'touch');
+  await tapSceneTarget(session, 'Washer', 0.43, 0.57, 'touch');
 }
 
 async function settleCamera(session) {

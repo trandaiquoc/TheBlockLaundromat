@@ -651,7 +651,7 @@ export const translations = {
     miniDioramaBackToProjects: 'Back to projects',
     miniDioramaTitle: 'A little laundromat in motion',
     miniDioramaSubtitle:
-      'Explore a procedural scene study. The board is decorative and does not contain project data.',
+      'Explore an authored scene study. The board is decorative and does not contain project data.',
     miniDioramaSceneDescription:
       'Interactive three-dimensional laundromat preview with a washer, decorative project board, and raccoon character.',
     miniDioramaLoading: 'Preparing the mini diorama…',
@@ -1681,7 +1681,7 @@ export const translations = {
     miniDioramaBackToProjects: 'Quay lại dự án',
     miniDioramaTitle: 'Một tiệm giặt nhỏ đang chuyển động',
     miniDioramaSubtitle:
-      'Khám phá bản thử nghiệm cảnh tạo bằng mã. Bảng dự án chỉ để trang trí, không chứa dữ liệu dự án.',
+      'Khám phá cảnh tiệm giặt được dựng sẵn. Bảng dự án chỉ để trang trí, không chứa dữ liệu dự án.',
     miniDioramaSceneDescription:
       'Bản xem trước tiệm giặt ba chiều tương tác với máy giặt, bảng dự án trang trí và nhân vật Raccoon.',
     miniDioramaLoading: 'Đang chuẩn bị tiểu cảnh…',

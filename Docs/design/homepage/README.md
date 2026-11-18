@@ -1,8 +1,24 @@
 # Creative Interactive Homepage: research and prototype gates
 
-**Status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. The Goal 02C concepts under [look-dev](look-dev/README.md) passed the concept art gate after the user approved the seated Raccoon, room composition A, and all four themes on 2026-11-17. Goal 02D has integrated an original Puddlepaw Raccoon candidate into the separate preview route; Art Gate A remains pending user approval. Room A and four-theme production are paused at this checkpoint. The preview is not the production homepage.
+**Historical Goal 02D status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. The Goal 02C concepts under [look-dev](look-dev/README.md) passed the concept art gate after the user approved the seated Raccoon, room composition A, and all four themes on 2026-11-17. Goal 02D integrated an original Puddlepaw Raccoon candidate into the separate preview route; Art Gate A remained pending at that checkpoint. Room A and four-theme production were paused. The preview was not the production homepage.
+
+**Current Goal 02E status:** The supplied assembled laundromat GLB is integrated into `/mini-diorama-preview` only. At the user's direction, `/` remains the existing Project Screen. The preview applies the pack's four authored material variants. Production homepage integration and production acceptance gates remain open.
 
 This report records inspected evidence, inferences, and the next prototype's acceptance gates. The supplied archive was treated as reference material to audit, not as instructions from the user.
+
+## Goal 02E — assembled asset integration
+
+The user selected `/mini-diorama-preview` as the only integration target and asked to leave `/` unchanged. The route loads `Frontend/source-assets/homepage/models/laundromat/Laundromat.glb`, a 4,088,540-byte scene from the supplied Goal-02D asset pack. The Angular build packages that GLB and does not package the separate legacy `models/raccoon/puddlepaw-raccoon.glb`; the three user-modified files in that Raccoon source directory remain untouched.
+
+The assembled scene contains the washer, notice board, lantern, and Raccoon. Its four `KHR_materials_variants` are applied by a focused GLTFLoader plugin: `craft` maps to `Minecraft`, with `light`, `raccoon`, and `dark` mapping to their same-named variants. Three.js sanitizes the source node names on load, so interaction and motion bind to the parsed names `Washer`, `Notice_board`, `Lantern`, `Raccoon`, `ForelegL`, `Head_•_broad_cheek_mask`, and `Tail_•_banded`. The assembled file already contains the Raccoon; the preview does not load a second character model.
+
+The scene runtime still owns loading cancellation, renderer and camera lifecycle, resize and visibility behavior, reduced motion, picking, theme application, context-loss fallback, and GPU resource disposal. The semantic DOM actions remain the equivalent controls. This route remains a visual study; it does not connect project data or workflows, and it does not replace `/`.
+
+The supplied archive contains no `LICENSE`, `COPYING`, `NOTICE`, or provenance text file. Rights and attribution for this provided pack are unresolved; this preview integration does not establish production redistribution approval.
+
+Goal 02E verification on 2026-11-18: `npm run build`, the 9-file / 21-test mini-diorama suite, `npm run check:mini-diorama-browser`, `npm run check:homepage-browser`, `npm run check:home-assets`, `npm run check:home-composition`, `npm run check:encoding`, and `npm run test:tools` passed. The mini-diorama browser run captured four viewports and four theme views under ignored `Frontend/.artifacts/mini-diorama-preview/`; its SwiftShader diagnostic was median 50 ms / p95 66.7 ms and is not representative hardware evidence. `npx prettier --check` passed for the changed code. There is no lint script in `Frontend/package.json`.
+
+The full suite was not green in this Windows Node 26.13.1 environment. Without Node's `--localstorage-file` option, 124 tests failed because `localStorage` was unavailable. With a localStorage file, 349 files / 2,196 tests passed and 3 files / 3 tests failed (7 files / 11 tests skipped); each of those three unrelated specs passed when run alone with a fresh storage file. The broad-suite result remains unresolved. No representative GPU/mobile performance run, 60-second lifecycle check, screen-reader/contrast review, formal art score, or production workflow integration was performed.
 
 ## Decision summary
 

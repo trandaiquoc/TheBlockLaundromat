@@ -65,6 +65,17 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
     const target = await targetResponse.json();
     pageSocket = await connectDebugger(target.webSocketDebuggerUrl);
     const send = createDebuggerSender(pageSocket);
+    const consoleMessages = [];
+    pageSocket.addEventListener('message', (event) => {
+      const message = JSON.parse(event.data);
+      if (message.method !== 'Runtime.consoleAPICalled') return;
+      consoleMessages.push({
+        type: message.params.type,
+        text: message.params.args
+          .map((argument) => argument.value ?? argument.description ?? '')
+          .join(' '),
+      });
+    });
     await send('Page.enable');
     await send('Runtime.enable');
 
@@ -80,6 +91,7 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
         }
         return response.result.value;
       },
+      getConsoleMessages: () => [...consoleMessages],
       setViewport: (width, height, deviceScaleFactor = 1, mobile = false) =>
         send('Emulation.setDeviceMetricsOverride', {
           width,

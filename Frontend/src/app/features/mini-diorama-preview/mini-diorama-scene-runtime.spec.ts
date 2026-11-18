@@ -1,23 +1,25 @@
-import { AnimationClip, BoxGeometry, DataTexture, Group, Mesh, MeshStandardMaterial } from 'three';
+import { BoxGeometry, DataTexture, Group, Mesh, MeshStandardMaterial } from 'three';
 import type { WebGLRenderer } from 'three';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { MiniDioramaMaterialVariants } from './mini-diorama-material-variants';
 import {
   MiniDioramaSceneRuntime,
   type MiniDioramaRuntimeAdapters,
   type MiniDioramaRuntimeCallbacks,
 } from './mini-diorama-scene-runtime';
-import type { MiniDioramaRaccoonAsset } from './mini-diorama-raccoon-asset-loader';
+import type { MiniDioramaSceneAsset } from './mini-diorama-scene-loader';
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('MiniDioramaSceneRuntime', () => {
-  it('waits for the authored asset and releases scene, animation, listener, and renderer resources', async () => {
+  it('waits for the assembled GLB and releases scene, listener, and renderer resources', async () => {
     const host = createHost();
     const renderer = createRenderer();
     const asset = createAsset();
-    const assetMaterial = (asset.root.children[0] as Mesh).material as MeshStandardMaterial;
-    if (!assetMaterial.map) throw new Error('The test Raccoon texture was not built.');
-    const textureDispose = vi.spyOn(assetMaterial.map, 'dispose');
+    const texture = (asset.root.children[0] as Group).children[0] as Mesh;
+    const material = texture.material as MeshStandardMaterial;
+    if (!material.map) throw new Error('The test scene texture was not built.');
+    const textureDispose = vi.spyOn(material.map, 'dispose');
     const removeDocumentListener = vi.spyOn(document, 'removeEventListener');
     vi.stubGlobal('ResizeObserver', TestResizeObserver);
     const frames = new Map<number, FrameRequestCallback>();
@@ -28,27 +30,28 @@ describe('MiniDioramaSceneRuntime', () => {
       return id;
     });
     const cancelFrame = vi.fn((id: number) => frames.delete(id));
-    const onRaccoonLoaded = vi.fn();
+    const onSceneLoaded = vi.fn();
     const adapters: Partial<MiniDioramaRuntimeAdapters> = {
       createRenderer: vi.fn(() => renderer),
       requestFrame,
       cancelFrame,
-      loadRaccoonAsset: vi.fn(async () => asset),
+      loadSceneAsset: vi.fn(async () => asset),
     };
-    const runtime = new MiniDioramaSceneRuntime(createCallbacks({ onRaccoonLoaded }), adapters);
+    const runtime = new MiniDioramaSceneRuntime(createCallbacks({ onSceneLoaded }), adapters);
 
     expect(runtime.mount(host)).toBe(true);
     expect(host.querySelectorAll('canvas')).toHaveLength(1);
-    expect(onRaccoonLoaded).not.toHaveBeenCalled();
+    expect(onSceneLoaded).not.toHaveBeenCalled();
     const canvas = host.querySelector('canvas');
     expect(canvas).not.toBeNull();
     const removeCanvasListener = vi.spyOn(canvas!, 'removeEventListener');
     expect(renderer.setSize).toHaveBeenCalledWith(480, 300, false);
-    expect(requestFrame).toHaveBeenCalledOnce();
 
     await waitForCallbacks();
-    expect(onRaccoonLoaded).toHaveBeenCalledOnce();
-    expect(asset.root.parent?.name).toBe('laundromat-raccoon');
+    expect(onSceneLoaded).toHaveBeenCalledOnce();
+    expect(asset.root.parent?.name).toBe('laundromat-preview-scene');
+    expect(canvas?.getAttribute('data-material-variant')).toBe('Minecraft');
+    expect(requestFrame).toHaveBeenCalledOnce();
 
     runtime.dispose();
     runtime.dispose();
@@ -66,26 +69,27 @@ describe('MiniDioramaSceneRuntime', () => {
     host.remove();
   });
 
-  it('aborts a pending model request and disposes a late result after route teardown', async () => {
+  it('cancels a pending GLB load and disposes an asset that resolves after route teardown', async () => {
     const host = createHost();
     const renderer = createRenderer();
     const asset = createAsset();
-    const geometryDispose = vi.spyOn((asset.root.children[0] as Mesh).geometry, 'dispose');
-    let resolveAsset: ((value: MiniDioramaRaccoonAsset) => void) | undefined;
+    const geometry = (asset.root.children[0] as Group).children[0] as Mesh;
+    const geometryDispose = vi.spyOn(geometry.geometry, 'dispose');
+    let resolveAsset: ((value: MiniDioramaSceneAsset) => void) | undefined;
     let requestSignal: AbortSignal | undefined;
-    const onRaccoonLoadFailed = vi.fn();
+    const onSceneLoadFailed = vi.fn();
     const adapters: Partial<MiniDioramaRuntimeAdapters> = {
       createRenderer: () => renderer,
       requestFrame: () => 1,
       cancelFrame: vi.fn(),
-      loadRaccoonAsset: (_baseURI, signal) => {
+      loadSceneAsset: (_baseURI, signal) => {
         requestSignal = signal;
         return new Promise((resolve) => {
           resolveAsset = resolve;
         });
       },
     };
-    const runtime = new MiniDioramaSceneRuntime(createCallbacks({ onRaccoonLoadFailed }), adapters);
+    const runtime = new MiniDioramaSceneRuntime(createCallbacks({ onSceneLoadFailed }), adapters);
 
     runtime.mount(host);
     await waitForCallbacks();
@@ -96,27 +100,27 @@ describe('MiniDioramaSceneRuntime', () => {
     await waitForCallbacks();
 
     expect(geometryDispose).toHaveBeenCalledOnce();
-    expect(onRaccoonLoadFailed).not.toHaveBeenCalled();
+    expect(onSceneLoadFailed).not.toHaveBeenCalled();
     host.remove();
   });
 
-  it('reports asset failures and tears down the mounted preview', async () => {
+  it('reports scene load failures and tears down the mounted preview', async () => {
     const host = createHost();
     const renderer = createRenderer();
-    const onRaccoonLoadFailed = vi.fn();
-    const runtime = new MiniDioramaSceneRuntime(createCallbacks({ onRaccoonLoadFailed }), {
+    const onSceneLoadFailed = vi.fn();
+    const runtime = new MiniDioramaSceneRuntime(createCallbacks({ onSceneLoadFailed }), {
       createRenderer: () => renderer,
       requestFrame: () => 1,
       cancelFrame: vi.fn(),
-      loadRaccoonAsset: async () => {
+      loadSceneAsset: async () => {
         throw new Error('missing GLB');
       },
     });
 
     expect(runtime.mount(host)).toBe(true);
-    await vi.waitFor(() => expect(onRaccoonLoadFailed).toHaveBeenCalledOnce());
+    await vi.waitFor(() => expect(onSceneLoadFailed).toHaveBeenCalledOnce());
 
-    expect(onRaccoonLoadFailed).toHaveBeenCalledWith(
+    expect(onSceneLoadFailed).toHaveBeenCalledWith(
       expect.objectContaining({ message: 'missing GLB' }),
     );
     expect(host.querySelector('canvas')).toBeNull();
@@ -131,7 +135,7 @@ describe('MiniDioramaSceneRuntime', () => {
       createRenderer: () => {
         throw new Error('WebGL unavailable');
       },
-      loadRaccoonAsset: vi.fn(async () => createAsset()),
+      loadSceneAsset: vi.fn(async () => createAsset()),
     });
 
     expect(runtime.mount(host)).toBe(false);
@@ -160,8 +164,8 @@ function createCallbacks(
   return {
     onIntent: vi.fn(),
     onWebGLUnavailable: vi.fn(),
-    onRaccoonLoaded: vi.fn(),
-    onRaccoonLoadFailed: vi.fn(),
+    onSceneLoaded: vi.fn(),
+    onSceneLoadFailed: vi.fn(),
     ...overrides,
   };
 }
@@ -198,20 +202,49 @@ function createRenderer(): WebGLRenderer {
   } as unknown as WebGLRenderer;
 }
 
-function createAsset(): MiniDioramaRaccoonAsset {
+function createAsset(): MiniDioramaSceneAsset {
   const root = new Group();
-  root.name = 'puddlepaw-raccoon';
+  const geometry = new BoxGeometry(1, 1, 1);
   const texture = new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
   const material = new MeshStandardMaterial({ map: texture });
-  root.add(new Mesh(new BoxGeometry(1, 1, 1), material));
+  const inactiveVariantMaterial = new MeshStandardMaterial({
+    map: new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1),
+  });
+  const platform = new Group();
+  platform.name = 'Platform';
+  platform.add(new Mesh(geometry, material));
+  root.add(platform);
+  addNamedGroup(root, 'Washer', geometry, material, [1, 1, 0]);
+  addNamedGroup(root, 'Notice_board', geometry, material, [0, 2, -2]);
+  addNamedGroup(root, 'Lantern', geometry, material, [0, 3, -1]);
+
+  const raccoon = new Group();
+  raccoon.name = 'Raccoon';
+  root.add(raccoon);
+  addNamedGroup(raccoon, 'Body', geometry, material, [-1, 0.5, 0.5]);
+  addNamedGroup(raccoon, 'ForelegL', geometry, material, [-0.8, 0.6, 0.9]);
+  addNamedGroup(raccoon, 'Head_•_broad_cheek_mask', geometry, material, [-1, 1.1, 0.7]);
+  addNamedGroup(raccoon, 'Tail_•_banded', geometry, material, [-1.6, 0.35, 0.2]);
+
   return {
     root,
-    animations: [
-      new AnimationClip('idle', 1, []),
-      new AnimationClip('sit', 0.2, []),
-      new AnimationClip('greet', 0.5, []),
-    ],
+    materialVariants: new MiniDioramaMaterialVariants([], [material, inactiveVariantMaterial]),
   };
+}
+
+function addNamedGroup(
+  parent: Group,
+  name: string,
+  geometry: BoxGeometry,
+  material: MeshStandardMaterial,
+  position: readonly [number, number, number],
+): Group {
+  const group = new Group();
+  group.name = name;
+  group.position.set(...position);
+  group.add(new Mesh(geometry, material));
+  parent.add(group);
+  return group;
 }
 
 function waitForCallbacks(): Promise<void> {
