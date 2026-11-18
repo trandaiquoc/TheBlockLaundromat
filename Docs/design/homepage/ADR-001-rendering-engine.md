@@ -1,6 +1,6 @@
 # ADR 001: Homepage rendering engine
 
-- **Status:** Three.js remains selected for the isolated Goal 02 preview. Goal 02D integrated an original Puddlepaw Raccoon GLB candidate into `/mini-diorama-preview`; its Art Gate A visual approval is pending. Room A and four-theme production remain paused until that gate passes.
+- **Status:** Three.js remains selected for the isolated Goal 02 preview. Goal 02E loads the supplied assembled laundromat GLB and its four material variants on `/mini-diorama-preview`; at the user's direction, `/` remains unchanged. The former Puddlepaw candidate is no longer used, and its source files were removed. Production adoption remains open.
 - **Date:** 2026-11-16.
 - **Reviewed:** 2026-11-17.
 - **Scope:** Goal 01 engine decision; Goal 02 applies that decision to a separate, non-production preview route.

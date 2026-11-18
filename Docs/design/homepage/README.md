@@ -8,7 +8,7 @@ This report records inspected evidence, inferences, and the next prototype's acc
 
 ## Goal 02E — assembled asset integration
 
-The user selected `/mini-diorama-preview` as the only integration target and asked to leave `/` unchanged. The route loads `Frontend/source-assets/homepage/models/laundromat/Laundromat.glb`, a 4,088,540-byte scene from the supplied Goal-02D asset pack. The Angular build packages that GLB and does not package the separate legacy `models/raccoon/puddlepaw-raccoon.glb`; the three user-modified files in that Raccoon source directory remain untouched.
+The user selected `/mini-diorama-preview` as the only integration target and asked to leave `/` unchanged. The route loads `Frontend/source-assets/homepage/models/laundromat/Laundromat.glb`, a 4,088,540-byte scene from the supplied Goal-02D asset pack. The unused Goal 02D Puddlepaw source model, atlas, standalone GLB, and per-asset README were removed on 2026-11-18 at the user's request; the assembled scene already contains its Raccoon.
 
 The assembled scene contains the washer, notice board, lantern, and Raccoon. Its four `KHR_materials_variants` are applied by a focused GLTFLoader plugin: `craft` maps to `Minecraft`, with `light`, `raccoon`, and `dark` mapping to their same-named variants. Three.js sanitizes the source node names on load, so interaction and motion bind to the parsed names `Washer`, `Notice_board`, `Lantern`, `Raccoon`, `ForelegL`, `Head_•_broad_cheek_mask`, and `Tail_•_banded`. The assembled file already contains the Raccoon; the preview does not load a second character model.
 

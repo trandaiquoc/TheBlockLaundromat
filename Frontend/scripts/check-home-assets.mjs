@@ -15,22 +15,6 @@ const expectedThemes = {
 };
 const expectedLayerCounts = { minecraft: 82, light: 82, raccoon: 84, dark: 83 };
 const expectedCanvas = { width: 1672, height: 941 };
-const raccoonSourcePaths = [
-  'models/raccoon/puddlepaw-raccoon.bbmodel',
-  'models/raccoon/puddlepaw-fur-atlas.png',
-  'models/raccoon/puddlepaw-raccoon.glb',
-  'models/raccoon/README.md',
-];
-const raccoonRigNodes = [
-  'body_pivot',
-  'head_pivot',
-  'foreleg_left',
-  'foreleg_right',
-  'tail_base',
-  'tail_tip',
-  'hindquarters',
-];
-const raccoonAnimations = ['greet', 'idle', 'sit'];
 const laundromatScenePath = sourcePath('models/laundromat/Laundromat.glb');
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
@@ -175,46 +159,6 @@ const layerFiles = filesUnder(join(source, 'assets'));
 const maskFiles = filesUnder(join(source, 'masks'));
 const referenceFiles = filesUnder(join(source, 'reference'));
 const sourceFiles = filesUnder(source);
-const raccoonTexturePath = sourcePath('models/raccoon/puddlepaw-fur-atlas.png');
-const { bytes: raccoonTexture } = readPng(raccoonTexturePath, { width: 64, height: 64 });
-const raccoonModelPath = sourcePath('models/raccoon/puddlepaw-raccoon.bbmodel');
-const raccoonModel = JSON.parse(readFileSync(raccoonModelPath, 'utf8'));
-const embeddedRaccoonTexture = raccoonModel.textures?.find(
-  (texture) => texture.name === 'puddlepaw_fur_atlas.png',
-);
-if (
-  raccoonModel.meta?.model_format !== 'free' ||
-  !Array.isArray(raccoonModel.elements) ||
-  raccoonModel.elements.length === 0 ||
-  !Array.isArray(raccoonModel.groups) ||
-  raccoonRigNodes.some((name) => !raccoonModel.groups.some((group) => group.name === name)) ||
-  raccoonModel.animations
-    ?.map((animation) => animation.name)
-    .sort()
-    .join(',') !== raccoonAnimations.join(',') ||
-  !embeddedRaccoonTexture?.source?.startsWith('data:image/png;base64,') ||
-  embeddedRaccoonTexture.width !== 64 ||
-  embeddedRaccoonTexture.height !== 64 ||
-  sha256(Buffer.from(embeddedRaccoonTexture.source.split(',')[1], 'base64')) !==
-    sha256(raccoonTexture)
-) {
-  throw new Error('Editable Raccoon source does not match its embedded texture or clip contract.');
-}
-
-const raccoonGlbPath = sourcePath('models/raccoon/puddlepaw-raccoon.glb');
-const { bytes: raccoonGlb, document: raccoonGltf } = readGlb(raccoonGlbPath);
-const raccoonNodeNames = new Set(raccoonGltf.nodes?.map((node) => node.name));
-if (
-  raccoonAnimations.some(
-    (name) => !raccoonGltf.animations?.some((animation) => animation.name === name),
-  ) ||
-  raccoonRigNodes.some((name) => !raccoonNodeNames.has(name)) ||
-  (raccoonGltf.images?.length ?? 0) !== 1 ||
-  (raccoonGltf.meshes?.length ?? 0) === 0
-) {
-  throw new Error('Raccoon runtime GLB is missing its texture, geometry, rig nodes, or clips.');
-}
-
 const { document: laundromatScene } = readGlb(laundromatScenePath);
 const laundromatVariantExtension = laundromatScene.extensions?.KHR_materials_variants;
 const laundromatVariants = laundromatVariantExtension?.variants;
@@ -259,7 +203,6 @@ const expectedSourcePaths = new Set([
   ...maskFiles.map((path) => relative(source, path).split(sep).join('/')),
   ...referenceFiles.map((path) => relative(source, path).split(sep).join('/')),
   'scene-manifest.json',
-  ...raccoonSourcePaths,
   'models/laundromat/Laundromat.glb',
 ]);
 const semanticIds = new Set(
@@ -274,7 +217,7 @@ if (
   maskFiles.length !== 282 ||
   referenceFiles.length !== 4 ||
   referencedMasks.size !== 278 ||
-  sourceFiles.length !== 623 ||
+  sourceFiles.length !== 619 ||
   actualSourcePaths.size !== expectedSourcePaths.size ||
   [...expectedSourcePaths].some((path) => !actualSourcePaths.has(path))
 ) {
@@ -326,5 +269,5 @@ if (existsSync(distRuntime)) {
 }
 
 console.log(
-  `Homepage source assets: 331 layer SHA-256 hashes, 282 masks, 86 semantic IDs, four canonical references, the editable 64x64 Raccoon source/texture/GLB contract, and assembled laundromat variants verified. ${runtimeSummary}`,
+  `Homepage source assets: 331 layer SHA-256 hashes, 282 masks, 86 semantic IDs, four canonical references, and assembled laundromat variants verified. ${runtimeSummary}`,
 );
