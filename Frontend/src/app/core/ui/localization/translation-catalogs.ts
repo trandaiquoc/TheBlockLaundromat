@@ -649,6 +649,11 @@ export const translations = {
     homepageSceneLoadFailed: 'The homepage illustration could not be loaded.',
     homepageSceneRetry: 'Retry loading illustration',
     miniDioramaBackToProjects: 'Back to projects',
+    homepageWorkspaceTitle: 'Interactive project workspace',
+    homepageWorkspaceBackToProjects: 'Back to projects',
+    homepageWorkspaceSceneHeading: 'Laundromat scene',
+    homepageWorkspaceSceneDescription:
+      'Interactive three-dimensional laundromat scene. Use its buttons to focus the New Project form or Recent Projects list.',
     miniDioramaTitle: 'A little laundromat in motion',
     miniDioramaSubtitle:
       'Explore an authored scene study. The board is decorative and does not contain project data.',
@@ -1679,6 +1684,11 @@ export const translations = {
     homepageSceneLoadFailed: 'Không thể tải minh họa Homepage.',
     homepageSceneRetry: 'Thử tải lại minh họa',
     miniDioramaBackToProjects: 'Quay lại dự án',
+    homepageWorkspaceTitle: 'Không gian dự án tương tác',
+    homepageWorkspaceBackToProjects: 'Quay lại dự án',
+    homepageWorkspaceSceneHeading: 'Cảnh tiệm giặt',
+    homepageWorkspaceSceneDescription:
+      'Cảnh tiệm giặt ba chiều tương tác. Dùng các nút để chuyển tiêu điểm đến biểu mẫu Tạo dự án hoặc danh sách Dự án gần đây.',
     miniDioramaTitle: 'Một tiệm giặt nhỏ đang chuyển động',
     miniDioramaSubtitle:
       'Khám phá cảnh tiệm giặt được dựng sẵn. Bảng dự án chỉ để trang trí, không chứa dữ liệu dự án.',

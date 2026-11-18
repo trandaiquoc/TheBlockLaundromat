@@ -715,3 +715,229 @@
     justify-self: start;
   }
 }
+
+.project-page--integration-preview {
+  padding-inline: clamp(0.65rem, 1.6vw, 1.4rem);
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      color-mix(in srgb, var(--accent) 8%, transparent),
+      transparent 72%
+    ),
+    var(--app-bg);
+}
+
+.project-page--integration-preview .outer-topbar {
+  gap: 0.55rem 1rem;
+}
+
+.integration-preview-back {
+  display: inline-flex;
+  min-height: 2.4rem;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--border-floating);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.integration-preview-back:hover {
+  background: var(--surface-hover);
+}
+
+.integration-preview-back:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+.project-page--integration-preview .project-page-content {
+  width: min(100%, 1680px);
+  height: 100%;
+  padding: 0.25rem 0 0.55rem;
+  overflow: hidden;
+}
+
+.project-page--integration-preview .project-intro {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.project-page--integration-preview .project-grid {
+  height: 100%;
+  min-height: 0;
+  grid-template-columns: minmax(14rem, 0.95fr) minmax(18rem, 1.6fr) minmax(15rem, 1fr);
+  gap: clamp(0.6rem, 1vw, 0.95rem);
+  align-items: stretch;
+}
+
+.project-page--integration-preview .project-form,
+.project-page--integration-preview .recent-projects {
+  max-height: 100%;
+  overflow: auto;
+  border-color: var(--border-floating);
+}
+
+.project-page--integration-preview .project-form {
+  scrollbar-gutter: stable;
+}
+
+.project-page--integration-preview .recent-projects {
+  scrollbar-gutter: stable;
+}
+
+.workspace-scene {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  padding: clamp(0.35rem, 0.8vw, 0.65rem);
+  overflow: hidden;
+  border: 1px solid var(--border-floating);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-raised) 78%, var(--app-bg));
+  box-shadow: var(--shadow-panel);
+}
+
+.workspace-scene-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.workspace-scene-message,
+.workspace-scene-error {
+  display: grid;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  align-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: clamp(1rem, 2vw, 1.75rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  text-align: center;
+}
+
+.workspace-scene-message {
+  color: var(--text-muted);
+}
+
+.workspace-scene-error h3,
+.workspace-scene-error p {
+  max-width: 34rem;
+  margin: 0;
+}
+
+.workspace-scene-error p {
+  color: var(--text-muted);
+}
+
+.workspace-scene-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.workspace-scene-error-actions button {
+  min-height: 2.5rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--border-floating);
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.workspace-scene-error-actions button:focus-visible {
+  outline: 2px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+@media (min-width: 861px) and (max-width: 1120px) {
+  .project-page--integration-preview .project-grid {
+    grid-template-columns: minmax(13rem, 0.95fr) minmax(17rem, 1.45fr) minmax(14rem, 0.95fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .project-page--integration-preview {
+    height: auto;
+    min-height: 100svh;
+    overflow: visible;
+    grid-template-rows: auto auto auto;
+  }
+
+  .project-page--integration-preview .project-page-content {
+    height: auto;
+    overflow: visible;
+    padding-block: 0.4rem 1rem;
+  }
+
+  .project-page--integration-preview .project-grid {
+    height: auto;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .project-page--integration-preview .project-form,
+  .project-page--integration-preview .recent-projects {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .project-page--integration-preview .workspace-scene {
+    order: -2;
+    height: auto;
+    min-height: 22rem;
+  }
+
+  .project-page--integration-preview .project-form {
+    order: -1;
+  }
+
+  .project-page--integration-preview .recent-projects {
+    order: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .project-page--integration-preview {
+    padding-inline: max(0.65rem, env(safe-area-inset-left)) max(0.65rem, env(safe-area-inset-right));
+  }
+
+  .project-page--integration-preview .outer-topbar {
+    align-items: center;
+    padding-inline: 0.25rem;
+  }
+
+  .project-page--integration-preview .outer-brand-logo {
+    width: clamp(5rem, 27vw, 7rem);
+  }
+
+  .project-page--integration-preview .integration-preview-back {
+    min-height: 2.2rem;
+    padding-inline: 0.55rem;
+    font-size: 0.75rem;
+  }
+
+  .project-page--integration-preview .outer-topbar app-project-screen-controls {
+    flex: 1 1 100%;
+  }
+}

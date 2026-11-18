@@ -11,69 +11,7 @@
     </div>
   </header>
 
-  <section
-    #sceneHost
-    class="mini-diorama__scene"
-    [class.mini-diorama__scene--fallback]="previewState() === 'fallback'"
-    [attr.aria-label]="i18n.t('miniDioramaSceneDescription')"
-    [attr.aria-busy]="previewState() === 'loading'"
-    [attr.data-preview-state]="previewState()"
-  >
-    @if (previewState() === 'loading') {
-      <p class="mini-diorama__loading" role="status">{{ i18n.t('miniDioramaLoading') }}</p>
-    }
-
-    @if (previewState() === 'fallback') {
-      <div class="mini-diorama__fallback" role="status">
-        <div class="mini-diorama__fallback-scene" aria-hidden="true">
-          <div class="mini-diorama__fallback-board"><span></span><span></span><span></span></div>
-          <div class="mini-diorama__fallback-raccoon">🦝</div>
-          <div class="mini-diorama__fallback-washer"><span></span></div>
-        </div>
-        <h2>{{ i18n.t('miniDioramaFallbackTitle') }}</h2>
-        <p>{{ i18n.t('miniDioramaFallback') }}</p>
-      </div>
-    }
-  </section>
-
-  <nav class="mini-diorama__actions" [attr.aria-label]="i18n.t('miniDioramaSceneActions')">
-    <button
-      type="button"
-      [attr.aria-pressed]="selectedTarget() === undefined"
-      [class.is-selected]="selectedTarget() === undefined"
-      (click)="focusOverview()"
-    >
-      {{ i18n.t('miniDioramaOverview') }}
-    </button>
-    <button
-      type="button"
-      [attr.aria-pressed]="selectedTarget() === 'washer'"
-      [class.is-selected]="selectedTarget() === 'washer'"
-      (click)="focusTarget('washer')"
-    >
-      {{ i18n.t('miniDioramaWasher') }}
-    </button>
-    <button
-      type="button"
-      [attr.aria-pressed]="selectedTarget() === 'project-board'"
-      [class.is-selected]="selectedTarget() === 'project-board'"
-      (click)="focusTarget('project-board')"
-    >
-      {{ i18n.t('miniDioramaProjectBoard') }}
-    </button>
-    <button
-      type="button"
-      [attr.aria-pressed]="selectedTarget() === 'raccoon'"
-      [class.is-selected]="selectedTarget() === 'raccoon'"
-      (click)="greetRaccoon()"
-    >
-      {{ i18n.t('miniDioramaGreetRaccoon') }}
-    </button>
-  </nav>
-
-  <p class="mini-diorama__live-message" aria-live="polite" aria-atomic="true">
-    {{ sceneMessage() }}
-  </p>
+  <app-mini-diorama-scene-panel />
 
   @if (settingsDialogOpen()) {
     <app-settings-dialog (closed)="closeSettings()" />

@@ -12,6 +12,7 @@
     "check:home-assets": "node scripts/check-home-assets.mjs",
     "check:home-composition": "node scripts/check-home-composition.mjs",
     "check:homepage-browser": "node scripts/check-homepage-preview.mjs",
+    "check:homepage-integration-browser": "node scripts/check-homepage-integration-preview.mjs",
     "check:mini-diorama-browser": "node scripts/check-mini-diorama-preview.mjs",
     "benchmark:renderer": "node src/app/core/renderer/benchmark/renderer-benchmark-runner.cjs"
   },

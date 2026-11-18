@@ -26,5 +26,12 @@ export const routes: Routes = [
         ({ MiniDioramaPreviewComponent }) => MiniDioramaPreviewComponent,
       ),
   },
+  {
+    path: 'homepage-integration-preview',
+    loadComponent: () =>
+      import('./features/homepage/homepage-integration-preview.component').then(
+        ({ HomepageIntegrationPreviewComponent }) => HomepageIntegrationPreviewComponent,
+      ),
+  },
   { path: '**', redirectTo: '' },
 ];
