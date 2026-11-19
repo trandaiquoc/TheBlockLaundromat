@@ -8,8 +8,9 @@ and exported as self-contained GLB files beside this document.
 bodies do not match the selected Raccoon references. The current proposed
 shape direction is documented in
 [`raccoon-pair-look-review.png`](../../../../../Docs/design/homepage/stage-2-spatial-concepts/raccoon-pair-look-review.png);
-it keeps the shared head design the user preferred and separates the roles
-through compact pose, torso contour, note prop, and moderate tail silhouettes.
+it keeps the shared head design the user preferred and balances both body
+proportions, separating the roles through pose, note prop, and moderate tail
+direction.
 No GLB or Blender model was changed for this Stage 2 review.
 
 | Asset        | Character distinction                                                                | Output                     |
