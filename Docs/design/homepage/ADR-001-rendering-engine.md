@@ -28,8 +28,8 @@ Do not add PixiJS or combine renderers for this prototype.
 
 - Reuses installed engine and existing expertise; no dependency change.
 - Supports real depth, camera framing, bounded character poses and object picking.
-- Procedural-first is not geometry-only. The Goal 02B Raccoon and room art were rejected by the user and are not the approved basis for further model edits. Goal 02C proposes new original concepts and a Blockbench-to-glTF pipeline in the [look-dev package](look-dev/README.md).
-- The shared Three.js scene has palette, lighting, window landscape, and exterior mood variants for Minecraft, Light, Raccoon, and Dark. The prior captures were not accepted; the separate Goal 02C same-room theme concepts are now user-approved.
+- Procedural-first is not geometry-only. The Goal 02B Raccoon and room art were rejected by the user. The old Goal 02C look-dev package was removed at the user's direction; current composition and source-only Raccoon assets are documented in [Stage 2](stage-2-spatial-concepts/README.md).
+- The shared Three.js scene has palette, lighting, window landscape, and exterior mood variants for Minecraft, Light, Raccoon, and Dark. Goal 02C theme concepts were historically approved; detailed material and 3D alignment decisions for the current room are deferred to the next scene review.
 - The preview implements explicit lifecycle/disposal, semantic DOM alternatives, reduced-motion behavior, WebGL fallback, and browser verification. The candidate Raccoon uses GLTFLoader and AnimationMixer. Representative-device performance and formal art review remain open; the current art review is Gate A only.
 - Keep the raster and diorama previews separate until production parity is demonstrated, then maintain one production homepage path.
 
