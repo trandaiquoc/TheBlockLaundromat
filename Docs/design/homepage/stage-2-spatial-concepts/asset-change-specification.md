@@ -16,8 +16,9 @@ Stage 3 authoring review because the user deferred those 3D details.
 Use [`raccoon-model-a-note-turnaround.png`](./raccoon-model-a-note-turnaround.png)
 and [`raccoon-model-b-turnaround.png`](./raccoon-model-b-turnaround.png) as the
 current Raccoon design candidates. Each sheet shows one complete four-view
-rotation. A is seated and holds a larger blank note with both paws; B is seated
-with its paws lowered. Both have a cooler gray coat and one compact, attached,
+rotation. A (Note Courier) is seated and holds a larger blank note with both
+paws; B (Washer Guide) is seated with its paws lowered. Both have a cooler
+gray coat and one compact, attached,
 banded tail. The user approved these two concept sheets on 2026-11-19. They
 remain design references only; the existing source GLBs are prototypes and do
 not match the chosen Raccoon references.
@@ -114,3 +115,33 @@ can pick a hotspot; scroll inside the board never zooms the room.
 No animation clips are to be authored in Stage 2. The Raccoon source GLBs
 currently include only `offer-note` and `greet`; walking, collision, and the
 behaviors above remain future Stage 3 work.
+
+## Clean-code constraints for Stage 3
+
+- **Architecture and ownership:** Angular owns project data, translated text,
+  note details, dialogs, and existing project workflows. The scene owns
+  rendering, camera, picking, character presentation, and GPU resources.
+  Cross this boundary through typed intents and stable anchors; the scene must
+  not access persistence directly.
+- **Legacy and dead code:** Before replacing or removing an asset or runtime
+  path, trace its source/runtime copies, loader consumers, controller
+  references, and tests. Remove an embedded single-Raccoon path only after the
+  replacement pair passes visual and runtime regression checks. Keep current
+  create/open/delete/import/backup/Editor and persistence owners intact.
+- **Folder structure and naming:** Keep editable model sources in
+  `Frontend/source-assets/homepage/models/`, runtime copies in the existing
+  mapped `assets/homepage/runtime/models/` tree, and design references under
+  this Stage 2 documentation folder. Keep the role names Note Courier and
+  Washer Guide consistent across anchors, assets, and motion states. Do not
+  place generated probes or review screenshots under `src/`.
+- **Generalization and semantic contracts:** Reuse `ProjectSummary`,
+  `ProjectSummary.updatedAt`, the existing revision-keyed `openPreview` contract,
+  typed scene intents, and semantic DOM controls. Do not add a parallel
+  persistence owner, sample-project content, or scene-specific workflow.
+- **Documentation and references:** Keep this specification, the interaction
+  architecture, and the Stage 2 README linked and aligned. Treat the archived
+  ZIP as an interaction-pattern reference only; do not copy its code, assets,
+  copy, or character.
+- **Formatting and code style:** Follow the existing Angular and Markdown
+  conventions for touched files. Format only files changed for Stage 3 and
+  avoid unrelated reformatting or dependencies.

@@ -81,8 +81,9 @@ flowchart TD
   scrolls vertically inside the board viewport. Wheel, touch, and pointer
   events that start inside this DOM region do not orbit or zoom the camera.
 - Activating a note replaces the board list with its full project details on
-  the board. `ProjectSummary.id` and `metadata.updatedAt` identify the current
-  selection; no project name or metadata is baked into a Three.js texture.
+  the board. `ProjectSummary.id` and `ProjectSummary.updatedAt` identify the
+  current selection; no project name or metadata is baked into a Three.js
+  texture.
 
 ### Washer: revision preview and contextual actions
 
