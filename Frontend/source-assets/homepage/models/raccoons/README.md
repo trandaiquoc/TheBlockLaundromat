@@ -1,20 +1,26 @@
 # Spatial homepage Raccoons
 
-These two original, low-voxel Raccoon models are authored by
+These two original, low-voxel Raccoon prototypes are authored by
 [`generate.mjs`](../../../../tools/homepage-raccoon-assets/generate.mjs)
 and exported as self-contained GLB files beside this document.
+
+**Visual status:** the GLBs are not approved character art. Their tall cuboid
+bodies do not match the selected Raccoon references. The current proposed
+shape direction is documented in
+[`raccoon-pair-look-review.png`](../../../../../Docs/design/homepage/stage-2-spatial-concepts/raccoon-pair-look-review.png);
+it keeps the shared head design the user preferred and separates the roles
+through compact pose, torso contour, note prop, and moderate tail silhouettes.
+No GLB or Blender model was changed for this Stage 2 review.
 
 | Asset        | Character distinction                                                                | Output                     |
 | ------------ | ------------------------------------------------------------------------------------ | -------------------------- |
 | Note Courier | Holds a small paper note; tail rests in a low sweep; includes the `offer-note` clip. | `raccoon-note-courier.glb` |
 | Washer Guide | Raises one forepaw; tail has a modest upward curl; includes the `greet` clip.        | `raccoon-washer-guide.glb` |
 
-Both use compact seated proportions, gray-brown cuboid fur, a dark face mask,
-cream muzzle, and banded tail. Their current difference comes mainly from
-pose, tail silhouette, and one small prop rather than exaggerated body size.
-The Chrome preview makes clear that their head/body shapes are still similar;
-distinct face/ear/cheek silhouettes remain pending user's visual review before
-any Stage 3 model refinement.
+Both prototypes use gray-brown cuboid fur, a dark face mask, cream muzzle, and
+banded tail. The Chrome preview shows their current forms and activities, not
+the approved look. Stage 3 must replace/refine their silhouettes against the
+proposed shape sheet after user approval.
 
 ## Model contract
 

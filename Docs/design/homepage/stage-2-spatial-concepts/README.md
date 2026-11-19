@@ -25,15 +25,23 @@ remove.
 - [Desktop room-first mockup](./desktop-room-mockup.png)
 - [Portrait mobile room reframe](./mobile-room-reframe.png)
 - [Four-theme comparison with shared geometry](./four-theme-room-comparison.png)
+- [Raccoon shape review sheet](./raccoon-pair-look-review.png)
 - [Two Raccoon models and activity preview](../../../../Frontend/source-assets/homepage/models/raccoons/raccoons-activity-preview.png)
 
 The desktop, mobile, and theme images are concept illustrations, not browser
 captures. Their sample project copy and preview artwork are placeholders; live
 project text and revision previews must come from real data and must not be
 baked into model textures. The mobile concept has its own camera composition.
-The Raccoon preview is rendered in Chrome from the two actual source GLBs. It
-shows the Note Courier's `offer-note` activity and the Washer Guide's `greet`
-activity. Neither GLB is integrated into the current laundromat runtime.
+The Raccoon shape sheet is a visual candidate based on the user's chosen
+Raccoon references. It keeps the preferred shared head design and separates
+the characters with compact body poses and moderate tail silhouettes. It is a
+design reference, not a model render or an approved final asset.
+
+The separate Raccoon preview is rendered in Chrome from the two source GLB
+prototypes. It shows the Note Courier's `offer-note` activity and the Washer
+Guide's `greet` activity, but their cuboid body shapes do not match the chosen
+Raccoon references. Treat that preview as evidence of the current mismatch;
+neither GLB is integrated into the laundromat runtime or approved as final art.
 
 ## Design specifications
 
@@ -51,14 +59,14 @@ homepage/runtime audit; Stage 2 does not claim that the archived page was run.
 
 ## Acceptance gate snapshot
 
-| Gate                    | Status                  | Evidence / open item                                                                                                                                                                                                           |
-| ----------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| A — Spatial composition | **PASS (composition)**  | The selected concept has an octagonal cutaway, adjacent board and washer, clear fireplace, and room for both Raccoons.                                                                                                         |
-| B — Interaction design  | **PASS (design)**       | Board, washer actions, note creation, camera input, character states, and accessibility/fallback contracts are diagrammed.                                                                                                     |
-| C — Visual concepts     | **PARTIAL**             | Desktop and portrait mockups plus four-theme comparison exist. Only the selected composition is retained; new 2–3 alternatives were not recreated after the user locked the room and requested cleanup of unselected concepts. |
-| D — Asset readiness     | **PARTIAL**             | Relative sizes and anchors are specified. Exact 3D wall/fireplace alignment is deferred to the user's Stage 3 scene description, and the two current Raccoon head/body silhouettes remain too similar for approval.            |
-| E — Consistency         | **PASS (design audit)** | Stage 1 workflow ownership, DOM data ownership, theme set, reduced-motion, fallback, and cleanup boundaries are carried forward without app implementation changes.                                                            |
-| F — User art approval   | **PENDING**             | The new desktop/mobile/theme presentation and Raccoon preview still need the user's visual review.                                                                                                                             |
+| Gate                    | Status                  | Evidence / open item                                                                                                                                                                                                                               |
+| ----------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A — Spatial composition | **PASS (composition)**  | The selected concept has an octagonal cutaway, adjacent board and washer, clear fireplace, and room for both Raccoons.                                                                                                                             |
+| B — Interaction design  | **PASS (design)**       | Board, washer actions, note creation, camera input, character states, and accessibility/fallback contracts are diagrammed.                                                                                                                         |
+| C — Visual concepts     | **PARTIAL**             | Desktop and portrait mockups plus four-theme comparison exist. Only the selected composition is retained; new 2–3 alternatives were not recreated after the user locked the room and requested cleanup of unselected concepts.                     |
+| D — Asset readiness     | **PARTIAL**             | Relative sizes and anchors are specified. The Raccoon shape review sheet gives Stage 3 a clearer target, but the current source GLBs still do not match it. Exact 3D wall/fireplace alignment is deferred to the user's Stage 3 scene description. |
+| E — Consistency         | **PASS (design audit)** | Stage 1 workflow ownership, DOM data ownership, theme set, reduced-motion, fallback, and cleanup boundaries are carried forward without app implementation changes.                                                                                |
+| F — User art approval   | **PENDING**             | The new desktop/mobile/theme presentation and Raccoon preview still need the user's visual review.                                                                                                                                                 |
 
 No production implementation or GLB edit was made for this review. Do not
 start Stage 3 until the user approves the visual direction and provides the
