@@ -600,6 +600,19 @@
               >
               <small>{{ i18n.t('blockBrightnessHint') }}</small>
             </label>
+            <label class="preference-toggle scene-animations-setting">
+              <span class="preference-toggle-copy">
+                <strong>{{ i18n.t('miniDioramaSceneAnimations') }}</strong>
+                <small>{{ i18n.t('miniDioramaSceneAnimationsHint') }}</small>
+              </span>
+              <input
+                type="checkbox"
+                data-scene-animations-setting
+                [checked]="draft().accessibility.sceneAnimationsEnabled"
+                (change)="setSceneAnimationsEnabled($any($event.target).checked)"
+                [attr.aria-label]="i18n.t('miniDioramaSceneAnimations')"
+              />
+            </label>
             <button type="button" class="section-reset" (click)="restoreAccessibilityDefaults()">
               {{ i18n.t('restoreDefaults') }}
             </button>

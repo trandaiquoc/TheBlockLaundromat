@@ -2,21 +2,26 @@ import * as THREE from 'three';
 import type { MiniDioramaFocus, MiniDioramaTarget } from './mini-diorama-contracts';
 import { addFocusMarker } from './mini-diorama-scene-geometry';
 import type { MiniDioramaSceneAsset } from './mini-diorama-scene-loader';
+import type { MiniDioramaSceneProfile } from './mini-diorama-scene-profile';
 import { applyMiniDioramaTheme } from './mini-diorama-scene-theme';
 import { miniDioramaSceneContract, miniDioramaSceneNodeName } from './mini-diorama-scene-contract';
 
 export interface MiniDioramaSceneAssets {
   readonly scene: THREE.Scene;
   readonly model: THREE.Group;
+  readonly roomSpinPivot?: THREE.Group;
+  readonly outdoorGround?: OutdoorGroundMaterials;
   readonly bounds: THREE.Box3;
   readonly focusBounds: Readonly<Record<MiniDioramaFocus, THREE.Box3>>;
   readonly cameraFocusTargets: Readonly<Partial<Record<MiniDioramaFocus, THREE.Vector3>>>;
+  readonly cameraFocusYaws: Readonly<Partial<Record<MiniDioramaFocus, number>>>;
   readonly materialVariants: MiniDioramaSceneAsset['materialVariants'];
   readonly themeTargets: {
     readonly hemisphere: THREE.HemisphereLight;
     readonly keyLight: THREE.DirectionalLight;
     readonly fillLight: THREE.DirectionalLight;
-    readonly lanternLight: THREE.PointLight;
+    readonly lanternLights: readonly THREE.PointLight[];
+    readonly outdoorGround?: OutdoorGroundMaterials;
   };
   readonly interactionRoots: readonly {
     readonly object: THREE.Object3D;
@@ -30,9 +35,25 @@ export function buildMiniDioramaScene(asset: MiniDioramaSceneAsset): MiniDiorama
   const contract = miniDioramaSceneContract(asset.kind);
   const scene = new THREE.Scene();
   scene.name = `${asset.kind}-scene`;
-  scene.background = new THREE.Color(0xd7c4a6);
+  scene.background = null;
   scene.add(asset.root);
+  for (const { nodeName, offset } of contract.profile?.placements ?? []) {
+    requireSceneObject(asset.root, nodeName).position.add(new THREE.Vector3(...offset));
+  }
   scene.updateMatrixWorld(true);
+
+  const bounds = new THREE.Box3().setFromObject(asset.root);
+  if (bounds.isEmpty()) throw new Error('The scene GLB has empty scene bounds.');
+  const roomSpinPivot =
+    asset.kind === 'stage-3-production'
+      ? createRoomSpinPivot(scene, asset.root, bounds)
+      : undefined;
+  if (roomSpinPivot && !asset.exteriorGroundTexture) {
+    throw new Error('The Stage 3 preview is missing its exterior paving texture.');
+  }
+  const outdoorGround = roomSpinPivot
+    ? addOutdoorGround(scene, bounds, asset.exteriorGroundTexture!, contract.profile?.ground)
+    : undefined;
 
   const targets = {
     washer: requireSceneObject(asset.root, contract.interactionNodes.washer),
@@ -40,9 +61,6 @@ export function buildMiniDioramaScene(asset: MiniDioramaSceneAsset): MiniDiorama
     raccoon: requireSceneObject(asset.root, contract.raccoonRoots[0]),
   } satisfies Record<MiniDioramaTarget, THREE.Object3D>;
   const raccoonRoots = contract.raccoonRoots.map((name) => requireSceneObject(asset.root, name));
-  const bounds = new THREE.Box3().setFromObject(asset.root);
-  if (bounds.isEmpty()) throw new Error('The scene GLB has empty scene bounds.');
-
   const focusBounds = {
     overview: bounds.clone(),
     washer: boundsFor(targets.washer),
@@ -52,6 +70,10 @@ export function buildMiniDioramaScene(asset: MiniDioramaSceneAsset): MiniDiorama
     raccoon: boundsForObjects(raccoonRoots),
   } satisfies Record<MiniDioramaFocus, THREE.Box3>;
   const focusMarkers = createFocusMarkers(scene, bounds, focusBounds);
+  if (roomSpinPivot) {
+    scene.updateMatrixWorld(true);
+    for (const marker of Object.values(focusMarkers)) roomSpinPivot.attach(marker);
+  }
   const cameraFocusTargets: Partial<Record<MiniDioramaFocus, THREE.Vector3>> = {};
   for (const [focus, name] of Object.entries(contract.cameraFocusAnchors)) {
     if (!name) continue;
@@ -59,19 +81,43 @@ export function buildMiniDioramaScene(asset: MiniDioramaSceneAsset): MiniDiorama
       requireSceneObject(asset.root, name),
     );
   }
-  const lanternNode = requireSceneObject(asset.root, contract.lanternLightNode);
-  const lanternBounds = new THREE.Box3().setFromObject(lanternNode);
-  const lanternPosition = lanternBounds.isEmpty()
-    ? worldPosition(lanternNode)
-    : lanternBounds.getCenter(new THREE.Vector3());
-  const themeTargets = createThemeLights(scene, bounds, lanternPosition);
+  const overviewTarget = cameraFocusTargets.overview;
+  if (overviewTarget) {
+    const center = bounds.getCenter(new THREE.Vector3());
+    overviewTarget.x = center.x;
+    overviewTarget.z = center.z;
+  }
+  if (asset.kind === 'stage-3-production') {
+    cameraFocusTargets.washer = focusBounds.washer.getCenter(new THREE.Vector3());
+  }
+  cameraFocusTargets.raccoon = focusBounds.raccoon.getCenter(new THREE.Vector3());
+  const cameraFocusYaws: Partial<Record<MiniDioramaFocus, number>> = {};
+  if (asset.kind === 'stage-3-production') {
+    for (const [view, target] of [
+      ['washer', targets.washer],
+      ['project-board', targets['project-board']],
+    ] as const) {
+      const forward = new THREE.Vector3(0, 0, 1).applyQuaternion(
+        target.getWorldQuaternion(new THREE.Quaternion()),
+      );
+      cameraFocusYaws[view] = Math.atan2(forward.x, forward.z);
+    }
+  }
+  const lanterns = contract.lanternLightNodes.map((name) => ({
+    nodeName: name,
+    anchor: requireSceneObject(asset.root, name),
+  }));
+  const themeTargets = createThemeLights(scene, bounds, lanterns, outdoorGround);
 
   const assets: MiniDioramaSceneAssets = {
     scene,
     model: asset.root,
+    roomSpinPivot,
+    outdoorGround,
     bounds,
     focusBounds,
     cameraFocusTargets,
+    cameraFocusYaws,
     materialVariants: asset.materialVariants,
     themeTargets,
     interactionRoots: [
@@ -125,7 +171,7 @@ function boundsFromAnchors(root: THREE.Object3D, names: readonly string[]): THRE
     names.map((name) => worldPosition(requireSceneObject(root, name))),
   );
   if (bounds.isEmpty()) throw new Error('The project board anchors have empty bounds.');
-  return bounds.expandByScalar(0.04);
+  return bounds.expandByScalar(0.23);
 }
 
 function worldPosition(object: THREE.Object3D): THREE.Vector3 {
@@ -176,7 +222,8 @@ function markerRadius(bounds: THREE.Box3): number {
 function createThemeLights(
   scene: THREE.Scene,
   bounds: THREE.Box3,
-  lanternPosition: THREE.Vector3,
+  lanterns: readonly { readonly nodeName: string; readonly anchor: THREE.Object3D }[],
+  outdoorGround: OutdoorGroundMaterials | undefined,
 ): MiniDioramaSceneAssets['themeTargets'] {
   const size = bounds.getSize(new THREE.Vector3());
   const extent = Math.max(size.x, size.y, size.z, 1);
@@ -187,7 +234,7 @@ function createThemeLights(
   const keyLight = new THREE.DirectionalLight(0xffdda7, 2.1);
   keyLight.position.set(bounds.min.x - extent * 0.8, bounds.max.y + extent, bounds.max.z + extent);
   keyLight.castShadow = true;
-  keyLight.shadow.mapSize.set(512, 512);
+  keyLight.shadow.mapSize.set(1024, 1024);
   keyLight.shadow.camera.left = -extent;
   keyLight.shadow.camera.right = extent;
   keyLight.shadow.camera.top = extent;
@@ -203,9 +250,124 @@ function createThemeLights(
   fillLight.position.set(bounds.max.x + extent, bounds.max.y * 0.6, bounds.min.z - extent);
   scene.add(fillLight);
 
-  const lanternLight = new THREE.PointLight(0xffc486, 3.4, extent * 2, 2);
-  lanternLight.position.copy(lanternPosition);
-  scene.add(lanternLight);
+  const lanternLights = lanterns.map(({ nodeName, anchor }) => {
+    const lanternLight = new THREE.PointLight(0xffc486, 3.4, extent * 2, 2);
+    lanternLight.name = `${nodeName}.PreviewLight`;
+    lanternLight.position.set(0, 0, 0);
+    anchor.add(lanternLight);
+    return lanternLight;
+  });
 
-  return { hemisphere, keyLight, fillLight, lanternLight };
+  return {
+    hemisphere,
+    keyLight,
+    fillLight,
+    lanternLights,
+    outdoorGround,
+  };
+}
+
+interface OutdoorGroundMaterials {
+  readonly surface: THREE.ShaderMaterial;
+}
+
+function createRoomSpinPivot(
+  scene: THREE.Scene,
+  model: THREE.Group,
+  bounds: THREE.Box3,
+): THREE.Group {
+  const center = bounds.getCenter(new THREE.Vector3());
+  const pivot = new THREE.Group();
+  pivot.name = 'Stage3RoomSpinPivot';
+  pivot.position.set(center.x, 0, center.z);
+  scene.add(pivot);
+  pivot.attach(model);
+  scene.updateMatrixWorld(true);
+  return pivot;
+}
+
+function addOutdoorGround(
+  scene: THREE.Scene,
+  bounds: THREE.Box3,
+  texture: THREE.Texture,
+  profile: MiniDioramaSceneProfile['ground'] | undefined,
+): OutdoorGroundMaterials {
+  if (!profile) throw new Error('The production scene is missing its ground profile.');
+  const center = bounds.getCenter(new THREE.Vector3());
+  const size = bounds.getSize(new THREE.Vector3());
+  const extent = Math.max(size.x, size.z, 1);
+  const planeSize = extent * profile.planeExtentScale;
+  const surfaceMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    toneMapped: false,
+    uniforms: {
+      uCenter: { value: new THREE.Vector2(center.x, center.z) },
+      uInnerBounds: {
+        value: new THREE.Vector2(
+          extent * profile.innerBoundsScale,
+          extent * profile.innerBoundsScale,
+        ),
+      },
+      uFadeDistance: { value: extent * profile.fadeDistanceScale },
+      uGroundTexture: { value: texture },
+      uTextureRepeat: { value: profile.textureRepeat },
+      uTint: { value: new THREE.Color(profile.tint) },
+      uOpacity: { value: profile.opacity },
+      uContactStrength: { value: profile.contactStrength },
+    },
+    vertexShader: `
+      varying vec2 vGroundPosition;
+      varying vec2 vUv;
+      void main() {
+        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+        vGroundPosition = worldPosition.xz;
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec2 uCenter;
+      uniform vec2 uInnerBounds;
+      uniform float uFadeDistance;
+      uniform sampler2D uGroundTexture;
+      uniform float uTextureRepeat;
+      uniform vec3 uTint;
+      uniform float uOpacity;
+      uniform float uContactStrength;
+      varying vec2 vGroundPosition;
+      varying vec2 vUv;
+      void main() {
+        vec2 outside = max(abs(vGroundPosition - uCenter) - uInnerBounds, vec2(0.0));
+        float distanceFromRoom = length(outside);
+        float fade = 1.0 - smoothstep(0.0, uFadeDistance, distanceFromRoom);
+        float footprintDistance = length((vGroundPosition - uCenter) / uInnerBounds);
+        float contactShadow = 1.0 - smoothstep(0.82, 1.55, footprintDistance);
+        float contactShade = 1.0 - contactShadow * uContactStrength;
+        vec3 paving = texture2D(uGroundTexture, vUv * uTextureRepeat).rgb * uTint;
+        float alpha = fade * uOpacity;
+        if (alpha < 0.002) discard;
+        gl_FragColor = vec4(paving * contactShade, alpha);
+        #include <colorspace_fragment>
+      }
+    `,
+  });
+  const surface = new THREE.Mesh(new THREE.PlaneGeometry(planeSize, planeSize), surfaceMaterial);
+  surface.name = 'Preview.OutdoorGround';
+  surface.rotation.x = -Math.PI / 2;
+  surface.position.set(center.x, bounds.min.y + profile.surfaceHeightOffset, center.z);
+  surface.renderOrder = 1;
+  scene.add(surface);
+
+  const roomShadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(planeSize, planeSize),
+    new THREE.ShadowMaterial({ color: profile.shadowColor, opacity: profile.shadowOpacity }),
+  );
+  roomShadow.name = 'Preview.RoomContactShadow';
+  roomShadow.rotation.x = -Math.PI / 2;
+  roomShadow.position.set(center.x, surface.position.y + profile.shadowHeightOffset, center.z);
+  roomShadow.receiveShadow = true;
+  roomShadow.renderOrder = 2;
+  scene.add(roomShadow);
+  return { surface: surfaceMaterial };
 }

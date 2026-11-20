@@ -68,13 +68,20 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
     const consoleMessages = [];
     pageSocket.addEventListener('message', (event) => {
       const message = JSON.parse(event.data);
-      if (message.method !== 'Runtime.consoleAPICalled') return;
-      consoleMessages.push({
-        type: message.params.type,
-        text: message.params.args
-          .map((argument) => argument.value ?? argument.description ?? '')
-          .join(' '),
-      });
+      if (message.method === 'Runtime.consoleAPICalled') {
+        consoleMessages.push({
+          type: message.params.type,
+          text: message.params.args
+            .map((argument) => argument.value ?? argument.description ?? '')
+            .join(' '),
+        });
+      } else if (message.method === 'Runtime.exceptionThrown') {
+        const exception = message.params.exceptionDetails.exception;
+        consoleMessages.push({
+          type: 'exception',
+          text: exception?.description ?? message.params.exceptionDetails.text,
+        });
+      }
     });
     await send('Page.enable');
     await send('Runtime.enable');
@@ -87,7 +94,9 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
           awaitPromise: true,
         });
         if (response.exceptionDetails) {
-          throw new Error(response.exceptionDetails.text ?? 'Browser evaluation failed.');
+          const detail =
+            response.exceptionDetails.exception?.description ?? response.exceptionDetails.text;
+          throw new Error(detail ?? 'Browser evaluation failed.');
         }
         return response.result.value;
       },
@@ -109,11 +118,14 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
           ],
         }),
       pressKey: async (key, code, windowsVirtualKeyCode) => {
+        const character = key === 'Enter' ? '\r' : key === ' ' ? ' ' : undefined;
+        const characterData = character ? { text: character, unmodifiedText: character } : {};
         await send('Input.dispatchKeyEvent', {
           type: 'keyDown',
           key,
           code,
           windowsVirtualKeyCode,
+          ...characterData,
         });
         await send('Input.dispatchKeyEvent', {
           type: 'keyUp',
@@ -122,11 +134,14 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
           windowsVirtualKeyCode,
         });
       },
-      captureScreenshot: async (path) => {
+      dispatchMouseEvent: (type, x, y, button = 'none', buttons = 0) =>
+        send('Input.dispatchMouseEvent', { type, x, y, button, buttons }),
+      captureScreenshot: async (path, clip) => {
         const response = await send('Page.captureScreenshot', {
           format: 'png',
           fromSurface: true,
           captureBeyondViewport: false,
+          ...(clip ? { clip } : {}),
         });
         await writeFile(path, Buffer.from(response.data, 'base64'));
       },

@@ -8,7 +8,7 @@
 
 **Current Stage 3 integration:** `/mini-diorama-preview` loads the supplied `Room/Octagonal-Laundromat.glb`. Its two Raccoons are already in that assembly. `/` and Project Screen workflows remain unchanged. The integration preview keeps its prior assembled GLB through the shared runtime's explicit scene contract. See [Stage 3 asset handoff](stage-3/README.md) for storage and provenance.
 
-**Stage 3 visual approval (2026-11-20):** The user approved the browser captures after the Stage 3 build, test, asset, and route checks passed. [Stage 4 preparation](stage-4/README.md) records candidate interaction scope from the existing design documents; Stage 4 implementation has not started.
+**Stage 3 visual approval (2026-11-20):** The user approved the browser captures after the Stage 3 build, test, asset, and route checks passed. Goal 04 integrates a full-bleed spatial preview on the existing `/mini-diorama-preview` route. A follow-up iteration is updating the exterior ground, clock interaction, camera feel, and component alignment; its visual review is pending. `/` and the Project Screen workflows remain unchanged. See [Stage 4 implementation and review](stage-4/README.md) for the current interaction contract and pending visual gate.
 
 This report records inspected evidence, inferences, and prototype acceptance gates. The supplied `ASSETS.md` and catalogs describe the model payload and its node contracts; they do not override the user's integration request.
 

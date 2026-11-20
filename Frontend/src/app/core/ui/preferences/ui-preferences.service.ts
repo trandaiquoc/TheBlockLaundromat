@@ -54,6 +54,7 @@ export interface UiPreferences {
   };
   readonly accessibility: {
     readonly blockBrightness: number;
+    readonly sceneAnimationsEnabled: boolean;
   };
   readonly controls: {
     readonly orbitSensitivity: number;
@@ -103,7 +104,7 @@ const defaults: UiPreferences = {
     editorBackground: 'dark',
     reality: DEFAULT_REALITY_BACKGROUND,
   },
-  accessibility: { blockBrightness: 3 },
+  accessibility: { blockBrightness: 3, sceneAnimationsEnabled: true },
   controls: {
     orbitSensitivity: 1,
     panSensitivity: 1,
@@ -372,6 +373,12 @@ function normalize(value: unknown): UiPreferences {
         (candidate.accessibility as Partial<UiPreferences['accessibility']> | undefined)
           ?.blockBrightness,
       ),
+      sceneAnimationsEnabled:
+        typeof (candidate.accessibility as Partial<UiPreferences['accessibility']> | undefined)
+          ?.sceneAnimationsEnabled === 'boolean'
+          ? (candidate.accessibility as Partial<UiPreferences['accessibility']>)
+              .sceneAnimationsEnabled!
+          : defaults.accessibility.sceneAnimationsEnabled,
     },
     controls: {
       orbitSensitivity: numberInRange(

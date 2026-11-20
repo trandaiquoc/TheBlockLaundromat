@@ -142,8 +142,15 @@ export class SettingsDialogSession {
     const numeric = Number(value);
     if (!Number.isFinite(numeric)) return;
     const blockBrightness = Math.min(10, Math.max(0, Math.round(numeric)));
-    this.updateDraft({ accessibility: { blockBrightness } });
+    this.updateDraft({ accessibility: { ...this.draft().accessibility, blockBrightness } });
     this.preferences.previewAccessibility({ blockBrightness });
+  }
+
+  setSceneAnimationsEnabled(enabled: boolean): void {
+    this.updateDraft({
+      accessibility: { ...this.draft().accessibility, sceneAnimationsEnabled: enabled },
+    });
+    this.preferences.previewAccessibility({ sceneAnimationsEnabled: enabled });
   }
 
   defaultBrightnessStop(): string {

@@ -26,6 +26,17 @@ export function disposeMiniDioramaResources(
     for (const value of Object.values(material)) {
       if (isTexture(value)) textures.add(value);
     }
+    if ('uniforms' in material && material.uniforms && typeof material.uniforms === 'object') {
+      for (const uniform of Object.values(material.uniforms)) {
+        const value = uniform?.value;
+        if (isTexture(value)) textures.add(value);
+        else if (Array.isArray(value)) {
+          for (const texture of value) {
+            if (isTexture(texture)) textures.add(texture);
+          }
+        }
+      }
+    }
   }
 
   for (const texture of textures) {

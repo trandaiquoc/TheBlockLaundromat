@@ -1,10 +1,14 @@
-<div class="account-anchor" (focusout)="closeWhenFocusLeaves($event)">
+<div
+  class="account-anchor"
+  [class.account-anchor--compact]="compact()"
+  (focusout)="closeWhenFocusLeaves($event)"
+>
   <button
     #accountTrigger
     class="account-card"
     type="button"
     [attr.aria-label]="i18n.t('accountMenu') + ': ' + displayName() + ', ' + accountLine()"
-    [attr.aria-haspopup]="isDemoAccount() ? 'menu' : 'dialog'"
+    [attr.aria-haspopup]="compact() || !isDemoAccount() ? 'dialog' : 'menu'"
     [attr.aria-expanded]="popoverOpen()"
     (click)="togglePopover()"
   >
@@ -32,7 +36,7 @@
     #accountPopover
     class="account-popover"
     [class.is-open]="popoverOpen()"
-    [attr.role]="isDemoAccount() ? 'menu' : 'dialog'"
+    [attr.role]="compact() || !isDemoAccount() ? 'dialog' : 'menu'"
     [attr.aria-label]="i18n.t('accountMenu')"
     [attr.aria-hidden]="popoverOpen() ? null : 'true'"
     [attr.inert]="popoverOpen() ? null : ''"
@@ -56,7 +60,46 @@
 
     <div class="account-separator" role="separator"></div>
 
-    @if (isDemoAccount()) {
+    @if (compact()) {
+      <div class="account-language-section">
+        <span class="account-popover-section-title">{{ i18n.t('language') }}</span>
+        <div class="account-language-controls" role="group" [attr.aria-label]="i18n.t('language')">
+          <svg lucideGlobe aria-hidden="true"></svg>
+          <button
+            type="button"
+            data-locale="vi"
+            [class.is-selected]="i18n.locale() === 'vi'"
+            [attr.aria-pressed]="i18n.locale() === 'vi'"
+            (click)="setLocale('vi')"
+          >
+            {{ i18n.t('languageVietnamese') }}
+          </button>
+          <button
+            type="button"
+            data-locale="en"
+            [class.is-selected]="i18n.locale() === 'en'"
+            [attr.aria-pressed]="i18n.locale() === 'en'"
+            (click)="setLocale('en')"
+          >
+            {{ i18n.t('languageEnglish') }}
+          </button>
+        </div>
+      </div>
+      <button
+        class="account-menu-action account-settings-action"
+        type="button"
+        (click)="requestSettings()"
+      >
+        <svg lucideSettings aria-hidden="true"></svg>
+        <span>{{ i18n.t('settingsMenu') }}</span>
+      </button>
+      @if (isDemoAccount()) {
+        <button #logoutAction class="account-menu-action" type="button" (click)="logOut()">
+          <svg lucideLogOut aria-hidden="true"></svg>
+          <span>{{ i18n.t('logOut') }}</span>
+        </button>
+      }
+    } @else if (isDemoAccount()) {
       <button
         #logoutAction
         class="account-menu-action"

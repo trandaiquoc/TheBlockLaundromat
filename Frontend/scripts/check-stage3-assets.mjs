@@ -106,6 +106,22 @@ const requiredNodes = [
   'Anchor.Camera.Washer',
   'Anchor.Camera.Recenter',
   'Anchor.NicheLantern.Light',
+  'Anchor.ShelfLantern.Light',
+  'LeftCabinet',
+  'WestIvy',
+  'ShelfFern',
+  'ShelfLantern',
+  'CabinetTowel1',
+  'CabinetTowel2',
+  'CabinetTowel3',
+  'SeafoamPitcher',
+  'CabinetBlueTin',
+  'ApothecaryBottle',
+  'CeramicPump',
+  'LaundryLedger',
+  'WrappedSoap',
+  'CreamWashBox',
+  'Marigold',
 ];
 if (
   requiredNodes.some((name) => nodeNames.filter((candidate) => candidate === name).length !== 1)
@@ -123,10 +139,43 @@ if ((document.animations ?? []).length !== 0) {
 }
 
 const distRuntime = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage/runtime');
+const replacementWasherPath = join(
+  frontend,
+  'source-assets/homepage/models/Props/Washer-Alternate/Washer.glb',
+);
+const replacementWasher = readFileSync(replacementWasherPath);
+const replacementWasherDigest = createHash('sha256').update(replacementWasher).digest('hex');
+if (
+  replacementWasherDigest !== '717f3235659b94f65e5e0eea49ea425157df5f99c4c2cd42d0c1abd7b8b144b0'
+) {
+  throw new Error('Replacement washer GLB differs from the inspected Washer.zip asset.');
+}
+validateGlb(replacementWasher, 'Washer.zip:Washer.glb');
+for (const sourceName of ['Washer.blend', 'Washer-Front.png']) {
+  if (
+    !existsSync(join(frontend, 'source-assets/homepage/models/Props/Washer-Alternate', sourceName))
+  ) {
+    throw new Error(`Washer.zip source asset is missing: ${sourceName}`);
+  }
+}
+const groundTextureSource = join(
+  frontend,
+  'source-assets/homepage/textures/mini-diorama/exterior-forest-floor.png',
+);
+const groundTextureBytes = readFileSync(groundTextureSource);
+if (
+  groundTextureBytes.length < 24 ||
+  groundTextureBytes.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a'
+) {
+  throw new Error('The generated exterior forest-floor asset is not a PNG.');
+}
+const groundTextureDigest = createHash('sha256').update(groundTextureBytes).digest('hex');
+const groundTextureRuntimePath = 'textures/mini-diorama/exterior-forest-floor.png';
 let runtimeSummary = 'Production output not checked because dist is absent.';
 if (existsSync(distRuntime)) {
   const runtimeFiles = filesUnder(distRuntime);
   const productionRuntimePath = 'models/Room/Octagonal-Laundromat.glb';
+  const washerRuntimePath = 'models/Props/Washer-Alternate/Washer.glb';
   const productionRuntime = join(distRuntime, ...productionRuntimePath.split('/'));
   if (!existsSync(productionRuntime))
     throw new Error('Production room GLB is missing from Angular output.');
@@ -136,12 +185,30 @@ if (existsSync(distRuntime)) {
   ) {
     throw new Error('Production room GLB differs from the inventoried export.');
   }
+  const washerRuntime = join(distRuntime, ...washerRuntimePath.split('/'));
+  if (
+    !existsSync(washerRuntime) ||
+    createHash('sha256').update(readFileSync(washerRuntime)).digest('hex') !==
+      replacementWasherDigest
+  ) {
+    throw new Error('Replacement washer GLB is missing or differs from its inspected source.');
+  }
+  const groundTextureRuntime = join(distRuntime, ...groundTextureRuntimePath.split('/'));
+  if (
+    !existsSync(groundTextureRuntime) ||
+    createHash('sha256').update(readFileSync(groundTextureRuntime)).digest('hex') !==
+      groundTextureDigest
+  ) {
+    throw new Error(
+      'Generated exterior forest-floor texture is missing or differs from its source.',
+    );
+  }
   const forbidden = runtimeFiles.filter((path) => /\.(blend|md|csv|json)$/i.test(path));
   const expectedJson = join(distRuntime, 'scene-manifest.json');
   if (forbidden.some((path) => path !== expectedJson)) {
     throw new Error('Editable models or documentation leaked into the production asset bundle.');
   }
-  runtimeSummary = `Production GLB verified in the Angular runtime output (${statSync(productionRuntime).size} bytes; no Blender sources or documentation).`;
+  runtimeSummary = `Production room and replacement washer GLBs plus forest-floor texture verified in Angular output (${statSync(productionRuntime).size + statSync(washerRuntime).size} GLB bytes; no Blender sources or documentation).`;
 }
 
 console.log(

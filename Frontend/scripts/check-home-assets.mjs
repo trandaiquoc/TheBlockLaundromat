@@ -218,10 +218,14 @@ const expectedSourcePaths = new Set([
   'scene-manifest.json',
   'models/laundromat/Laundromat.glb',
   'models/Room/Octagonal-Laundromat.glb',
+  'models/Props/Washer-Alternate/Washer.glb',
+  'models/Props/Washer-Alternate/Washer.blend',
+  'models/Props/Washer-Alternate/Washer-Front.png',
   'models/raccoons/README.md',
   'models/raccoons/raccoon-note-courier.glb',
   'models/raccoons/raccoon-washer-guide.glb',
   'models/raccoons/raccoons-activity-preview.png',
+  'textures/mini-diorama/exterior-forest-floor.png',
 ]);
 const semanticIds = new Set(
   Object.values(manifest.themes).flatMap((theme) => theme.assets.map((asset) => asset.id)),
@@ -235,7 +239,7 @@ if (
   maskFiles.length !== 282 ||
   referenceFiles.length !== 4 ||
   referencedMasks.size !== 278 ||
-  sourceFiles.length !== 1267 ||
+  sourceFiles.length !== 1271 ||
   actualSourcePaths.size !== expectedSourcePaths.size ||
   [...expectedSourcePaths].some((path) => !actualSourcePaths.has(path))
 ) {
@@ -259,6 +263,14 @@ if (existsSync(distRuntime)) {
   }
   expectedRuntime.set('models/laundromat/Laundromat.glb', laundromatScenePath);
   expectedRuntime.set('models/Room/Octagonal-Laundromat.glb', productionRoomPath);
+  expectedRuntime.set(
+    'models/Props/Washer-Alternate/Washer.glb',
+    sourcePath('models/Props/Washer-Alternate/Washer.glb'),
+  );
+  expectedRuntime.set(
+    'textures/mini-diorama/exterior-forest-floor.png',
+    sourcePath('textures/mini-diorama/exterior-forest-floor.png'),
+  );
   const runtimeFiles = filesUnder(distRuntime);
   const actualRuntimePaths = new Set(
     runtimeFiles.map((path) => relative(distRuntime, path).split(sep).join('/')),

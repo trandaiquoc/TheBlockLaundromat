@@ -204,6 +204,32 @@
   white-space: nowrap;
 }
 
+.mini-diorama-scene-panel--spatial-preview {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: hidden;
+}
+
+.mini-diorama-scene-panel--spatial-preview .mini-diorama__scene {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  touch-action: none;
+}
+
+.mini-diorama-scene-panel--spatial-preview .mini-diorama__scene canvas {
+  cursor: grab;
+  touch-action: none;
+}
+
+.mini-diorama-scene-panel--spatial-preview .mini-diorama__scene canvas:active {
+  cursor: grabbing;
+}
+
 @media (max-width: 760px) {
   .mini-diorama-scene-panel--workspace {
     min-height: 22rem;

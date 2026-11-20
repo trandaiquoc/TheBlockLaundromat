@@ -1,0 +1,224 @@
+:host {
+  position: absolute;
+  z-index: 5;
+  inset: max(0.65rem, env(safe-area-inset-top)) clamp(1rem, 3vw, 3rem) auto max(0.65rem, env(safe-area-inset-left));
+  display: block;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.mini-diorama-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.mini-diorama-header__brand,
+.mini-diorama-header__tools {
+  pointer-events: auto;
+}
+
+.mini-diorama-header__brand {
+  min-width: 0;
+  max-width: 20rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0;
+  text-shadow: 0 1px 12px rgb(11 20 25 / 16%);
+}
+
+.mini-diorama-header__back {
+  display: block;
+  width: fit-content;
+  min-height: 0;
+  padding: 0;
+  text-decoration: none;
+  transition: filter 160ms ease;
+}
+
+.mini-diorama-header__back:hover {
+  filter: brightness(1.08);
+}
+
+.mini-diorama-header__back:focus-visible,
+.mini-diorama-header__quick-controls button:focus-visible {
+  outline: 2px solid var(--spatial-focus);
+  outline-offset: 3px;
+}
+
+.mini-diorama-header__logo {
+  display: block;
+  width: clamp(12rem, 17vw, 17rem);
+  height: auto;
+  filter: drop-shadow(0 0.15rem 0.35rem rgb(25 29 31 / 16%));
+}
+
+.mini-diorama-header__tools {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.mini-diorama-header__quick-controls {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.28rem 0.4rem;
+  border: 1px solid var(--spatial-border);
+  border-radius: 999px;
+  background: var(--spatial-panel);
+  color: var(--spatial-ink);
+  box-shadow: var(--spatial-shadow);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+}
+
+.mini-diorama-header__locale-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.18rem;
+  color: var(--spatial-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.mini-diorama-header__locale-controls > svg {
+  width: 1rem;
+  height: 1rem;
+  margin-inline: 0.32rem;
+}
+
+.mini-diorama-header__locale-controls > span {
+  opacity: 0.55;
+}
+
+.mini-diorama-header__locale-controls button,
+.mini-diorama-header__settings-button {
+  display: inline-flex;
+  min-height: 2.15rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.58rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--spatial-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 700;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.mini-diorama-header__locale-controls button:hover,
+.mini-diorama-header__settings-button:hover {
+  background: var(--spatial-hover);
+  color: var(--spatial-ink);
+}
+
+.mini-diorama-header__locale-controls button.is-selected {
+  border-color: var(--spatial-selected-border);
+  background: var(--spatial-selected);
+  color: var(--spatial-selected-ink);
+}
+
+.mini-diorama-header__settings-button {
+  padding-inline: 0.72rem;
+  color: var(--spatial-ink);
+}
+
+.mini-diorama-header__settings-button > svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+}
+
+.mini-diorama-header__divider {
+  width: 1px;
+  height: 1.3rem;
+  margin-inline: 0.18rem;
+  background: var(--spatial-border);
+}
+
+@media (max-width: 760px) {
+  :host {
+    inset-inline: max(0.7rem, env(safe-area-inset-left)) max(0.7rem, env(safe-area-inset-right));
+  }
+
+  .mini-diorama-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.48rem;
+  }
+
+  .mini-diorama-header__brand {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.55rem;
+    max-width: none;
+    padding: 0;
+  }
+
+  .mini-diorama-header__back {
+    width: fit-content;
+  }
+
+  .mini-diorama-header__logo {
+    width: clamp(9rem, 32vw, 11rem);
+  }
+
+  .mini-diorama-header__tools {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-self: stretch;
+    justify-content: flex-end;
+    gap: 0.38rem;
+  }
+
+  .mini-diorama-header__quick-controls {
+    margin-inline-start: auto;
+  }
+
+  .mini-diorama-header__settings-button span {
+    display: none;
+  }
+
+  .mini-diorama-header__quick-controls {
+    min-height: 2.45rem;
+  }
+
+  .mini-diorama-header__locale-controls button,
+  .mini-diorama-header__settings-button {
+    min-height: 1.95rem;
+    padding: 0.3rem 0.45rem;
+  }
+}
+
+@media (max-width: 380px) {
+  :host {
+    inset-block-start: max(0.55rem, env(safe-area-inset-top));
+  }
+
+  .mini-diorama-header__back {
+    width: fit-content;
+  }
+
+  .mini-diorama-header__brand {
+    gap: 0.38rem;
+  }
+
+  .mini-diorama-header__logo {
+    width: 8.5rem;
+  }
+}

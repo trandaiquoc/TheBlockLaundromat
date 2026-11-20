@@ -1,4 +1,4 @@
-import { BoxGeometry, DataTexture, Group, Mesh, MeshStandardMaterial } from 'three';
+import { BoxGeometry, DataTexture, Group, Mesh, MeshStandardMaterial, ShaderMaterial } from 'three';
 import type { WebGLRenderer } from 'three';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MiniDioramaMaterialVariants } from './mini-diorama-material-variants';
@@ -53,6 +53,10 @@ describe('MiniDioramaSceneRuntime', () => {
     expect(asset.root.parent?.name).toBe('integration-preview-scene');
     expect(canvas?.getAttribute('data-material-variant')).toBe('Minecraft');
     expect(requestFrame).toHaveBeenCalledOnce();
+
+    runtime.setTheme('dark');
+
+    expect(canvas?.getAttribute('data-material-variant')).toBe('Dark');
 
     runtime.dispose();
     runtime.dispose();
@@ -135,12 +139,18 @@ describe('MiniDioramaSceneRuntime', () => {
     const asset = createAsset('stage-3-production');
     const onSceneLoaded = vi.fn();
     const loadSceneAsset = vi.fn(async () => asset);
+    const frames = new Map<number, FrameRequestCallback>();
+    let nextFrameId = 0;
     const runtime = new MiniDioramaSceneRuntime(
       createCallbacks({ onSceneLoaded }),
       {
         createRenderer: () => renderer,
-        requestFrame: () => 1,
-        cancelFrame: vi.fn(),
+        requestFrame: (callback) => {
+          const id = ++nextFrameId;
+          frames.set(id, callback);
+          return id;
+        },
+        cancelFrame: (id) => frames.delete(id),
         loadSceneAsset,
       },
       'stage-3-production',
@@ -155,9 +165,46 @@ describe('MiniDioramaSceneRuntime', () => {
       expect.any(AbortSignal),
       'stage-3-production',
     );
-    expect(asset.root.parent?.name).toBe('stage-3-production-scene');
+    const roomPivot = asset.root.parent as Group;
+    expect(roomPivot.name).toBe('Stage3RoomSpinPivot');
+    expect(roomPivot.parent?.name).toBe('stage-3-production-scene');
+    const outdoorGround = roomPivot.parent?.getObjectByName('Preview.OutdoorGround') as Mesh;
+    const groundMaterial = outdoorGround.material as ShaderMaterial;
+    const disposeGroundMaterial = vi.spyOn(groundMaterial, 'dispose');
+    const disposeGroundTexture = vi.spyOn(asset.exteriorGroundTexture!, 'dispose');
+    runtime.setTheme('dark');
+    let timestamp = 0;
+    let maximumRoomRotation = 0;
+    for (let frame = 0; frame < 60; frame++) {
+      const next = frames.entries().next().value as [number, FrameRequestCallback] | undefined;
+      if (!next) break;
+      const [id, callback] = next;
+      frames.delete(id);
+      callback(timestamp);
+      maximumRoomRotation = Math.max(maximumRoomRotation, roomPivot.rotation.y);
+      timestamp += 1000 / 60;
+    }
+    expect(maximumRoomRotation).toBeGreaterThan(Math.PI);
+    expect(roomPivot.rotation.y).toBeCloseTo(0, 5);
+
+    runtime.setTheme('raccoon');
+    let minimumRoomRotation = 0;
+    for (let frame = 0; frame < 60; frame++) {
+      const next = frames.entries().next().value as [number, FrameRequestCallback] | undefined;
+      if (!next) break;
+      const [id, callback] = next;
+      frames.delete(id);
+      callback(timestamp);
+      minimumRoomRotation = Math.min(minimumRoomRotation, roomPivot.rotation.y);
+      timestamp += 1000 / 60;
+    }
+    expect(minimumRoomRotation).toBeLessThan(-Math.PI);
+    expect(roomPivot.rotation.y).toBeCloseTo(0, 5);
+
     runtime.greetRaccoon();
     runtime.dispose();
+    expect(disposeGroundMaterial).toHaveBeenCalledOnce();
+    expect(disposeGroundTexture).toHaveBeenCalledOnce();
     host.remove();
   });
 
@@ -172,7 +219,9 @@ describe('MiniDioramaSceneRuntime', () => {
     });
 
     expect(runtime.mount(host)).toBe(false);
-    expect(onWebGLUnavailable).toHaveBeenCalledOnce();
+    expect(onWebGLUnavailable).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'WebGL unavailable' }),
+    );
     expect(host.querySelector('canvas')).toBeNull();
     runtime.dispose();
     host.remove();
@@ -228,6 +277,7 @@ function createRenderer(): WebGLRenderer {
     outputColorSpace: '',
     toneMapping: 0,
     toneMappingExposure: 1,
+    setClearColor: vi.fn(),
     setPixelRatio: vi.fn(),
     setSize: vi.fn(),
     render: vi.fn(),
@@ -269,6 +319,36 @@ function createAsset(
     addNamedGroup(root, 'Courier.Root', geometry, material, [-1.5, 0.5, 0]);
     addNamedGroup(root, 'Guide.Root', geometry, material, [1.5, 0.5, 0]);
     addAnchor(root, 'Anchor.NicheLantern.Light', [2, 2, -2]);
+    const shelfLantern = new Group();
+    shelfLantern.name = miniDioramaSceneNodeName('ShelfLantern');
+    shelfLantern.position.set(-3, 2, 0.5);
+    root.add(shelfLantern);
+    addAnchor(shelfLantern, 'Anchor.ShelfLantern.Light', [0, 0, 0]);
+    for (const nodeName of [
+      'LeftCabinet',
+      'WestIvy',
+      'ShelfFern',
+      'CabinetTowel1',
+      'CabinetTowel2',
+      'CabinetTowel3',
+      'LinenBasket',
+      'BasketBlueRoll',
+      'BasketIvoryRoll',
+      'SageWashBox',
+      'OchreWashBox',
+      'SeafoamPitcher',
+      'CabinetBlueTin',
+      'ApothecaryBottle',
+      'CeramicPump',
+      'LaundryLedger',
+      'WrappedSoap',
+      'CreamWashBox',
+      'Marigold',
+    ]) {
+      const object = new Group();
+      object.name = miniDioramaSceneNodeName(nodeName);
+      root.add(object);
+    }
     addAnchor(root, 'Anchor.Camera.Overview', [0, 1.15, 0]);
     addAnchor(root, 'Anchor.Camera.Portrait', [0, 1.48, -0.24]);
     addAnchor(root, 'Anchor.Camera.Board', [-2.7, 2, -2.57]);
@@ -287,6 +367,10 @@ function createAsset(
   return {
     kind,
     root,
+    exteriorGroundTexture:
+      kind === 'stage-3-production'
+        ? new DataTexture(new Uint8Array([215, 190, 154, 255]), 1, 1)
+        : undefined,
     materialVariants: new MiniDioramaMaterialVariants([], [material, inactiveVariantMaterial]),
   };
 }

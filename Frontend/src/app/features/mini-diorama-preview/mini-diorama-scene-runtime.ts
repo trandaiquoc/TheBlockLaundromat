@@ -19,9 +19,14 @@ import {
   type MiniDioramaSceneAssetLoader,
   type MiniDioramaSceneAsset,
 } from './mini-diorama-scene-loader';
-import { applyMiniDioramaTheme, miniDioramaVariantForTheme } from './mini-diorama-scene-theme';
+import {
+  applyMiniDioramaTheme,
+  createMiniDioramaThemeTransition,
+  miniDioramaVariantForTheme,
+} from './mini-diorama-scene-theme';
 import { disposeMiniDioramaResources } from './mini-diorama-scene-resources';
 import type { MiniDioramaSceneKind } from './mini-diorama-scene-contract';
+import { miniDioramaTimeDirectionBetweenThemes } from './mini-diorama-time-stages';
 import {
   buildMiniDioramaScene,
   updateMiniDioramaFeedback,
@@ -30,28 +35,37 @@ import {
 
 export interface MiniDioramaRuntimeCallbacks {
   readonly onIntent: (intent: MiniDioramaIntent) => void;
-  readonly onWebGLUnavailable: () => void;
+  readonly onWebGLUnavailable: (error?: unknown) => void;
   readonly onSceneLoaded: () => void;
   readonly onSceneLoadFailed: (error: unknown) => void;
 }
 
 export interface MiniDioramaRuntimeAdapters {
-  readonly createRenderer: (canvas: HTMLCanvasElement) => WebGLRenderer;
+  readonly createRenderer: (canvas: HTMLCanvasElement, kind: MiniDioramaSceneKind) => WebGLRenderer;
   readonly requestFrame: (callback: FrameRequestCallback) => number;
   readonly cancelFrame: (handle: number) => void;
   readonly loadSceneAsset: MiniDioramaSceneAssetLoader;
 }
 
 const browserAdapters: MiniDioramaRuntimeAdapters = {
-  createRenderer: (canvas) =>
-    new WebGLRenderer({ canvas, antialias: true, powerPreference: 'low-power' }),
+  createRenderer: (canvas, kind) =>
+    new WebGLRenderer({
+      canvas,
+      alpha: kind === 'stage-3-production',
+      antialias: true,
+      powerPreference: 'low-power',
+    }),
   requestFrame: (callback) => globalThis.requestAnimationFrame(callback),
   cancelFrame: (handle) => globalThis.cancelAnimationFrame(handle),
   loadSceneAsset: loadMiniDioramaSceneAsset,
 };
 
 const maximumPixelRatio = 1.75;
+const stage3MaximumPixelRatio = 1.35;
 const maximumFrameDeltaSeconds = 0.05;
+const themeTransitionDurationSeconds = 0.48;
+const roomSpinDurationSeconds = 0.95;
+const roomSpinRadians = Math.PI * 2;
 
 export class MiniDioramaSceneRuntime {
   private readonly adapters: MiniDioramaRuntimeAdapters;
@@ -75,16 +89,28 @@ export class MiniDioramaSceneRuntime {
   private selectedTarget?: MiniDioramaTarget;
   private currentFocus: MiniDioramaFocus = 'overview';
   private theme: Theme = 'craft';
+  private themeTransition?: (progress: number) => void;
+  private themeTransitionElapsed = 0;
+  private roomSpinElapsed = 0;
+  private roomSpinStartRotation = 0;
+  private roomSpinDirection = 1;
+  private roomSpinActive = false;
+  private systemReducedMotion = false;
+  private sceneAnimationsEnabled = true;
   private reducedMotion = false;
   private disposed = false;
 
   private readonly onResize = (): void => this.resize();
   private readonly onVisibilityChange = (): void => {
     if (this.document?.visibilityState === 'hidden') this.stopAnimation();
-    else this.startAnimation();
+    else {
+      this.render();
+      this.startAnimation();
+    }
   };
   private readonly onMotionChange = (event: MediaQueryListEvent): void => {
-    this.setReducedMotion(event.matches);
+    this.systemReducedMotion = event.matches;
+    this.updateMotionPreference();
   };
   private readonly onContextLost = (event: Event): void => {
     event.preventDefault();
@@ -111,9 +137,9 @@ export class MiniDioramaSceneRuntime {
 
     let renderer: WebGLRenderer;
     try {
-      renderer = this.adapters.createRenderer(canvas);
-    } catch {
-      this.callbacks.onWebGLUnavailable();
+      renderer = this.adapters.createRenderer(canvas, this.sceneKind);
+    } catch (error) {
+      this.callbacks.onWebGLUnavailable(error);
       return false;
     }
 
@@ -124,7 +150,8 @@ export class MiniDioramaSceneRuntime {
     this.window = window;
     this.document = document;
     this.motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-    this.reducedMotion = this.motionQuery?.matches ?? false;
+    this.systemReducedMotion = this.motionQuery?.matches ?? false;
+    this.reducedMotion = this.systemReducedMotion || !this.sceneAnimationsEnabled;
 
     try {
       renderer.shadowMap.enabled = true;
@@ -132,6 +159,7 @@ export class MiniDioramaSceneRuntime {
       renderer.outputColorSpace = SRGBColorSpace;
       renderer.toneMapping = ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1.08;
+      if (this.sceneKind === 'stage-3-production') renderer.setClearColor(0x000000, 0);
       container.appendChild(canvas);
       canvas.addEventListener('webglcontextlost', this.onContextLost);
       this.observeContainer();
@@ -149,19 +177,57 @@ export class MiniDioramaSceneRuntime {
     if (this.disposed) return;
     this.currentFocus = view;
     this.selectedTarget = view === 'overview' ? undefined : view;
-    this.cameraRig?.focus(view);
+    if (view === 'overview') this.cameraRig?.recenter();
+    else this.cameraRig?.focus(view);
     this.updateFeedback();
     this.render();
     this.startAnimation();
   }
 
-  setTheme(theme: Theme): void {
+  orbitCamera(yawDelta: number, pitchDelta: number): void {
     if (this.disposed) return;
-    this.theme = theme;
-    if (!this.assets) return;
-    applyMiniDioramaTheme(this.assets, theme);
-    this.canvas?.setAttribute('data-material-variant', miniDioramaVariantForTheme(theme));
+    this.cameraRig?.orbitBy(yawDelta, pitchDelta);
     this.render();
+    this.startAnimation();
+  }
+
+  panCamera(deltaX: number, deltaY: number, width: number, height: number): void {
+    if (this.disposed) return;
+    this.cameraRig?.panBy(deltaX, deltaY, width, height);
+    this.render();
+    this.startAnimation();
+  }
+
+  zoomCamera(distanceScale: number): void {
+    if (this.disposed) return;
+    this.cameraRig?.zoomBy(distanceScale);
+    this.render();
+    this.startAnimation();
+  }
+
+  setSceneAnimationsEnabled(enabled: boolean): void {
+    if (this.disposed || this.sceneAnimationsEnabled === enabled) return;
+    this.sceneAnimationsEnabled = enabled;
+    this.updateMotionPreference();
+  }
+
+  setTheme(theme: Theme): void {
+    if (this.disposed || this.theme === theme) return;
+    const roomSpinDirection = miniDioramaTimeDirectionBetweenThemes(this.theme, theme);
+    this.theme = theme;
+    if (this.assets) {
+      this.canvas?.setAttribute('data-material-variant', miniDioramaVariantForTheme(theme));
+      if (this.sceneKind === 'stage-3-production') {
+        this.startRoomSpin(roomSpinDirection);
+        this.themeTransition = createMiniDioramaThemeTransition(this.assets, theme);
+        this.themeTransitionElapsed = 0;
+        if (this.reducedMotion) this.finishThemeTransition();
+      } else {
+        applyMiniDioramaTheme(this.assets, theme);
+      }
+    }
+    this.render();
+    this.startAnimation();
   }
 
   greetRaccoon(): void {
@@ -185,6 +251,10 @@ export class MiniDioramaSceneRuntime {
     this.raccoonController = undefined;
     this.interaction?.dispose();
     this.interaction = undefined;
+    this.themeTransition = undefined;
+    this.themeTransitionElapsed = 0;
+    this.roomSpinElapsed = 0;
+    this.roomSpinActive = false;
 
     this.resizeObserver?.disconnect();
     this.resizeObserver = undefined;
@@ -257,11 +327,13 @@ export class MiniDioramaSceneRuntime {
           camera,
           this.assets.focusBounds,
           this.assets.cameraFocusTargets,
+          this.assets.cameraFocusYaws,
         );
         this.cameraRig.setReducedMotion(this.reducedMotion);
         if (this.assets.raccoonControllerRoot) {
           this.raccoonController = new MiniDioramaRaccoonController(
             this.assets.raccoonControllerRoot,
+            this.sceneKind !== 'stage-3-production',
           );
           this.raccoonController.setReducedMotion(this.reducedMotion);
         }
@@ -269,11 +341,22 @@ export class MiniDioramaSceneRuntime {
           this.canvas!,
           camera,
           this.assets.interactionRoots,
-          this.callbacks.onIntent,
-          (target) => this.setHoveredTarget(target),
+          {
+            onIntent: this.callbacks.onIntent,
+            onHover: (target) => this.setHoveredTarget(target),
+            orbitCamera: (yawDelta, pitchDelta) => this.orbitCamera(yawDelta, pitchDelta),
+            panCamera: (deltaX, deltaY, width, height) =>
+              this.panCamera(deltaX, deltaY, width, height),
+            zoomCamera: (distanceScale) => this.zoomCamera(distanceScale),
+          },
+          () =>
+            this.sceneKind === 'stage-3-production' &&
+            this.currentFocus !== 'washer' &&
+            this.currentFocus !== 'project-board',
         );
 
-        this.setTheme(this.theme);
+        applyMiniDioramaTheme(this.assets, this.theme);
+        this.canvas?.setAttribute('data-material-variant', miniDioramaVariantForTheme(this.theme));
         this.resize();
         this.cameraRig.focus(this.currentFocus, true);
         this.updateFeedback();
@@ -299,7 +382,9 @@ export class MiniDioramaSceneRuntime {
     const height = Math.floor(bounds.height || container.clientHeight);
     if (width <= 0 || height <= 0) return;
 
-    const pixelRatio = Math.min(this.window?.devicePixelRatio ?? 1, maximumPixelRatio);
+    const maximumRatio =
+      this.sceneKind === 'stage-3-production' ? stage3MaximumPixelRatio : maximumPixelRatio;
+    const pixelRatio = Math.min(this.window?.devicePixelRatio ?? 1, maximumRatio);
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width, height, false);
     if (this.cameraRig) this.cameraRig.resize(width, height);
@@ -310,14 +395,19 @@ export class MiniDioramaSceneRuntime {
     this.render();
   }
 
-  private setReducedMotion(reducedMotion: boolean): void {
+  private updateMotionPreference(): void {
+    const reducedMotion = this.systemReducedMotion || !this.sceneAnimationsEnabled;
     if (this.reducedMotion === reducedMotion) return;
     this.reducedMotion = reducedMotion;
     this.cameraRig?.setReducedMotion(reducedMotion);
     this.raccoonController?.setReducedMotion(reducedMotion);
+    if (reducedMotion) {
+      this.finishThemeTransition();
+      this.finishRoomSpin();
+      this.stopAnimation();
+    }
     this.render();
-    if (reducedMotion) this.stopAnimation();
-    else this.startAnimation();
+    if (!reducedMotion) this.startAnimation();
   }
 
   private setHoveredTarget(target: MiniDioramaTarget | undefined): void {
@@ -334,8 +424,18 @@ export class MiniDioramaSceneRuntime {
 
   private startAnimation(): void {
     if (this.disposed || this.reducedMotion || this.document?.visibilityState === 'hidden') return;
+    if (!this.hasActiveMotion()) return;
     if (this.animationFrame !== undefined) return;
     this.animationFrame = this.adapters.requestFrame(this.onAnimationFrame);
+  }
+
+  private hasActiveMotion(): boolean {
+    return Boolean(
+      this.themeTransition ||
+      this.roomSpinActive ||
+      this.cameraRig?.isMoving ||
+      this.raccoonController?.isAnimating,
+    );
   }
 
   private stopAnimation(): void {
@@ -349,19 +449,65 @@ export class MiniDioramaSceneRuntime {
     this.animationFrame = undefined;
     if (this.disposed || this.reducedMotion || this.document?.visibilityState === 'hidden') return;
 
-    const deltaSeconds =
-      this.lastFrameTime === undefined
-        ? 0
-        : Math.min((timestamp - this.lastFrameTime) / 1000, maximumFrameDeltaSeconds);
+    const elapsedSeconds =
+      this.lastFrameTime === undefined ? 0 : Math.max((timestamp - this.lastFrameTime) / 1000, 0);
+    const deltaSeconds = Math.min(elapsedSeconds, maximumFrameDeltaSeconds);
     this.lastFrameTime = timestamp;
+    this.updateThemeTransition(deltaSeconds);
+    this.updateRoomSpin(deltaSeconds);
     this.raccoonController?.update(deltaSeconds);
     this.cameraRig?.update(deltaSeconds);
     this.render();
-    this.startAnimation();
+    if (this.hasActiveMotion()) this.startAnimation();
   };
 
   private render(): void {
     if (!this.renderer || !this.assets || !this.camera || this.disposed) return;
     this.renderer.render(this.assets.scene, this.camera);
+  }
+
+  private updateThemeTransition(deltaSeconds: number): void {
+    if (!this.themeTransition) return;
+    this.themeTransitionElapsed += deltaSeconds;
+    const progress = Math.min(this.themeTransitionElapsed / themeTransitionDurationSeconds, 1);
+    const easedProgress = 1 - (1 - progress) ** 3;
+    this.themeTransition(easedProgress);
+    if (progress >= 1) this.finishThemeTransition();
+  }
+
+  private finishThemeTransition(): void {
+    this.themeTransition?.(1);
+    this.themeTransition = undefined;
+    this.themeTransitionElapsed = 0;
+  }
+
+  private startRoomSpin(direction: 'clockwise' | 'counterclockwise'): void {
+    const pivot = this.assets?.roomSpinPivot;
+    if (this.reducedMotion || !pivot) return;
+    this.roomSpinStartRotation = pivot.rotation.y;
+    this.roomSpinDirection = direction === 'clockwise' ? 1 : -1;
+    this.roomSpinElapsed = 0;
+    this.roomSpinActive = true;
+  }
+
+  private updateRoomSpin(deltaSeconds: number): void {
+    const pivot = this.assets?.roomSpinPivot;
+    if (!pivot || !this.roomSpinActive) return;
+    this.roomSpinElapsed += deltaSeconds;
+    const progress = Math.min(this.roomSpinElapsed / roomSpinDurationSeconds, 1);
+    const easedProgress = progress ** 3 * (progress * (progress * 6 - 15) + 10);
+    pivot.rotation.y =
+      this.roomSpinStartRotation + this.roomSpinDirection * roomSpinRadians * easedProgress;
+    if (progress >= 1) {
+      this.finishRoomSpin();
+    }
+  }
+
+  private finishRoomSpin(): void {
+    if (this.assets?.roomSpinPivot) {
+      this.assets.roomSpinPivot.rotation.y = this.roomSpinStartRotation;
+    }
+    this.roomSpinElapsed = 0;
+    this.roomSpinActive = false;
   }
 }

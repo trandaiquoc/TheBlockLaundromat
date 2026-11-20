@@ -6,15 +6,17 @@ import {
   afterNextRender,
   computed,
   inject,
+  input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
-import { LucideChevronDown, LucideLogOut } from '@lucide/angular';
+import { LucideChevronDown, LucideGlobe, LucideLogOut, LucideSettings } from '@lucide/angular';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 
 @Component({
   selector: 'app-project-screen-account',
-  imports: [NgOptimizedImage, LucideChevronDown, LucideLogOut],
+  imports: [NgOptimizedImage, LucideChevronDown, LucideGlobe, LucideLogOut, LucideSettings],
   templateUrl: './project-screen-account.component.html',
   styleUrl: './project-screen-account.component.scss',
   host: {
@@ -23,6 +25,8 @@ import { I18nService } from '../../../core/ui/localization/i18n.service';
   },
 })
 export class ProjectScreenAccountComponent {
+  readonly compact = input(false);
+  readonly settingsRequested = output<void>();
   protected readonly i18n = inject(I18nService);
   protected readonly isDemoAccount = signal(true);
   protected readonly popoverOpen = signal(false);
@@ -62,6 +66,15 @@ export class ProjectScreenAccountComponent {
     this.isDemoAccount.set(false);
     this.closePopover(false);
     this.accountTrigger()?.nativeElement.focus({ preventScroll: true });
+  }
+
+  protected setLocale(locale: 'en' | 'vi'): void {
+    this.i18n.setLocale(locale);
+  }
+
+  protected requestSettings(): void {
+    this.closePopover(false);
+    this.settingsRequested.emit();
   }
 
   protected closeWhenFocusLeaves(event: FocusEvent): void {

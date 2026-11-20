@@ -66,6 +66,129 @@ describe('MiniDioramaCameraRig', () => {
     expect(projectedTarget.y).toBeCloseTo(0);
     expectBoundsWithinFrustum(camera, bounds.washer);
   });
+
+  it('faces washer and board fronts using their authored scene orientation', () => {
+    const camera = new PerspectiveCamera();
+    const bounds = createFocusBounds();
+    const washerYaw = 0;
+    const boardYaw = Math.PI / 4;
+    const targets = {
+      washer: new Vector3(0, 0, -3),
+      'project-board': bounds['project-board'].getCenter(new Vector3()),
+    };
+    const rig = new MiniDioramaCameraRig(camera, bounds, targets, {
+      washer: washerYaw,
+      'project-board': boardYaw,
+    });
+    rig.resize(1440, 900);
+
+    rig.orbitBy(0.24, 0.1);
+    rig.zoomBy(1.2);
+    rig.focus('washer', true);
+    const washerDirection = camera.position.clone().sub(targets.washer).normalize();
+    expect(Math.atan2(washerDirection.x, washerDirection.z)).toBeCloseTo(washerYaw);
+    expectBoundsWithinFrustum(camera, bounds.washer);
+
+    rig.focus('project-board', true);
+    const boardDirection = camera.position
+      .clone()
+      .sub(bounds['project-board'].getCenter(new Vector3()))
+      .normalize();
+    expect(Math.atan2(boardDirection.x, boardDirection.z)).toBeCloseTo(boardYaw);
+    expectBoundsWithinFrustum(camera, bounds['project-board']);
+  });
+
+  it('frames the full board and washer closer without extending the zoom range', () => {
+    const camera = new PerspectiveCamera();
+    const bounds = createFocusBounds();
+    const rig = new MiniDioramaCameraRig(camera, bounds);
+    rig.resize(1440, 900);
+    rig.focus('overview', true);
+    const overviewDistance = camera.position.length();
+
+    rig.focus('project-board', true);
+    const boardDistance = camera.position.distanceTo(
+      bounds['project-board'].getCenter(new Vector3()),
+    );
+    expect(boardDistance).toBeLessThan(overviewDistance);
+    expectBoundsWithinFrustum(camera, bounds['project-board']);
+
+    rig.focus('washer', true);
+    expectBoundsWithinFrustum(camera, bounds.washer);
+  });
+
+  it('clamps orbit and zoom, keeps the room in view, and recenters to the original camera', () => {
+    const camera = new PerspectiveCamera();
+    const bounds = createFocusBounds();
+    const rig = new MiniDioramaCameraRig(camera, bounds);
+    rig.resize(1440, 900);
+    rig.focus('overview', true);
+    const startingPosition = camera.position.clone();
+
+    rig.orbitBy(20, -20);
+    rig.zoomBy(0.001);
+    for (let frame = 0; frame < 240; frame++) rig.update(1 / 60);
+
+    expect(camera.position.distanceTo(startingPosition)).toBeGreaterThan(0.1);
+    expectBoundsWithinFrustum(camera, bounds.overview);
+
+    const orbitedPosition = camera.position.clone();
+
+    rig.recenter();
+    for (let frame = 0; frame < 240; frame++) rig.update(1 / 60);
+
+    expect(rig.currentView).toBe('overview');
+    expect(camera.position.distanceTo(orbitedPosition)).toBeGreaterThan(0.1);
+    expectBoundsWithinFrustum(camera, bounds.overview);
+
+    const craftCamera = new PerspectiveCamera();
+    const craftRig = new MiniDioramaCameraRig(craftCamera, bounds);
+    craftRig.resize(1440, 900);
+    craftRig.focus('overview', true);
+    expect(camera.position.distanceTo(craftCamera.position)).toBeLessThan(0.001);
+  });
+
+  it('eases wheel and pinch zoom toward the new framing instead of jumping there', () => {
+    const camera = new PerspectiveCamera();
+    const bounds = createFocusBounds();
+    const rig = new MiniDioramaCameraRig(camera, bounds);
+    rig.resize(1440, 900);
+    rig.focus('overview', true);
+    const startingPosition = camera.position.clone();
+
+    rig.zoomBy(1.1);
+
+    expect(rig.isMoving).toBe(true);
+    expect(camera.position.distanceTo(startingPosition)).toBeLessThan(0.001);
+    rig.update(1 / 60);
+    expect(camera.position.distanceTo(startingPosition)).toBeGreaterThan(0.001);
+    for (let frame = 0; frame < 240; frame++) rig.update(1 / 60);
+
+    expect(rig.isMoving).toBe(false);
+    expect(camera.position.distanceTo(startingPosition)).toBeGreaterThan(0.1);
+    expectBoundsWithinFrustum(camera, bounds.overview);
+  });
+
+  it('pans in the camera plane and returns to the default framing when recentered', () => {
+    const camera = new PerspectiveCamera();
+    const bounds = createFocusBounds();
+    const rig = new MiniDioramaCameraRig(camera, bounds);
+    rig.resize(1440, 900);
+    rig.focus('overview', true);
+    const startingPosition = camera.position.clone();
+
+    rig.panBy(18, 12, 320, 200);
+
+    expect(camera.position.distanceTo(startingPosition)).toBeGreaterThan(0.1);
+    expect(rig.isMoving).toBe(false);
+    expectBoundsWithinFrustum(camera, bounds.overview);
+
+    rig.panBy(10000, -10000, 320, 200);
+    expect(camera.position.length()).toBeLessThan(40);
+    rig.recenter();
+    for (let frame = 0; frame < 240; frame++) rig.update(1 / 60);
+    expect(camera.position.distanceTo(startingPosition)).toBeLessThan(0.001);
+  });
 });
 
 function createFocusBounds(): Record<MiniDioramaFocus, Box3> {

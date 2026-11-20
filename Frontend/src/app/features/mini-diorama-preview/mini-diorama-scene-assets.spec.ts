@@ -6,14 +6,13 @@ import { applyMiniDioramaTheme, miniDioramaVariantForTheme } from './mini-dioram
 import { disposeMiniDioramaResources } from './mini-diorama-scene-resources';
 import type { MiniDioramaSceneAsset } from './mini-diorama-scene-loader';
 import type { MiniDioramaSceneKind } from './mini-diorama-scene-contract';
-import { miniDioramaSceneNodeName } from './mini-diorama-scene-contract';
+import { miniDioramaSceneContract, miniDioramaSceneNodeName } from './mini-diorama-scene-contract';
 
 describe('mini diorama scene assets', () => {
-  it('keeps the approved model geometry while switching variants and theme lighting', () => {
+  it('keeps the approved geometry and transparent CSS atmosphere while switching theme lighting', () => {
     const asset = createSceneAsset();
     const assets = buildMiniDioramaScene(asset);
     const modelGeometry = collectGeometry(assets.model);
-    const originalBackground = (assets.scene.background as THREE.Color).getHex();
     const originalLight = assets.themeTargets.keyLight.intensity;
 
     applyMiniDioramaTheme(assets, 'dark');
@@ -21,10 +20,12 @@ describe('mini diorama scene assets', () => {
     expect(assets.scene.getObjectByName('Washer')).toBeTruthy();
     expect(assets.scene.getObjectByName('Notice_board')).toBeTruthy();
     expect(assets.scene.getObjectByName('Raccoon')).toBeTruthy();
-    expect(assets.scene.background).toBeInstanceOf(THREE.Color);
-    expect((assets.scene.background as THREE.Color).getHex()).not.toBe(originalBackground);
+    expect(assets.scene.background).toBeNull();
+    expect(asset.materialVariants.targets[0].mesh.material).toBe(
+      asset.materialVariants.targets[0].materialsByVariant.get('Dark'),
+    );
     expect(assets.themeTargets.keyLight.intensity).not.toBe(originalLight);
-    expect(assets.themeTargets.lanternLight.intensity).toBeGreaterThan(0);
+    expect(assets.themeTargets.lanternLights[0]?.intensity).toBeGreaterThan(0);
     expect(collectGeometry(assets.model)).toEqual(modelGeometry);
     expect(assets.interactionRoots.map(({ target }) => target)).toEqual([
       'washer',
@@ -33,9 +34,9 @@ describe('mini diorama scene assets', () => {
     ]);
 
     applyMiniDioramaTheme(assets, 'raccoon');
-    expect((assets.scene.background as THREE.Color).getHex()).toBe(0x4b3f59);
+    expect(assets.scene.background).toBeNull();
     applyMiniDioramaTheme(assets, 'light');
-    expect((assets.scene.background as THREE.Color).getHex()).toBe(0xe8dcc7);
+    expect(assets.scene.background).toBeNull();
     disposeMiniDioramaResources(assets.scene, asset.materialVariants.ownedMaterials);
   });
 
@@ -49,20 +50,65 @@ describe('mini diorama scene assets', () => {
   it('uses Stage 3 anchors and focuses both assembled characters as one target', () => {
     const asset = createSceneAsset('stage-3-production');
     const assets = buildMiniDioramaScene(asset);
+    const profile = miniDioramaSceneContract('stage-3-production').profile;
     const raccoonInteractions = assets.interactionRoots.filter(
       ({ target }) => target === 'raccoon',
     );
 
+    expect(profile?.id).toBe('production-default');
+    expect(profile?.sceneAssetPath).toContain('Octagonal-Laundromat.glb');
+    expect(profile?.washerAssetPath).toContain('Washer-Alternate/Washer.glb');
+    expect(profile?.exteriorGroundTexturePath).toContain('exterior-forest-floor.png');
+    expect(profile?.placements.map(({ nodeName }) => nodeName)).toContain('BasketBlueRoll');
+    expect(profile?.placements.map(({ nodeName }) => nodeName)).toContain('ShelfLantern');
+    expect(profile?.ground.contactStrength).toBe(0.52);
     expect(assets.scene.getObjectByName('ProjectBoard')).toBeTruthy();
     expect(assets.scene.getObjectByName('CourierRoot')).toBeTruthy();
     expect(assets.scene.getObjectByName('GuideRoot')).toBeTruthy();
+    expect(assets.roomSpinPivot?.name).toBe('Stage3RoomSpinPivot');
+    expect(assets.scene.getObjectByName('Preview.OutdoorGround')).toBeTruthy();
+    const ground = assets.scene.getObjectByName('Preview.OutdoorGround') as THREE.Mesh;
+    expect(ground.material).toBeInstanceOf(THREE.ShaderMaterial);
+    expect((ground.material as THREE.ShaderMaterial).uniforms['uGroundTexture']?.value).toBe(
+      asset.exteriorGroundTexture,
+    );
+    expect((ground.material as THREE.ShaderMaterial).uniforms['uContactStrength']?.value).toBe(
+      0.52,
+    );
+    expect(assets.scene.getObjectByName('Preview.RoomContactShadow')).toBeTruthy();
+    expect(
+      (assets.scene.getObjectByName('Preview.RoomContactShadow') as THREE.Mesh).material,
+    ).toBeInstanceOf(THREE.ShadowMaterial);
+    expect(assets.themeTargets.lanternLights).toHaveLength(2);
+    expect(assets.themeTargets.lanternLights.map(({ name }) => name)).toEqual([
+      'Anchor.NicheLantern.Light.PreviewLight',
+      'Anchor.ShelfLantern.Light.PreviewLight',
+    ]);
+    expect(assets.model.getObjectByName('LeftCabinet')?.position.x).toBeCloseTo(0);
+    expect(assets.model.getObjectByName('LeftCabinet')?.position.z).toBeCloseTo(-1.1);
+    expect(assets.model.getObjectByName('ShelfFern')?.position.x).toBeCloseTo(0);
+    expect(assets.model.getObjectByName('ShelfFern')?.position.z).toBeCloseTo(-1.1);
+    expect(assets.model.getObjectByName('WestIvy')?.position.x).toBeCloseTo(0.18);
+    expect(assets.model.getObjectByName('WestIvy')?.position.y).toBeCloseTo(0.25);
+    expect(assets.model.getObjectByName('WestIvy')?.position.z).toBeCloseTo(-1.1);
+    expect(assets.model.getObjectByName('Marigold')?.position.z).toBeCloseTo(-1.1);
+    expect(assets.model.getObjectByName('ShelfLantern')?.position.x).toBeCloseTo(-3);
+    expect(assets.model.getObjectByName('ShelfLantern')?.position.z).toBeCloseTo(-0.6);
+    expect(assets.model.getObjectByName('LinenBasket')?.position.z).toBeCloseTo(-1.1);
+    expect(assets.model.getObjectByName('BasketBlueRoll')?.position.z).toBeCloseTo(-1.1);
+    expect(assets.outdoorGround).toBe(assets.themeTargets.outdoorGround);
     expect(raccoonInteractions).toHaveLength(2);
     expect(assets.focusBounds.raccoon.min.x).toBeLessThan(-1);
     expect(assets.focusBounds.raccoon.max.x).toBeGreaterThan(1);
     expect(assets.cameraFocusTargets.overview?.toArray()).toEqual([0, 1.15, 0]);
     expect(assets.cameraFocusTargets['project-board']?.toArray()).toEqual([-2.7, 2, -2.57]);
+    expect(assets.cameraFocusTargets.washer?.toArray()).toEqual([0, 1, -3]);
+    expect(assets.cameraFocusYaws.washer).toBeCloseTo(0);
+    expect(assets.cameraFocusYaws['project-board']).toBeCloseTo(Math.PI / 4);
     expect(assets.focusBounds['project-board'].getSize(new THREE.Vector3()).x).toBeGreaterThan(2.4);
     expect(assets.raccoonControllerRoot).toBeUndefined();
+    applyMiniDioramaTheme(assets, 'dark');
+    expect(assets.themeTargets.lanternLights.map(({ intensity }) => intensity)).toEqual([7.2, 7.2]);
 
     disposeMiniDioramaResources(assets.scene, asset.materialVariants.ownedMaterials);
   });
@@ -94,6 +140,10 @@ function createSceneAsset(
   return {
     kind,
     root,
+    exteriorGroundTexture:
+      kind === 'stage-3-production'
+        ? new THREE.DataTexture(new Uint8Array([215, 190, 154, 255]), 1, 1)
+        : undefined,
     materialVariants: new MiniDioramaMaterialVariants(targets, [
       baseMaterial,
       ...variants.values(),
@@ -128,13 +178,45 @@ function addIntegrationSceneFixture(root: THREE.Group): void {
 function addStageThreeSceneFixture(root: THREE.Group): void {
   addBox(root, 'Floor', new THREE.Vector3(0, 0.05, 0), new THREE.Vector3(8, 0.2, 8));
   addBox(root, 'Washer', new THREE.Vector3(0, 1, -3), new THREE.Vector3(2, 2, 1));
-  addBox(
+  const projectBoard = addBox(
     root,
     'ProjectBoard',
     new THREE.Vector3(-2.7, 1.3, -2.6),
     new THREE.Vector3(2.5, 2.2, 0.1),
   );
+  projectBoard.rotation.y = Math.PI / 4;
   addAnchor(root, 'Anchor.NicheLantern.Light', new THREE.Vector3(2, 2.4, -2));
+  const shelfLantern = new THREE.Group();
+  shelfLantern.name = miniDioramaSceneNodeName('ShelfLantern');
+  shelfLantern.position.set(-3, 2, 0.5);
+  root.add(shelfLantern);
+  addAnchor(shelfLantern, 'Anchor.ShelfLantern.Light', new THREE.Vector3(0, 0, 0));
+  for (const nodeName of [
+    'LeftCabinet',
+    'WestIvy',
+    'ShelfFern',
+    'CabinetTowel1',
+    'CabinetTowel2',
+    'CabinetTowel3',
+    'LinenBasket',
+    'BasketBlueRoll',
+    'BasketIvoryRoll',
+    'SageWashBox',
+    'OchreWashBox',
+    'SeafoamPitcher',
+    'CabinetBlueTin',
+    'ApothecaryBottle',
+    'CeramicPump',
+    'LaundryLedger',
+    'WrappedSoap',
+    'CreamWashBox',
+    'Marigold',
+  ]) {
+    const object = new THREE.Group();
+    object.name = miniDioramaSceneNodeName(nodeName);
+    object.position.z = 0;
+    root.add(object);
+  }
   addAnchor(root, 'Anchor.Camera.Overview', new THREE.Vector3(0, 1.15, 0));
   addAnchor(root, 'Anchor.Camera.Portrait', new THREE.Vector3(0, 1.48, -0.24));
   addAnchor(root, 'Anchor.Camera.Board', new THREE.Vector3(-2.7, 2, -2.57));

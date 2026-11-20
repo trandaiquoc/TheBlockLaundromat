@@ -303,6 +303,10 @@ export class SettingsDialogComponent implements OnDestroy {
   protected setBlockBrightness(value: string): void {
     this.session.setBlockBrightness(value);
   }
+
+  protected setSceneAnimationsEnabled(enabled: boolean): void {
+    this.session.setSceneAnimationsEnabled(enabled);
+  }
   protected brightnessDefaultStop(): string {
     return this.session.defaultBrightnessStop();
   }

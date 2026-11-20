@@ -1,9 +1,98 @@
-# Stage 4 interaction preparation
+# Stage 4 interaction preparation and Goal 04 review
 
-**Status (2026-11-20):** Preparation brief after the user approved the Stage 3
-captures. No Stage 4 implementation has started. This document consolidates
-existing design evidence and current code boundaries; it is not yet an
-approved implementation specification.
+**Status (2026-11-20):** Goal 04 is integrated on the existing
+`/mini-diorama-preview` route. Browser and automated validation are underway;
+visual approval remains with the user. The earlier preparation brief below is
+historical design evidence. Goal 04's approved scope supersedes its candidate
+project-board and washer workflows.
+
+## Goal 04 implementation contract
+
+- The preview uses the assembled Stage 3 octagonal room and its two included
+  Raccoons. The board remains blank for a later Angular overlay.
+- Four `ThemeService` presets drive the existing GLB material variants, CSS
+  atmosphere, scene lights, and a synchronized four-quarter clock dial. Dragging
+  the dial clockwise or counterclockwise updates the time and theme at each
+  quarter. The center swaps one animated weather scene for the selected stage;
+  four curved theme labels on the rim select their matching quarter. The
+  accessible range control remains available.
+- The daily sequence is Light morning, Minecraft orange sunset, Raccoon
+  blue-purple twilight around 6–7 pm, and Dark late night. Dawn uses warm yellow
+  sunlight and clouds, sunset uses a low orange sun, twilight fades into a
+  crescent behind thin clouds, and only late night shows stars. Each sky layer,
+  celestial glow, and scene lighting follows that time-of-day sequence.
+- A soft sky glow and celestial body travel horizontally across the viewport
+  with the dial on one level path. Night-to-morning and morning-to-night
+  transitions wrap around opposite screen edges. Clouds
+  appear in the morning and during twilight; stars appear only at night.
+  The sun/moon sits higher than its glow field.
+- A horizontal drag or touch swipe across the preview changes to the adjacent
+  time stage only while Overview is selected. Focused object views retain their
+  camera behavior without changing themes. Washer and board views lock camera
+  orbit, pan, wheel zoom, and pinch zoom; other eligible views retain camera
+  controls. This gesture belongs to the mini-diorama preview and does not change
+  Workspace interactions. The room turns with the sky change.
+- A theme change runs a smoothed full room turn in 0.95 seconds, following the
+  shortest clockwise or counterclockwise route between stages while the camera
+  stays in place. Reduced-motion mode skips the turn and completes the theme
+  change immediately. The scene render loop idles when no camera, theme, turn,
+  or Raccoon motion is active; Settings can disable scene animation.
+- The ground plane uses a generated moss, grass, leaf-litter, and earth texture
+  with a forest-floor palette. A soft
+  rounded-rectangle shader fade blends it into the CSS atmosphere without a
+  circular platform or visible hard edge. A soft PCF shadow receiver and the
+  faded ground contact shade anchor the room to the forest floor.
+- The current scene uses one named `production-default` profile in
+  `mini-diorama-scene-profile.ts`. It owns the room, washer, and exterior-floor
+  asset paths, the cabinet-group node offsets, and the exterior ground/fade/
+  shadow settings. The scene contract, loader, and scene builder consume that
+  profile so a future seasonal profile can replace those values as one unit;
+  this release has no seasonal variants or profile selector.
+- The Niche and Shelf lantern anchors each receive a warm point light, so both
+  lamps illuminate the room at night. The cabinet, shelf contents, lantern,
+  ivy, bottom baskets, wash boxes, and foreground planter shift together 1.1
+  units toward the board along the cabinet's rightward wall axis. The hanging
+  wall ivy rises 0.25 units and shifts 0.18 units into the room. Its plant
+  animation anchor moves with it; the rest of the group stays against the wall.
+- Left-button taps keep semantic picking; left-button drags orbit; middle
+  button drags pan like Workspace; wheel and touch pinch zoom. Zoom eases to
+  its bounded target to avoid abrupt camera jumps. Focus and recenter actions
+  return the camera to the room.
+- Selecting the washer frames its front-facing bounds. Selecting the board
+  brings the complete board into a closer view without other room props
+  covering it. Washer framing uses the model bounds center and leaves room to
+  see the full appliance; the existing bounded zoom range stays unchanged.
+- The preview header uses the enlarged SVG logo as a text-free home link at the
+  top left. The
+  account sits at bottom left with a slightly larger avatar and trigger. The
+  clock sits snug at bottom right; its single-color center crossfades one
+  animated weather scene at a time. Theme names follow the four colored rim
+  segments. The four focus actions remain vertical, centered above the Light arc,
+  and aligned to the viewport's vertical midpoint.
+- The account dialog owns language and Settings actions. The room starts
+  centered after reload. The shadow receiver grounds the room against the
+  exterior floor without creating a hard circular platform or a detached blob.
+- WebGL startup failures and scene asset load failures have separate localized
+  messages; the scene load error is also logged for diagnosis.
+- The shared panel keeps `/homepage-integration-preview` on its existing scene
+  and controls. `/` remains the Project Screen.
+- Project CRUD, washer previews, character choreography, and environmental
+  smoke remain out of scope.
+
+## Generated exterior paving asset
+
+`Frontend/source-assets/homepage/textures/mini-diorama/exterior-forest-floor.png`
+is a generated woodland ground tile created for the exterior forest request.
+It replaces the earlier generated sandstone texture and is not part of the
+supplied Stage 3 ZIP. Angular copies this single PNG to
+`assets/homepage/runtime/textures/mini-diorama/exterior-forest-floor.png`;
+the scene loader fetches it with the GLB cancellation signal and disposes its
+texture and decoded bitmap with the scene. Its SHA-256 is
+`f84a70b6ca7acd494e4d527ca82b9185fa644be1bb8c21f9702ae87a7968ddf9`.
+
+Browser captures are stored under the ignored
+`Frontend/.artifacts/mini-diorama-preview/` directory. The screenshot gate is
+pending the user's visual review and is not self-approved by the implementation.
 
 ## Source of truth
 

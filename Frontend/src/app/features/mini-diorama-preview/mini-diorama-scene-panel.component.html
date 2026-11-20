@@ -1,6 +1,7 @@
 <div
   class="mini-diorama-scene-panel"
   [class.mini-diorama-scene-panel--workspace]="mode() === 'workspace'"
+  [class.mini-diorama-scene-panel--spatial-preview]="isSpatialPreview()"
 >
   <section
     #sceneHost
@@ -22,45 +23,52 @@
           <div class="mini-diorama__fallback-washer"><span></span></div>
         </div>
         <h2>{{ i18n.t('miniDioramaFallbackTitle') }}</h2>
-        <p>{{ i18n.t('miniDioramaFallback') }}</p>
+        <p>{{ i18n.t(fallbackMessageKey()) }}</p>
       </div>
     }
   </section>
 
-  <nav class="mini-diorama__actions" [attr.aria-label]="i18n.t('miniDioramaSceneActions')">
-    <button
-      type="button"
-      [attr.aria-pressed]="selectedTarget() === undefined"
-      [class.is-selected]="selectedTarget() === undefined"
-      (click)="focusOverview()"
-    >
-      {{ i18n.t('miniDioramaOverview') }}
-    </button>
-    <button
-      type="button"
-      [attr.aria-pressed]="selectedTarget() === 'washer'"
-      [class.is-selected]="selectedTarget() === 'washer'"
-      (click)="focusTarget('washer')"
-    >
-      {{ i18n.t('miniDioramaWasher') }}
-    </button>
-    <button
-      type="button"
-      [attr.aria-pressed]="selectedTarget() === 'project-board'"
-      [class.is-selected]="selectedTarget() === 'project-board'"
-      (click)="focusTarget('project-board')"
-    >
-      {{ i18n.t('miniDioramaProjectBoard') }}
-    </button>
-    <button
-      type="button"
-      [attr.aria-pressed]="selectedTarget() === 'raccoon'"
-      [class.is-selected]="selectedTarget() === 'raccoon'"
-      (click)="greetRaccoon()"
-    >
-      {{ i18n.t('miniDioramaGreetRaccoon') }}
-    </button>
-  </nav>
+  @if (isSpatialPreview()) {
+    <app-mini-diorama-scene-focus-toolbar
+      [selectedTarget]="selectedTarget()"
+      (actionRequested)="handleFocusAction($event)"
+    />
+  } @else {
+    <nav class="mini-diorama__actions" [attr.aria-label]="i18n.t('miniDioramaSceneActions')">
+      <button
+        type="button"
+        [attr.aria-pressed]="selectedTarget() === undefined"
+        [class.is-selected]="selectedTarget() === undefined"
+        (click)="focusOverview()"
+      >
+        {{ i18n.t('miniDioramaOverview') }}
+      </button>
+      <button
+        type="button"
+        [attr.aria-pressed]="selectedTarget() === 'washer'"
+        [class.is-selected]="selectedTarget() === 'washer'"
+        (click)="focusTarget('washer')"
+      >
+        {{ i18n.t('miniDioramaWasher') }}
+      </button>
+      <button
+        type="button"
+        [attr.aria-pressed]="selectedTarget() === 'project-board'"
+        [class.is-selected]="selectedTarget() === 'project-board'"
+        (click)="focusTarget('project-board')"
+      >
+        {{ i18n.t('miniDioramaProjectBoard') }}
+      </button>
+      <button
+        type="button"
+        [attr.aria-pressed]="selectedTarget() === 'raccoon'"
+        [class.is-selected]="selectedTarget() === 'raccoon'"
+        (click)="greetRaccoon()"
+      >
+        {{ i18n.t('miniDioramaGreetRaccoon') }}
+      </button>
+    </nav>
+  }
 
   <p class="mini-diorama__live-message" aria-live="polite" aria-atomic="true">
     {{ sceneMessage() }}

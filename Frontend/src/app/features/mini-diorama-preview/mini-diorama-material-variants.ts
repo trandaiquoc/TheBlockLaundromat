@@ -17,6 +17,13 @@ export class MiniDioramaMaterialVariants {
     readonly ownedMaterials: readonly Material[],
   ) {}
 
+  static combine(...variants: readonly MiniDioramaMaterialVariants[]): MiniDioramaMaterialVariants {
+    return new MiniDioramaMaterialVariants(
+      variants.flatMap((variant) => variant.targets),
+      [...new Set(variants.flatMap((variant) => variant.ownedMaterials))],
+    );
+  }
+
   apply(name: MiniDioramaMaterialVariantName): void {
     for (const target of this.targets) {
       target.mesh.material = target.materialsByVariant.get(name) ?? target.baseMaterial;

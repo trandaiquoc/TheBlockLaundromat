@@ -192,6 +192,73 @@
   line-height: 1.45;
 }
 
+.account-anchor--compact .account-card {
+  grid-template-columns: var(--mini-account-avatar, 2.25rem) minmax(0, 1fr) 1rem;
+  width: min(var(--mini-account-width, 12.5rem), calc(100vw - 1.2rem));
+  min-height: var(--mini-account-height, 3rem);
+  gap: 0.45rem;
+  padding: 0.28rem 0.6rem 0.28rem 0.34rem;
+}
+
+.account-popover-section-title {
+  display: block;
+  padding: 0.3rem 0.6rem 0.45rem;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.account-anchor--compact .account-language-controls {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0 0.2rem 0.35rem;
+}
+
+.account-anchor--compact .account-language-controls > svg {
+  display: none;
+}
+
+.account-anchor--compact .account-language-controls button {
+  min-height: 2.45rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-lg) - 2px);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.account-anchor--compact .account-language-controls button:hover,
+.account-anchor--compact .account-language-controls button.is-selected {
+  border-color: var(--border-floating);
+  background: var(--surface-hover);
+}
+
+.account-anchor--compact .account-settings-action {
+  color: var(--text);
+}
+
+.account-anchor--compact .account-settings-action:hover {
+  color: var(--text);
+}
+
+.account-anchor--compact .account-avatar {
+  width: var(--mini-account-avatar, 2.25rem);
+  height: var(--mini-account-avatar, 2.25rem);
+}
+
+.account-anchor--compact .account-copy strong {
+  font-size: 0.75rem;
+}
+
+.account-anchor--compact .account-copy > span {
+  font-size: 0.65rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .account-card,
   .account-chevron,

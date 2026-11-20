@@ -15,10 +15,15 @@ export class MiniDioramaRaccoonController {
   private readonly baseTailRotation: number;
   private elapsed = 0;
   private greetingElapsed?: number;
+  private readonly idleMotionEnabled: boolean;
   private reducedMotion = false;
   private disposed = false;
 
-  constructor(private readonly root: Object3D) {
+  constructor(
+    private readonly root: Object3D,
+    idleMotionEnabled = true,
+  ) {
+    this.idleMotionEnabled = idleMotionEnabled;
     const wavingLeg = root.getObjectByName('ForelegL');
     if (!wavingLeg) {
       throw new Error("The laundromat Raccoon is missing its 'ForelegL' greeting joint.");
@@ -40,6 +45,10 @@ export class MiniDioramaRaccoonController {
     return this.greetingElapsed !== undefined;
   }
 
+  get isAnimating(): boolean {
+    return !this.reducedMotion && (this.idleMotionEnabled || this.isGreeting);
+  }
+
   greet(): void {
     if (this.disposed || this.reducedMotion) return;
     this.greetingElapsed = 0;
@@ -54,9 +63,13 @@ export class MiniDioramaRaccoonController {
   update(deltaSeconds: number): void {
     if (this.disposed || this.reducedMotion) return;
     const delta = Math.max(0, Math.min(deltaSeconds, maximumMotionDeltaSeconds));
-    this.elapsed += delta;
-    this.head.rotation.x = this.baseHeadRotation + Math.sin(this.elapsed * 1.4) * headIdleAmplitude;
-    this.tail.rotation.y = this.baseTailRotation + Math.sin(this.elapsed * 0.9) * tailIdleAmplitude;
+    if (this.idleMotionEnabled) {
+      this.elapsed += delta;
+      this.head.rotation.x =
+        this.baseHeadRotation + Math.sin(this.elapsed * 1.4) * headIdleAmplitude;
+      this.tail.rotation.y =
+        this.baseTailRotation + Math.sin(this.elapsed * 0.9) * tailIdleAmplitude;
+    }
 
     if (this.greetingElapsed === undefined) return;
     this.greetingElapsed += delta;
