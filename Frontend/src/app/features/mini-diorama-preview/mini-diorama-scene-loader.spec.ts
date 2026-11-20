@@ -9,6 +9,7 @@ describe('loadMiniDioramaSceneAsset', () => {
       loadMiniDioramaSceneAsset(
         'https://example.test/app/',
         new AbortController().signal,
+        'integration-preview',
         fetchAsset,
       ),
     ).rejects.toThrow('HTTP 503');
@@ -30,7 +31,33 @@ describe('loadMiniDioramaSceneAsset', () => {
     });
 
     await expect(
-      loadMiniDioramaSceneAsset('https://example.test/app/', controller.signal, fetchAsset),
+      loadMiniDioramaSceneAsset(
+        'https://example.test/app/',
+        controller.signal,
+        'integration-preview',
+        fetchAsset,
+      ),
     ).rejects.toMatchObject({ name: 'AbortError' });
+  });
+
+  it('selects the production scene asset only for the Stage 3 route', async () => {
+    const fetchAsset = vi.fn(async () => new Response(null, { status: 503 }));
+
+    await expect(
+      loadMiniDioramaSceneAsset(
+        'https://example.test/app/',
+        new AbortController().signal,
+        'stage-3-production',
+        fetchAsset,
+      ),
+    ).rejects.toThrow('HTTP 503');
+
+    expect(fetchAsset).toHaveBeenCalledWith(
+      new URL(
+        'assets/homepage/runtime/models/Room/Octagonal-Laundromat.glb',
+        'https://example.test/app/',
+      ),
+      { signal: expect.any(AbortSignal) },
+    );
   });
 });

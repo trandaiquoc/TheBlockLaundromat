@@ -1,0 +1,8578 @@
+[
+  {
+    "instance": "OctagonalShell.Border.0",
+    "part": "Border.0",
+    "source": "Parts/OctagonalShell/Border-0.blend",
+    "runtime": "Parts/OctagonalShell/Border-0.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -3.922999858856201
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Border.1",
+    "part": "Border.1",
+    "source": "Parts/OctagonalShell/Border-1.blend",
+    "runtime": "Parts/OctagonalShell/Border-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.793017864227295
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.793017864227295
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Border.2",
+    "part": "Border.2",
+    "source": "Parts/OctagonalShell/Border-2.blend",
+    "runtime": "Parts/OctagonalShell/Border-2.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        3.922999858856201
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Border.3",
+    "part": "Border.3",
+    "source": "Parts/OctagonalShell/Border-3.blend",
+    "runtime": "Parts/OctagonalShell/Border-3.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.793017864227295
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.793017864227295
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Border.4",
+    "part": "Border.4",
+    "source": "Parts/OctagonalShell/Border-4.blend",
+    "runtime": "Parts/OctagonalShell/Border-4.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.922999858856201
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Border.5",
+    "part": "Border.5",
+    "source": "Parts/OctagonalShell/Border-5.blend",
+    "runtime": "Parts/OctagonalShell/Border-5.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.793017864227295
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.793017864227295
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Border.6",
+    "part": "Border.6",
+    "source": "Parts/OctagonalShell/Border-6.blend",
+    "runtime": "Parts/OctagonalShell/Border-6.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.922999858856201
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Border.7",
+    "part": "Border.7",
+    "source": "Parts/OctagonalShell/Border-7.blend",
+    "runtime": "Parts/OctagonalShell/Border-7.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.793017864227295
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.793017864227295
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CheckerTiles",
+    "part": "CheckerTiles",
+    "source": "Parts/OctagonalShell/CheckerTiles.blend",
+    "runtime": "Parts/OctagonalShell/CheckerTiles.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.05900000035762787
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Coping.1",
+    "part": "Coping.1",
+    "source": "Parts/OctagonalShell/Coping-1.blend",
+    "runtime": "Parts/OctagonalShell/Coping-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.972846508026123
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.6079721450805664
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.44999998807907104
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Coping.2",
+    "part": "Coping.2",
+    "source": "Parts/OctagonalShell/Coping-2.blend",
+    "runtime": "Parts/OctagonalShell/Coping-2.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        3.8929998874664307
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.4500000476837158
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Coping.3",
+    "part": "Coping.3",
+    "source": "Parts/OctagonalShell/Coping-3.blend",
+    "runtime": "Parts/OctagonalShell/Coping-3.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.797579288482666
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.797579288482666
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.5199999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Coping.4",
+    "part": "Coping.4",
+    "source": "Parts/OctagonalShell/Coping-4.blend",
+    "runtime": "Parts/OctagonalShell/Coping-4.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.8930001258850098
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.5199999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Coping.5",
+    "part": "Coping.5",
+    "source": "Parts/OctagonalShell/Coping-5.blend",
+    "runtime": "Parts/OctagonalShell/Coping-5.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.797579288482666
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.797579288482666
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.5199999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Coping.6",
+    "part": "Coping.6",
+    "source": "Parts/OctagonalShell/Coping-6.blend",
+    "runtime": "Parts/OctagonalShell/Coping-6.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.8929998874664307
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.4500000476837158
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Coping.7",
+    "part": "Coping.7",
+    "source": "Parts/OctagonalShell/Coping-7.blend",
+    "runtime": "Parts/OctagonalShell/Coping-7.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.972846746444702
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.6079719066619873
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.44999998807907104
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CornerKey.0",
+    "part": "CornerKey.0",
+    "source": "Parts/OctagonalShell/CornerKey-0.blend",
+    "runtime": "Parts/OctagonalShell/CornerKey-0.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -1.6210453510284424
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -3.908970832824707
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.24400000274181366
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CornerKey.1",
+    "part": "CornerKey.1",
+    "source": "Parts/OctagonalShell/CornerKey-1.blend",
+    "runtime": "Parts/OctagonalShell/CornerKey-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        1.6210453510284424
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -3.908970832824707
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.24400000274181366
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CornerKey.2",
+    "part": "CornerKey.2",
+    "source": "Parts/OctagonalShell/CornerKey-2.blend",
+    "runtime": "Parts/OctagonalShell/CornerKey-2.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        3.908970832824707
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -1.6210453510284424
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.24400000274181366
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CornerKey.3",
+    "part": "CornerKey.3",
+    "source": "Parts/OctagonalShell/CornerKey-3.blend",
+    "runtime": "Parts/OctagonalShell/CornerKey-3.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        3.908970832824707
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        1.6210453510284424
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.24400000274181366
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CornerKey.4",
+    "part": "CornerKey.4",
+    "source": "Parts/OctagonalShell/CornerKey-4.blend",
+    "runtime": "Parts/OctagonalShell/CornerKey-4.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        1.6210453510284424
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.908970832824707
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.24400000274181366
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CornerKey.5",
+    "part": "CornerKey.5",
+    "source": "Parts/OctagonalShell/CornerKey-5.blend",
+    "runtime": "Parts/OctagonalShell/CornerKey-5.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -1.6210453510284424
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.908970832824707
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.24400000274181366
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CornerKey.6",
+    "part": "CornerKey.6",
+    "source": "Parts/OctagonalShell/CornerKey-6.blend",
+    "runtime": "Parts/OctagonalShell/CornerKey-6.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.908970832824707
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        1.6210453510284424
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.24400000274181366
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CornerKey.7",
+    "part": "CornerKey.7",
+    "source": "Parts/OctagonalShell/CornerKey-7.blend",
+    "runtime": "Parts/OctagonalShell/CornerKey-7.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.908970832824707
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -1.6210453510284424
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.24400000274181366
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Courses.1",
+    "part": "Courses.1",
+    "source": "Parts/OctagonalShell/Courses-1.blend",
+    "runtime": "Parts/OctagonalShell/Courses-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.961207389831543
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.595254898071289
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0018000006675720215
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Courses.2",
+    "part": "Courses.2",
+    "source": "Parts/OctagonalShell/Courses-2.blend",
+    "runtime": "Parts/OctagonalShell/Courses-2.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        3.9045000076293945
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.001799941062927246
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Courses.3",
+    "part": "Courses.3",
+    "source": "Parts/OctagonalShell/Courses-3.blend",
+    "runtime": "Parts/OctagonalShell/Courses-3.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.7815349102020264
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.7815349102020264
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.001799941062927246
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Courses.4",
+    "part": "Courses.4",
+    "source": "Parts/OctagonalShell/Courses-4.blend",
+    "runtime": "Parts/OctagonalShell/Courses-4.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.9045000076293945
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.001799941062927246
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Courses.5",
+    "part": "Courses.5",
+    "source": "Parts/OctagonalShell/Courses-5.blend",
+    "runtime": "Parts/OctagonalShell/Courses-5.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.7815349102020264
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.7815349102020264
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.001799941062927246
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Courses.6",
+    "part": "Courses.6",
+    "source": "Parts/OctagonalShell/Courses-6.blend",
+    "runtime": "Parts/OctagonalShell/Courses-6.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.9045000076293945
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.001799941062927246
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Courses.7",
+    "part": "Courses.7",
+    "source": "Parts/OctagonalShell/Courses-7.blend",
+    "runtime": "Parts/OctagonalShell/Courses-7.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.961207389831543
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.595254898071289
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0018000006675720215
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Foundation",
+    "part": "Foundation",
+    "source": "Parts/OctagonalShell/Foundation.blend",
+    "runtime": "Parts/OctagonalShell/Foundation.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.3100000023841858
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Niche.Back",
+    "part": "Niche.Back",
+    "source": "Parts/OctagonalShell/Niche-Back.blend",
+    "runtime": "Parts/OctagonalShell/Niche-Back.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.940000057220459
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Niche.DrawPegs",
+    "part": "Niche.DrawPegs",
+    "source": "Parts/OctagonalShell/Niche-DrawPegs.blend",
+    "runtime": "Parts/OctagonalShell/Niche-DrawPegs.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.9260001182556152
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.8334999084472656
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Niche.Header",
+    "part": "Niche.Header",
+    "source": "Parts/OctagonalShell/Niche-Header.blend",
+    "runtime": "Parts/OctagonalShell/Niche-Header.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.5275001525878906
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Niche.Jamb.-1",
+    "part": "Niche.Jamb.-1",
+    "source": "Parts/OctagonalShell/Niche-Jamb--1.blend",
+    "runtime": "Parts/OctagonalShell/Niche-Jamb--1.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -1.434000015258789
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.4917502403259277
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Niche.Jamb.1",
+    "part": "Niche.Jamb.1",
+    "source": "Parts/OctagonalShell/Niche-Jamb-1.blend",
+    "runtime": "Parts/OctagonalShell/Niche-Jamb-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        1.434000015258789
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.4917502403259277
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Niche.LintelFacing",
+    "part": "Niche.LintelFacing",
+    "source": "Parts/OctagonalShell/Niche-LintelFacing.blend",
+    "runtime": "Parts/OctagonalShell/Niche-LintelFacing.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.977750062942505
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.7950000762939453
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Niche.Shelf",
+    "part": "Niche.Shelf",
+    "source": "Parts/OctagonalShell/Niche-Shelf.blend",
+    "runtime": "Parts/OctagonalShell/Niche-Shelf.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.5199999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.0885000228881836
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Rim.0",
+    "part": "Rim.0",
+    "source": "Parts/OctagonalShell/Rim-0.blend",
+    "runtime": "Parts/OctagonalShell/Rim-0.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -3.944499969482422
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Rim.1",
+    "part": "Rim.1",
+    "source": "Parts/OctagonalShell/Rim-1.blend",
+    "runtime": "Parts/OctagonalShell/Rim-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.816861152648926
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.816861152648926
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Rim.2",
+    "part": "Rim.2",
+    "source": "Parts/OctagonalShell/Rim-2.blend",
+    "runtime": "Parts/OctagonalShell/Rim-2.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        3.944499969482422
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Rim.3",
+    "part": "Rim.3",
+    "source": "Parts/OctagonalShell/Rim-3.blend",
+    "runtime": "Parts/OctagonalShell/Rim-3.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        2.816861152648926
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.816861152648926
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Rim.4",
+    "part": "Rim.4",
+    "source": "Parts/OctagonalShell/Rim-4.blend",
+    "runtime": "Parts/OctagonalShell/Rim-4.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.944499969482422
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Rim.5",
+    "part": "Rim.5",
+    "source": "Parts/OctagonalShell/Rim-5.blend",
+    "runtime": "Parts/OctagonalShell/Rim-5.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.816861152648926
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.816861152648926
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Rim.6",
+    "part": "Rim.6",
+    "source": "Parts/OctagonalShell/Rim-6.blend",
+    "runtime": "Parts/OctagonalShell/Rim-6.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.944499969482422
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.Rim.7",
+    "part": "Rim.7",
+    "source": "Parts/OctagonalShell/Rim-7.blend",
+    "runtime": "Parts/OctagonalShell/Rim-7.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -2.816861152648926
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -2.816861152648926
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Bezel",
+    "part": "Bezel",
+    "source": "Parts/Washer/Bezel.blend",
+    "runtime": "Parts/Washer/Bezel.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.35999998450279236
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.000999927520752
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.3479999899864197
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Case",
+    "part": "Back-panel",
+    "source": "Parts/Washer/Back-panel.blend",
+    "runtime": "Parts/Washer/Back-panel.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.9140000343322754
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.15299999713897705
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Case",
+    "part": "Base",
+    "source": "Parts/Washer/Base.blend",
+    "runtime": "Parts/Washer/Base.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.490000009536743
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.15299999713897705
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Case",
+    "part": "Top",
+    "source": "Parts/Washer/Top.blend",
+    "runtime": "Parts/Washer/Top.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.490000009536743
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.7289999723434448
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Case",
+    "part": "Left-side",
+    "source": "Parts/Washer/Left-side.blend",
+    "runtime": "Parts/Washer/Left-side.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -1.0770000219345093
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.490000009536743
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.16049998998641968
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Case",
+    "part": "Right-side",
+    "source": "Parts/Washer/Right-side.blend",
+    "runtime": "Parts/Washer/Right-side.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        1.0770000219345093
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.490000009536743
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.16049998998641968
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Controls",
+    "part": "Fascia",
+    "source": "Parts/Washer/Fascia.blend",
+    "runtime": "Parts/Washer/Fascia.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.0290000438690186
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.5605000257492065
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Controls",
+    "part": "Status-lamp",
+    "source": "Parts/Washer/Status-lamp.blend",
+    "runtime": "Parts/Washer/Status-lamp.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.7200000286102295
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.9800000190734863
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.6655000448226929
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Dial.Left",
+    "part": "Dial.Left",
+    "source": "Parts/Washer/Dial-Left.blend",
+    "runtime": "Parts/Washer/Dial-Left.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.8799999952316284
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.9749999046325684
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.7029999494552612
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Dial.Right",
+    "part": "Dial.Right",
+    "source": "Parts/Washer/Dial-Right.blend",
+    "runtime": "Parts/Washer/Dial-Right.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.6499999761581421
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        2.9749999046325684
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.7029999494552612
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.Drum",
+    "part": "Drum",
+    "source": "Parts/Washer/Drum.blend",
+    "runtime": "Parts/Washer/Drum.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.36000001430511475
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.130000114440918
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.9430000185966492
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.FrontPanel",
+    "part": "FrontPanel",
+    "source": "Parts/Washer/FrontPanel.blend",
+    "runtime": "Parts/Washer/FrontPanel.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.0310001373291016
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.15299999713897705
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Washer.PreviewGlass",
+    "part": "PreviewGlass",
+    "source": "Parts/Washer/PreviewGlass.blend",
+    "runtime": "Parts/Washer/PreviewGlass.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -0.36000001430511475
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        3.058000087738037
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.4779999852180481
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.BlankSurface",
+    "part": "BlankSurface",
+    "source": "Parts/ProjectBoard/BlankSurface.blend",
+    "runtime": "Parts/ProjectBoard/BlankSurface.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.730743408203125
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.593770742416382
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.7549999952316284
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.Frame",
+    "part": "Frame-left",
+    "source": "Parts/ProjectBoard/Frame-left.blend",
+    "runtime": "Parts/ProjectBoard/Frame-left.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -3.726703405380249
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.5624555349349976
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.6899999976158142
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.Frame",
+    "part": "Frame-right",
+    "source": "Parts/ProjectBoard/Frame-right.blend",
+    "runtime": "Parts/ProjectBoard/Frame-right.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -1.6994282007217407
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.589730739593506
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.6899999976158142
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.Frame",
+    "part": "Frame-bottom",
+    "source": "Parts/ProjectBoard/Frame-bottom.blend",
+    "runtime": "Parts/ProjectBoard/Frame-bottom.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.7130658626556396
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.5760931968688965
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.6980000138282776
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.Frame",
+    "part": "Frame-top",
+    "source": "Parts/ProjectBoard/Frame-top.blend",
+    "runtime": "Parts/ProjectBoard/Frame-top.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.7130658626556396
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.5760931968688965
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.2320001125335693
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.Joinery",
+    "part": "Corner-peg-1",
+    "source": "Parts/ProjectBoard/Corner-peg-1.blend",
+    "runtime": "Parts/ProjectBoard/Corner-peg-1.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -3.6404364109039307
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.53134286403656
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.7274999618530273
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.Joinery",
+    "part": "Corner-peg-2",
+    "source": "Parts/ProjectBoard/Corner-peg-2.blend",
+    "runtime": "Parts/ProjectBoard/Corner-peg-2.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -3.6404364109039307
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.53134286403656
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.1675002574920654
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.Joinery",
+    "part": "Corner-peg-3",
+    "source": "Parts/ProjectBoard/Corner-peg-3.blend",
+    "runtime": "Parts/ProjectBoard/Corner-peg-3.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -1.6683155298233032
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.5034637451171875
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.7274999618530273
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ProjectBoard.Joinery",
+    "part": "Corner-peg-4",
+    "source": "Parts/ProjectBoard/Corner-peg-4.blend",
+    "runtime": "Parts/ProjectBoard/Corner-peg-4.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -1.6683155298233032
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.5034637451171875
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.1675002574920654
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.Arch",
+    "part": "Arch",
+    "source": "Parts/Fireplace/Arch.blend",
+    "runtime": "Parts/Fireplace/Arch.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.098371982574463
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.381722092628479
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        0.9100863337516785
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.Embers",
+    "part": "Embers",
+    "source": "Parts/Fireplace/Embers.blend",
+    "runtime": "Parts/Fireplace/Embers.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.2635481357574463
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.5468987226486206
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        0.2942200005054474
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.Firebox",
+    "part": "Firebox",
+    "source": "Parts/Fireplace/Firebox.blend",
+    "runtime": "Parts/Fireplace/Firebox.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828169822693,
+        0.0,
+        3.2943074703216553
+      ],
+      [
+        -0.5515432357788086,
+        0.6151828169822693,
+        0.0,
+        1.57765793800354
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        0.26930996775627136
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.Fuel",
+    "part": "Log-left",
+    "source": "Parts/Fireplace/Log-left.blend",
+    "runtime": "Parts/Fireplace/Log-left.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.1727561950683594
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.5884766578674316
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        0.2608500123023987
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.Fuel",
+    "part": "Log-right",
+    "source": "Parts/Fireplace/Log-right.blend",
+    "runtime": "Parts/Fireplace/Log-right.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.305126428604126
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.4561060667037964
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        0.2608500123023987
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.Hearth",
+    "part": "Hearth",
+    "source": "Parts/Fireplace/Hearth.blend",
+    "runtime": "Parts/Fireplace/Hearth.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828169822693,
+        0.0,
+        3.2789275646209717
+      ],
+      [
+        -0.5515432357788086,
+        0.6151828169822693,
+        0.0,
+        1.562278389930725
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.HoodAndFlue",
+    "part": "Hood",
+    "source": "Parts/Fireplace/Hood.blend",
+    "runtime": "Parts/Fireplace/Hood.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828169822693,
+        0.0,
+        3.303535223007202
+      ],
+      [
+        -0.5515432357788086,
+        0.6151828169822693,
+        0.0,
+        1.586885690689087
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        1.3159996271133423
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.HoodAndFlue",
+    "part": "Chimney",
+    "source": "Parts/Fireplace/Chimney.blend",
+    "runtime": "Parts/Fireplace/Chimney.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.3035354614257812
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.586885690689087
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        1.6638000011444092
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.HoodAndFlue",
+    "part": "Chimney-cap",
+    "source": "Parts/Fireplace/Chimney-cap.blend",
+    "runtime": "Parts/Fireplace/Chimney-cap.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.3035354614257812
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.586885690689087
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        3.844600200653076
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Carcass",
+    "part": "Cabinet-back",
+    "source": "Parts/LeftCabinet/Cabinet-back.blend",
+    "runtime": "Parts/LeftCabinet/Cabinet-back.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.6610000133514404
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        -0.18699973821640015
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.039999961853027344
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Carcass",
+    "part": "Gable-left",
+    "source": "Parts/LeftCabinet/Gable-left.blend",
+    "runtime": "Parts/LeftCabinet/Gable-left.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.5360000133514404
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        -0.9386796951293945
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.029999971389770508
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Carcass",
+    "part": "Gable-right",
+    "source": "Parts/LeftCabinet/Gable-right.blend",
+    "runtime": "Parts/LeftCabinet/Gable-right.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.5359997749328613
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        0.5646804571151733
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.029999971389770508
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Shelf.0",
+    "part": "Shelf.0",
+    "source": "Parts/LeftCabinet/Shelf-0.blend",
+    "runtime": "Parts/LeftCabinet/Shelf-0.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.4897499084472656
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        -0.1869996190071106
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0005000010132789612
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Shelf.1",
+    "part": "Shelf.1",
+    "source": "Parts/LeftCabinet/Shelf-1.blend",
+    "runtime": "Parts/LeftCabinet/Shelf-1.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.4897499084472656
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        -0.1869996190071106
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.7505000233650208
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Shelf.2",
+    "part": "Shelf.2",
+    "source": "Parts/LeftCabinet/Shelf-2.blend",
+    "runtime": "Parts/LeftCabinet/Shelf-2.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.4897499084472656
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        -0.1869996190071106
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.4704999923706055
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Shelf.3",
+    "part": "Shelf.3",
+    "source": "Parts/LeftCabinet/Shelf-3.blend",
+    "runtime": "Parts/LeftCabinet/Shelf-3.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.4897499084472656
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        -0.1869996190071106
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.180500030517578
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Window.Casement and sill",
+    "part": "Casement and sill",
+    "source": "Parts/Window/Casement-and-sill.blend",
+    "runtime": "Parts/Window/Casement-and-sill.glb",
+    "blender_world_matrix": [
+      [
+        0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.6601762771606445
+      ],
+      [
+        -0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.6601762771606445
+      ],
+      [
+        0.0,
+        0.0,
+        1.1299999952316284,
+        0.9900000691413879
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Window.Crossbars",
+    "part": "Crossbars",
+    "source": "Parts/Window/Crossbars.blend",
+    "runtime": "Parts/Window/Crossbars.glb",
+    "blender_world_matrix": [
+      [
+        0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.742476224899292
+      ],
+      [
+        -0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.742476224899292
+      ],
+      [
+        0.0,
+        0.0,
+        1.1299999952316284,
+        1.1521549224853516
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Window.Distant landscape",
+    "part": "Distant landscape",
+    "source": "Parts/Window/Distant-landscape.blend",
+    "runtime": "Parts/Window/Distant-landscape.glb",
+    "blender_world_matrix": [
+      [
+        0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.8312487602233887
+      ],
+      [
+        -0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.847229242324829
+      ],
+      [
+        0.0,
+        0.0,
+        1.1299999952316284,
+        1.084355115890503
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Window.Outdoor light",
+    "part": "Outdoor light",
+    "source": "Parts/Window/Outdoor-light.blend",
+    "runtime": "Parts/Window/Outdoor-light.glb",
+    "blender_world_matrix": [
+      [
+        0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.915865898132324
+      ],
+      [
+        -0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.915865898132324
+      ],
+      [
+        0.0,
+        0.0,
+        1.1299999952316284,
+        1.1013051271438599
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Cantilever",
+    "part": "Cantilever",
+    "source": "Parts/NicheLantern/Cantilever.blend",
+    "runtime": "Parts/NicheLantern/Cantilever.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.9361727237701416
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.2483341693878174
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.913830041885376
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Hanger",
+    "part": "Hanger",
+    "source": "Parts/NicheLantern/Hanger.blend",
+    "runtime": "Parts/NicheLantern/Hanger.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.7989940643310547
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.1111552715301514
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.0199999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Housing",
+    "part": "Housing",
+    "source": "Parts/NicheLantern/Housing.blend",
+    "runtime": "Parts/NicheLantern/Housing.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.7989940643310547
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.1111552715301514
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.0199999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Luminous panes",
+    "part": "Luminous panes",
+    "source": "Parts/NicheLantern/Luminous-panes.blend",
+    "runtime": "Parts/NicheLantern/Luminous-panes.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.798954963684082
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.1111161708831787
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.542999744415283
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ShelfLantern.Cantilever",
+    "part": "Cantilever",
+    "source": "Parts/NicheLantern/Cantilever.blend",
+    "runtime": "Parts/NicheLantern/Cantilever.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8199999332427979,
+        0.0,
+        -3.449119806289673
+      ],
+      [
+        0.8199999928474426,
+        5.960464477539063e-08,
+        0.0,
+        -0.5270003080368042
+      ],
+      [
+        0.0,
+        0.0,
+        0.8199999928474426,
+        2.678140640258789
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ShelfLantern.Hanger",
+    "part": "Hanger",
+    "source": "Parts/ShelfLantern/Hanger.blend",
+    "runtime": "Parts/ShelfLantern/Hanger.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8199999332427979,
+        0.0,
+        -3.2900397777557373
+      ],
+      [
+        0.8199999928474426,
+        5.960464477539063e-08,
+        0.0,
+        -0.5270004272460938
+      ],
+      [
+        0.0,
+        0.0,
+        0.8199999928474426,
+        2.765200138092041
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ShelfLantern.Housing",
+    "part": "Housing",
+    "source": "Parts/ShelfLantern/Housing.blend",
+    "runtime": "Parts/ShelfLantern/Housing.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8199999332427979,
+        0.0,
+        -3.2900397777557373
+      ],
+      [
+        0.8199999928474426,
+        5.960464477539063e-08,
+        0.0,
+        -0.5270004272460938
+      ],
+      [
+        0.0,
+        0.0,
+        0.8199999928474426,
+        2.765200138092041
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ShelfLantern.Luminous panes",
+    "part": "Luminous panes",
+    "source": "Parts/NicheLantern/Luminous-panes.blend",
+    "runtime": "Parts/NicheLantern/Luminous-panes.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8199999332427979,
+        0.0,
+        -3.289994716644287
+      ],
+      [
+        0.8199999928474426,
+        5.960464477539063e-08,
+        0.0,
+        -0.5270002484321594
+      ],
+      [
+        0.0,
+        0.0,
+        0.8199999928474426,
+        2.3740601539611816
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Marigold.Flowers",
+    "part": "Flowers",
+    "source": "Parts/Marigold/Flowers.blend",
+    "runtime": "Parts/Marigold/Flowers.glb",
+    "blender_world_matrix": [
+      [
+        1.1820982694625854,
+        -0.33991745114326477,
+        0.0,
+        -2.7700002193450928
+      ],
+      [
+        0.33991745114326477,
+        1.1820982694625854,
+        0.0,
+        -1.7000001668930054
+      ],
+      [
+        0.0,
+        0.0,
+        1.2300000190734863,
+        0.409900039434433
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Marigold.Foliage",
+    "part": "Foliage",
+    "source": "Parts/Marigold/Foliage.blend",
+    "runtime": "Parts/Marigold/Foliage.glb",
+    "blender_world_matrix": [
+      [
+        1.1820982694625854,
+        -0.33991745114326477,
+        0.0,
+        -2.7700002193450928
+      ],
+      [
+        0.33991745114326477,
+        1.1820982694625854,
+        0.0,
+        -1.7000001668930054
+      ],
+      [
+        0.0,
+        0.0,
+        1.2300000190734863,
+        0.409900039434433
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Marigold.Planter",
+    "part": "Planter",
+    "source": "Parts/Marigold/Planter.blend",
+    "runtime": "Parts/Marigold/Planter.glb",
+    "blender_world_matrix": [
+      [
+        1.1820982694625854,
+        -0.33991745114326477,
+        0.0,
+        -2.777540445327759
+      ],
+      [
+        0.33991745114326477,
+        1.1820982694625854,
+        0.0,
+        -1.715003490447998
+      ],
+      [
+        0.0,
+        0.0,
+        1.2300000190734863,
+        0.004000000189989805
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Marigold.Shoots",
+    "part": "Shoots",
+    "source": "Parts/Marigold/Shoots.blend",
+    "runtime": "Parts/Marigold/Shoots.glb",
+    "blender_world_matrix": [
+      [
+        1.1820982694625854,
+        -0.33991745114326477,
+        0.0,
+        -2.7700002193450928
+      ],
+      [
+        0.33991745114326477,
+        1.1820982694625854,
+        0.0,
+        -1.7000001668930054
+      ],
+      [
+        0.0,
+        0.0,
+        1.2300000190734863,
+        0.409900039434433
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Rose.Flowers",
+    "part": "Flowers",
+    "source": "Parts/Rose/Flowers.blend",
+    "runtime": "Parts/Rose/Flowers.glb",
+    "blender_world_matrix": [
+      [
+        0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.1110618114471436
+      ],
+      [
+        -0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.626553535461426
+      ],
+      [
+        0.0,
+        0.0,
+        1.190000057220459,
+        0.39670005440711975
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Rose.Foliage",
+    "part": "Foliage",
+    "source": "Parts/Rose/Foliage.blend",
+    "runtime": "Parts/Rose/Foliage.glb",
+    "blender_world_matrix": [
+      [
+        0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.1110618114471436
+      ],
+      [
+        -0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.626553535461426
+      ],
+      [
+        0.0,
+        0.0,
+        1.190000057220459,
+        0.39670005440711975
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Rose.Planter",
+    "part": "Planter",
+    "source": "Parts/Rose/Planter.blend",
+    "runtime": "Parts/Rose/Planter.glb",
+    "blender_world_matrix": [
+      [
+        0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.091465473175049
+      ],
+      [
+        -0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.6287426948547363
+      ],
+      [
+        0.0,
+        0.0,
+        1.190000057220459,
+        0.0039999824948608875
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Rose.Shoots",
+    "part": "Shoots",
+    "source": "Parts/Rose/Shoots.blend",
+    "runtime": "Parts/Rose/Shoots.glb",
+    "blender_world_matrix": [
+      [
+        0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.1110618114471436
+      ],
+      [
+        -0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.626553535461426
+      ],
+      [
+        0.0,
+        0.0,
+        1.190000057220459,
+        0.39670005440711975
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheFern.Foliage",
+    "part": "Foliage",
+    "source": "Parts/NicheFern/Foliage.blend",
+    "runtime": "Parts/NicheFern/Foliage.glb",
+    "blender_world_matrix": [
+      [
+        1.0700000524520874,
+        0.0,
+        0.0,
+        0.8500000238418579
+      ],
+      [
+        0.0,
+        1.0700000524520874,
+        0.0,
+        3.490000009536743
+      ],
+      [
+        0.0,
+        0.0,
+        1.0700000524520874,
+        2.365600109100342
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheFern.Planter",
+    "part": "Planter",
+    "source": "Parts/NicheFern/Planter.blend",
+    "runtime": "Parts/NicheFern/Planter.glb",
+    "blender_world_matrix": [
+      [
+        1.0700000524520874,
+        0.0,
+        0.0,
+        0.8520498275756836
+      ],
+      [
+        0.0,
+        1.0700000524520874,
+        0.0,
+        3.490000009536743
+      ],
+      [
+        0.0,
+        0.0,
+        1.0700000524520874,
+        2.172999858856201
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheFern.Shoots",
+    "part": "Shoots",
+    "source": "Parts/NicheFern/Shoots.blend",
+    "runtime": "Parts/NicheFern/Shoots.glb",
+    "blender_world_matrix": [
+      [
+        1.0700000524520874,
+        0.0,
+        0.0,
+        0.8500000238418579
+      ],
+      [
+        0.0,
+        1.0700000524520874,
+        0.0,
+        3.490000009536743
+      ],
+      [
+        0.0,
+        0.0,
+        1.0700000524520874,
+        2.365600109100342
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ShelfFern.Foliage",
+    "part": "Foliage",
+    "source": "Parts/ShelfFern/Foliage.blend",
+    "runtime": "Parts/ShelfFern/Foliage.glb",
+    "blender_world_matrix": [
+      [
+        1.4901161193847656e-07,
+        -1.0499999523162842,
+        0.0,
+        -3.5359997749328613
+      ],
+      [
+        1.0499999523162842,
+        1.1920928955078125e-07,
+        0.0,
+        0.20300042629241943
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        1.784999966621399
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ShelfFern.Planter",
+    "part": "Planter",
+    "source": "Parts/ShelfFern/Planter.blend",
+    "runtime": "Parts/ShelfFern/Planter.glb",
+    "blender_world_matrix": [
+      [
+        1.4901161193847656e-07,
+        -1.0499999523162842,
+        0.0,
+        -3.5360000133514404
+      ],
+      [
+        1.0499999523162842,
+        1.1920928955078125e-07,
+        0.0,
+        0.20453059673309326
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        1.596000075340271
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ShelfFern.Shoots",
+    "part": "Shoots",
+    "source": "Parts/ShelfFern/Shoots.blend",
+    "runtime": "Parts/ShelfFern/Shoots.glb",
+    "blender_world_matrix": [
+      [
+        1.4901161193847656e-07,
+        -1.0499999523162842,
+        0.0,
+        -3.5359997749328613
+      ],
+      [
+        1.0499999523162842,
+        1.1920928955078125e-07,
+        0.0,
+        0.20300042629241943
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        1.784999966621399
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheTowel1.Fold 1",
+    "part": "Fold 1",
+    "source": "Parts/NicheTowel1/Fold-1.blend",
+    "runtime": "Parts/NicheTowel1/Fold-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0299999713897705,
+        0.0,
+        0.0,
+        -0.43000003695487976
+      ],
+      [
+        0.0,
+        1.0299999713897705,
+        0.0,
+        3.450000286102295
+      ],
+      [
+        0.0,
+        0.0,
+        1.0299999713897705,
+        2.1730003356933594
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheTowel2.Fold 1",
+    "part": "Fold 1",
+    "source": "Parts/NicheTowel2/Fold-1.blend",
+    "runtime": "Parts/NicheTowel2/Fold-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0299999713897705,
+        0.0,
+        0.0,
+        -0.43000003695487976
+      ],
+      [
+        0.0,
+        1.0299999713897705,
+        0.0,
+        3.450000286102295
+      ],
+      [
+        0.0,
+        0.0,
+        1.0299999713897705,
+        2.2699997425079346
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheTowel3.Fold 1",
+    "part": "Fold 1",
+    "source": "Parts/NicheTowel2/Fold-1.blend",
+    "runtime": "Parts/NicheTowel2/Fold-1.glb",
+    "blender_world_matrix": [
+      [
+        1.0299999713897705,
+        0.0,
+        0.0,
+        -0.43000003695487976
+      ],
+      [
+        0.0,
+        1.0299999713897705,
+        0.0,
+        3.450000286102295
+      ],
+      [
+        0.0,
+        0.0,
+        1.0299999713897705,
+        2.3670003414154053
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CabinetTowel1.Fold 1",
+    "part": "Fold 1",
+    "source": "Parts/NicheTowel2/Fold-1.blend",
+    "runtime": "Parts/NicheTowel2/Fold-1.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -1.029999852180481,
+        0.0,
+        -3.4839999675750732
+      ],
+      [
+        1.0299999713897705,
+        8.940696716308594e-08,
+        0.0,
+        -0.4869999289512634
+      ],
+      [
+        0.0,
+        0.0,
+        1.0299999713897705,
+        0.8759999871253967
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CabinetTowel2.Fold 1",
+    "part": "Fold 1",
+    "source": "Parts/NicheTowel2/Fold-1.blend",
+    "runtime": "Parts/NicheTowel2/Fold-1.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -1.029999852180481,
+        0.0,
+        -3.4839999675750732
+      ],
+      [
+        1.0299999713897705,
+        8.940696716308594e-08,
+        0.0,
+        -0.4869999289512634
+      ],
+      [
+        0.0,
+        0.0,
+        1.0299999713897705,
+        0.9729999899864197
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CabinetTowel3.Fold 1",
+    "part": "Fold 1",
+    "source": "Parts/NicheTowel2/Fold-1.blend",
+    "runtime": "Parts/NicheTowel2/Fold-1.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -1.029999852180481,
+        0.0,
+        -3.4839999675750732
+      ],
+      [
+        1.0299999713897705,
+        8.940696716308594e-08,
+        0.0,
+        -0.4869999289512634
+      ],
+      [
+        0.0,
+        0.0,
+        1.0299999713897705,
+        1.070000171661377
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "WestIvy.Crown",
+    "part": "Crown",
+    "source": "Parts/WestIvy/Crown.blend",
+    "runtime": "Parts/WestIvy/Crown.glb",
+    "blender_world_matrix": [
+      [
+        0.7353909611701965,
+        -0.7353909611701965,
+        0.0,
+        -3.8606841564178467
+      ],
+      [
+        0.7353909611701965,
+        0.7353909611701965,
+        0.0,
+        0.648510217666626
+      ],
+      [
+        0.0,
+        0.0,
+        0.7487999796867371,
+        3.467299461364746
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "WestIvy.Ivy leaves",
+    "part": "Ivy leaves",
+    "source": "Parts/WestIvy/Ivy-leaves.blend",
+    "runtime": "Parts/WestIvy/Ivy-leaves.glb",
+    "blender_world_matrix": [
+      [
+        0.7353909611701965,
+        -0.7353909611701965,
+        0.0,
+        -3.8299999237060547
+      ],
+      [
+        0.7353909611701965,
+        0.7353909611701965,
+        0.0,
+        0.6399996280670166
+      ],
+      [
+        0.0,
+        0.0,
+        0.7487999796867371,
+        3.5209765434265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "WestIvy.Trailing stems",
+    "part": "Trailing stems",
+    "source": "Parts/WestIvy/Trailing-stems.blend",
+    "runtime": "Parts/WestIvy/Trailing-stems.glb",
+    "blender_world_matrix": [
+      [
+        0.7353909611701965,
+        -0.7353909611701965,
+        0.0,
+        -3.8299999237060547
+      ],
+      [
+        0.7353909611701965,
+        0.7353909611701965,
+        0.0,
+        0.6399996280670166
+      ],
+      [
+        0.0,
+        0.0,
+        0.7487999796867371,
+        3.5209765434265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "EastIvy.Crown",
+    "part": "Crown",
+    "source": "Parts/EastIvy/Crown.blend",
+    "runtime": "Parts/EastIvy/Crown.glb",
+    "blender_world_matrix": [
+      [
+        0.7353910207748413,
+        0.7353910207748413,
+        0.0,
+        2.7662346363067627
+      ],
+      [
+        -0.7353910207748413,
+        0.7353910207748413,
+        0.0,
+        2.7019994258880615
+      ],
+      [
+        0.0,
+        0.0,
+        1.0399999618530273,
+        3.707977771759033
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "EastIvy.Ivy leaves",
+    "part": "Ivy leaves",
+    "source": "Parts/EastIvy/Ivy-leaves.blend",
+    "runtime": "Parts/EastIvy/Ivy-leaves.glb",
+    "blender_world_matrix": [
+      [
+        0.7353910207748413,
+        0.7353910207748413,
+        0.0,
+        2.7387213706970215
+      ],
+      [
+        -0.7353910207748413,
+        0.7353910207748413,
+        0.0,
+        2.6918585300445557
+      ],
+      [
+        0.0,
+        0.0,
+        1.0399999618530273,
+        3.7908005714416504
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "EastIvy.Trailing stems",
+    "part": "Trailing stems",
+    "source": "Parts/EastIvy/Trailing-stems.blend",
+    "runtime": "Parts/EastIvy/Trailing-stems.glb",
+    "blender_world_matrix": [
+      [
+        0.7353910207748413,
+        0.7353910207748413,
+        0.0,
+        2.7387213706970215
+      ],
+      [
+        -0.7353910207748413,
+        0.7353910207748413,
+        0.0,
+        2.6918585300445557
+      ],
+      [
+        0.0,
+        0.0,
+        1.0399999618530273,
+        3.7908005714416504
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "FrontWestIvy.Crown",
+    "part": "Crown",
+    "source": "Parts/WestIvy/Crown.blend",
+    "runtime": "Parts/WestIvy/Crown.glb",
+    "blender_world_matrix": [
+      [
+        0.3676954507827759,
+        0.36769556999206543,
+        0.0,
+        -2.8845670223236084
+      ],
+      [
+        -0.36769556999206543,
+        0.3676954507827759,
+        0.0,
+        -2.732891082763672
+      ],
+      [
+        0.0,
+        0.0,
+        0.5199999809265137,
+        0.7431246042251587
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "FrontWestIvy.Ivy leaves",
+    "part": "Ivy leaves",
+    "source": "Parts/FrontWestIvy/Ivy-leaves.blend",
+    "runtime": "Parts/FrontWestIvy/Ivy-leaves.glb",
+    "blender_world_matrix": [
+      [
+        0.3676954507827759,
+        0.36769556999206543,
+        0.0,
+        -2.888822317123413
+      ],
+      [
+        -0.36769556999206543,
+        0.3676954507827759,
+        0.0,
+        -2.7482335567474365
+      ],
+      [
+        0.0,
+        0.0,
+        0.5199999809265137,
+        0.7804000973701477
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "FrontWestIvy.Trailing stems",
+    "part": "Trailing stems",
+    "source": "Parts/WestIvy/Trailing-stems.blend",
+    "runtime": "Parts/WestIvy/Trailing-stems.glb",
+    "blender_world_matrix": [
+      [
+        0.3676954507827759,
+        0.36769556999206543,
+        0.0,
+        -2.888822317123413
+      ],
+      [
+        -0.36769556999206543,
+        0.3676954507827759,
+        0.0,
+        -2.7482335567474365
+      ],
+      [
+        0.0,
+        0.0,
+        0.5199999809265137,
+        0.7804000973701477
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "FrontEastIvy.Crown",
+    "part": "Crown",
+    "source": "Parts/EastIvy/Crown.blend",
+    "runtime": "Parts/EastIvy/Crown.glb",
+    "blender_world_matrix": [
+      [
+        0.36769551038742065,
+        -0.36769551038742065,
+        0.0,
+        2.883751630783081
+      ],
+      [
+        0.36769551038742065,
+        0.36769551038742065,
+        0.0,
+        -2.7344768047332764
+      ],
+      [
+        0.0,
+        0.0,
+        0.5199999809265137,
+        0.7389886975288391
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "FrontEastIvy.Ivy leaves",
+    "part": "Ivy leaves",
+    "source": "Parts/FrontEastIvy/Ivy-leaves.blend",
+    "runtime": "Parts/FrontEastIvy/Ivy-leaves.glb",
+    "blender_world_matrix": [
+      [
+        0.36769551038742065,
+        -0.36769551038742065,
+        0.0,
+        2.888822078704834
+      ],
+      [
+        0.36769551038742065,
+        0.36769551038742065,
+        0.0,
+        -2.7482333183288574
+      ],
+      [
+        0.0,
+        0.0,
+        0.5199999809265137,
+        0.7804000377655029
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "FrontEastIvy.Trailing stems",
+    "part": "Trailing stems",
+    "source": "Parts/FrontEastIvy/Trailing-stems.blend",
+    "runtime": "Parts/FrontEastIvy/Trailing-stems.glb",
+    "blender_world_matrix": [
+      [
+        0.36769551038742065,
+        -0.36769551038742065,
+        0.0,
+        2.888822078704834
+      ],
+      [
+        0.36769551038742065,
+        0.36769551038742065,
+        0.0,
+        -2.7482333183288574
+      ],
+      [
+        0.0,
+        0.0,
+        0.5199999809265137,
+        0.7804000377655029
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LinenBasket.Bottom",
+    "part": "Bottom",
+    "source": "Parts/LinenBasket/Bottom.blend",
+    "runtime": "Parts/LinenBasket/Bottom.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9800000190734863,
+        0.0,
+        -3.495999813079834
+      ],
+      [
+        0.9800000786781311,
+        8.940696716308594e-08,
+        0.0,
+        -0.47699999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.9800000190734863,
+        0.12700000405311584
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LinenBasket.Rolled-rim",
+    "part": "Rolled-rim",
+    "source": "Parts/LinenBasket/Rolled-rim.blend",
+    "runtime": "Parts/LinenBasket/Rolled-rim.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9800000190734863,
+        0.0,
+        -3.495999813079834
+      ],
+      [
+        0.9800000786781311,
+        8.940696716308594e-08,
+        0.0,
+        -0.47699999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.9800000190734863,
+        0.40532001852989197
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LinenBasket.Woven-walls",
+    "part": "Woven-walls",
+    "source": "Parts/LinenBasket/Woven-walls.blend",
+    "runtime": "Parts/LinenBasket/Woven-walls.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9800000190734863,
+        0.0,
+        -3.495999813079834
+      ],
+      [
+        0.9800000786781311,
+        8.940696716308594e-08,
+        0.0,
+        -0.47699999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.9800000190734863,
+        0.17599999904632568
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BasketBlueRoll.Rolled-linen",
+    "part": "Rolled-linen",
+    "source": "Parts/BasketBlueRoll/Rolled-linen.blend",
+    "runtime": "Parts/BasketBlueRoll/Rolled-linen.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.5073201656341553
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.606999933719635
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        0.33627253770828247
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BasketBlueRoll.Wound-edge",
+    "part": "Wound-edge",
+    "source": "Parts/BasketBlueRoll/Wound-edge.blend",
+    "runtime": "Parts/BasketBlueRoll/Wound-edge.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.379808187484741
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.6158701777458191
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        0.3694261312484741
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BasketIvoryRoll.Rolled-linen",
+    "part": "Rolled-linen",
+    "source": "Parts/BasketIvoryRoll/Rolled-linen.blend",
+    "runtime": "Parts/BasketIvoryRoll/Rolled-linen.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9299999475479126,
+        0.0,
+        -3.512395143508911
+      ],
+      [
+        0.9300000667572021,
+        8.940696716308594e-08,
+        0.0,
+        -0.39699989557266235
+      ],
+      [
+        0.0,
+        0.0,
+        0.9300000071525574,
+        0.3394016921520233
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BasketIvoryRoll.Wound-edge",
+    "part": "Wound-edge",
+    "source": "Parts/BasketIvoryRoll/Wound-edge.blend",
+    "runtime": "Parts/BasketIvoryRoll/Wound-edge.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9299999475479126,
+        0.0,
+        -3.377638101577759
+      ],
+      [
+        0.9300000667572021,
+        8.940696716308594e-08,
+        0.0,
+        -0.40637439489364624
+      ],
+      [
+        0.0,
+        0.0,
+        0.9300000071525574,
+        0.374439001083374
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SageWashBox.Badge",
+    "part": "Badge",
+    "source": "Parts/SageWashBox/Badge.blend",
+    "runtime": "Parts/SageWashBox/Badge.glb",
+    "blender_world_matrix": [
+      [
+        1.4901161193847656e-07,
+        -1.0499999523162842,
+        0.0,
+        -3.4009501934051514
+      ],
+      [
+        1.0499999523162842,
+        1.1920928955078125e-07,
+        0.0,
+        0.03300011157989502
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        0.29237502813339233
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SageWashBox.Band",
+    "part": "Band",
+    "source": "Parts/SageWashBox/Band.blend",
+    "runtime": "Parts/SageWashBox/Band.glb",
+    "blender_world_matrix": [
+      [
+        1.4901161193847656e-07,
+        -1.0499999523162842,
+        0.0,
+        -3.403050184249878
+      ],
+      [
+        1.0499999523162842,
+        1.1920928955078125e-07,
+        0.0,
+        0.03300023078918457
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        0.21047502756118774
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SageWashBox.Carton",
+    "part": "Carton",
+    "source": "Parts/SageWashBox/Carton.blend",
+    "runtime": "Parts/SageWashBox/Carton.glb",
+    "blender_world_matrix": [
+      [
+        1.4901161193847656e-07,
+        -1.0499999523162842,
+        0.0,
+        -3.4860000610351562
+      ],
+      [
+        1.0499999523162842,
+        1.1920928955078125e-07,
+        0.0,
+        0.033000051975250244
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        0.12700000405311584
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SageWashBox.Gable-fold",
+    "part": "Gable-fold",
+    "source": "Parts/SageWashBox/Gable-fold.blend",
+    "runtime": "Parts/SageWashBox/Gable-fold.glb",
+    "blender_world_matrix": [
+      [
+        1.4901161193847656e-07,
+        -1.0499999523162842,
+        0.0,
+        -3.4860000610351562
+      ],
+      [
+        1.0499999523162842,
+        1.1920928955078125e-07,
+        0.0,
+        0.033000051975250244
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        0.4440999925136566
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SageWashBox.Top-seam",
+    "part": "Top-seam",
+    "source": "Parts/SageWashBox/Top-seam.blend",
+    "runtime": "Parts/SageWashBox/Top-seam.glb",
+    "blender_world_matrix": [
+      [
+        1.4901161193847656e-07,
+        -1.0499999523162842,
+        0.0,
+        -3.4860000610351562
+      ],
+      [
+        1.0499999523162842,
+        1.1920928955078125e-07,
+        0.0,
+        0.033000051975250244
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        0.5081499814987183
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OchreWashBox.Badge",
+    "part": "Badge",
+    "source": "Parts/OchreWashBox/Badge.blend",
+    "runtime": "Parts/OchreWashBox/Badge.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.8299999833106995,
+        0.0,
+        -3.450770139694214
+      ],
+      [
+        0.8299999833106995,
+        8.940696716308594e-08,
+        0.0,
+        0.29299986362457275
+      ],
+      [
+        0.0,
+        0.0,
+        0.8299999833106995,
+        0.2577250003814697
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OchreWashBox.Band",
+    "part": "Band",
+    "source": "Parts/OchreWashBox/Band.blend",
+    "runtime": "Parts/OchreWashBox/Band.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.8299999833106995,
+        0.0,
+        -3.452430009841919
+      ],
+      [
+        0.8299999833106995,
+        8.940696716308594e-08,
+        0.0,
+        0.29300010204315186
+      ],
+      [
+        0.0,
+        0.0,
+        0.8299999833106995,
+        0.19298501312732697
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OchreWashBox.Carton",
+    "part": "Carton",
+    "source": "Parts/OchreWashBox/Carton.blend",
+    "runtime": "Parts/OchreWashBox/Carton.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.8299999833106995,
+        0.0,
+        -3.5180001258850098
+      ],
+      [
+        0.8299999833106995,
+        8.940696716308594e-08,
+        0.0,
+        0.29300010204315186
+      ],
+      [
+        0.0,
+        0.0,
+        0.8299999833106995,
+        0.12700000405311584
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OchreWashBox.Gable-fold",
+    "part": "Gable-fold",
+    "source": "Parts/OchreWashBox/Gable-fold.blend",
+    "runtime": "Parts/OchreWashBox/Gable-fold.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.8299999833106995,
+        0.0,
+        -3.5180001258850098
+      ],
+      [
+        0.8299999833106995,
+        8.940696716308594e-08,
+        0.0,
+        0.29300010204315186
+      ],
+      [
+        0.0,
+        0.0,
+        0.8299999833106995,
+        0.37766000628471375
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OchreWashBox.Top-seam",
+    "part": "Top-seam",
+    "source": "Parts/OchreWashBox/Top-seam.blend",
+    "runtime": "Parts/OchreWashBox/Top-seam.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.8299999833106995,
+        0.0,
+        -3.5180001258850098
+      ],
+      [
+        0.8299999833106995,
+        8.940696716308594e-08,
+        0.0,
+        0.29300010204315186
+      ],
+      [
+        0.0,
+        0.0,
+        0.8299999833106995,
+        0.4282900393009186
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SeafoamPitcher.Ceramic-body",
+    "part": "Ceramic-body",
+    "source": "Parts/SeafoamPitcher/Ceramic-body.blend",
+    "runtime": "Parts/SeafoamPitcher/Ceramic-body.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.9599999189376831,
+        0.0,
+        -3.446000099182129
+      ],
+      [
+        0.9599999785423279,
+        5.960464477539063e-08,
+        0.0,
+        0.1029999852180481
+      ],
+      [
+        0.0,
+        0.0,
+        0.9599999785423279,
+        0.875
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SeafoamPitcher.Glaze-stripe",
+    "part": "Glaze-stripe",
+    "source": "Parts/SeafoamPitcher/Glaze-stripe.blend",
+    "runtime": "Parts/SeafoamPitcher/Glaze-stripe.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.9599999189376831,
+        0.0,
+        -3.446000099182129
+      ],
+      [
+        0.9599999785423279,
+        5.960464477539063e-08,
+        0.0,
+        0.1029999852180481
+      ],
+      [
+        0.0,
+        0.0,
+        0.9599999785423279,
+        0.9642800688743591
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SeafoamPitcher.Loop-handle",
+    "part": "Loop-handle",
+    "source": "Parts/SeafoamPitcher/Loop-handle.blend",
+    "runtime": "Parts/SeafoamPitcher/Loop-handle.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.9599999189376831,
+        0.0,
+        -3.44599986076355
+      ],
+      [
+        0.9599999785423279,
+        5.960464477539063e-08,
+        0.0,
+        0.24940001964569092
+      ],
+      [
+        0.0,
+        0.0,
+        0.9599999785423279,
+        0.9878000617027283
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "SeafoamPitcher.Pouring-lip",
+    "part": "Pouring-lip",
+    "source": "Parts/SeafoamPitcher/Pouring-lip.blend",
+    "runtime": "Parts/SeafoamPitcher/Pouring-lip.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.9599999189376831,
+        0.0,
+        -3.446000099182129
+      ],
+      [
+        0.9599999785423279,
+        5.960464477539063e-08,
+        0.0,
+        0.0909966230392456
+      ],
+      [
+        0.0,
+        0.0,
+        0.9599999785423279,
+        1.1562801599502563
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CabinetBlueTin.Base-seam",
+    "part": "Base-seam",
+    "source": "Parts/CabinetBlueTin/Base-seam.blend",
+    "runtime": "Parts/CabinetBlueTin/Base-seam.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.7899999618530273,
+        0.0,
+        -3.490999937057495
+      ],
+      [
+        0.7900000214576721,
+        8.940696716308594e-08,
+        0.0,
+        0.3930000066757202
+      ],
+      [
+        0.0,
+        0.0,
+        0.7900000214576721,
+        0.8836901187896729
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CabinetBlueTin.Enamel-stripe",
+    "part": "Enamel-stripe",
+    "source": "Parts/CabinetBlueTin/Enamel-stripe.blend",
+    "runtime": "Parts/CabinetBlueTin/Enamel-stripe.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.7899999618530273,
+        0.0,
+        -3.490999937057495
+      ],
+      [
+        0.7900000214576721,
+        8.940696716308594e-08,
+        0.0,
+        0.3930000066757202
+      ],
+      [
+        0.0,
+        0.0,
+        0.7900000214576721,
+        0.9500499963760376
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CabinetBlueTin.Lid",
+    "part": "Lid",
+    "source": "Parts/CabinetBlueTin/Lid.blend",
+    "runtime": "Parts/CabinetBlueTin/Lid.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.7899999618530273,
+        0.0,
+        -3.490999937057495
+      ],
+      [
+        0.7900000214576721,
+        8.940696716308594e-08,
+        0.0,
+        0.3930000066757202
+      ],
+      [
+        0.0,
+        0.0,
+        0.7900000214576721,
+        1.060650110244751
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CabinetBlueTin.Tin",
+    "part": "Tin",
+    "source": "Parts/CabinetBlueTin/Tin.blend",
+    "runtime": "Parts/CabinetBlueTin/Tin.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.7899999618530273,
+        0.0,
+        -3.490999937057495
+      ],
+      [
+        0.7900000214576721,
+        8.940696716308594e-08,
+        0.0,
+        0.3930000066757202
+      ],
+      [
+        0.0,
+        0.0,
+        0.7900000214576721,
+        0.8750000596046448
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ApothecaryBottle.Body-band",
+    "part": "Body-band",
+    "source": "Parts/ApothecaryBottle/Body-band.blend",
+    "runtime": "Parts/ApothecaryBottle/Body-band.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -1.0199998617172241,
+        0.0,
+        -3.4790000915527344
+      ],
+      [
+        1.0199999809265137,
+        8.940696716308594e-08,
+        0.0,
+        -0.6669999957084656
+      ],
+      [
+        0.0,
+        0.0,
+        1.0199999809265137,
+        1.7000598907470703
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ApothecaryBottle.Drop-seal",
+    "part": "Drop-seal",
+    "source": "Parts/ApothecaryBottle/Drop-seal.blend",
+    "runtime": "Parts/ApothecaryBottle/Drop-seal.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -1.0199998617172241,
+        0.0,
+        -3.362719774246216
+      ],
+      [
+        1.0199999809265137,
+        8.940696716308594e-08,
+        0.0,
+        -0.666999876499176
+      ],
+      [
+        0.0,
+        0.0,
+        1.0199999809265137,
+        1.7153600454330444
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ApothecaryBottle.Foot",
+    "part": "Foot",
+    "source": "Parts/ApothecaryBottle/Foot.blend",
+    "runtime": "Parts/ApothecaryBottle/Foot.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -1.0199998617172241,
+        0.0,
+        -3.4790000915527344
+      ],
+      [
+        1.0199999809265137,
+        8.940696716308594e-08,
+        0.0,
+        -0.6669999957084656
+      ],
+      [
+        0.0,
+        0.0,
+        1.0199999809265137,
+        1.6072399616241455
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ApothecaryBottle.Neck-lip",
+    "part": "Neck-lip",
+    "source": "Parts/ApothecaryBottle/Neck-lip.blend",
+    "runtime": "Parts/ApothecaryBottle/Neck-lip.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -1.0199998617172241,
+        0.0,
+        -3.4790000915527344
+      ],
+      [
+        1.0199999809265137,
+        8.940696716308594e-08,
+        0.0,
+        -0.6669999957084656
+      ],
+      [
+        0.0,
+        0.0,
+        1.0199999809265137,
+        1.9560799598693848
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ApothecaryBottle.Stopper",
+    "part": "Stopper",
+    "source": "Parts/ApothecaryBottle/Stopper.blend",
+    "runtime": "Parts/ApothecaryBottle/Stopper.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -1.0199998617172241,
+        0.0,
+        -3.4790000915527344
+      ],
+      [
+        1.0199999809265137,
+        8.940696716308594e-08,
+        0.0,
+        -0.6669999957084656
+      ],
+      [
+        0.0,
+        0.0,
+        1.0199999809265137,
+        1.9785199165344238
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ApothecaryBottle.Vessel",
+    "part": "Vessel",
+    "source": "Parts/ApothecaryBottle/Vessel.blend",
+    "runtime": "Parts/ApothecaryBottle/Vessel.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -1.0199998617172241,
+        0.0,
+        -3.4790000915527344
+      ],
+      [
+        1.0199999809265137,
+        8.940696716308594e-08,
+        0.0,
+        -0.6669999957084656
+      ],
+      [
+        0.0,
+        0.0,
+        1.0199999809265137,
+        1.59499990940094
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CeramicPump.Body-band",
+    "part": "Body-band",
+    "source": "Parts/CeramicPump/Body-band.blend",
+    "runtime": "Parts/CeramicPump/Body-band.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.4660003185272217
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.3569997549057007
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        1.6856399774551392
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CeramicPump.Dispenser-lever",
+    "part": "Dispenser-lever",
+    "source": "Parts/CeramicPump/Dispenser-lever.blend",
+    "runtime": "Parts/CeramicPump/Dispenser-lever.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.4660000801086426
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.3332397937774658
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        1.9795600175857544
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CeramicPump.Drop-seal",
+    "part": "Drop-seal",
+    "source": "Parts/CeramicPump/Drop-seal.blend",
+    "runtime": "Parts/CeramicPump/Drop-seal.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.36568021774292
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.35699981451034546
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        1.6988401412963867
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CeramicPump.Foot",
+    "part": "Foot",
+    "source": "Parts/CeramicPump/Foot.blend",
+    "runtime": "Parts/CeramicPump/Foot.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.4660003185272217
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.3569997549057007
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        1.6055599451065063
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CeramicPump.Pump-collar",
+    "part": "Pump-collar",
+    "source": "Parts/CeramicPump/Pump-collar.blend",
+    "runtime": "Parts/CeramicPump/Pump-collar.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.4660003185272217
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.3569997549057007
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        1.9241201877593994
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CeramicPump.Pump-stem",
+    "part": "Pump-stem",
+    "source": "Parts/CeramicPump/Pump-stem.blend",
+    "runtime": "Parts/CeramicPump/Pump-stem.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.4660003185272217
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.3569997549057007
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        1.9434800148010254
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CeramicPump.Vessel",
+    "part": "Vessel",
+    "source": "Parts/CeramicPump/Vessel.blend",
+    "runtime": "Parts/CeramicPump/Vessel.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8799999356269836,
+        0.0,
+        -3.4660003185272217
+      ],
+      [
+        0.8799999952316284,
+        5.960464477539063e-08,
+        0.0,
+        -0.3569997549057007
+      ],
+      [
+        0.0,
+        0.0,
+        0.8799999952316284,
+        1.59499990940094
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LaundryLedger.Bookmark",
+    "part": "Bookmark",
+    "source": "Parts/LaundryLedger/Bookmark.blend",
+    "runtime": "Parts/LaundryLedger/Bookmark.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.3889997005462646
+      ],
+      [
+        1.0,
+        8.940696716308594e-08,
+        0.0,
+        0.1800001859664917
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.3475000858306885
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LaundryLedger.Linen-cover",
+    "part": "Linen-cover",
+    "source": "Parts/LaundryLedger/Linen-cover.blend",
+    "runtime": "Parts/LaundryLedger/Linen-cover.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.505999803543091
+      ],
+      [
+        1.0,
+        8.940696716308594e-08,
+        0.0,
+        0.09074985980987549
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.305000066757202
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LaundryLedger.Pages",
+    "part": "Pages",
+    "source": "Parts/LaundryLedger/Pages.blend",
+    "runtime": "Parts/LaundryLedger/Pages.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.505999803543091
+      ],
+      [
+        1.0,
+        8.940696716308594e-08,
+        0.0,
+        0.09299987554550171
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.315000057220459
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "WrappedSoap.Paper-wrap",
+    "part": "Paper-wrap",
+    "source": "Parts/WrappedSoap/Paper-wrap.blend",
+    "runtime": "Parts/WrappedSoap/Paper-wrap.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8999999165534973,
+        0.0,
+        -3.504000186920166
+      ],
+      [
+        0.8999999761581421,
+        5.960464477539063e-08,
+        0.0,
+        0.09300017356872559
+      ],
+      [
+        0.0,
+        0.0,
+        0.8999999761581421,
+        2.3954498767852783
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "WrappedSoap.Soap-cake",
+    "part": "Soap-cake",
+    "source": "Parts/WrappedSoap/Soap-cake.blend",
+    "runtime": "Parts/WrappedSoap/Soap-cake.glb",
+    "blender_world_matrix": [
+      [
+        8.940696716308594e-08,
+        -0.8999999165534973,
+        0.0,
+        -3.504000186920166
+      ],
+      [
+        0.8999999761581421,
+        5.960464477539063e-08,
+        0.0,
+        0.09300017356872559
+      ],
+      [
+        0.0,
+        0.0,
+        0.8999999761581421,
+        2.3949999809265137
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CreamWashBox.Badge",
+    "part": "Badge",
+    "source": "Parts/CreamWashBox/Badge.blend",
+    "runtime": "Parts/CreamWashBox/Badge.glb",
+    "blender_world_matrix": [
+      [
+        5.960464477539063e-08,
+        -0.7699999213218689,
+        0.0,
+        -3.45563006401062
+      ],
+      [
+        0.7699999809265137,
+        5.960464477539063e-08,
+        0.0,
+        0.3830002546310425
+      ],
+      [
+        0.0,
+        0.0,
+        0.7699999809265137,
+        2.4262754917144775
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CreamWashBox.Band",
+    "part": "Band",
+    "source": "Parts/CreamWashBox/Band.blend",
+    "runtime": "Parts/CreamWashBox/Band.glb",
+    "blender_world_matrix": [
+      [
+        5.960464477539063e-08,
+        -0.7699999213218689,
+        0.0,
+        -3.457169771194458
+      ],
+      [
+        0.7699999809265137,
+        5.960464477539063e-08,
+        0.0,
+        0.3830000162124634
+      ],
+      [
+        0.0,
+        0.0,
+        0.7699999809265137,
+        2.366215229034424
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CreamWashBox.Carton",
+    "part": "Carton",
+    "source": "Parts/CreamWashBox/Carton.blend",
+    "runtime": "Parts/CreamWashBox/Carton.glb",
+    "blender_world_matrix": [
+      [
+        5.960464477539063e-08,
+        -0.7699999213218689,
+        0.0,
+        -3.5179998874664307
+      ],
+      [
+        0.7699999809265137,
+        5.960464477539063e-08,
+        0.0,
+        0.3830002546310425
+      ],
+      [
+        0.0,
+        0.0,
+        0.7699999809265137,
+        2.3050003051757812
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CreamWashBox.Gable-fold",
+    "part": "Gable-fold",
+    "source": "Parts/CreamWashBox/Gable-fold.blend",
+    "runtime": "Parts/CreamWashBox/Gable-fold.glb",
+    "blender_world_matrix": [
+      [
+        5.960464477539063e-08,
+        -0.7699999213218689,
+        0.0,
+        -3.5179998874664307
+      ],
+      [
+        0.7699999809265137,
+        5.960464477539063e-08,
+        0.0,
+        0.3830002546310425
+      ],
+      [
+        0.0,
+        0.0,
+        0.7699999809265137,
+        2.5375404357910156
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "CreamWashBox.Top-seam",
+    "part": "Top-seam",
+    "source": "Parts/CreamWashBox/Top-seam.blend",
+    "runtime": "Parts/CreamWashBox/Top-seam.glb",
+    "blender_world_matrix": [
+      [
+        5.960464477539063e-08,
+        -0.7699999213218689,
+        0.0,
+        -3.5179998874664307
+      ],
+      [
+        0.7699999809265137,
+        5.960464477539063e-08,
+        0.0,
+        0.3830002546310425
+      ],
+      [
+        0.0,
+        0.0,
+        0.7699999809265137,
+        2.584510326385498
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BayWashBottle.Body-band",
+    "part": "Body-band",
+    "source": "Parts/BayWashBottle/Body-band.blend",
+    "runtime": "Parts/BayWashBottle/Body-band.glb",
+    "blender_world_matrix": [
+      [
+        1.0365885496139526,
+        0.16728411614894867,
+        0.0,
+        0.15999993681907654
+      ],
+      [
+        -0.16728411614894867,
+        1.0365885496139526,
+        0.0,
+        3.4149997234344482
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        2.2811503410339355
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BayWashBottle.Drop-seal",
+    "part": "Drop-seal",
+    "source": "Parts/BayWashBottle/Drop-seal.blend",
+    "runtime": "Parts/BayWashBottle/Drop-seal.glb",
+    "blender_world_matrix": [
+      [
+        1.0365885496139526,
+        0.16728411614894867,
+        0.0,
+        0.14092954993247986
+      ],
+      [
+        -0.16728411614894867,
+        1.0365885496139526,
+        0.0,
+        3.296828508377075
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        2.296900510787964
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BayWashBottle.Foot",
+    "part": "Foot",
+    "source": "Parts/BayWashBottle/Foot.blend",
+    "runtime": "Parts/BayWashBottle/Foot.glb",
+    "blender_world_matrix": [
+      [
+        1.0365885496139526,
+        0.16728411614894867,
+        0.0,
+        0.15999993681907654
+      ],
+      [
+        -0.16728411614894867,
+        1.0365885496139526,
+        0.0,
+        3.4149997234344482
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        2.1856002807617188
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BayWashBottle.Neck-lip",
+    "part": "Neck-lip",
+    "source": "Parts/BayWashBottle/Neck-lip.blend",
+    "runtime": "Parts/BayWashBottle/Neck-lip.glb",
+    "blender_world_matrix": [
+      [
+        1.0365885496139526,
+        0.16728411614894867,
+        0.0,
+        0.15999993681907654
+      ],
+      [
+        -0.16728411614894867,
+        1.0365885496139526,
+        0.0,
+        3.4149997234344482
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        2.5447001457214355
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BayWashBottle.Stopper",
+    "part": "Stopper",
+    "source": "Parts/BayWashBottle/Stopper.blend",
+    "runtime": "Parts/BayWashBottle/Stopper.glb",
+    "blender_world_matrix": [
+      [
+        1.0365885496139526,
+        0.16728411614894867,
+        0.0,
+        0.15999993681907654
+      ],
+      [
+        -0.16728411614894867,
+        1.0365885496139526,
+        0.0,
+        3.4149997234344482
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        2.567800283432007
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BayWashBottle.Vessel",
+    "part": "Vessel",
+    "source": "Parts/BayWashBottle/Vessel.blend",
+    "runtime": "Parts/BayWashBottle/Vessel.glb",
+    "blender_world_matrix": [
+      [
+        1.0365885496139526,
+        0.16728411614894867,
+        0.0,
+        0.15999993681907654
+      ],
+      [
+        -0.16728411614894867,
+        1.0365885496139526,
+        0.0,
+        3.4149997234344482
+      ],
+      [
+        0.0,
+        0.0,
+        1.0499999523162842,
+        2.1730000972747803
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BaySageTin.Base-seam",
+    "part": "Base-seam",
+    "source": "Parts/BaySageTin/Base-seam.blend",
+    "runtime": "Parts/BaySageTin/Base-seam.glb",
+    "blender_world_matrix": [
+      [
+        0.8085424304008484,
+        -0.048570845276117325,
+        0.0,
+        0.42000001668930054
+      ],
+      [
+        0.048570845276117325,
+        0.8085424304008484,
+        0.0,
+        3.42199969291687
+      ],
+      [
+        0.0,
+        0.0,
+        0.8100000023841858,
+        2.181910276412964
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BaySageTin.Enamel-stripe",
+    "part": "Enamel-stripe",
+    "source": "Parts/BaySageTin/Enamel-stripe.blend",
+    "runtime": "Parts/BaySageTin/Enamel-stripe.glb",
+    "blender_world_matrix": [
+      [
+        0.8085424304008484,
+        -0.048570845276117325,
+        0.0,
+        0.42000001668930054
+      ],
+      [
+        0.048570845276117325,
+        0.8085424304008484,
+        0.0,
+        3.42199969291687
+      ],
+      [
+        0.0,
+        0.0,
+        0.8100000023841858,
+        2.249950408935547
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BaySageTin.Lid",
+    "part": "Lid",
+    "source": "Parts/BaySageTin/Lid.blend",
+    "runtime": "Parts/BaySageTin/Lid.glb",
+    "blender_world_matrix": [
+      [
+        0.8085424304008484,
+        -0.048570845276117325,
+        0.0,
+        0.42000001668930054
+      ],
+      [
+        0.048570845276117325,
+        0.8085424304008484,
+        0.0,
+        3.42199969291687
+      ],
+      [
+        0.0,
+        0.0,
+        0.8100000023841858,
+        2.3633503913879395
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "BaySageTin.Tin",
+    "part": "Tin",
+    "source": "Parts/BaySageTin/Tin.blend",
+    "runtime": "Parts/BaySageTin/Tin.glb",
+    "blender_world_matrix": [
+      [
+        0.8085424304008484,
+        -0.048570845276117325,
+        0.0,
+        0.42000001668930054
+      ],
+      [
+        0.048570845276117325,
+        0.8085424304008484,
+        0.0,
+        3.42199969291687
+      ],
+      [
+        0.0,
+        0.0,
+        0.8100000023841858,
+        2.1730003356933594
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ScrubbingBrush.Beech-back",
+    "part": "Beech-back",
+    "source": "Parts/ScrubbingBrush/Beech-back.blend",
+    "runtime": "Parts/ScrubbingBrush/Beech-back.glb",
+    "blender_world_matrix": [
+      [
+        0.979559063911438,
+        -0.029395589604973793,
+        0.0,
+        -0.949999988079071
+      ],
+      [
+        0.029395589604973793,
+        0.979559063911438,
+        0.0,
+        3.4070003032684326
+      ],
+      [
+        0.0,
+        0.0,
+        0.9800000190734863,
+        2.237679958343506
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "ScrubbingBrush.Bristle-tufts",
+    "part": "Bristle-tufts",
+    "source": "Parts/ScrubbingBrush/Bristle-tufts.blend",
+    "runtime": "Parts/ScrubbingBrush/Bristle-tufts.glb",
+    "blender_world_matrix": [
+      [
+        0.979559063911438,
+        -0.029395589604973793,
+        0.0,
+        -0.949999988079071
+      ],
+      [
+        0.029395589604973793,
+        0.979559063911438,
+        0.0,
+        3.4070003032684326
+      ],
+      [
+        0.0,
+        0.0,
+        0.9800000190734863,
+        2.173489809036255
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Oak-back",
+    "part": "Oak-back",
+    "source": "Parts/OakPegRail/Oak-back.blend",
+    "runtime": "Parts/OakPegRail/Oak-back.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.730743408203125
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.593770742416382
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5174999237060547
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Peg-1",
+    "part": "Peg-1",
+    "source": "Parts/OakPegRail/Peg-1.blend",
+    "runtime": "Parts/OakPegRail/Peg-1.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -3.0008583068847656
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.199205160140991
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5529999732971191
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Peg-2",
+    "part": "Peg-2",
+    "source": "Parts/OakPegRail/Peg-2.blend",
+    "runtime": "Parts/OakPegRail/Peg-2.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.7816550731658936
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.4184083938598633
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5529999732971191
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Peg-3",
+    "part": "Peg-3",
+    "source": "Parts/OakPegRail/Peg-3.blend",
+    "runtime": "Parts/OakPegRail/Peg-3.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.5553808212280273
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.6446824073791504
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5529999732971191
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Peg-4",
+    "part": "Peg-4",
+    "source": "Parts/OakPegRail/Peg-4.blend",
+    "runtime": "Parts/OakPegRail/Peg-4.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.3291068077087402
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.8709566593170166
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5529999732971191
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Peg-stop-1",
+    "part": "Peg-stop-1",
+    "source": "Parts/OakPegRail/Peg-stop-1.blend",
+    "runtime": "Parts/OakPegRail/Peg-stop-1.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.9577245712280273
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.156071662902832
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5629999041557312
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Peg-stop-2",
+    "part": "Peg-stop-2",
+    "source": "Parts/OakPegRail/Peg-stop-2.blend",
+    "runtime": "Parts/OakPegRail/Peg-stop-2.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.7385218143463135
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.375274658203125
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5629999041557312
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Peg-stop-3",
+    "part": "Peg-stop-3",
+    "source": "Parts/OakPegRail/Peg-stop-3.blend",
+    "runtime": "Parts/OakPegRail/Peg-stop-3.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.512247323989868
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.601548910140991
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5629999041557312
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakPegRail.Peg-stop-4",
+    "part": "Peg-stop-4",
+    "source": "Parts/OakPegRail/Peg-stop-4.blend",
+    "runtime": "Parts/OakPegRail/Peg-stop-4.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.285973310470581
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.8278231620788574
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.5629999041557312
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "TealHandTowel.Hanging-cloth",
+    "part": "Hanging-cloth",
+    "source": "Parts/TealHandTowel/Hanging-cloth.blend",
+    "runtime": "Parts/TealHandTowel/Hanging-cloth.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.969745397567749
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.1680924892425537
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.593999981880188
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "TealHandTowel.Woven-hem",
+    "part": "Woven-hem",
+    "source": "Parts/TealHandTowel/Woven-hem.blend",
+    "runtime": "Parts/TealHandTowel/Woven-hem.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.969745397567749
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.1680924892425537
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.593999981880188
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OchreHandTowel.Hanging-cloth",
+    "part": "Hanging-cloth",
+    "source": "Parts/OchreHandTowel/Hanging-cloth.blend",
+    "runtime": "Parts/OchreHandTowel/Hanging-cloth.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.5235612392425537
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.6128625869750977
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.593999981880188
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OchreHandTowel.Woven-hem",
+    "part": "Woven-hem",
+    "source": "Parts/OchreHandTowel/Woven-hem.blend",
+    "runtime": "Parts/OchreHandTowel/Woven-hem.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        -0.7071067690849304,
+        0.0,
+        -2.5235612392425537
+      ],
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        2.6128625869750977
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.593999981880188
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakWashTub.Base",
+    "part": "Base",
+    "source": "Parts/OakWashTub/Base.blend",
+    "runtime": "Parts/OakWashTub/Base.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.35227423906326294,
+        0.0,
+        2.549999952316284
+      ],
+      [
+        -0.35227423906326294,
+        0.9358968138694763,
+        0.0,
+        0.29999998211860657
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.027000002562999725
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakWashTub.Lower-hoop",
+    "part": "Lower-hoop",
+    "source": "Parts/OakWashTub/Lower-hoop.blend",
+    "runtime": "Parts/OakWashTub/Lower-hoop.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.35227423906326294,
+        0.0,
+        2.549999952316284
+      ],
+      [
+        -0.35227423906326294,
+        0.9358968138694763,
+        0.0,
+        0.29999998211860657
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.08000000566244125
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakWashTub.Staves",
+    "part": "Staves",
+    "source": "Parts/OakWashTub/Staves.blend",
+    "runtime": "Parts/OakWashTub/Staves.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.35227423906326294,
+        0.0,
+        2.549999952316284
+      ],
+      [
+        -0.35227423906326294,
+        0.9358968138694763,
+        0.0,
+        0.29999998211860657
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.012000000104308128
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OakWashTub.Upper-hoop",
+    "part": "Upper-hoop",
+    "source": "Parts/OakWashTub/Upper-hoop.blend",
+    "runtime": "Parts/OakWashTub/Upper-hoop.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.35227423906326294,
+        0.0,
+        2.549999952316284
+      ],
+      [
+        -0.35227423906326294,
+        0.9358968138694763,
+        0.0,
+        0.29999998211860657
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.2849999964237213
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "RibbedWashBoard.Corrugation",
+    "part": "Corrugation",
+    "source": "Parts/RibbedWashBoard/Corrugation.blend",
+    "runtime": "Parts/RibbedWashBoard/Corrugation.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.3432454764842987,
+        0.079244464635849,
+        2.523426055908203
+      ],
+      [
+        -0.35227423906326294,
+        0.911909818649292,
+        0.21053096652030945,
+        0.42526960372924805
+      ],
+      [
+        0.0,
+        -0.22495104372501373,
+        0.9743700623512268,
+        0.19758358597755432
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "RibbedWashBoard.Foot-rail",
+    "part": "Foot-rail",
+    "source": "Parts/RibbedWashBoard/Foot-rail.blend",
+    "runtime": "Parts/RibbedWashBoard/Foot-rail.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.3432454764842987,
+        0.079244464635849,
+        2.521707773208618
+      ],
+      [
+        -0.35227423906326294,
+        0.911909818649292,
+        0.21053096652030945,
+        0.4207041561603546
+      ],
+      [
+        0.0,
+        -0.22495104372501373,
+        0.9743700623512268,
+        0.13200001418590546
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "RibbedWashBoard.Metal-bed",
+    "part": "Metal-bed",
+    "source": "Parts/RibbedWashBoard/Metal-bed.blend",
+    "runtime": "Parts/RibbedWashBoard/Metal-bed.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.3432454764842987,
+        0.079244464635849,
+        2.5279934406280518
+      ],
+      [
+        -0.35227423906326294,
+        0.911909818649292,
+        0.21053096652030945,
+        0.4374035894870758
+      ],
+      [
+        0.0,
+        -0.22495104372501373,
+        0.9743700623512268,
+        0.17816947400569916
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "RibbedWashBoard.Top-rail",
+    "part": "Top-rail",
+    "source": "Parts/RibbedWashBoard/Top-rail.blend",
+    "runtime": "Parts/RibbedWashBoard/Top-rail.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.3432454764842987,
+        0.079244464635849,
+        2.5638654232025146
+      ],
+      [
+        -0.35227423906326294,
+        0.911909818649292,
+        0.21053096652030945,
+        0.5327067375183105
+      ],
+      [
+        0.0,
+        -0.22495104372501373,
+        0.9743700623512268,
+        0.650364875793457
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "RibbedWashBoard.Wood-stile--1",
+    "part": "Wood-stile--1",
+    "source": "Parts/RibbedWashBoard/Wood-stile--1.blend",
+    "runtime": "Parts/RibbedWashBoard/Wood-stile--1.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.3432454764842987,
+        0.079244464635849,
+        2.385066509246826
+      ],
+      [
+        -0.35227423906326294,
+        0.911909818649292,
+        0.21053096652030945,
+        0.47213631868362427
+      ],
+      [
+        0.0,
+        -0.22495104372501373,
+        0.9743700623512268,
+        0.13200002908706665
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "RibbedWashBoard.Wood-stile-1",
+    "part": "Wood-stile-1",
+    "source": "Parts/RibbedWashBoard/Wood-stile-1.blend",
+    "runtime": "Parts/RibbedWashBoard/Wood-stile-1.glb",
+    "blender_world_matrix": [
+      [
+        0.9358968138694763,
+        0.3432454764842987,
+        0.079244464635849,
+        2.658348560333252
+      ],
+      [
+        -0.35227423906326294,
+        0.911909818649292,
+        0.21053096652030945,
+        0.3692721724510193
+      ],
+      [
+        0.0,
+        -0.22495104372501373,
+        0.9743700623512268,
+        0.13200001418590546
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "TubSoap.Paper-wrap",
+    "part": "Paper-wrap",
+    "source": "Parts/TubSoap/Paper-wrap.blend",
+    "runtime": "Parts/TubSoap/Paper-wrap.glb",
+    "blender_world_matrix": [
+      [
+        0.7206405401229858,
+        0.2712511718273163,
+        0.0,
+        2.653048515319824
+      ],
+      [
+        -0.2712511718273163,
+        0.7206405401229858,
+        0.0,
+        0.2473217099905014
+      ],
+      [
+        0.0,
+        0.0,
+        0.7699999809265137,
+        0.07238501310348511
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "TubSoap.Soap-cake",
+    "part": "Soap-cake",
+    "source": "Parts/TubSoap/Soap-cake.blend",
+    "runtime": "Parts/TubSoap/Soap-cake.glb",
+    "blender_world_matrix": [
+      [
+        0.7206405401229858,
+        0.2712511718273163,
+        0.0,
+        2.653048515319824
+      ],
+      [
+        -0.2712511718273163,
+        0.7206405401229858,
+        0.0,
+        0.2473217099905014
+      ],
+      [
+        0.0,
+        0.0,
+        0.7699999809265137,
+        0.07200001180171967
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Bent forearm.L",
+    "part": "Bent forearm.L",
+    "source": "Parts/Courier/Bent-forearm-L.blend",
+    "runtime": "Parts/Courier/Bent-forearm-L.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.30800199508667
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.1458505392074585
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.20978574454784393
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Bent forearm.R",
+    "part": "Bent forearm.R",
+    "source": "Parts/Courier/Bent-forearm-R.blend",
+    "runtime": "Parts/Courier/Bent-forearm-R.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.6616454124450684
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.3877911567687988
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.20978574454784393
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Body • seated rump",
+    "part": "Body • seated rump",
+    "source": "Parts/Courier/Body-seated-rump.blend",
+    "runtime": "Parts/Courier/Body-seated-rump.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.6936020851135254
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -0.9616502523422241
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.015641342848539352
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Catchlight.L",
+    "part": "Catchlight.L",
+    "source": "Parts/Courier/Catchlight-L.blend",
+    "runtime": "Parts/Courier/Catchlight-L.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.3848562240600586
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.2427843809127808
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.5468639135360718
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Catchlight.R",
+    "part": "Catchlight.R",
+    "source": "Parts/Courier/Catchlight-R.blend",
+    "runtime": "Parts/Courier/Catchlight-R.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.5504827499389648
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.3554891347885132
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.5324318408966064
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Digit.L.0",
+    "part": "Digit.L.0",
+    "source": "Parts/Courier/Digit-L-0.blend",
+    "runtime": "Parts/Courier/Digit-L-0.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.243975281715393
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.2482787370681763
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.21166770160198212
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Digit.L.1",
+    "part": "Digit.L.1",
+    "source": "Parts/Courier/Digit-L-1.blend",
+    "runtime": "Parts/Courier/Digit-L-1.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.2381411790847778
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.2646132707595825
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.23936185240745544
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Digit.L.2",
+    "part": "Digit.L.2",
+    "source": "Parts/Courier/Digit-L-2.blend",
+    "runtime": "Parts/Courier/Digit-L-2.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.2226735353469849
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.2762924432754517
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.269693523645401
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Digit.R.0",
+    "part": "Digit.R.0",
+    "source": "Parts/Courier/Digit-R-0.blend",
+    "runtime": "Parts/Courier/Digit-R-0.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.5893787145614624
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.4845819473266602
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.21166770160198212
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Digit.R.1",
+    "part": "Digit.R.1",
+    "source": "Parts/Courier/Digit-R-1.blend",
+    "runtime": "Parts/Courier/Digit-R-1.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.5762683153152466
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.4959385395050049
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.23936185240745544
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Digit.R.2",
+    "part": "Digit.R.2",
+    "source": "Parts/Courier/Digit-R-2.blend",
+    "runtime": "Parts/Courier/Digit-R-2.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.5709877014160156
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.514587163925171
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.269693523645401
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Ear.L",
+    "part": "Ear.L",
+    "source": "Parts/Courier/Ear-L.blend",
+    "runtime": "Parts/Courier/Ear-L.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.4801959991455078
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.0556960105895996
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.7889681458473206
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Ear.R",
+    "part": "Ear.R",
+    "source": "Parts/Courier/Ear-R.blend",
+    "runtime": "Parts/Courier/Ear-R.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.7306394577026367
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.22611665725708
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.7581933736801147
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Eye.L",
+    "part": "Eye.L",
+    "source": "Parts/Courier/Eye-L.blend",
+    "runtime": "Parts/Courier/Eye-L.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.3897968530654907
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.236036777496338
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.5079788565635681
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Eye.R",
+    "part": "Eye.R",
+    "source": "Parts/Courier/Eye-R.blend",
+    "runtime": "Parts/Courier/Eye-R.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.555423378944397
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.3487416505813599
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.4935467541217804
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Gripping paw.L",
+    "part": "Gripping paw.L",
+    "source": "Parts/Courier/Gripping-paw-L.blend",
+    "runtime": "Parts/Courier/Gripping-paw-L.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.2394993305206299
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.2360843420028687
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.21717014908790588
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Gripping paw.R",
+    "part": "Gripping paw.R",
+    "source": "Parts/Courier/Gripping-paw-R.blend",
+    "runtime": "Parts/Courier/Gripping-paw-R.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.6023662090301514
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.48433518409729
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.21717014908790588
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Head • broad cheek mask",
+    "part": "Head • broad cheek mask",
+    "source": "Parts/Courier/Head-broad-cheek-mask.blend",
+    "runtime": "Parts/Courier/Head-broad-cheek-mask.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.5871776342391968
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.129315972328186
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.3712395429611206
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind paw.L",
+    "part": "Hind paw.L",
+    "source": "Parts/Courier/Hind-paw-L.blend",
+    "runtime": "Parts/Courier/Hind-paw-L.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.5693022012710571
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -0.8913272619247437
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000065453350544
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind paw.R",
+    "part": "Hind paw.R",
+    "source": "Parts/Courier/Hind-paw-R.blend",
+    "runtime": "Parts/Courier/Hind-paw-R.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.8041868209838867
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.0520204305648804
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000065453350544
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind thigh.L",
+    "part": "Hind thigh.L",
+    "source": "Parts/Courier/Hind-thigh-L.blend",
+    "runtime": "Parts/Courier/Hind-thigh-L.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.6301884651184082
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -0.7743262052536011
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.03237001970410347
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind thigh.R",
+    "part": "Hind thigh.R",
+    "source": "Parts/Courier/Hind-thigh-R.blend",
+    "runtime": "Parts/Courier/Hind-thigh-R.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.8911737203598022
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -0.9528757333755493
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.03237001970410347
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind toe.L.1",
+    "part": "Hind toe.L.1",
+    "source": "Parts/Courier/Hind-toe-L-1.blend",
+    "runtime": "Parts/Courier/Hind-toe-L-1.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.5377709865570068
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.0133247375488281
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000116676092148
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind toe.L.2",
+    "part": "Hind toe.L.2",
+    "source": "Parts/Courier/Hind-toe-L-2.blend",
+    "runtime": "Parts/Courier/Hind-toe-L-2.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.4991862773895264
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -0.9970208406448364
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000116676092148
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind toe.L.3",
+    "part": "Hind toe.L.3",
+    "source": "Parts/Courier/Hind-toe-L-3.blend",
+    "runtime": "Parts/Courier/Hind-toe-L-3.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.4700088500976562
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -0.9669661521911621
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000116676092148
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind toe.R.1",
+    "part": "Hind toe.R.1",
+    "source": "Parts/Courier/Hind-toe-R-1.blend",
+    "runtime": "Parts/Courier/Hind-toe-R-1.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.7019059658050537
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.1256153583526611
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000116676092148
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind toe.R.2",
+    "part": "Hind toe.R.2",
+    "source": "Parts/Courier/Hind-toe-R-2.blend",
+    "runtime": "Parts/Courier/Hind-toe-R-2.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.7310833930969238
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.155670166015625
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000116676092148
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Hind toe.R.3",
+    "part": "Hind toe.R.3",
+    "source": "Parts/Courier/Hind-toe-R-3.blend",
+    "runtime": "Parts/Courier/Hind-toe-R-3.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.7696682214736938
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.1719739437103271
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000116676092148
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Muzzle",
+    "part": "Muzzle",
+    "source": "Parts/Courier/Muzzle.blend",
+    "runtime": "Parts/Courier/Muzzle.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.475337266921997
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.274375081062317
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.34424251317977905
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Nose",
+    "part": "Nose",
+    "source": "Parts/Courier/Nose.blend",
+    "runtime": "Parts/Courier/Nose.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.4370144605636597
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.3301159143447876
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.38711652159690857
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Tail",
+    "part": "Tail",
+    "source": "Parts/Courier/Tail.blend",
+    "runtime": "Parts/Courier/Tail.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -2.021289110183716
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -0.7092525959014893
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0083385668694973
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Upper arm.L",
+    "part": "Upper arm.L",
+    "source": "Parts/Courier/Upper-arm-L.blend",
+    "runtime": "Parts/Courier/Upper-arm-L.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.4266483783721924
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.0422636270523071
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.2651962339878082
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Courier.Upper arm.R",
+    "part": "Upper arm.R",
+    "source": "Parts/Courier/Upper-arm-R.blend",
+    "runtime": "Parts/Courier/Upper-arm-R.glb",
+    "blender_world_matrix": [
+      [
+        0.7345486879348755,
+        -0.5025318264961243,
+        0.0,
+        -1.7151999473571777
+      ],
+      [
+        0.5025318264961243,
+        0.7345486879348755,
+        0.0,
+        -1.2396725416183472
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.2651962339878082
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Body • seated rump",
+    "part": "Body • seated rump",
+    "source": "Parts/Guide/Body-seated-rump.blend",
+    "runtime": "Parts/Guide/Body-seated-rump.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.5017461776733398
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.481242299079895
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.02369251288473606
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Catchlight.L",
+    "part": "Catchlight.L",
+    "source": "Parts/Guide/Catchlight-L.blend",
+    "runtime": "Parts/Guide/Catchlight-L.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.409361481666565
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.07466969639062881
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.5677050352096558
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Catchlight.R",
+    "part": "Catchlight.R",
+    "source": "Parts/Guide/Catchlight-R.blend",
+    "runtime": "Parts/Guide/Catchlight-R.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.2302852869033813
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.16563422977924347
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.5677050352096558
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Ear.L",
+    "part": "Ear.L",
+    "source": "Parts/Guide/Ear-L.blend",
+    "runtime": "Parts/Guide/Ear-L.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.587155818939209
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.314075231552124
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.737250030040741
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Ear.R",
+    "part": "Ear.R",
+    "source": "Parts/Guide/Ear-R.blend",
+    "runtime": "Parts/Guide/Ear-R.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.316375494003296
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.4516224265098572
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.737250030040741
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Eye.L",
+    "part": "Eye.L",
+    "source": "Parts/Guide/Eye-L.blend",
+    "runtime": "Parts/Guide/Eye-L.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.40879487991333
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.07650483399629593
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.5165300369262695
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Eye.R",
+    "part": "Eye.R",
+    "source": "Parts/Guide/Eye-R.blend",
+    "runtime": "Parts/Guide/Eye-R.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.229718804359436
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.16746936738491058
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.5165300369262695
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Forearm.L",
+    "part": "Forearm.L",
+    "source": "Parts/Guide/Forearm-L.blend",
+    "runtime": "Parts/Guide/Forearm-L.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.4969412088394165
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.22613683342933655
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.06774749606847763
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Forearm.R",
+    "part": "Forearm.R",
+    "source": "Parts/Guide/Forearm-R.blend",
+    "runtime": "Parts/Guide/Forearm-R.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.2985674142837524
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.3269039988517761
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.06774749606847763
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Front paw.L",
+    "part": "Front paw.L",
+    "source": "Parts/Guide/Front-paw-L.blend",
+    "runtime": "Parts/Guide/Front-paw-L.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.4981313943862915
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.22553223371505737
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0029999834951013327
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Front paw.R",
+    "part": "Front paw.R",
+    "source": "Parts/Guide/Front-paw-R.blend",
+    "runtime": "Parts/Guide/Front-paw-R.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.297377109527588
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.3275085687637329
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0029999834951013327
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Head • broad cheek mask",
+    "part": "Head • broad cheek mask",
+    "source": "Parts/Guide/Head-broad-cheek-mask.blend",
+    "runtime": "Parts/Guide/Head-broad-cheek-mask.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.4148849248886108
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.31024399399757385
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.3812500238418579
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Hind paw.L",
+    "part": "Hind paw.L",
+    "source": "Parts/Guide/Hind-paw-L.blend",
+    "runtime": "Parts/Guide/Hind-paw-L.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.6692370176315308
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.4061450958251953
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000032857060432
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Hind paw.R",
+    "part": "Hind paw.R",
+    "source": "Parts/Guide/Hind-paw-R.blend",
+    "runtime": "Parts/Guide/Hind-paw-R.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.3423166275024414
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.5722094774246216
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.0030000032857060432
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Hind thigh.L",
+    "part": "Hind thigh.L",
+    "source": "Parts/Guide/Hind-thigh-L.blend",
+    "runtime": "Parts/Guide/Hind-thigh-L.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.686285376548767
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.426933228969574
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.05016998574137688
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Hind thigh.R",
+    "part": "Hind thigh.R",
+    "source": "Parts/Guide/Hind-thigh-R.blend",
+    "runtime": "Parts/Guide/Hind-thigh-R.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.3490495681762695
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.5982375144958496
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.05016998574137688
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Muzzle",
+    "part": "Muzzle",
+    "source": "Parts/Guide/Muzzle.blend",
+    "runtime": "Parts/Guide/Muzzle.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.3064593076705933
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.09679359197616577
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.38525500893592834
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Nose",
+    "part": "Nose",
+    "source": "Parts/Guide/Nose.blend",
+    "runtime": "Parts/Guide/Nose.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.2768337726593018
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.03847171738743782
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.43754252791404724
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Tail",
+    "part": "Tail",
+    "source": "Parts/Guide/Tail.blend",
+    "runtime": "Parts/Guide/Tail.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.7296375036239624
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.6551464796066284
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.019687164574861526
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Upper arm.L",
+    "part": "Upper arm.L",
+    "source": "Parts/Guide/Upper-arm-L.blend",
+    "runtime": "Parts/Guide/Upper-arm-L.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.5019795894622803
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.23605552315711975
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.24685999751091003
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Guide.Upper arm.R",
+    "part": "Upper arm.R",
+    "source": "Parts/Guide/Upper-arm-R.blend",
+    "runtime": "Parts/Guide/Upper-arm-R.glb",
+    "blender_world_matrix": [
+      [
+        0.793495774269104,
+        0.40306878089904785,
+        0.0,
+        1.3036057949066162
+      ],
+      [
+        -0.40306878089904785,
+        0.793495774269104,
+        0.0,
+        0.3368226885795593
+      ],
+      [
+        0.0,
+        0.0,
+        0.8899999856948853,
+        0.24685999751091003
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  }
+]

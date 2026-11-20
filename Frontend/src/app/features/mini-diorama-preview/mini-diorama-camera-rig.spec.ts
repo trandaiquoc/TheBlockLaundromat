@@ -50,6 +50,22 @@ describe('MiniDioramaCameraRig', () => {
     expect(rig.currentView).toBe('project-board');
     expect(rig.isMoving).toBe(false);
   });
+
+  it('uses authored Stage 3 camera anchors while fitting the named bounds', () => {
+    const camera = new PerspectiveCamera();
+    const bounds = createFocusBounds();
+    const washerTarget = new Vector3(0, 1, -3);
+    const rig = new MiniDioramaCameraRig(camera, bounds, { washer: washerTarget });
+
+    rig.resize(1440, 900);
+    rig.focus('washer', true);
+    camera.updateMatrixWorld(true);
+
+    const projectedTarget = washerTarget.clone().project(camera);
+    expect(projectedTarget.x).toBeCloseTo(0);
+    expect(projectedTarget.y).toBeCloseTo(0);
+    expectBoundsWithinFrustum(camera, bounds.washer);
+  });
 });
 
 function createFocusBounds(): Record<MiniDioramaFocus, Box3> {

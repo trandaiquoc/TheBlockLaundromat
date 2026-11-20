@@ -8,6 +8,7 @@ import {
   type MiniDioramaRuntimeCallbacks,
 } from './mini-diorama-scene-runtime';
 import type { MiniDioramaSceneAsset } from './mini-diorama-scene-loader';
+import { miniDioramaSceneNodeName } from './mini-diorama-scene-contract';
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -49,7 +50,7 @@ describe('MiniDioramaSceneRuntime', () => {
 
     await waitForCallbacks();
     expect(onSceneLoaded).toHaveBeenCalledOnce();
-    expect(asset.root.parent?.name).toBe('laundromat-preview-scene');
+    expect(asset.root.parent?.name).toBe('integration-preview-scene');
     expect(canvas?.getAttribute('data-material-variant')).toBe('Minecraft');
     expect(requestFrame).toHaveBeenCalledOnce();
 
@@ -128,6 +129,38 @@ describe('MiniDioramaSceneRuntime', () => {
     host.remove();
   });
 
+  it('loads the Stage 3 production scene without requiring animation joints', async () => {
+    const host = createHost();
+    const renderer = createRenderer();
+    const asset = createAsset('stage-3-production');
+    const onSceneLoaded = vi.fn();
+    const loadSceneAsset = vi.fn(async () => asset);
+    const runtime = new MiniDioramaSceneRuntime(
+      createCallbacks({ onSceneLoaded }),
+      {
+        createRenderer: () => renderer,
+        requestFrame: () => 1,
+        cancelFrame: vi.fn(),
+        loadSceneAsset,
+      },
+      'stage-3-production',
+    );
+
+    expect(runtime.mount(host)).toBe(true);
+    await waitForCallbacks();
+
+    expect(onSceneLoaded).toHaveBeenCalledOnce();
+    expect(loadSceneAsset).toHaveBeenCalledWith(
+      document.baseURI,
+      expect.any(AbortSignal),
+      'stage-3-production',
+    );
+    expect(asset.root.parent?.name).toBe('stage-3-production-scene');
+    runtime.greetRaccoon();
+    runtime.dispose();
+    host.remove();
+  });
+
   it('reports unavailable WebGL without leaving a canvas or renderer behind', () => {
     const host = createHost();
     const onWebGLUnavailable = vi.fn();
@@ -202,7 +235,9 @@ function createRenderer(): WebGLRenderer {
   } as unknown as WebGLRenderer;
 }
 
-function createAsset(): MiniDioramaSceneAsset {
+function createAsset(
+  kind: MiniDioramaSceneAsset['kind'] = 'integration-preview',
+): MiniDioramaSceneAsset {
   const root = new Group();
   const geometry = new BoxGeometry(1, 1, 1);
   const texture = new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
@@ -210,26 +245,57 @@ function createAsset(): MiniDioramaSceneAsset {
   const inactiveVariantMaterial = new MeshStandardMaterial({
     map: new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1),
   });
-  const platform = new Group();
-  platform.name = 'Platform';
-  platform.add(new Mesh(geometry, material));
-  root.add(platform);
-  addNamedGroup(root, 'Washer', geometry, material, [1, 1, 0]);
-  addNamedGroup(root, 'Notice_board', geometry, material, [0, 2, -2]);
-  addNamedGroup(root, 'Lantern', geometry, material, [0, 3, -1]);
 
-  const raccoon = new Group();
-  raccoon.name = 'Raccoon';
-  root.add(raccoon);
-  addNamedGroup(raccoon, 'Body', geometry, material, [-1, 0.5, 0.5]);
-  addNamedGroup(raccoon, 'ForelegL', geometry, material, [-0.8, 0.6, 0.9]);
-  addNamedGroup(raccoon, 'Head_•_broad_cheek_mask', geometry, material, [-1, 1.1, 0.7]);
-  addNamedGroup(raccoon, 'Tail_•_banded', geometry, material, [-1.6, 0.35, 0.2]);
+  if (kind === 'integration-preview') {
+    const platform = new Group();
+    platform.name = 'Platform';
+    platform.add(new Mesh(geometry, material));
+    root.add(platform);
+    addNamedGroup(root, 'Washer', geometry, material, [1, 1, 0]);
+    addNamedGroup(root, 'Notice_board', geometry, material, [0, 2, -2]);
+    addNamedGroup(root, 'Lantern', geometry, material, [0, 3, -1]);
+
+    const raccoon = new Group();
+    raccoon.name = 'Raccoon';
+    root.add(raccoon);
+    addNamedGroup(raccoon, 'Body', geometry, material, [-1, 0.5, 0.5]);
+    addNamedGroup(raccoon, 'ForelegL', geometry, material, [-0.8, 0.6, 0.9]);
+    addNamedGroup(raccoon, 'Head_BroadCheekMask', geometry, material, [-1, 1.1, 0.7]);
+    addNamedGroup(raccoon, 'Tail_Banded', geometry, material, [-1.6, 0.35, 0.2]);
+  } else {
+    addNamedGroup(root, 'Floor', geometry, material, [0, 0, 0]);
+    addNamedGroup(root, 'Washer', geometry, material, [0, 1, -3]);
+    addNamedGroup(root, 'ProjectBoard', geometry, material, [-2.7, 1.3, -2.6]);
+    addNamedGroup(root, 'Courier.Root', geometry, material, [-1.5, 0.5, 0]);
+    addNamedGroup(root, 'Guide.Root', geometry, material, [1.5, 0.5, 0]);
+    addAnchor(root, 'Anchor.NicheLantern.Light', [2, 2, -2]);
+    addAnchor(root, 'Anchor.Camera.Overview', [0, 1.15, 0]);
+    addAnchor(root, 'Anchor.Camera.Portrait', [0, 1.48, -0.24]);
+    addAnchor(root, 'Anchor.Camera.Board', [-2.7, 2, -2.57]);
+    addAnchor(root, 'Anchor.Camera.Washer', [0, 1.05, -3.03]);
+    addAnchor(root, 'Anchor.Camera.Recenter', [0, 1.32, -0.2]);
+    addAnchor(root, 'Anchor.Board.Center', [-2.7, 1.3, -2.56]);
+    addAnchor(root, 'Anchor.Board.BottomLeft', [-3.9, 0.2, -2.56]);
+    addAnchor(root, 'Anchor.Board.BottomRight', [-1.5, 0.2, -2.56]);
+    addAnchor(root, 'Anchor.Board.TopLeft', [-3.9, 2.4, -2.56]);
+    addAnchor(root, 'Anchor.Board.TopRight', [-1.5, 2.4, -2.56]);
+    addAnchor(root, 'Anchor.Washer.Preview', [0, 1, -3.5]);
+    addAnchor(root, 'Anchor.Washer.Open', [0.5, 1, -3.5]);
+    addAnchor(root, 'Anchor.Washer.Delete', [-0.5, 1, -3.5]);
+  }
 
   return {
+    kind,
     root,
     materialVariants: new MiniDioramaMaterialVariants([], [material, inactiveVariantMaterial]),
   };
+}
+
+function addAnchor(parent: Group, name: string, position: readonly [number, number, number]): void {
+  const anchor = new Group();
+  anchor.name = miniDioramaSceneNodeName(name);
+  anchor.position.set(...position);
+  parent.add(anchor);
 }
 
 function addNamedGroup(
@@ -240,7 +306,7 @@ function addNamedGroup(
   position: readonly [number, number, number],
 ): Group {
   const group = new Group();
-  group.name = name;
+  group.name = miniDioramaSceneNodeName(name);
   group.position.set(...position);
   group.add(new Mesh(geometry, material));
   parent.add(group);

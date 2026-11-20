@@ -17,6 +17,7 @@ import { ThemeService } from '../../core/ui/theme/theme.service';
 import type { MiniDioramaIntent, MiniDioramaTarget } from './mini-diorama-contracts';
 import { intentForSceneTarget } from './mini-diorama-contracts';
 import { MiniDioramaSceneRuntime } from './mini-diorama-scene-runtime';
+import type { MiniDioramaSceneKind } from './mini-diorama-scene-contract';
 
 type PreviewState = 'loading' | 'ready' | 'fallback';
 
@@ -33,6 +34,7 @@ const focusMessageKeys: Readonly<Record<MiniDioramaTarget, TranslationKey>> = {
 })
 export class MiniDioramaScenePanelComponent {
   readonly mode = input<'preview' | 'workspace'>('preview');
+  readonly sceneKind = input<MiniDioramaSceneKind>('integration-preview');
   readonly sceneIntent = output<MiniDioramaIntent>();
 
   protected readonly i18n = inject(I18nService);
@@ -84,18 +86,22 @@ export class MiniDioramaScenePanelComponent {
       return;
     }
 
-    this.runtime = new MiniDioramaSceneRuntime({
-      onIntent: (intent) => this.handleSceneIntent(intent),
-      onWebGLUnavailable: () => {
-        this.previewState.set('fallback');
-        this.runtime?.dispose();
+    this.runtime = new MiniDioramaSceneRuntime(
+      {
+        onIntent: (intent) => this.handleSceneIntent(intent),
+        onWebGLUnavailable: () => {
+          this.previewState.set('fallback');
+          this.runtime?.dispose();
+        },
+        onSceneLoaded: () => this.previewState.set('ready'),
+        onSceneLoadFailed: (error) => {
+          console.error('Mini-diorama scene could not be loaded.', error);
+          this.previewState.set('fallback');
+        },
       },
-      onSceneLoaded: () => this.previewState.set('ready'),
-      onSceneLoadFailed: (error) => {
-        console.error('Mini-diorama scene could not be loaded.', error);
-        this.previewState.set('fallback');
-      },
-    });
+      {},
+      this.sceneKind(),
+    );
 
     if (!this.runtime.mount(host)) {
       this.previewState.set('fallback');

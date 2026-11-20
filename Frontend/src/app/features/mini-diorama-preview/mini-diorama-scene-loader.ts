@@ -5,10 +5,15 @@ import {
   MiniDioramaMaterialsVariantsPlugin,
   type MiniDioramaMaterialVariants,
 } from './mini-diorama-material-variants';
-
-const laundromatAssetPath = 'assets/homepage/runtime/models/laundromat/Laundromat.glb';
+import {
+  miniDioramaSceneContract,
+  miniDioramaSceneNodeName,
+  requiredMiniDioramaSceneNodes,
+  type MiniDioramaSceneKind,
+} from './mini-diorama-scene-contract';
 
 export interface MiniDioramaSceneAsset {
+  readonly kind: MiniDioramaSceneKind;
   readonly root: Group;
   readonly materialVariants: MiniDioramaMaterialVariants;
 }
@@ -16,17 +21,19 @@ export interface MiniDioramaSceneAsset {
 export type MiniDioramaSceneAssetLoader = (
   baseURI: string,
   signal: AbortSignal,
+  kind: MiniDioramaSceneKind,
 ) => Promise<MiniDioramaSceneAsset>;
 
 export async function loadMiniDioramaSceneAsset(
   baseURI: string,
   signal: AbortSignal,
+  kind: MiniDioramaSceneKind = 'integration-preview',
   fetchAsset: typeof fetch = globalThis.fetch,
 ): Promise<MiniDioramaSceneAsset> {
-  const assetURL = new URL(laundromatAssetPath, baseURI);
+  const assetURL = new URL(miniDioramaSceneContract(kind).assetPath, baseURI);
   const response = await fetchAsset(assetURL, { signal });
   if (!response.ok) {
-    throw new Error(`Could not load the laundromat scene (HTTP ${response.status}).`);
+    throw new Error(`Could not load the ${kind} scene (HTTP ${response.status}).`);
   }
 
   const bytes = await response.arrayBuffer();
@@ -48,7 +55,7 @@ export async function loadMiniDioramaSceneAsset(
 
   try {
     if (!materialVariants) {
-      throw new Error('The laundromat GLB did not load its material variants.');
+      throw new Error('The scene GLB did not load its material variants.');
     }
 
     const meshes: Mesh[] = [];
@@ -60,35 +67,41 @@ export async function loadMiniDioramaSceneAsset(
       const materials = Array.isArray(object.material) ? object.material : [object.material];
       for (const material of materials) {
         if (!(material instanceof Material)) {
-          throw new Error('The laundromat GLB contains an unsupported mesh material.');
+          throw new Error('The scene GLB contains an unsupported mesh material.');
         }
       }
     });
 
     if (meshes.length === 0) {
-      throw new Error('The laundromat GLB has no mesh geometry to render.');
+      throw new Error('The scene GLB has no mesh geometry to render.');
     }
-    assertRequiredSceneObjects(gltf.scene);
-    return { root: gltf.scene, materialVariants };
+    assertRequiredSceneObjects(gltf.scene, kind);
+    return { kind, root: gltf.scene, materialVariants };
   } catch (error) {
     disposeParsedScene(gltf.scene, materialVariants);
     throw error;
   }
 }
 
-function assertRequiredSceneObjects(root: Group): void {
-  for (const name of ['Washer', 'Notice_board', 'Raccoon']) {
-    if (!root.getObjectByName(name)) {
-      throw new Error(`The laundromat GLB is missing its '${name}' scene object.`);
+function assertRequiredSceneObjects(root: Group, kind: MiniDioramaSceneKind): void {
+  const contract = miniDioramaSceneContract(kind);
+  for (const name of requiredMiniDioramaSceneNodes(contract)) {
+    const loadedName = miniDioramaSceneNodeName(name);
+    if (!root.getObjectByName(loadedName)) {
+      throw new Error(`The ${kind} GLB is missing its '${name}' scene object or anchor.`);
     }
   }
 
-  let raccoonCount = 0;
-  root.traverse((object) => {
-    if (object.name === 'Raccoon') raccoonCount++;
-  });
-  if (raccoonCount !== 1) {
-    throw new Error('The laundromat GLB must contain exactly one Raccoon scene object.');
+  const raccoonRoots = contract.raccoonRoots;
+  for (const name of raccoonRoots) {
+    let matches = 0;
+    const loadedName = miniDioramaSceneNodeName(name);
+    root.traverse((object) => {
+      if (object.name === loadedName) matches++;
+    });
+    if (matches !== 1) {
+      throw new Error(`The ${kind} GLB must contain exactly one '${name}' character root.`);
+    }
   }
 }
 
@@ -100,5 +113,5 @@ function disposeParsedScene(
 }
 
 function createAbortError(): DOMException {
-  return new DOMException('The laundromat scene load was cancelled.', 'AbortError');
+  return new DOMException('The mini-diorama scene load was cancelled.', 'AbortError');
 }

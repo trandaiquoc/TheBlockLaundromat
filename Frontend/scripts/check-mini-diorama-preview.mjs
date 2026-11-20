@@ -149,13 +149,18 @@ async function assertReadyScene(session) {
       const canvas = document.querySelector('.mini-diorama__scene canvas');
       return canvas ? [canvas.width, canvas.height] : null;
     })(),
+    sceneRequests: performance.getEntriesByType('resource')
+      .map(entry => new URL(entry.name).pathname)
+      .filter(path => path.includes('/assets/homepage/runtime/models/')),
     fallback: document.querySelector('.mini-diorama__fallback')?.textContent?.trim() ?? null,
   }))()`);
   if (
     state.previewState !== 'ready' ||
     state.canvasCount !== 1 ||
     !state.canvasSize?.[0] ||
-    !state.canvasSize?.[1]
+    !state.canvasSize?.[1] ||
+    state.sceneRequests.length !== 1 ||
+    !state.sceneRequests[0]?.endsWith('/models/Room/Octagonal-Laundromat.glb')
   ) {
     throw new Error(`WebGL preview did not mount a drawable canvas: ${JSON.stringify(state)}.`);
   }
@@ -372,32 +377,49 @@ async function verifyCanvasPicking(session) {
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Washer', 0.43, 0.57, 'mouse');
+  await tapSceneTarget(session, 'Washer', 0.54, 0.4, 'mouse');
 
   await session.evaluate(
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Project board', 0.59, 0.42, 'mouse');
+  await tapSceneTarget(session, 'Project board', 0.46, 0.31, 'mouse');
 
   await session.evaluate(
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Greet the Raccoon', 0.54, 0.6, 'mouse');
+  await tapSceneTarget(session, 'Greet the Raccoon', 0.43, 0.57, 'mouse', {
+    left: 0.34,
+    top: 0.55,
+    right: 0.65,
+    bottom: 0.68,
+  });
 
   await session.evaluate(
     "document.querySelector('.mini-diorama__actions button:first-child').click()",
   );
   await settleCamera(session);
-  await tapSceneTarget(session, 'Washer', 0.43, 0.57, 'touch');
+  await tapSceneTarget(session, 'Washer', 0.54, 0.4, 'touch');
 }
 
 async function settleCamera(session) {
-  await session.evaluate('new Promise(resolve => setTimeout(resolve, 900))');
+  await session.evaluate('new Promise(resolve => setTimeout(resolve, 1400))');
 }
 
-async function tapSceneTarget(session, expectedAction, xRatio, yRatio, pointerType) {
+async function tapSceneTarget(
+  session,
+  expectedAction,
+  xRatio,
+  yRatio,
+  pointerType,
+  searchArea = {
+    left: xRatio - 0.04,
+    top: yRatio - 0.04,
+    right: xRatio + 0.04,
+    bottom: yRatio + 0.04,
+  },
+) {
   const hit = await session.evaluate(`(() => {
     const canvas = document.querySelector('.mini-diorama__scene canvas');
     const bounds = canvas.getBoundingClientRect();
@@ -408,14 +430,31 @@ async function tapSceneTarget(session, expectedAction, xRatio, yRatio, pointerTy
       isPrimary: true,
       button: 0,
     };
-    const x = bounds.left + bounds.width * ${xRatio};
-    const y = bounds.top + bounds.height * ${yRatio};
-    canvas.dispatchEvent(new PointerEvent('pointermove', { ...eventInit, clientX: x, clientY: y }));
-    canvas.dispatchEvent(new PointerEvent('pointerdown', { ...eventInit, clientX: x, clientY: y }));
-    canvas.dispatchEvent(new PointerEvent('pointerup', { ...eventInit, clientX: x, clientY: y }));
+    const dispatch = (type, x, y) => canvas.dispatchEvent(
+      new PointerEvent(type, { ...eventInit, clientX: x, clientY: y }),
+    );
+    let x = bounds.left + bounds.width * ${xRatio};
+    let y = bounds.top + bounds.height * ${yRatio};
+    dispatch('pointermove', x, y);
+    if (canvas.style.cursor !== 'pointer') {
+      search: for (let yRatio = ${searchArea.top}; yRatio <= ${searchArea.bottom}; yRatio += 0.01) {
+        for (let xRatio = ${searchArea.left}; xRatio <= ${searchArea.right}; xRatio += 0.01) {
+          x = bounds.left + bounds.width * xRatio;
+          y = bounds.top + bounds.height * yRatio;
+          dispatch('pointermove', x, y);
+          if (canvas.style.cursor === 'pointer') break search;
+        }
+      }
+    }
+    if (canvas.style.cursor !== 'pointer') {
+      return { selected: null, cursor: canvas.style.cursor, hit: false };
+    }
+    dispatch('pointerdown', x, y);
+    dispatch('pointerup', x, y);
     return new Promise(resolve => requestAnimationFrame(() => resolve({
       selected: document.querySelector('.mini-diorama__actions button[aria-pressed="true"]')?.textContent?.trim(),
       cursor: canvas.style.cursor,
+      hit: true,
     })));
   })()`);
   if (hit.selected !== expectedAction) {

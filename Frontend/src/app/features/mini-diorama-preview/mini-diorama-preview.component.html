@@ -11,7 +11,7 @@
     </div>
   </header>
 
-  <app-mini-diorama-scene-panel />
+  <app-mini-diorama-scene-panel [sceneKind]="'stage-3-production'" />
 
   @if (settingsDialogOpen()) {
     <app-settings-dialog (closed)="closeSettings()" />

@@ -21,6 +21,7 @@ export class MiniDioramaCameraRig {
   constructor(
     private readonly camera: PerspectiveCamera,
     private readonly focusBounds: Readonly<Record<MiniDioramaFocus, Box3>>,
+    private readonly focusTargets: Readonly<Partial<Record<MiniDioramaFocus, Vector3>>> = {},
   ) {
     this.focus('overview', true);
   }
@@ -71,7 +72,7 @@ export class MiniDioramaCameraRig {
 
   private updateDestination(): void {
     const bounds = this.focusBounds[this.view];
-    this.targetLookAt.copy(bounds.getCenter(new Vector3()));
+    this.targetLookAt.copy(this.focusTargets[this.view] ?? bounds.getCenter(new Vector3()));
 
     const verticalFov = MathUtils.degToRad(this.camera.fov);
     const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * this.aspect);

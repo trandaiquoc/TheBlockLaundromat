@@ -21,6 +21,7 @@ import {
 } from './mini-diorama-scene-loader';
 import { applyMiniDioramaTheme, miniDioramaVariantForTheme } from './mini-diorama-scene-theme';
 import { disposeMiniDioramaResources } from './mini-diorama-scene-resources';
+import type { MiniDioramaSceneKind } from './mini-diorama-scene-contract';
 import {
   buildMiniDioramaScene,
   updateMiniDioramaFeedback,
@@ -93,6 +94,7 @@ export class MiniDioramaSceneRuntime {
   constructor(
     private readonly callbacks: MiniDioramaRuntimeCallbacks,
     adapters: Partial<MiniDioramaRuntimeAdapters> = {},
+    private readonly sceneKind: MiniDioramaSceneKind = 'integration-preview',
   ) {
     this.adapters = { ...browserAdapters, ...adapters };
   }
@@ -239,7 +241,7 @@ export class MiniDioramaSceneRuntime {
     this.sceneLoadAbortController = abortController;
 
     void Promise.resolve()
-      .then(() => this.adapters.loadSceneAsset(baseURI, abortController.signal))
+      .then(() => this.adapters.loadSceneAsset(baseURI, abortController.signal, this.sceneKind))
       .then((asset) => {
         if (this.disposed || abortController.signal.aborted) {
           disposeMiniDioramaResources(asset.root, asset.materialVariants.ownedMaterials);
@@ -249,12 +251,20 @@ export class MiniDioramaSceneRuntime {
         this.loadedAsset = asset;
         this.assets = buildMiniDioramaScene(asset);
         const camera = this.camera;
-        if (!camera) throw new Error('The laundromat camera was released before the scene loaded.');
+        if (!camera) throw new Error('The preview camera was released before the scene loaded.');
 
-        this.cameraRig = new MiniDioramaCameraRig(camera, this.assets.focusBounds);
+        this.cameraRig = new MiniDioramaCameraRig(
+          camera,
+          this.assets.focusBounds,
+          this.assets.cameraFocusTargets,
+        );
         this.cameraRig.setReducedMotion(this.reducedMotion);
-        this.raccoonController = new MiniDioramaRaccoonController(this.assets.raccoonRoot);
-        this.raccoonController.setReducedMotion(this.reducedMotion);
+        if (this.assets.raccoonControllerRoot) {
+          this.raccoonController = new MiniDioramaRaccoonController(
+            this.assets.raccoonControllerRoot,
+          );
+          this.raccoonController.setReducedMotion(this.reducedMotion);
+        }
         this.interaction = new MiniDioramaInteractionController(
           this.canvas!,
           camera,

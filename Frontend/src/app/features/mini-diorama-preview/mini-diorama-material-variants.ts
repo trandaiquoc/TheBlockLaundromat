@@ -64,7 +64,7 @@ export class MiniDioramaMaterialsVariantsPlugin implements GLTFLoaderPlugin {
     const variantExtension = readRecord(document.extensions?.[extensionName]);
     const variants = variantExtension?.['variants'];
     if (!Array.isArray(variants)) {
-      throw new Error('The laundromat GLB does not define KHR_materials_variants.');
+      throw new Error('The scene GLB does not define KHR_materials_variants.');
     }
 
     const variantNames = variants.map((variant) => readRecord(variant)?.['name']);
@@ -78,7 +78,7 @@ export class MiniDioramaMaterialsVariantsPlugin implements GLTFLoaderPlugin {
       if (!(object instanceof Mesh)) return;
       const baseMaterial = object.material;
       if (Array.isArray(baseMaterial)) {
-        throw new Error('The laundromat GLB contains a mesh with multiple base materials.');
+        throw new Error('The scene GLB contains a mesh with multiple base materials.');
       }
       ownedMaterials.add(baseMaterial);
 
@@ -93,11 +93,11 @@ export class MiniDioramaMaterialsVariantsPlugin implements GLTFLoaderPlugin {
       const localVariantIndices = new Set<number>();
       for (const mapping of variantMappings) {
         if (mapping.materialIndex >= (document.materials?.length ?? 0)) {
-          throw new Error('The laundromat GLB references a material outside its material table.');
+          throw new Error('The scene GLB references a material outside its material table.');
         }
         for (const variantIndex of mapping.variantIndices) {
           if (variantIndex >= variantNames.length || localVariantIndices.has(variantIndex)) {
-            throw new Error('The laundromat GLB contains an invalid material variant mapping.');
+            throw new Error('The scene GLB contains an invalid material variant mapping.');
           }
           localVariantIndices.add(variantIndex);
           usedVariantIndices.add(variantIndex);
@@ -108,7 +108,7 @@ export class MiniDioramaMaterialsVariantsPlugin implements GLTFLoaderPlugin {
     });
 
     if (pendingTargets.length === 0 || usedVariantIndices.size !== variantNames.length) {
-      throw new Error('The laundromat GLB has incomplete material variant assignments.');
+      throw new Error('The scene GLB has incomplete material variant assignments.');
     }
 
     const targets = await Promise.all(
@@ -117,7 +117,7 @@ export class MiniDioramaMaterialsVariantsPlugin implements GLTFLoaderPlugin {
         for (const mapping of mappings) {
           const material = await this.parser.getDependency('material', mapping.materialIndex);
           if (!(material instanceof Material)) {
-            throw new Error('The laundromat GLB contains an invalid variant material.');
+            throw new Error('The scene GLB contains an invalid variant material.');
           }
           ownedMaterials.add(material);
           for (const variantIndex of mapping.variantIndices) {
@@ -144,7 +144,7 @@ function assertVariantNames(
     names.some((name) => typeof name !== 'string' || !expected.delete(name)) ||
     expected.size > 0
   ) {
-    throw new Error('The laundromat GLB must define Light, Minecraft, Raccoon, and Dark variants.');
+    throw new Error('The scene GLB must define Light, Minecraft, Raccoon, and Dark variants.');
   }
 }
 
@@ -162,7 +162,7 @@ function readVariantMapping(value: unknown): {
     variantIndices.length === 0 ||
     variantIndices.some((index) => !Number.isInteger(index) || index < 0)
   ) {
-    throw new Error('The laundromat GLB contains an invalid material variant mapping.');
+    throw new Error('The scene GLB contains an invalid material variant mapping.');
   }
   return { materialIndex: materialIndex as number, variantIndices };
 }

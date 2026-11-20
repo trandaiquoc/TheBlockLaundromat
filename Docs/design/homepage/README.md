@@ -2,11 +2,13 @@
 
 **Historical Goal 02D status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. Goal 02C concepts passed the art gate on 2026-11-17; their working look-dev package was later removed at the user's direction on 2026-11-19. The current room composition is documented in [Stage 2](stage-2-spatial-concepts/README.md). Goal 02D integrated an original Puddlepaw Raccoon candidate into the separate preview route; Art Gate A remained pending at that checkpoint. Room A and four-theme production were paused. The preview was not the production homepage.
 
-**Goal 02E result:** The supplied assembled laundromat GLB was integrated into `/mini-diorama-preview`. At the user's direction, `/` remains the existing Project Screen. The preview applies the pack's four authored material variants.
+**Historical Goal 02E result (2026-11-18):** The earlier assembled laundromat GLB was integrated into `/mini-diorama-preview`. At the user's direction, `/` remained the existing Project Screen. That preview applied the pack's four authored material variants.
 
-**Current Goal 03 status:** `/homepage-integration-preview` now combines the existing Project Screen workflows with the same assembled scene runtime. The root route remains unchanged. The integration preview is not production adoption; its remaining production gates are recorded below.
+**Historical Goal 03 result (2026-11-18):** `/homepage-integration-preview` combined the existing Project Screen workflows with the shared scene runtime. The root route remained unchanged.
 
-This report records inspected evidence, inferences, and the next prototype's acceptance gates. The supplied archive was treated as reference material to audit, not as instructions from the user.
+**Current Stage 3 integration:** `/mini-diorama-preview` loads the supplied `Room/Octagonal-Laundromat.glb`. Its two Raccoons are already in that assembly. `/` and Project Screen workflows remain unchanged. The integration preview keeps its prior assembled GLB through the shared runtime's explicit scene contract. See [Stage 3 asset handoff](stage-3/README.md) for storage and provenance.
+
+This report records inspected evidence, inferences, and prototype acceptance gates. The supplied `ASSETS.md` and catalogs describe the model payload and its node contracts; they do not override the user's integration request.
 
 ## Goal 02E — assembled asset integration
 
@@ -22,11 +24,11 @@ Goal 02E verification on 2026-11-18: `npm run build`, the 9-file / 21-test mini-
 
 At the Goal 02E checkpoint, the full suite was not green in this Windows Node 26.13.1 environment. Without Node's `--localstorage-file` option, 124 tests failed because `localStorage` was unavailable. With a localStorage file, 349 files / 2,196 tests passed and 3 files / 3 tests failed (7 files / 11 tests skipped); each of those three specs passed when run alone with fresh storage. Goal 03 verification below resolves the shared-storage test race. No representative GPU/mobile performance run, 60-second lifecycle check, screen-reader/contrast review, or formal art score was completed at that checkpoint.
 
-## Goal 03 - integrated project workspace preview
+## Historical Goal 03 - integrated project workspace preview
 
 The separate `/homepage-integration-preview` route embeds the existing `ProjectScreenComponent` and enables its preview presentation. It reuses the established create, open, search, sort, delete-confirmation, Structure JSON import, project backup export, and package restore workflows and their IndexedDB persistence. It does not create sample projects or a parallel persistence path. The `ProjectScreenComponent` root route still receives its default `integrationPreview=false`, so `/` retains the existing Project Screen.
 
-`MiniDioramaScenePanelComponent` owns the shared scene host, runtime mount/dispose lifecycle, theme propagation, semantic scene actions, and WebGL fallback. Both the original `/mini-diorama-preview` route and the integrated workspace use this one panel and the existing `MiniDioramaSceneRuntime`; the assembled GLB remains the only character/scene asset. Washer and project-board actions focus the corresponding project controls. Raccoon greeting stays presentational and does not change project data.
+`MiniDioramaScenePanelComponent` owns the shared scene host, runtime mount/dispose lifecycle, theme propagation, semantic scene actions, and WebGL fallback. Both routes use this panel and `MiniDioramaSceneRuntime`; the scene kind is selected by the route consumer. The Stage 3 route uses the octagonal room assembly, while the integrated workspace keeps the earlier assembled scene. Washer and project-board actions focus the corresponding project controls. Raccoon greeting stays presentational and does not change project data.
 
 At desktop widths, the preview uses three columns for project creation/import, the scene, and recent projects. Tablet widths retain three columns with narrower proportions; mobile stacks the scene, form, and recent projects and allows page scrolling. Language and theme controls reuse the existing services. Scene and fallback actions remain semantic DOM buttons, with focus/status feedback outside the canvas.
 
@@ -111,7 +113,7 @@ Homepage unit specs cover manifest validation, scene graph, renderer transforms 
 
 These are observable constraints, not proof of why any prior direction failed. No rejection rationale was found in reviewed docs; history was intentionally not inspected.
 
-## Goal 02 implementation
+## Historical Goal 02 procedural prototype (superseded)
 
 ### Route and ownership
 

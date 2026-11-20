@@ -1,0 +1,329 @@
+Asset,Mesh,File,Triangles,Outside UV tile,Zero-area UV triangles,Overlapping UV triangles,Minimum triangle UV area
+Courier,Courier.Bent forearm.L,BLEND,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Bent forearm.R,BLEND,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Body • seated rump,BLEND,7088,0,0,0,9.507134279829188e-08
+Courier,Courier.Catchlight.L,BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Catchlight.R,BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Digit.L.0,BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.1,BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.2,BLEND,92,0,0,0,1.4926869607023718e-07
+Courier,Courier.Digit.R.0,BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.R.1,BLEND,92,0,0,0,1.492740038244733e-07
+Courier,Courier.Digit.R.2,BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Ear.L,BLEND,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Ear.R,BLEND,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Eye.L,BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Eye.R,BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Gripping paw.L,BLEND,280,0,0,0,3.0002785855742786e-07
+Courier,Courier.Gripping paw.R,BLEND,280,0,0,0,3.0004236606373524e-07
+Courier,Courier.Head • broad cheek mask,BLEND,6764,0,0,0,9.83276464694427e-08
+Courier,Courier.Hind paw.L,BLEND,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind paw.R,BLEND,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind thigh.L,BLEND,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind thigh.R,BLEND,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind toe.L.1,BLEND,92,0,0,0,1.6895927323901105e-07
+Courier,Courier.Hind toe.L.2,BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.L.3,BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.1,BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.2,BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.3,BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Muzzle,BLEND,44,0,0,0,1.2219012361924797e-06
+Courier,Courier.Nose,BLEND,44,0,0,0,9.740064967900253e-07
+Courier,Courier.Tail,BLEND,236,0,0,0,2.8779308088644484e-05
+Courier,Courier.Upper arm.L,BLEND,408,0,0,0,3.0144705398527094e-07
+Courier,Courier.Upper arm.R,BLEND,408,0,0,0,3.0147199936436664e-07
+Courier,Courier.Bent forearm.L,GLB,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Bent forearm.R,GLB,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Body • seated rump,GLB,7088,0,0,0,9.507134279829188e-08
+Courier,Courier.Catchlight.L,GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Catchlight.R,GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Digit.L.0,GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.1,GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.2,GLB,92,0,0,0,1.4926869607023718e-07
+Courier,Courier.Digit.R.0,GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.R.1,GLB,92,0,0,0,1.492740038244733e-07
+Courier,Courier.Digit.R.2,GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Ear.L,GLB,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Ear.R,GLB,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Eye.L,GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Eye.R,GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Gripping paw.L,GLB,280,0,0,0,3.0002785855742786e-07
+Courier,Courier.Gripping paw.R,GLB,280,0,0,0,3.0004236606373524e-07
+Courier,Courier.Head • broad cheek mask,GLB,6764,0,0,0,9.83276464694427e-08
+Courier,Courier.Hind paw.L,GLB,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind paw.R,GLB,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind thigh.L,GLB,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind thigh.R,GLB,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind toe.L.1,GLB,92,0,0,0,1.6895927323901105e-07
+Courier,Courier.Hind toe.L.2,GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.L.3,GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.1,GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.2,GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.3,GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Muzzle,GLB,44,0,0,0,1.2219012361924797e-06
+Courier,Courier.Nose,GLB,44,0,0,0,9.740064967900253e-07
+Courier,Courier.Tail,GLB,236,0,0,0,2.8779037263504392e-05
+Courier,Courier.Upper arm.L,GLB,408,0,0,0,3.0144705398527094e-07
+Courier,Courier.Upper arm.R,GLB,408,0,0,0,3.0147199936436664e-07
+Guide,Guide.Body • seated rump,BLEND,7088,0,0,0,1.2379626923575415e-07
+Guide,Guide.Catchlight.L,BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Catchlight.R,BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.L,BLEND,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.R,BLEND,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.L,BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.R,BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.L,BLEND,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.R,BLEND,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Front paw.L,BLEND,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Front paw.R,BLEND,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Head • broad cheek mask,BLEND,6764,0,0,0,1.2049205011521735e-07
+Guide,Guide.Hind paw.L,BLEND,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind paw.R,BLEND,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind thigh.L,BLEND,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Hind thigh.R,BLEND,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Muzzle,BLEND,44,0,0,0,1.7152135711739902e-06
+Guide,Guide.Nose,BLEND,44,0,0,0,1.2551007273486903e-06
+Guide,Guide.Tail,BLEND,236,0,0,0,4.358654429381659e-06
+Guide,Guide.Upper arm.L,BLEND,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Upper arm.R,BLEND,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Body • seated rump,GLB,7088,0,0,0,1.2379626923575415e-07
+Guide,Guide.Catchlight.L,GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Catchlight.R,GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.L,GLB,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.R,GLB,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.L,GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.R,GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.L,GLB,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.R,GLB,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Front paw.L,GLB,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Front paw.R,GLB,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Head • broad cheek mask,GLB,6764,0,0,0,1.2049205011521735e-07
+Guide,Guide.Hind paw.L,GLB,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind paw.R,GLB,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind thigh.L,GLB,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Hind thigh.R,GLB,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Muzzle,GLB,44,0,0,0,1.7152135711739902e-06
+Guide,Guide.Nose,GLB,44,0,0,0,1.2551007273486903e-06
+Guide,Guide.Tail,GLB,236,0,0,0,4.358654429381659e-06
+Guide,Guide.Upper arm.L,GLB,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Upper arm.R,GLB,720,0,0,0,5.7598770197841986e-08
+BlankNote,BlankNote.Sheet,BLEND,76,0,0,0,8.843785353640499e-05
+BlankNote,BlankNote.Sheet,GLB,76,0,0,0,8.843785353640499e-05
+Guide,Guide.Body • seated rump,Room/BLEND,7088,0,0,0,1.2379626923575415e-07
+Guide,Guide.Catchlight.L,Room/BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Catchlight.R,Room/BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.L,Room/BLEND,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.R,Room/BLEND,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.L,Room/BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.R,Room/BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.L,Room/BLEND,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.R,Room/BLEND,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Front paw.L,Room/BLEND,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Front paw.R,Room/BLEND,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Head • broad cheek mask,Room/BLEND,6764,0,0,0,1.2049205011521735e-07
+Guide,Guide.Hind paw.L,Room/BLEND,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind paw.R,Room/BLEND,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind thigh.L,Room/BLEND,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Hind thigh.R,Room/BLEND,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Muzzle,Room/BLEND,44,0,0,0,1.7152135711739902e-06
+Guide,Guide.Nose,Room/BLEND,44,0,0,0,1.2551007273486903e-06
+Guide,Guide.Tail,Room/BLEND,236,0,0,0,4.358654429381659e-06
+Guide,Guide.Upper arm.L,Room/BLEND,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Upper arm.R,Room/BLEND,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Body • seated rump,Room/GLB,7088,0,0,0,1.2379626923575415e-07
+Guide,Guide.Catchlight.L,Room/GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Catchlight.R,Room/GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.L,Room/GLB,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.R,Room/GLB,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.L,Room/GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.R,Room/GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.L,Room/GLB,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.R,Room/GLB,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Front paw.L,Room/GLB,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Front paw.R,Room/GLB,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Head • broad cheek mask,Room/GLB,6764,0,0,0,1.2049205011521735e-07
+Guide,Guide.Hind paw.L,Room/GLB,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind paw.R,Room/GLB,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind thigh.L,Room/GLB,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Hind thigh.R,Room/GLB,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Muzzle,Room/GLB,44,0,0,0,1.7152135711739902e-06
+Guide,Guide.Nose,Room/GLB,44,0,0,0,1.2551007273486903e-06
+Guide,Guide.Tail,Room/GLB,236,0,0,0,4.358654429381659e-06
+Guide,Guide.Upper arm.L,Room/GLB,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Upper arm.R,Room/GLB,720,0,0,0,5.7598770197841986e-08
+Courier,Courier.Bent forearm.L,Room/BLEND,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Bent forearm.R,Room/BLEND,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Body • seated rump,Room/BLEND,7088,0,0,0,9.507134279829188e-08
+Courier,Courier.Catchlight.L,Room/BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Catchlight.R,Room/BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Digit.L.0,Room/BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.1,Room/BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.2,Room/BLEND,92,0,0,0,1.4926869607023718e-07
+Courier,Courier.Digit.R.0,Room/BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.R.1,Room/BLEND,92,0,0,0,1.492740038244733e-07
+Courier,Courier.Digit.R.2,Room/BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Ear.L,Room/BLEND,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Ear.R,Room/BLEND,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Eye.L,Room/BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Eye.R,Room/BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Gripping paw.L,Room/BLEND,280,0,0,0,3.0002785855742786e-07
+Courier,Courier.Gripping paw.R,Room/BLEND,280,0,0,0,3.0004236606373524e-07
+Courier,Courier.Head • broad cheek mask,Room/BLEND,6764,0,0,0,9.83276464694427e-08
+Courier,Courier.Hind paw.L,Room/BLEND,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind paw.R,Room/BLEND,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind thigh.L,Room/BLEND,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind thigh.R,Room/BLEND,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind toe.L.1,Room/BLEND,92,0,0,0,1.6895927323901105e-07
+Courier,Courier.Hind toe.L.2,Room/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.L.3,Room/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.1,Room/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.2,Room/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.3,Room/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Muzzle,Room/BLEND,44,0,0,0,1.2219012361924797e-06
+Courier,Courier.Nose,Room/BLEND,44,0,0,0,9.740064967900253e-07
+Courier,Courier.Tail,Room/BLEND,236,0,0,0,2.8779308088644484e-05
+Courier,Courier.Upper arm.L,Room/BLEND,408,0,0,0,3.0144705398527094e-07
+Courier,Courier.Upper arm.R,Room/BLEND,408,0,0,0,3.0147199936436664e-07
+Courier,Courier.Bent forearm.L,Room/GLB,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Bent forearm.R,Room/GLB,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Body • seated rump,Room/GLB,7088,0,0,0,9.507134279829188e-08
+Courier,Courier.Catchlight.L,Room/GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Catchlight.R,Room/GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Digit.L.0,Room/GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.1,Room/GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.2,Room/GLB,92,0,0,0,1.4926869607023718e-07
+Courier,Courier.Digit.R.0,Room/GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.R.1,Room/GLB,92,0,0,0,1.492740038244733e-07
+Courier,Courier.Digit.R.2,Room/GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Ear.L,Room/GLB,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Ear.R,Room/GLB,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Eye.L,Room/GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Eye.R,Room/GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Gripping paw.L,Room/GLB,280,0,0,0,3.0002785855742786e-07
+Courier,Courier.Gripping paw.R,Room/GLB,280,0,0,0,3.0004236606373524e-07
+Courier,Courier.Head • broad cheek mask,Room/GLB,6764,0,0,0,9.83276464694427e-08
+Courier,Courier.Hind paw.L,Room/GLB,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind paw.R,Room/GLB,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind thigh.L,Room/GLB,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind thigh.R,Room/GLB,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind toe.L.1,Room/GLB,92,0,0,0,1.6895927323901105e-07
+Courier,Courier.Hind toe.L.2,Room/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.L.3,Room/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.1,Room/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.2,Room/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.3,Room/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Muzzle,Room/GLB,44,0,0,0,1.2219012361924797e-06
+Courier,Courier.Nose,Room/GLB,44,0,0,0,9.740064967900253e-07
+Courier,Courier.Tail,Room/GLB,236,0,0,0,2.8779037263504392e-05
+Courier,Courier.Upper arm.L,Room/GLB,408,0,0,0,3.0144705398527094e-07
+Courier,Courier.Upper arm.R,Room/GLB,408,0,0,0,3.0147199936436664e-07
+BlankNote,BlankNote.Sheet,Room/BLEND,76,0,0,0,8.843785353640499e-05
+BlankNote,BlankNote.Sheet,Room/GLB,76,0,0,0,8.843785353640499e-05
+Courier,Courier.Bent forearm.L,Parts/BLEND,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Bent forearm.R,Parts/BLEND,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Body • seated rump,Parts/BLEND,7088,0,0,0,9.507134279829188e-08
+Courier,Courier.Catchlight.L,Parts/BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Catchlight.R,Parts/BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Digit.L.0,Parts/BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.1,Parts/BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.2,Parts/BLEND,92,0,0,0,1.4926869607023718e-07
+Courier,Courier.Digit.R.0,Parts/BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.R.1,Parts/BLEND,92,0,0,0,1.492740038244733e-07
+Courier,Courier.Digit.R.2,Parts/BLEND,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Ear.L,Parts/BLEND,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Ear.R,Parts/BLEND,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Eye.L,Parts/BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Eye.R,Parts/BLEND,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Gripping paw.L,Parts/BLEND,280,0,0,0,3.0002785855742786e-07
+Courier,Courier.Gripping paw.R,Parts/BLEND,280,0,0,0,3.0004236606373524e-07
+Courier,Courier.Head • broad cheek mask,Parts/BLEND,6764,0,0,0,9.83276464694427e-08
+Courier,Courier.Hind paw.L,Parts/BLEND,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind paw.R,Parts/BLEND,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind thigh.L,Parts/BLEND,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind thigh.R,Parts/BLEND,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind toe.L.1,Parts/BLEND,92,0,0,0,1.6895927323901105e-07
+Courier,Courier.Hind toe.L.2,Parts/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.L.3,Parts/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.1,Parts/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.2,Parts/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.3,Parts/BLEND,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Muzzle,Parts/BLEND,44,0,0,0,1.2219012361924797e-06
+Courier,Courier.Nose,Parts/BLEND,44,0,0,0,9.740064967900253e-07
+Courier,Courier.Tail,Parts/BLEND,236,0,0,0,2.8779308088644484e-05
+Courier,Courier.Upper arm.L,Parts/BLEND,408,0,0,0,3.0144705398527094e-07
+Courier,Courier.Upper arm.R,Parts/BLEND,408,0,0,0,3.0147199936436664e-07
+Courier,Courier.Bent forearm.L,Parts/GLB,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Bent forearm.R,Parts/GLB,388,0,0,0,2.891963593043556e-07
+Courier,Courier.Body • seated rump,Parts/GLB,7088,0,0,0,9.507134279829188e-08
+Courier,Courier.Catchlight.L,Parts/GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Catchlight.R,Parts/GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Digit.L.0,Parts/GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.1,Parts/GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.L.2,Parts/GLB,92,0,0,0,1.4926869607023718e-07
+Courier,Courier.Digit.R.0,Parts/GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Digit.R.1,Parts/GLB,92,0,0,0,1.492740038244733e-07
+Courier,Courier.Digit.R.2,Parts/GLB,92,0,0,0,1.492653609602712e-07
+Courier,Courier.Ear.L,Parts/GLB,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Ear.R,Parts/GLB,788,0,0,0,1.6819013737290334e-07
+Courier,Courier.Eye.L,Parts/GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Eye.R,Parts/GLB,44,0,0,0,1.6817285342085597e-07
+Courier,Courier.Gripping paw.L,Parts/GLB,280,0,0,0,3.0002785855742786e-07
+Courier,Courier.Gripping paw.R,Parts/GLB,280,0,0,0,3.0004236606373524e-07
+Courier,Courier.Head • broad cheek mask,Parts/GLB,6764,0,0,0,9.83276464694427e-08
+Courier,Courier.Hind paw.L,Parts/GLB,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind paw.R,Parts/GLB,268,0,0,0,3.172862701461554e-07
+Courier,Courier.Hind thigh.L,Parts/GLB,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind thigh.R,Parts/GLB,408,0,0,0,3.205044176723959e-07
+Courier,Courier.Hind toe.L.1,Parts/GLB,92,0,0,0,1.6895927323901105e-07
+Courier,Courier.Hind toe.L.2,Parts/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.L.3,Parts/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.1,Parts/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.2,Parts/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Hind toe.R.3,Parts/GLB,92,0,0,0,1.689549522509992e-07
+Courier,Courier.Muzzle,Parts/GLB,44,0,0,0,1.2219012361924797e-06
+Courier,Courier.Nose,Parts/GLB,44,0,0,0,9.740064967900253e-07
+Courier,Courier.Tail,Parts/GLB,236,0,0,0,2.8779037263504392e-05
+Courier,Courier.Upper arm.L,Parts/GLB,408,0,0,0,3.0144705398527094e-07
+Courier,Courier.Upper arm.R,Parts/GLB,408,0,0,0,3.0147199936436664e-07
+Guide,Guide.Body • seated rump,Parts/BLEND,7088,0,0,0,1.2379626923575415e-07
+Guide,Guide.Catchlight.L,Parts/BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Catchlight.R,Parts/BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.L,Parts/BLEND,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.R,Parts/BLEND,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.L,Parts/BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.R,Parts/BLEND,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.L,Parts/BLEND,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.R,Parts/BLEND,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Front paw.L,Parts/BLEND,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Front paw.R,Parts/BLEND,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Head • broad cheek mask,Parts/BLEND,6764,0,0,0,1.2049205011521735e-07
+Guide,Guide.Hind paw.L,Parts/BLEND,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind paw.R,Parts/BLEND,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind thigh.L,Parts/BLEND,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Hind thigh.R,Parts/BLEND,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Muzzle,Parts/BLEND,44,0,0,0,1.7152135711739902e-06
+Guide,Guide.Nose,Parts/BLEND,44,0,0,0,1.2551007273486903e-06
+Guide,Guide.Tail,Parts/BLEND,236,0,0,0,4.358654429381659e-06
+Guide,Guide.Upper arm.L,Parts/BLEND,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Upper arm.R,Parts/BLEND,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Body • seated rump,Parts/GLB,7088,0,0,0,1.2379626923575415e-07
+Guide,Guide.Catchlight.L,Parts/GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Catchlight.R,Parts/GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.L,Parts/GLB,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Ear.R,Parts/GLB,788,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.L,Parts/GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Eye.R,Parts/GLB,44,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.L,Parts/GLB,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Forearm.R,Parts/GLB,714,0,0,0,1.6819013737290334e-07
+Guide,Guide.Front paw.L,Parts/GLB,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Front paw.R,Parts/GLB,44,0,0,0,9.845526740548394e-07
+Guide,Guide.Head • broad cheek mask,Parts/GLB,6764,0,0,0,1.2049205011521735e-07
+Guide,Guide.Hind paw.L,Parts/GLB,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind paw.R,Parts/GLB,44,0,0,0,9.525717103997522e-07
+Guide,Guide.Hind thigh.L,Parts/GLB,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Hind thigh.R,Parts/GLB,1378,0,0,0,1.6819013737290334e-07
+Guide,Guide.Muzzle,Parts/GLB,44,0,0,0,1.7152135711739902e-06
+Guide,Guide.Nose,Parts/GLB,44,0,0,0,1.2551007273486903e-06
+Guide,Guide.Tail,Parts/GLB,236,0,0,0,4.358654429381659e-06
+Guide,Guide.Upper arm.L,Parts/GLB,720,0,0,0,5.7598770197841986e-08
+Guide,Guide.Upper arm.R,Parts/GLB,720,0,0,0,5.7598770197841986e-08

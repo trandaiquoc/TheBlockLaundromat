@@ -16,6 +16,8 @@ const expectedThemes = {
 const expectedLayerCounts = { minecraft: 82, light: 82, raccoon: 84, dark: 83 };
 const expectedCanvas = { width: 1672, height: 941 };
 const laundromatScenePath = sourcePath('models/laundromat/Laundromat.glb');
+const productionRoomPath = sourcePath('models/Room/Octagonal-Laundromat.glb');
+const stage3InventoryPath = join(repository, 'Docs/design/homepage/stage-3/archive-inventory.csv');
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 function sourcePath(path) {
@@ -195,6 +197,16 @@ if (
 const sourceLayerPaths = new Set(
   layerFiles.map((path) => relative(source, path).split(sep).join('/')),
 );
+const stage3SourcePaths = readFileSync(stage3InventoryPath, 'utf8')
+  .trimEnd()
+  .split(/\r?\n/)
+  .slice(1)
+  .map((line) => line.split(',')[1])
+  .filter((path) => path.startsWith('Frontend/source-assets/homepage/'))
+  .map((path) => path.slice('Frontend/source-assets/homepage/'.length));
+if (stage3SourcePaths.length !== 644 || new Set(stage3SourcePaths).size !== 644) {
+  throw new Error('Stage 3 source model inventory is incomplete or contains duplicates');
+}
 const actualSourcePaths = new Set(
   sourceFiles.map((path) => relative(source, path).split(sep).join('/')),
 );
@@ -202,8 +214,14 @@ const expectedSourcePaths = new Set([
   ...manifestLayers,
   ...maskFiles.map((path) => relative(source, path).split(sep).join('/')),
   ...referenceFiles.map((path) => relative(source, path).split(sep).join('/')),
+  ...stage3SourcePaths,
   'scene-manifest.json',
   'models/laundromat/Laundromat.glb',
+  'models/Room/Octagonal-Laundromat.glb',
+  'models/raccoons/README.md',
+  'models/raccoons/raccoon-note-courier.glb',
+  'models/raccoons/raccoon-washer-guide.glb',
+  'models/raccoons/raccoons-activity-preview.png',
 ]);
 const semanticIds = new Set(
   Object.values(manifest.themes).flatMap((theme) => theme.assets.map((asset) => asset.id)),
@@ -217,7 +235,7 @@ if (
   maskFiles.length !== 282 ||
   referenceFiles.length !== 4 ||
   referencedMasks.size !== 278 ||
-  sourceFiles.length !== 619 ||
+  sourceFiles.length !== 1267 ||
   actualSourcePaths.size !== expectedSourcePaths.size ||
   [...expectedSourcePaths].some((path) => !actualSourcePaths.has(path))
 ) {
@@ -240,6 +258,7 @@ if (existsSync(distRuntime)) {
     }
   }
   expectedRuntime.set('models/laundromat/Laundromat.glb', laundromatScenePath);
+  expectedRuntime.set('models/Room/Octagonal-Laundromat.glb', productionRoomPath);
   const runtimeFiles = filesUnder(distRuntime);
   const actualRuntimePaths = new Set(
     runtimeFiles.map((path) => relative(distRuntime, path).split(sep).join('/')),
@@ -265,7 +284,7 @@ if (existsSync(distRuntime)) {
   }
 
   const runtimeBytes = runtimeFiles.reduce((total, path) => total + readFileSync(path).length, 0);
-  runtimeSummary = `Production runtime verified: ${expectedRuntime.size - 1} required PNG layers, one assembled laundromat GLB, and manifest (${runtimeBytes} bytes; no editable model or texture sources).`;
+  runtimeSummary = `Production runtime verified: ${expectedRuntime.size - 2} required PNG layers, two scene GLBs for their isolated consumers, and manifest (${runtimeBytes} bytes; no Blender sources or documentation).`;
 }
 
 console.log(

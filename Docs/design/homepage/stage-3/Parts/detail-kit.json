@@ -1,0 +1,738 @@
+[
+  {
+    "instance": "OctagonalShell.CheckerTiles",
+    "part": "Dark-tile",
+    "source": "Parts/Detail-Kit/Dark-tile.blend",
+    "runtime": "Parts/Detail-Kit/Dark-tile.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.6575000286102295
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.9975000023841858
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.05900000035762787
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "OctagonalShell.CheckerTiles",
+    "part": "Pale-tile",
+    "source": "Parts/Detail-Kit/Pale-tile.blend",
+    "runtime": "Parts/Detail-Kit/Pale-tile.glb",
+    "blender_world_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -3.6575000286102295
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -0.33249998092651367
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -0.05900000035762787
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.Arch",
+    "part": "Individual-keystone",
+    "source": "Parts/Detail-Kit/Individual-keystone.blend",
+    "runtime": "Parts/Detail-Kit/Individual-keystone.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.098371982574463
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.381722092628479
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        1.2343841791152954
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.Firebox",
+    "part": "Firebrick",
+    "source": "Parts/Detail-Kit/Firebrick.blend",
+    "runtime": "Parts/Detail-Kit/Firebrick.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.040597438812256
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.8313676118850708
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        0.26931002736091614
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Fireplace.HoodAndFlue",
+    "part": "Hollow-flue-course",
+    "source": "Parts/Detail-Kit/Hollow-flue-course.blend",
+    "runtime": "Parts/Detail-Kit/Hollow-flue-course.glb",
+    "blender_world_matrix": [
+      [
+        0.5515432357788086,
+        0.6151828765869141,
+        0.0,
+        3.3035354614257812
+      ],
+      [
+        -0.5515432357788086,
+        0.6151827573776245,
+        0.0,
+        1.586885690689087
+      ],
+      [
+        0.0,
+        0.0,
+        0.9399999976158142,
+        1.6638000011444092
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Shelf.2",
+    "part": "Shelf-plank",
+    "source": "Parts/Detail-Kit/Shelf-plank.blend",
+    "runtime": "Parts/Detail-Kit/Shelf-plank.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.496000289916992
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        -0.18699973821640015
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.5049999952316284
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "LeftCabinet.Shelf.2",
+    "part": "Shelf-edge",
+    "source": "Parts/Detail-Kit/Shelf-edge.blend",
+    "runtime": "Parts/Detail-Kit/Shelf-edge.glb",
+    "blender_world_matrix": [
+      [
+        1.1920928955078125e-07,
+        -0.9999999403953552,
+        0.0,
+        -3.25
+      ],
+      [
+        1.1599998474121094,
+        8.940696716308594e-08,
+        0.0,
+        -0.18699955940246582
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.4704999923706055
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Window.Casement and sill",
+    "part": "Window-sill",
+    "source": "Parts/Detail-Kit/Window-sill.blend",
+    "runtime": "Parts/Detail-Kit/Window-sill.glb",
+    "blender_world_matrix": [
+      [
+        0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.643996000289917
+      ],
+      [
+        -0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.643996000289917
+      ],
+      [
+        0.0,
+        0.0,
+        1.1299999952316284,
+        0.9900000691413879
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Window.Crossbars",
+    "part": "Vertical-mullion",
+    "source": "Parts/Detail-Kit/Vertical-mullion.blend",
+    "runtime": "Parts/Detail-Kit/Vertical-mullion.glb",
+    "blender_world_matrix": [
+      [
+        0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.743075370788574
+      ],
+      [
+        -0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.743075370788574
+      ],
+      [
+        0.0,
+        0.0,
+        1.1299999952316284,
+        1.1521549224853516
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Window.Crossbars",
+    "part": "Horizontal-mullion",
+    "source": "Parts/Detail-Kit/Horizontal-mullion.blend",
+    "runtime": "Parts/Detail-Kit/Horizontal-mullion.glb",
+    "blender_world_matrix": [
+      [
+        0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.73828125
+      ],
+      [
+        -0.7990306615829468,
+        0.7990306615829468,
+        0.0,
+        2.73828125
+      ],
+      [
+        0.0,
+        0.0,
+        1.1299999952316284,
+        1.9397650957107544
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Hanger",
+    "part": "Iron-chain-link",
+    "source": "Parts/Detail-Kit/Iron-chain-link.blend",
+    "runtime": "Parts/Detail-Kit/Iron-chain-link.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.7989552021026611
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.1111161708831787
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        3.126499891281128
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Housing",
+    "part": "Lantern-crown",
+    "source": "Parts/Detail-Kit/Lantern-crown.blend",
+    "runtime": "Parts/Detail-Kit/Lantern-crown.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.7989552021026611
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.1111161708831787
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.860999822616577
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Housing",
+    "part": "Brass-corner-post",
+    "source": "Parts/Detail-Kit/Brass-corner-post.blend",
+    "runtime": "Parts/Detail-Kit/Brass-corner-post.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.6094505786895752
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.1111161708831787
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.5349998474121094
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Luminous panes",
+    "part": "Amber-core",
+    "source": "Parts/Detail-Kit/Amber-core.blend",
+    "runtime": "Parts/Detail-Kit/Amber-core.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.7989550828933716
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.1111161708831787
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.542999744415283
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheLantern.Luminous panes",
+    "part": "Lantern-pane",
+    "source": "Parts/Detail-Kit/Lantern-pane.blend",
+    "runtime": "Parts/Detail-Kit/Lantern-pane.glb",
+    "blender_world_matrix": [
+      [
+        0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        1.8880504369735718
+      ],
+      [
+        -0.7071067690849304,
+        0.7071067690849304,
+        0.0,
+        3.0220208168029785
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        2.5909998416900635
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Marigold.Flowers",
+    "part": "Marigold-blossom",
+    "source": "Parts/Detail-Kit/Marigold-blossom.blend",
+    "runtime": "Parts/Detail-Kit/Marigold-blossom.glb",
+    "blender_world_matrix": [
+      [
+        1.1820982694625854,
+        -0.33991745114326477,
+        0.0,
+        -2.746941089630127
+      ],
+      [
+        0.33991745114326477,
+        1.1820982694625854,
+        0.0,
+        -1.6864973306655884
+      ],
+      [
+        0.0,
+        0.0,
+        1.2300000190734863,
+        0.8899053335189819
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Rose.Flowers",
+    "part": "Rose-blossom",
+    "source": "Parts/Detail-Kit/Rose-blossom.blend",
+    "runtime": "Parts/Detail-Kit/Rose-blossom.glb",
+    "blender_world_matrix": [
+      [
+        0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.131626605987549
+      ],
+      [
+        -0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.615638256072998
+      ],
+      [
+        0.0,
+        0.0,
+        1.190000057220459,
+        0.9080150127410889
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Rose.Flowers",
+    "part": "Rose-petal",
+    "source": "Parts/Detail-Kit/Rose-petal.blend",
+    "runtime": "Parts/Detail-Kit/Rose-petal.glb",
+    "blender_world_matrix": [
+      [
+        0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.1686675548553467
+      ],
+      [
+        -0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.5785973072052
+      ],
+      [
+        0.0,
+        0.0,
+        1.190000057220459,
+        0.9080150127410889
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "Rose.Foliage",
+    "part": "Rose-leaf-spray",
+    "source": "Parts/Detail-Kit/Rose-leaf-spray.blend",
+    "runtime": "Parts/Detail-Kit/Rose-leaf-spray.glb",
+    "blender_world_matrix": [
+      [
+        0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.135251522064209
+      ],
+      [
+        -0.8414570689201355,
+        0.8414570689201355,
+        0.0,
+        2.58964467048645
+      ],
+      [
+        0.0,
+        0.0,
+        1.190000057220459,
+        0.64565509557724
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheFern.Foliage",
+    "part": "Fern-frond",
+    "source": "Parts/Detail-Kit/Fern-frond.blend",
+    "runtime": "Parts/Detail-Kit/Fern-frond.glb",
+    "blender_world_matrix": [
+      [
+        1.0700000524520874,
+        0.0,
+        0.0,
+        0.8806602954864502
+      ],
+      [
+        0.0,
+        1.0700000524520874,
+        0.0,
+        3.4917614459991455
+      ],
+      [
+        0.0,
+        0.0,
+        1.0700000524520874,
+        2.496394634246826
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "NicheFern.Shoots",
+    "part": "Fern-stem",
+    "source": "Parts/Detail-Kit/Fern-stem.blend",
+    "runtime": "Parts/Detail-Kit/Fern-stem.glb",
+    "blender_world_matrix": [
+      [
+        1.0700000524520874,
+        0.0,
+        0.0,
+        0.8740158081054688
+      ],
+      [
+        0.0,
+        1.0700000524520874,
+        0.0,
+        3.487553834915161
+      ],
+      [
+        0.0,
+        0.0,
+        1.0700000524520874,
+        2.3955600261688232
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "WestIvy.Ivy leaves",
+    "part": "Pendant-ivy-leaf",
+    "source": "Parts/Detail-Kit/Pendant-ivy-leaf.blend",
+    "runtime": "Parts/Detail-Kit/Pendant-ivy-leaf.glb",
+    "blender_world_matrix": [
+      [
+        0.7353909611701965,
+        -0.7353909611701965,
+        0.0,
+        -3.976938247680664
+      ],
+      [
+        0.7353909611701965,
+        0.7353909611701965,
+        0.0,
+        0.23637628555297852
+      ],
+      [
+        0.0,
+        0.0,
+        0.7487999796867371,
+        3.4875173568725586
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  {
+    "instance": "WestIvy.Trailing stems",
+    "part": "Vine-segment",
+    "source": "Parts/Detail-Kit/Vine-segment.blend",
+    "runtime": "Parts/Detail-Kit/Vine-segment.glb",
+    "blender_world_matrix": [
+      [
+        0.7353909611701965,
+        -0.7353909611701965,
+        0.0,
+        -3.952819347381592
+      ],
+      [
+        0.7353909611701965,
+        0.7353909611701965,
+        0.0,
+        0.28843069076538086
+      ],
+      [
+        0.0,
+        0.0,
+        0.7487999796867371,
+        3.4770548343658447
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  }
+]
