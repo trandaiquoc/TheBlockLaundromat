@@ -93,7 +93,9 @@ export class MiniDioramaSceneRuntime {
   private themeTransitionElapsed = 0;
   private roomSpinElapsed = 0;
   private roomSpinStartRotation = 0;
-  private roomSpinDirection = 1;
+  private roomSpinOriginRotation = 0;
+  private roomSpinTargetRotation = 0;
+  private roomSpinInitialDirection = 1;
   private roomSpinActive = false;
   private systemReducedMotion = false;
   private sceneAnimationsEnabled = true;
@@ -454,7 +456,7 @@ export class MiniDioramaSceneRuntime {
     const deltaSeconds = Math.min(elapsedSeconds, maximumFrameDeltaSeconds);
     this.lastFrameTime = timestamp;
     this.updateThemeTransition(deltaSeconds);
-    this.updateRoomSpin(deltaSeconds);
+    this.updateRoomSpin(elapsedSeconds);
     this.raccoonController?.update(deltaSeconds);
     this.cameraRig?.update(deltaSeconds);
     this.render();
@@ -484,10 +486,27 @@ export class MiniDioramaSceneRuntime {
   private startRoomSpin(direction: 'clockwise' | 'counterclockwise'): void {
     const pivot = this.assets?.roomSpinPivot;
     if (this.reducedMotion || !pivot) return;
+    const requestedDirection = direction === 'clockwise' ? 1 : -1;
+    if (!this.roomSpinActive) {
+      this.roomSpinOriginRotation = pivot.rotation.y;
+      this.roomSpinInitialDirection = requestedDirection;
+      this.roomSpinStartRotation = this.roomSpinOriginRotation;
+      this.roomSpinTargetRotation =
+        this.roomSpinOriginRotation + requestedDirection * roomSpinRadians;
+      this.roomSpinElapsed = 0;
+      this.roomSpinActive = true;
+      return;
+    }
+
+    const requestedTarget =
+      requestedDirection === this.roomSpinInitialDirection
+        ? this.roomSpinOriginRotation + this.roomSpinInitialDirection * roomSpinRadians
+        : this.roomSpinOriginRotation;
+    if (requestedTarget === this.roomSpinTargetRotation) return;
+
     this.roomSpinStartRotation = pivot.rotation.y;
-    this.roomSpinDirection = direction === 'clockwise' ? 1 : -1;
+    this.roomSpinTargetRotation = requestedTarget;
     this.roomSpinElapsed = 0;
-    this.roomSpinActive = true;
   }
 
   private updateRoomSpin(deltaSeconds: number): void {
@@ -497,7 +516,8 @@ export class MiniDioramaSceneRuntime {
     const progress = Math.min(this.roomSpinElapsed / roomSpinDurationSeconds, 1);
     const easedProgress = progress ** 3 * (progress * (progress * 6 - 15) + 10);
     pivot.rotation.y =
-      this.roomSpinStartRotation + this.roomSpinDirection * roomSpinRadians * easedProgress;
+      this.roomSpinStartRotation +
+      (this.roomSpinTargetRotation - this.roomSpinStartRotation) * easedProgress;
     if (progress >= 1) {
       this.finishRoomSpin();
     }
@@ -505,8 +525,9 @@ export class MiniDioramaSceneRuntime {
 
   private finishRoomSpin(): void {
     if (this.assets?.roomSpinPivot) {
-      this.assets.roomSpinPivot.rotation.y = this.roomSpinStartRotation;
+      this.assets.roomSpinPivot.rotation.y = this.roomSpinOriginRotation;
     }
+    this.roomSpinTargetRotation = this.roomSpinOriginRotation;
     this.roomSpinElapsed = 0;
     this.roomSpinActive = false;
   }

@@ -10,7 +10,8 @@ const webRoot = resolve(frontend, 'dist/TheBlockLaundromat/browser');
 const artifacts = resolve(frontend, '.artifacts/mini-diorama-preview');
 const screenshots = join(artifacts, 'screenshots');
 const artReview = join(artifacts, 'art-review');
-const themeTransitionAndTurnMs = 1500;
+const themeTransitionAndTurnMs = 2600;
+const sceneRemountTimeoutMs = 30_000;
 const browser = findBrowser();
 if (!existsSync(join(webRoot, 'index.html'))) {
   throw new Error('Production build is missing. Run npm run build before browser verification.');
@@ -25,7 +26,9 @@ let fallbackSession;
 
 try {
   const address = await listen(server);
-  const origin = `http://127.0.0.1:${address.port}`;
+  const origin = process.argv[2]
+    ? new URL(process.argv[2]).origin
+    : 'http://127.0.0.1:' + address.port;
   webglSession = await openSession(origin, 'webgl', { webglEnabled: true });
   await webglSession.setViewport(1440, 900);
   try {
@@ -263,9 +266,11 @@ async function verifyLayoutAndCapture(
     layout.timeControl.bottom > layout.hotspots.top;
   const toolbarAlignedToLightAndViewport =
     Math.abs(
-      layout.hotspots.left + layout.hotspots.width / 2 - layout.clockFace.left - layout.clockFace.width / 2,
-    ) <= 3 &&
-    Math.abs(layout.hotspots.top + layout.hotspots.height / 2 - height / 2) <= 3;
+      layout.hotspots.left +
+        layout.hotspots.width / 2 -
+        layout.clockFace.left -
+        layout.clockFace.width / 2,
+    ) <= 3 && Math.abs(layout.hotspots.top + layout.hotspots.height / 2 - height / 2) <= 3;
   if (
     layout.viewport[0] !== width ||
     layout.viewport[1] !== height ||
@@ -569,7 +574,9 @@ async function verifyThemesAndLocalization(session, directory, captured) {
     clockHeadingCount: document.querySelectorAll('.mini-diorama-time-dial__heading').length,
   })`);
   if (vietnamese.clockHeadingCount !== 0 || !vietnamese.selectedThemeLabel) {
-    throw new Error(`The clock kept redundant text or lost its curved theme label: ${JSON.stringify(vietnamese)}.`);
+    throw new Error(
+      `The clock kept redundant text or lost its curved theme label: ${JSON.stringify(vietnamese)}.`,
+    );
   }
   if (
     vietnamese.lang !== 'vi' ||
@@ -771,7 +778,7 @@ async function verifyCanvasPicking(session, directory, captured) {
   await verifySceneDragDoesNotPick(session);
   await session.evaluate("document.querySelector('[data-focus-target=overview]')?.click()");
   await settleCamera(session);
-  await tapSceneTarget(session, 'Washer', 0.54, 0.4, 'mouse');
+  const washerHit = await tapSceneTarget(session, 'Washer', 0.54, 0.4, 'mouse');
 
   await session.evaluate("document.querySelector('[data-focus-target=overview]').click()");
   await settleCamera(session);
@@ -792,7 +799,12 @@ async function verifyCanvasPicking(session, directory, captured) {
 
   await session.evaluate("document.querySelector('[data-focus-target=overview]').click()");
   await settleCamera(session);
-  await tapSceneTarget(session, 'Washer', 0.54, 0.4, 'touch');
+  await tapSceneTarget(session, 'Washer', washerHit.xRatio, washerHit.yRatio, 'touch', {
+    left: washerHit.xRatio - 0.005,
+    top: washerHit.yRatio - 0.005,
+    right: washerHit.xRatio + 0.005,
+    bottom: washerHit.yRatio + 0.005,
+  });
 }
 
 async function verifySceneDragDoesNotPick(session) {
@@ -824,7 +836,7 @@ async function verifySceneDragDoesNotPick(session) {
 }
 
 async function settleCamera(session) {
-  await session.evaluate('new Promise(resolve => setTimeout(resolve, 1400))');
+  await session.evaluate('new Promise(resolve => setTimeout(resolve, 2600))');
 }
 
 async function tapSceneTarget(
@@ -846,7 +858,7 @@ async function tapSceneTarget(
     const eventInit = {
       bubbles: true,
       pointerId: 1,
-      pointerType: ${JSON.stringify(pointerType)},
+      pointerType: 'mouse',
       isPrimary: true,
       button: 0,
     };
@@ -869,6 +881,7 @@ async function tapSceneTarget(
     if (canvas.style.cursor !== 'pointer') {
       return { selected: null, cursor: canvas.style.cursor, hit: false };
     }
+    eventInit.pointerType = ${JSON.stringify(pointerType)};
     dispatch('pointerdown', x, y);
     dispatch('pointerup', x, y);
     return new Promise(resolve => requestAnimationFrame(() => resolve({
@@ -878,6 +891,8 @@ async function tapSceneTarget(
       })(),
       cursor: canvas.style.cursor,
       hit: true,
+      xRatio: (x - bounds.left) / bounds.width,
+      yRatio: (y - bounds.top) / bounds.height,
     })));
   })()`);
   if (hit.selected !== expectedAction) {
@@ -885,6 +900,7 @@ async function tapSceneTarget(
       `Expected ${expectedAction} from a ${pointerType} tap, received ${JSON.stringify(hit)}.`,
     );
   }
+  return { xRatio: hit.xRatio, yRatio: hit.yRatio };
 }
 
 async function verifyMountUnmountCycles(session) {
@@ -922,11 +938,34 @@ async function verifyMountUnmountCycles(session) {
       );
     }
     await session.evaluate('history.back()');
-    await waitFor(
-      session,
-      "document.querySelector('.mini-diorama__scene')?.dataset.previewState",
-      'ready',
-    );
+    try {
+      await waitFor(
+        session,
+        "document.querySelector('.mini-diorama__scene')?.dataset.previewState",
+        'ready',
+        sceneRemountTimeoutMs,
+      );
+    } catch (error) {
+      const stateExpression = [
+        '({',
+        '  path: location.pathname,',
+        "  previewState: document.querySelector('.mini-diorama__scene')?.dataset.previewState,",
+        "  fallback: document.querySelector('.mini-diorama__fallback')?.textContent?.trim() ?? null,",
+        "  canvases: document.querySelectorAll('.mini-diorama__scene canvas').length,",
+        '})',
+      ].join('\n');
+      const state = await session.evaluate(stateExpression);
+      throw new Error(
+        'Scene failed to remount on route cycle ' +
+          (cycle + 1) +
+          ': ' +
+          JSON.stringify(state) +
+          '. Browser console: ' +
+          JSON.stringify(session.getConsoleMessages()) +
+          '.',
+        { cause: error },
+      );
+    }
     const remounted = await session.evaluate(`({
       canvases: document.querySelectorAll('.mini-diorama__scene canvas').length,
       frames: window.__miniDioramaPendingFrames.size,

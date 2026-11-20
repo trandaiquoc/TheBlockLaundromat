@@ -175,14 +175,14 @@ describe('MiniDioramaSceneRuntime', () => {
     runtime.setTheme('dark');
     let timestamp = 0;
     let maximumRoomRotation = 0;
-    for (let frame = 0; frame < 60; frame++) {
+    for (let frame = 0; frame < 13; frame++) {
       const next = frames.entries().next().value as [number, FrameRequestCallback] | undefined;
       if (!next) break;
       const [id, callback] = next;
       frames.delete(id);
       callback(timestamp);
       maximumRoomRotation = Math.max(maximumRoomRotation, roomPivot.rotation.y);
-      timestamp += 1000 / 60;
+      timestamp += 1000 / 12;
     }
     expect(maximumRoomRotation).toBeGreaterThan(Math.PI);
     expect(roomPivot.rotation.y).toBeCloseTo(0, 5);
@@ -200,6 +200,32 @@ describe('MiniDioramaSceneRuntime', () => {
     }
     expect(minimumRoomRotation).toBeLessThan(-Math.PI);
     expect(roomPivot.rotation.y).toBeCloseTo(0, 5);
+
+    runtime.setTheme('dark');
+    let partialClockwiseRotation = 0;
+    for (let frame = 0; frame < 6; frame++) {
+      const next = frames.entries().next().value as [number, FrameRequestCallback] | undefined;
+      if (!next) break;
+      const [id, callback] = next;
+      frames.delete(id);
+      callback(timestamp);
+      partialClockwiseRotation = roomPivot.rotation.y;
+      timestamp += 1000 / 60;
+    }
+    expect(partialClockwiseRotation).toBeGreaterThan(0);
+
+    runtime.setTheme('raccoon');
+    let returnedRoomRotation = 0;
+    for (let frame = 0; frame < 60; frame++) {
+      const next = frames.entries().next().value as [number, FrameRequestCallback] | undefined;
+      if (!next) break;
+      const [id, callback] = next;
+      frames.delete(id);
+      callback(timestamp);
+      returnedRoomRotation = roomPivot.rotation.y;
+      timestamp += 1000 / 60;
+    }
+    expect(returnedRoomRotation).toBeCloseTo(0, 5);
 
     runtime.greetRaccoon();
     runtime.dispose();
