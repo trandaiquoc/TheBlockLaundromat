@@ -59,7 +59,7 @@ export class DioramaSceneAnimation {
     this.themeTransition = createDioramaThemeTransition(this.assets, theme);
     this.themeTransitionElapsed = 0;
     if (this.reducedMotion) this.finishThemeTransition();
-    this.render();
+    this.renderWithUpdatedShadows();
     this.startAnimation();
   }
 
@@ -73,14 +73,14 @@ export class DioramaSceneAnimation {
     } else {
       this.startAnimation();
     }
-    this.render();
+    this.renderWithUpdatedShadows();
   }
 
   setVisible(visible: boolean): void {
     if (this.disposed || this.visible === visible) return;
     this.visible = visible;
     if (visible) {
-      this.render();
+      this.renderWithUpdatedShadows();
       this.startAnimation();
     } else {
       this.stopAnimation();
@@ -96,6 +96,7 @@ export class DioramaSceneAnimation {
   initializeTheme(theme: Theme): void {
     this.theme = theme;
     applyDioramaTheme(this.assets, theme);
+    this.renderer.shadowMap.needsUpdate = true;
   }
 
   dispose(): void {
@@ -135,17 +136,25 @@ export class DioramaSceneAnimation {
       this.lastFrameTime === undefined ? 0 : Math.max((timestamp - this.lastFrameTime) / 1000, 0);
     const deltaSeconds = Math.min(elapsedSeconds, maximumFrameDeltaSeconds);
     this.lastFrameTime = timestamp;
+    const shadowCastersMoving = this.roomSpinActive || Boolean(this.raccoonController?.isGreeting);
     this.updateThemeTransition(deltaSeconds);
     this.updateRoomSpin(elapsedSeconds);
     this.raccoonController?.update(deltaSeconds);
     this.cameraRig.update(deltaSeconds);
-    this.render();
+    if (shadowCastersMoving) this.renderWithUpdatedShadows();
+    else this.render();
     this.startAnimation();
   };
 
   private render(): void {
     if (this.disposed) return;
     this.renderer.render(this.assets.scene, this.camera);
+  }
+
+  private renderWithUpdatedShadows(): void {
+    if (this.disposed) return;
+    this.renderer.shadowMap.needsUpdate = true;
+    this.render();
   }
 
   private updateThemeTransition(deltaSeconds: number): void {

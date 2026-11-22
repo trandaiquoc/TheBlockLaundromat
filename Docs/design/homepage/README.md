@@ -8,9 +8,9 @@ Simple is the sole owner of project creation, opening, search, sorting, deletion
 
 The Diorama runtime uses one `LAUNDROMAT_DIORAMA_PROFILE` and one assembled room GLB. The room already contains the washer and characters; the runtime does not load a replacement washer. Angular copies only the room GLB and forest-floor texture to `assets/homepage/diorama/`. Camera, input, theme/time, animation, asset loading, and GPU resource teardown have separate owners. Preview routes and the former layered 2D Homepage renderer are retired.
 
-Goal 05 visual review is pending until the user approves the 16 production-browser captures under ignored `Frontend/.artifacts/goal-05/screenshots/`. Headless SwiftShader results are diagnostics only. They do not establish desktop or mobile hardware GPU performance; representative-device measurements remain a limitation.
+Goal 05 visual review is pending until the user approves the 16 production-browser captures under ignored `Frontend/.artifacts/goal-05/screenshots/`. A paired Chrome/Intel UHD desktop run now records the shadow-pass optimization and camera/theme measurements. Some active theme transitions remain above the 20 ms desktop target; representative mobile hardware and GPU-memory measurements are still unavailable.
 
-See [Goal 05 browser diagnostics](goal-05-performance.md) for the recorded packaging, lifecycle, and headless-browser measurements. Gate E remains partial pending representative-device performance evidence; Gate G remains pending visual approval.
+See [Goal 05 browser diagnostics](goal-05-performance.md) for packaging, lifecycle, headless-browser, and paired desktop measurements. Gate E remains partial because active desktop transitions miss the target and mobile hardware is untested; Gate G remains pending visual approval.
 
 ## Historical records
 

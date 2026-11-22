@@ -140,6 +140,7 @@ export class DioramaSceneRuntime {
 
     try {
       renderer.shadowMap.enabled = true;
+      renderer.shadowMap.autoUpdate = false;
       renderer.shadowMap.type = PCFShadowMap;
       renderer.outputColorSpace = SRGBColorSpace;
       renderer.toneMapping = ACESFilmicToneMapping;

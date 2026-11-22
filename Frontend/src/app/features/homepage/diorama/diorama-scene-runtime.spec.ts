@@ -22,6 +22,7 @@ describe('DioramaSceneRuntime', () => {
   it('renders the loaded scene only on demand and releases scene, listeners, and renderer resources', async () => {
     const host = createHost();
     const renderer = createRenderer();
+    const shadowUpdateRequests = captureShadowUpdateRequests(renderer);
     const asset = createAsset();
     const body = asset.root.getObjectByName('Washer') as Mesh;
     const textureDispose = vi.spyOn(body.material as MeshStandardMaterial, 'dispose');
@@ -57,10 +58,16 @@ describe('DioramaSceneRuntime', () => {
     expect(asset.root.parent?.name).toBe('DioramaRoomSpinPivot');
     expect(canvas?.getAttribute('data-material-variant')).toBe('Minecraft');
     expect(renderer.render).toHaveBeenCalled();
+    expect(renderer.shadowMap.autoUpdate).toBe(false);
+    expect(shadowUpdateRequests).toEqual([true]);
     expect(requestFrame).not.toHaveBeenCalled();
+
+    runtime.orbitCamera(0.02, 0.01);
+    expect(shadowUpdateRequests.at(-1)).toBe(false);
 
     runtime.setTheme('dark');
     expect(canvas?.getAttribute('data-material-variant')).toBe('Dark');
+    expect(shadowUpdateRequests.at(-1)).toBe(true);
     expect(requestFrame).toHaveBeenCalledOnce();
 
     runtime.dispose();
@@ -143,6 +150,7 @@ describe('DioramaSceneRuntime', () => {
   it('animates theme transitions and room turns while preserving static idle rendering', async () => {
     const host = createHost();
     const renderer = createRenderer();
+    const shadowUpdateRequests = captureShadowUpdateRequests(renderer);
     const asset = createAsset();
     const onSceneLoaded = vi.fn();
     const loadSceneAsset = vi.fn(async () => asset);
@@ -168,9 +176,13 @@ describe('DioramaSceneRuntime', () => {
     expect(roomPivot.name).toBe('DioramaRoomSpinPivot');
     expect(roomPivot.parent?.name).toBe('laundromat-diorama-scene');
     expect(frames.size).toBe(0);
+    expect(shadowUpdateRequests).toEqual([true]);
 
     runtime.setTheme('raccoon');
+    expect(shadowUpdateRequests.at(-1)).toBe(true);
+    const firstSpinRender = shadowUpdateRequests.length;
     const firstSpin = advanceFrames(frames, roomPivot, 0, 13, 1000 / 12);
+    expect(shadowUpdateRequests.slice(firstSpinRender).every(Boolean)).toBe(true);
     expect(firstSpin.maximumRotation).toBeGreaterThan(Math.PI);
     expect(roomPivot.rotation.y).toBeCloseTo(0, 5);
 
@@ -285,7 +297,7 @@ function createHost(): HTMLElement {
 function createRenderer(): WebGLRenderer {
   return {
     domElement: document.createElement('canvas'),
-    shadowMap: { enabled: false, type: 0 },
+    shadowMap: { enabled: false, type: 0, autoUpdate: true, needsUpdate: false },
     outputColorSpace: '',
     toneMapping: 0,
     toneMappingExposure: 1,
@@ -295,6 +307,15 @@ function createRenderer(): WebGLRenderer {
     render: vi.fn(),
     dispose: vi.fn(),
   } as unknown as WebGLRenderer;
+}
+
+function captureShadowUpdateRequests(renderer: WebGLRenderer): boolean[] {
+  const shadowUpdates: boolean[] = [];
+  renderer.render = vi.fn(() => {
+    shadowUpdates.push(renderer.shadowMap.needsUpdate);
+    renderer.shadowMap.needsUpdate = false;
+  });
+  return shadowUpdates;
 }
 
 function createAsset(): DioramaSceneAsset {
