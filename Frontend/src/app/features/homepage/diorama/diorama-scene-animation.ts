@@ -3,11 +3,7 @@ import type { Theme } from '../../../core/ui/theme/theme.service';
 import { DioramaCameraRig } from './diorama-camera-rig';
 import { DioramaRaccoonController } from './diorama-raccoon-controller';
 import type { DioramaSceneAssets } from './diorama-scene-assets';
-import {
-  applyDioramaTheme,
-  createDioramaThemeTransition,
-  dioramaVariantForTheme,
-} from './diorama-scene-theme';
+import { applyDioramaTheme, createDioramaThemeTransition } from './diorama-scene-theme';
 import { dioramaTimeDirectionBetweenThemes } from './diorama-time-stages';
 
 export interface DioramaAnimationScheduler {
@@ -54,12 +50,16 @@ export class DioramaSceneAnimation {
     if (this.disposed || this.theme === theme) return;
     const previousTheme = this.theme;
     this.theme = theme;
-    this.assets.materialVariants.apply(dioramaVariantForTheme(theme));
     if (spinRoom) this.startRoomSpin(dioramaTimeDirectionBetweenThemes(previousTheme, theme));
     this.themeTransition = createDioramaThemeTransition(this.assets, theme);
     this.themeTransitionElapsed = 0;
-    if (this.reducedMotion) this.finishThemeTransition();
-    this.renderWithUpdatedShadows();
+    if (this.assets.profile.shadows.materialVariantsChangeCasterSilhouette) {
+      this.renderer.shadowMap.needsUpdate = true;
+    }
+    if (this.reducedMotion) {
+      this.finishThemeTransition();
+      this.render();
+    }
     this.startAnimation();
   }
 

@@ -5,10 +5,11 @@
 **Gate E: partial.** The automated headless run confirms resource loading,
 camera/theme interactions, WebGL fallback, and cleanup over 20 mode changes. A
 paired Intel UHD desktop run confirms lower draw-call and render-callback cost
-for camera gestures and non-spinning theme changes, and the 60-second desktop
-idle check passed. Some active theme-transition frame-interval p95 samples still
-exceed the 20 ms desktop target. Mid-range mobile hardware and GPU-memory growth
-remain unmeasured.
+for camera gestures and theme changes. A follow-up removes the extra synchronous
+theme render and avoids rebuilding a shadow map when the material variants do
+not change caster silhouettes. The 60-second desktop idle check passed. Active
+frame-interval p95 still exceeds the 20 ms desktop target, and mid-range mobile
+hardware and GPU-memory growth remain unmeasured.
 
 ## Environment and measurements
 
@@ -18,15 +19,15 @@ and should not be compared to hardware GPU timing.
 
 | Check                              | Observed result                                                                                |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Scene ready from navigation start  | 3,175 ms                                                                                       |
-| Room GLB                           | 10,660,804 transferred bytes; 10,660,504 decoded bytes; 145 ms reported resource duration      |
-| Forest-floor texture               | 1,552,232 transferred bytes; 1,551,932 decoded bytes; 16 ms reported resource duration         |
-| JS heap at scene ready             | 49,371,503 bytes (about 47.1 MiB)                                                              |
+| Scene ready from navigation start  | 2,601 ms                                                                                       |
+| Room GLB                           | 10,660,804 transferred bytes; 10,660,504 decoded bytes; 96 ms reported resource duration       |
+| Forest-floor texture               | 1,552,232 transferred bytes; 1,551,932 decoded bytes; 14 ms reported resource duration         |
+| JS heap at scene ready             | 47,481,069 bytes (about 45.3 MiB)                                                              |
 | One-second idle interval           | 0 draw calls; 0 pending animation frames; 0 observed long-task milliseconds                    |
-| JS heap after idle interval        | 49,388,872 bytes, 17,369 bytes above scene-ready reading                                       |
-| Theme switch (`craft` → `raccoon`) | Applied the `Raccoon` material variant; 2,907 draw calls; 0 buffer creates; 39 texture creates |
-| Theme-switch frame intervals       | 1 sample at 34.8 ms; insufficient for a stable median or p95                                   |
-| Camera gesture samples             | Orbit 7,752 draw calls, pan 5,814, zoom 969; each observed for 650 ms                          |
+| JS heap after idle interval        | 47,498,450 bytes, 17,381 bytes above scene-ready reading                                       |
+| Theme switch (`craft` → `raccoon`) | Applied the `Raccoon` material variant; 4,845 draw calls; 0 buffer creates; 39 texture creates |
+| Theme-switch frame intervals       | 4 samples; median 83.3 ms, p95 701.4 ms; unstable SwiftShader diagnostic                       |
+| Camera gesture samples             | Orbit 3,891 draw calls, pan 1,948, zoom 974; each observed for 650 ms                          |
 | Mode mount/unmount cycles          | 20/20 passed; mounted canvas count 1, unmounted canvas count 0, pending frames 0 each cycle    |
 
 Draw-call counts are WebGL calls, not frame counts. The PerformanceObserver only
@@ -59,6 +60,29 @@ frames; draw calls per rendered frame and pointer-event samples provide the more
 direct paired comparison. These results establish a desktop diagnostic, not a
 mobile result or a GPU-memory measurement.
 
+## Theme scheduling follow-up
+
+The profile now states whether material variants change the caster silhouette.
+For the current room, all 262 GLB materials are `OPAQUE`, have base-color alpha
+1, and omit `alphaTexture`; the asset check enforces that evidence while the
+profile keeps `materialVariantsChangeCasterSilhouette` false. The theme loader
+already applies the selected variant while creating the transition, so the
+animation owner no longer applies it a second time. Animated theme changes draw
+on the next animation frame instead of forcing a synchronous render in the
+button handler. Profiles whose variants change the caster silhouette still mark
+the shadow map dirty.
+
+On Chrome 157 with Intel UHD, 1280×720 at DPR 1, four warmed non-spinning theme
+transitions each produced 23–25 animation renders at 233 WebGL draw calls per
+frame and zero synchronous draw calls. Render-callback p95 ranged from 7.6 to
+9.3 ms. Frame-interval p95 ranged from 21.0 to 41.5 ms, so this scheduling change
+does not prove the 20 ms desktop target. With Overview focus, a Minecraft-to-Light
+transition spun the room for 37 rendered frames: 35,853 calls (969 per frame),
+callback p95 16.0 ms, and frame-interval p95 27.9 ms (69.4 ms maximum). Those
+frames continue refreshing the shadow map so room and ground shadows follow the
+rotation. This remains the measured active-rendering bottleneck; removing or
+reducing those casters was not justified without a visual-quality comparison.
+
 The WebGL-call instrumentation session logged repeated sampler-type
 `GL_INVALID_OPERATION` warnings (256 per measured page context). A separate
 uninstrumented Chrome theme-switch smoke produced no console entries. The source
@@ -74,7 +98,8 @@ The browser harness was rerun on the optimized build: 16 captures were regenerat
 20/20 in-place mount/unmount cycles left one canvas while mounted and zero after
 unmount, with zero pending frames each time. The WebGL fallback remained usable,
 and its one-second idle check also reported zero draw calls and zero pending
-frames. Representative mid-range mobile hardware remains open.
+frames. Representative mid-range mobile hardware and user approval of those
+captures remain open.
 
 ## Packaging comparison
 

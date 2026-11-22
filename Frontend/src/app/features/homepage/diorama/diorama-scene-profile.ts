@@ -25,7 +25,10 @@ export interface DioramaSceneProfile {
     readonly powerPreference: WebGLPowerPreference;
     readonly maximumPixelRatio: number;
     readonly toneMappingExposure: number;
-    readonly shadowMapSize: number;
+  };
+  readonly shadows: {
+    readonly mapSize: number;
+    readonly materialVariantsChangeCasterSilhouette: boolean;
   };
   readonly camera: {
     readonly fieldOfView: number;
@@ -154,7 +157,10 @@ export const LAUNDROMAT_DIORAMA_PROFILE: DioramaSceneProfile = {
     powerPreference: 'low-power',
     maximumPixelRatio: 1.35,
     toneMappingExposure: 1.08,
-    shadowMapSize: 1024,
+  },
+  shadows: {
+    mapSize: 1024,
+    materialVariantsChangeCasterSilhouette: false,
   },
   camera: { fieldOfView: 37, near: 0.1, far: 100 },
   lighting: {

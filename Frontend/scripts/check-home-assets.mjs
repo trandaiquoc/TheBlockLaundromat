@@ -116,6 +116,25 @@ if (
 ) {
   throw new Error('The room GLB is missing one or more used theme variants.');
 }
+const materialVariantsChangeCasterSilhouette = profile.match(
+  /materialVariantsChangeCasterSilhouette:\s*(true|false)/,
+)?.[1];
+if (!materialVariantsChangeCasterSilhouette) {
+  throw new Error('The Diorama profile must declare its theme shadow-silhouette contract.');
+}
+const nonOpaqueMaterials = (roomDocument.materials ?? []).filter((material) => {
+  const alpha = material.pbrMetallicRoughness?.baseColorFactor?.[3];
+  return (
+    (material.alphaMode ?? 'OPAQUE') !== 'OPAQUE' ||
+    (alpha !== undefined && alpha < 1) ||
+    material.alphaTexture !== undefined
+  );
+});
+if (materialVariantsChangeCasterSilhouette === 'false' && nonOpaqueMaterials.length > 0) {
+  throw new Error(
+    'Diorama profile skips theme shadow updates, but the room GLB contains opacity-sensitive materials.',
+  );
+}
 
 let runtimeSummary = 'Production runtime packaging not checked because dist is absent.';
 if (existsSync(runtimeDirectory)) {

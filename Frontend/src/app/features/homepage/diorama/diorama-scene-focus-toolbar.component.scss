@@ -98,14 +98,15 @@
 
 @media (max-width: 760px) {
   :host {
-    top: 50%;
-    right: calc(max(0.7rem, env(safe-area-inset-right)) + 2.95rem);
-    bottom: auto;
-    left: auto;
-    transform: translateY(-50%);
+    top: auto;
+    right: auto;
+    bottom: calc(max(0.8rem, env(safe-area-inset-bottom)) + 8.5rem);
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .diorama__focus-toolbar {
+    flex-direction: row;
     gap: 0.1rem;
     padding: 0.22rem;
     border-radius: 1rem;
@@ -123,12 +124,6 @@
 }
 
 @media (max-width: 380px) {
-  :host {
-    bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 6.2rem + 0.55rem);
-    right: calc(0.625rem + 2.2rem);
-    bottom: auto;
-  }
-
   .diorama__focus-toolbar {
     gap: 0.06rem;
     padding: 0.15rem;

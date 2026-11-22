@@ -251,7 +251,7 @@ function createThemeLights(
     bounds.max.z + extent * profile.lighting.key.positionScale[2],
   );
   keyLight.castShadow = true;
-  keyLight.shadow.mapSize.set(profile.renderer.shadowMapSize, profile.renderer.shadowMapSize);
+  keyLight.shadow.mapSize.set(profile.shadows.mapSize, profile.shadows.mapSize);
   keyLight.shadow.camera.left = -extent;
   keyLight.shadow.camera.right = extent;
   keyLight.shadow.camera.top = extent;

@@ -65,9 +65,10 @@ describe('DioramaSceneRuntime', () => {
     runtime.orbitCamera(0.02, 0.01);
     expect(shadowUpdateRequests.at(-1)).toBe(false);
 
+    const renderCountBeforeThemeChange = shadowUpdateRequests.length;
     runtime.setTheme('dark');
     expect(canvas?.getAttribute('data-material-variant')).toBe('Dark');
-    expect(shadowUpdateRequests.at(-1)).toBe(true);
+    expect(shadowUpdateRequests).toHaveLength(renderCountBeforeThemeChange);
     expect(requestFrame).toHaveBeenCalledOnce();
 
     runtime.dispose();
@@ -178,8 +179,9 @@ describe('DioramaSceneRuntime', () => {
     expect(frames.size).toBe(0);
     expect(shadowUpdateRequests).toEqual([true]);
 
+    const renderCountBeforeThemeChange = shadowUpdateRequests.length;
     runtime.setTheme('raccoon');
-    expect(shadowUpdateRequests.at(-1)).toBe(true);
+    expect(shadowUpdateRequests).toHaveLength(renderCountBeforeThemeChange);
     const firstSpinRender = shadowUpdateRequests.length;
     const firstSpin = advanceFrames(frames, roomPivot, 0, 13, 1000 / 12);
     expect(shadowUpdateRequests.slice(firstSpinRender).every(Boolean)).toBe(true);
