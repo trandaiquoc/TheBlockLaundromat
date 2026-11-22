@@ -1,7 +1,6 @@
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { Component, ElementRef, computed, inject, input, signal, viewChild } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
 import {
   DEFAULT_MINECRAFT_VERSION,
@@ -37,8 +36,6 @@ import { ProjectScreenWorkflow } from './project-screen-workflow';
 import { ProjectBackupWorkflow, BackupFailure } from './project-backup-workflow';
 import { ProjectScreenControlsComponent } from './project-screen-controls.component';
 import { ProjectScreenAccountComponent } from './project-screen-account.component';
-import { MiniDioramaScenePanelComponent } from '../../mini-diorama-preview/mini-diorama-scene-panel.component';
-import type { MiniDioramaIntent } from '../../mini-diorama-preview/mini-diorama-contracts';
 import {
   filterAndSortProjectSummaries,
   isProjectScreenProjectOrder,
@@ -49,7 +46,6 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
   selector: 'app-project-screen',
   providers: [ProjectScreenWorkflow, ProjectBackupWorkflow],
   imports: [
-    RouterLink,
     CdkTrapFocus,
     DatePipe,
     NgOptimizedImage,
@@ -63,13 +59,11 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
     ProjectScreenControlsComponent,
     ProjectScreenAccountComponent,
     SettingsDialogComponent,
-    MiniDioramaScenePanelComponent,
   ],
   templateUrl: './project-screen.component.html',
   styleUrl: './project-screen.component.scss',
 })
 export class ProjectScreenComponent {
-  readonly integrationPreview = input(false);
   protected readonly i18n = inject(I18nService);
   private readonly preferences = inject(UiPreferencesService);
   protected readonly workflow = inject(ProjectScreenWorkflow);
@@ -77,10 +71,6 @@ export class ProjectScreenComponent {
   protected readonly backupDialogOpen = signal(false);
   private readonly backupTrigger = viewChild<ElementRef<HTMLButtonElement>>('backupTrigger');
   private readonly projectNameInput = viewChild<ElementRef<HTMLInputElement>>('projectNameInput');
-  private readonly projectSearchInput =
-    viewChild<ElementRef<HTMLInputElement>>('projectSearchInput');
-  private readonly recentProjectsHeading =
-    viewChild<ElementRef<HTMLHeadingElement>>('recentProjectsHeading');
   private readonly structureJsonCreateTrigger = viewChild<ElementRef<HTMLButtonElement>>(
     'structureJsonCreateTrigger',
   );
@@ -188,24 +178,6 @@ export class ProjectScreenComponent {
   }
   protected openSettingsDialog(): void {
     this.settingsDialogOpen.set(true);
-  }
-  protected handleSceneIntent(intent: MiniDioramaIntent): void {
-    if (!this.integrationPreview() || intent.type === 'greet-raccoon') return;
-    if (intent.target === 'washer') {
-      this.projectNameInput()?.nativeElement.focus();
-      return;
-    }
-    (
-      this.projectSearchInput()?.nativeElement ?? this.recentProjectsHeading()?.nativeElement
-    )?.focus();
-  }
-  protected focusNewProject(): void {
-    this.projectNameInput()?.nativeElement.focus();
-  }
-  protected focusRecentProjects(): void {
-    (
-      this.projectSearchInput()?.nativeElement ?? this.recentProjectsHeading()?.nativeElement
-    )?.focus();
   }
   protected closeSettingsDialog(): void {
     this.settingsDialogOpen.set(false);

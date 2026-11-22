@@ -15,11 +15,13 @@ const templatePath = 'src/app/features/projects/project-screen/project-screen.co
 describe('ProjectScreenComponent', () => {
   afterEach(() => localStorage.removeItem('the-block-laundromat.ui-preferences'));
 
-  it('uses the traditional Project Screen structure and keeps project creation inline', () => {
+  it('keeps the Simple Homepage compact while preserving accessible project workflows', () => {
     const template = String(readFileSync(templatePath, 'utf8'));
 
     expect(template).toContain('assets/brand/the-block-laundromat-logo.svg');
-    expect(template).toContain('class="project-intro"');
+    expect(template).toContain('class="project-screen-heading"');
+    expect(template).not.toContain('class="project-intro"');
+    expect(template).not.toContain("i18n.t('projectSubtitle')");
     expect(template).toContain('class="project-form"');
     expect(template).toContain('class="recent-projects"');
     expect(template).toContain('<app-project-screen-account');

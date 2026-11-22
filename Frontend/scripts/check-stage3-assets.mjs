@@ -138,7 +138,7 @@ if ((document.animations ?? []).length !== 0) {
   console.log('Stage 3 GLB has animation clips; the scene runtime does not depend on them.');
 }
 
-const distRuntime = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage/runtime');
+const distRuntime = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage/diorama');
 const replacementWasherPath = join(
   frontend,
   'source-assets/homepage/models/Props/Washer-Alternate/Washer.glb',
@@ -160,7 +160,7 @@ for (const sourceName of ['Washer.blend', 'Washer-Front.png']) {
 }
 const groundTextureSource = join(
   frontend,
-  'source-assets/homepage/textures/mini-diorama/exterior-forest-floor.png',
+  'source-assets/homepage/textures/diorama/forest-floor.png',
 );
 const groundTextureBytes = readFileSync(groundTextureSource);
 if (
@@ -170,12 +170,11 @@ if (
   throw new Error('The generated exterior forest-floor asset is not a PNG.');
 }
 const groundTextureDigest = createHash('sha256').update(groundTextureBytes).digest('hex');
-const groundTextureRuntimePath = 'textures/mini-diorama/exterior-forest-floor.png';
+const groundTextureRuntimePath = 'forest-floor.png';
 let runtimeSummary = 'Production output not checked because dist is absent.';
 if (existsSync(distRuntime)) {
   const runtimeFiles = filesUnder(distRuntime);
-  const productionRuntimePath = 'models/Room/Octagonal-Laundromat.glb';
-  const washerRuntimePath = 'models/Props/Washer-Alternate/Washer.glb';
+  const productionRuntimePath = 'Octagonal-Laundromat.glb';
   const productionRuntime = join(distRuntime, ...productionRuntimePath.split('/'));
   if (!existsSync(productionRuntime))
     throw new Error('Production room GLB is missing from Angular output.');
@@ -184,14 +183,6 @@ if (existsSync(distRuntime)) {
     productionRow.digest
   ) {
     throw new Error('Production room GLB differs from the inventoried export.');
-  }
-  const washerRuntime = join(distRuntime, ...washerRuntimePath.split('/'));
-  if (
-    !existsSync(washerRuntime) ||
-    createHash('sha256').update(readFileSync(washerRuntime)).digest('hex') !==
-      replacementWasherDigest
-  ) {
-    throw new Error('Replacement washer GLB is missing or differs from its inspected source.');
   }
   const groundTextureRuntime = join(distRuntime, ...groundTextureRuntimePath.split('/'));
   if (
@@ -203,16 +194,21 @@ if (existsSync(distRuntime)) {
       'Generated exterior forest-floor texture is missing or differs from its source.',
     );
   }
-  const forbidden = runtimeFiles.filter((path) => /\.(blend|md|csv|json)$/i.test(path));
-  const expectedJson = join(distRuntime, 'scene-manifest.json');
-  if (forbidden.some((path) => path !== expectedJson)) {
-    throw new Error('Editable models or documentation leaked into the production asset bundle.');
+  const expectedRuntimePaths = new Set([productionRuntimePath, groundTextureRuntimePath]);
+  const actualRuntimePaths = new Set(
+    runtimeFiles.map((path) => relative(distRuntime, path).split(sep).join('/')),
+  );
+  if (
+    actualRuntimePaths.size !== expectedRuntimePaths.size ||
+    [...expectedRuntimePaths].some((path) => !actualRuntimePaths.has(path))
+  ) {
+    throw new Error('The Diorama runtime bundle contains missing or unexpected files.');
   }
-  runtimeSummary = `Production room and replacement washer GLBs plus forest-floor texture verified in Angular output (${statSync(productionRuntime).size + statSync(washerRuntime).size} GLB bytes; no Blender sources or documentation).`;
+  runtimeSummary = `Single assembled room GLB and forest-floor texture verified in Angular output (${statSync(productionRuntime).size} GLB bytes; alternate washer Blender source contract remains archived but is not shipped).`;
 }
 
 console.log(
-  `Stage 3 archive verified: 676 inventoried files (322 Blender sources, 322 GLBs, 28 renders, and four catalog/specification files). ${runtimeSummary}`,
+  `Room asset archive verified: 676 inventoried files (322 Blender sources, 322 GLBs, 28 renders, and four catalog/specification files); alternate washer source contract remains intact. ${runtimeSummary}`,
 );
 
 function readGlb(path) {

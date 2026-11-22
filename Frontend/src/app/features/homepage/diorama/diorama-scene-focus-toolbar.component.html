@@ -1,0 +1,58 @@
+<nav class="diorama__focus-toolbar" [attr.aria-label]="i18n.t('dioramaSceneActions')">
+  <button
+    type="button"
+    data-focus-target="overview"
+    [class.is-selected]="selectedTarget() === undefined"
+    [attr.aria-pressed]="selectedTarget() === undefined"
+    [attr.aria-label]="i18n.t('dioramaOverview')"
+    [attr.title]="i18n.t('dioramaOverview')"
+    (click)="actionRequested.emit('overview')"
+  >
+    <svg lucideCompass aria-hidden="true"></svg>
+    <span class="diorama__focus-tooltip" aria-hidden="true">
+      {{ i18n.t('dioramaOverview') }}
+    </span>
+  </button>
+  <button
+    type="button"
+    data-focus-target="project-board"
+    [class.is-selected]="selectedTarget() === 'project-board'"
+    [attr.aria-pressed]="selectedTarget() === 'project-board'"
+    [attr.aria-label]="i18n.t('dioramaProjectBoard')"
+    [attr.title]="i18n.t('dioramaProjectBoard')"
+    (click)="actionRequested.emit('project-board')"
+  >
+    <svg lucideClipboardList aria-hidden="true"></svg>
+    <span class="diorama__focus-tooltip" aria-hidden="true">
+      {{ i18n.t('dioramaProjectBoard') }}
+    </span>
+  </button>
+  <button
+    type="button"
+    data-focus-target="washer"
+    [class.is-selected]="selectedTarget() === 'washer'"
+    [attr.aria-pressed]="selectedTarget() === 'washer'"
+    [attr.aria-label]="i18n.t('dioramaWasher')"
+    [attr.title]="i18n.t('dioramaWasher')"
+    (click)="actionRequested.emit('washer')"
+  >
+    <svg lucideWashingMachine aria-hidden="true"></svg>
+    <span class="diorama__focus-tooltip" aria-hidden="true">
+      {{ i18n.t('dioramaWasher') }}
+    </span>
+  </button>
+  <button
+    type="button"
+    data-focus-target="raccoon"
+    [class.is-selected]="selectedTarget() === 'raccoon'"
+    [attr.aria-pressed]="selectedTarget() === 'raccoon'"
+    [attr.aria-label]="i18n.t('dioramaGreetRaccoon')"
+    [attr.title]="i18n.t('dioramaGreetRaccoon')"
+    (click)="actionRequested.emit('raccoon')"
+  >
+    <svg lucidePawPrint aria-hidden="true"></svg>
+    <span class="diorama__focus-tooltip" aria-hidden="true">
+      {{ i18n.t('dioramaGreetRaccoon') }}
+    </span>
+  </button>
+</nav>

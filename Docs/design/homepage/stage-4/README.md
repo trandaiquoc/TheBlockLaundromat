@@ -1,10 +1,9 @@
-# Stage 4 interaction preparation and Goal 04 review
+# Historical Stage 4 interaction preparation and Goal 04 review
 
-**Status (2026-11-20):** Goal 04 is integrated on the existing
-`/mini-diorama-preview` route. Browser and automated validation are underway;
-visual approval remains with the user. The earlier preparation brief below is
-historical design evidence. Goal 04's approved scope supersedes its candidate
-project-board and washer workflows.
+**Historical status (2026-11-20):** Goal 04 was integrated on
+`/mini-diorama-preview`. Goal 05 removed that route and moved Diorama to the
+root mode. The interaction details below record the implementation at that
+checkpoint; they do not define the current Homepage route or asset paths.
 
 ## Goal 04 implementation contract
 

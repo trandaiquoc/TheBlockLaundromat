@@ -1,0 +1,176 @@
+:host,
+.diorama-scene,
+.diorama-scene__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  min-width: 0;
+  min-height: 0;
+}
+
+:host {
+  overflow: hidden;
+}
+
+.diorama-scene__canvas {
+  z-index: 1;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  touch-action: none;
+}
+
+.diorama-scene__canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+}
+
+.diorama-scene__canvas canvas:active {
+  cursor: grabbing;
+}
+
+.diorama-scene__loading {
+  position: absolute;
+  z-index: 1;
+  inset: 50% auto auto 50%;
+  margin: 0;
+  color: var(--spatial-ink);
+  text-shadow: 0 1px 8px rgb(0 0 0 / 40%);
+  transform: translate(-50%, -50%);
+}
+
+.diorama-scene__fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.7rem;
+  overflow: auto;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  background:
+    radial-gradient(
+      ellipse at 50% 36%,
+      color-mix(in srgb, var(--spatial-accent) 20%, transparent),
+      transparent 54%
+    ),
+    var(--surface);
+  color: var(--text);
+  text-align: center;
+}
+
+.diorama-scene__fallback h2,
+.diorama-scene__fallback p {
+  max-width: 34rem;
+  margin: 0;
+}
+
+.diorama-scene__fallback h2 {
+  font-size: clamp(1.1rem, 2.3vw, 1.55rem);
+}
+
+.diorama-scene__fallback p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.diorama-scene__fallback-art {
+  position: relative;
+  width: min(32rem, 82%);
+  height: min(18rem, 35vh);
+  min-height: 8.5rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid var(--border-floating);
+  border-radius: 1.25rem;
+  background: linear-gradient(160deg, var(--surface-raised), var(--surface));
+  box-shadow: var(--shadow-control-raised);
+}
+
+.diorama-scene__fallback-board {
+  position: absolute;
+  top: 16%;
+  left: 12%;
+  display: flex;
+  gap: 0.45rem;
+  width: 38%;
+  height: 38%;
+  align-items: center;
+  justify-content: center;
+  border: 0.4rem solid var(--border-floating);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--spatial-accent) 28%, var(--surface));
+}
+
+.diorama-scene__fallback-board span {
+  width: 22%;
+  height: 58%;
+  border-radius: 0.15rem;
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-control);
+}
+
+.diorama-scene__fallback-raccoon {
+  position: absolute;
+  right: 22%;
+  bottom: 18%;
+  display: grid;
+  width: 4.2rem;
+  height: 4.2rem;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--spatial-accent) 20%, var(--surface-raised));
+  font-size: 2.2rem;
+}
+
+.diorama-scene__fallback-washer {
+  position: absolute;
+  right: 12%;
+  top: 17%;
+  display: grid;
+  width: 23%;
+  height: 58%;
+  place-items: center;
+  border: 0.35rem solid var(--border-floating);
+  border-radius: 0.75rem;
+  background: var(--surface-raised);
+}
+
+.diorama-scene__fallback-washer span {
+  width: 62%;
+  aspect-ratio: 1;
+  border: 0.35rem solid var(--spatial-accent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--spatial-accent) 22%, var(--surface));
+}
+
+.diorama-scene__live-message {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .diorama-scene__fallback-art {
+    width: min(27rem, 88%);
+    height: min(16rem, 31vh);
+  }
+}
+
+@media (max-width: 380px) {
+  .diorama-scene__fallback-art {
+    min-height: 7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diorama-scene__canvas canvas {
+    cursor: default;
+  }
+}

@@ -149,6 +149,16 @@
                 role="tabpanel"
                 aria-labelledby="appearance-interface-tab"
               >
+                <label>
+                  {{ i18n.t('homepageMode') }}
+                  <app-themed-select
+                    [options]="homepageModeOptions()"
+                    [selectedId]="draft().appearance.homepageMode"
+                    [ariaLabel]="i18n.t('homepageMode')"
+                    (selectionChange)="setHomepageMode($any($event))"
+                  />
+                  <small>{{ i18n.t('homepageModeHelp') }}</small>
+                </label>
                 <label
                   >{{ i18n.t('theme') }}
                   <app-themed-select
@@ -602,15 +612,15 @@
             </label>
             <label class="preference-toggle scene-animations-setting">
               <span class="preference-toggle-copy">
-                <strong>{{ i18n.t('miniDioramaSceneAnimations') }}</strong>
-                <small>{{ i18n.t('miniDioramaSceneAnimationsHint') }}</small>
+                <strong>{{ i18n.t('dioramaSceneAnimations') }}</strong>
+                <small>{{ i18n.t('dioramaSceneAnimationsHint') }}</small>
               </span>
               <input
                 type="checkbox"
                 data-scene-animations-setting
                 [checked]="draft().accessibility.sceneAnimationsEnabled"
                 (change)="setSceneAnimationsEnabled($any($event.target).checked)"
-                [attr.aria-label]="i18n.t('miniDioramaSceneAnimations')"
+                [attr.aria-label]="i18n.t('dioramaSceneAnimations')"
               />
             </label>
             <button type="button" class="section-reset" (click)="restoreAccessibilityDefaults()">

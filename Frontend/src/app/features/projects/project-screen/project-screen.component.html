@@ -1,4 +1,5 @@
-<main class="project-page" [class.project-page--integration-preview]="integrationPreview()">
+<main class="project-page project-page--simple-home">
+  <h1 class="project-screen-heading">{{ i18n.t('projectTitle') }}</h1>
   <header class="outer-topbar">
     <div class="outer-brand">
       <img
@@ -10,23 +11,10 @@
         priority
       />
     </div>
-    @if (integrationPreview()) {
-      <a class="integration-preview-back" routerLink="/">
-        {{ i18n.t('homepageWorkspaceBackToProjects') }}
-      </a>
-    }
     <app-project-screen-controls (settingsRequested)="openSettingsDialog()" />
   </header>
 
   <div class="project-page-content">
-    <header class="project-intro">
-      <p class="eyebrow">{{ i18n.t('appName') }}</p>
-      <h1>
-        {{ integrationPreview() ? i18n.t('homepageWorkspaceTitle') : i18n.t('projectTitle') }}
-      </h1>
-      <p>{{ i18n.t('projectSubtitle') }}</p>
-    </header>
-
     <section class="project-grid" [attr.aria-label]="i18n.t('projectActions')">
       <form class="project-form" (submit)="$event.preventDefault(); createProject()">
         <div class="form-section form-section--identity">
@@ -223,44 +211,6 @@
           <p class="error" role="alert">{{ error() }}</p>
         }
       </form>
-
-      @if (integrationPreview()) {
-        <section
-          class="workspace-scene"
-          [attr.aria-label]="i18n.t('homepageWorkspaceSceneDescription')"
-        >
-          <h2 class="workspace-scene-heading">
-            {{ i18n.t('homepageWorkspaceSceneHeading') }}
-          </h2>
-          @defer (on immediate) {
-            <app-mini-diorama-scene-panel
-              mode="workspace"
-              (sceneIntent)="handleSceneIntent($event)"
-            />
-          } @placeholder {
-            <div class="workspace-scene-message" role="status">
-              {{ i18n.t('miniDioramaLoading') }}
-            </div>
-          } @loading {
-            <div class="workspace-scene-message" role="status">
-              {{ i18n.t('miniDioramaLoading') }}
-            </div>
-          } @error {
-            <div class="workspace-scene-error">
-              <h3>{{ i18n.t('miniDioramaFallbackTitle') }}</h3>
-              <p role="status">{{ i18n.t('miniDioramaFallback') }}</p>
-              <div class="workspace-scene-error-actions">
-                <button type="button" (click)="focusNewProject()">
-                  {{ i18n.t('newProject') }}
-                </button>
-                <button type="button" (click)="focusRecentProjects()">
-                  {{ i18n.t('recent') }}
-                </button>
-              </div>
-            </div>
-          }
-        </section>
-      }
 
       <section class="recent-projects">
         <h2 #recentProjectsHeading tabindex="-1">{{ i18n.t('recent') }}</h2>

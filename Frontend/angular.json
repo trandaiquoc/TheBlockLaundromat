@@ -31,35 +31,14 @@
                 "input": "public"
               },
               {
-                "glob": "assets/**/*.png",
-                "input": "source-assets/homepage",
-                "output": "assets/homepage/runtime",
-                "ignore": ["assets/**/navigation.png", "assets/**/account.png"]
+                "glob": "forest-floor.png",
+                "input": "source-assets/homepage/textures/diorama",
+                "output": "assets/homepage/diorama"
               },
               {
-                "glob": "textures/mini-diorama/exterior-forest-floor.png",
-                "input": "source-assets/homepage",
-                "output": "assets/homepage/runtime"
-              },
-              {
-                "glob": "models/laundromat/Laundromat.glb",
-                "input": "source-assets/homepage",
-                "output": "assets/homepage/runtime"
-              },
-              {
-                "glob": "models/Room/Octagonal-Laundromat.glb",
-                "input": "source-assets/homepage",
-                "output": "assets/homepage/runtime"
-              },
-              {
-                "glob": "models/Props/Washer-Alternate/Washer.glb",
-                "input": "source-assets/homepage",
-                "output": "assets/homepage/runtime"
-              },
-              {
-                "glob": "scene-manifest.json",
-                "input": "source-assets/homepage",
-                "output": "assets/homepage/runtime"
+                "glob": "Octagonal-Laundromat.glb",
+                "input": "source-assets/homepage/models/Room",
+                "output": "assets/homepage/diorama"
               }
             ],
             "styles": [

@@ -28,6 +28,8 @@ describe('UiPreferencesService', () => {
   it('uses safe defaults and persists updates', () => {
     const preferences = new UiPreferencesService();
     expect(preferences.preferences().locale).toBe('en');
+    expect(preferences.preferences().version).toBe(2);
+    expect(preferences.preferences().appearance.homepageMode).toBe('diorama');
     expect(preferences.preferences().autoUseHugeStructureBlocks).toBe(false);
     expect(preferences.preferences().showStructureBlockGuide).toBe(true);
     expect(preferences.preferences().accessibility.blockBrightness).toBe(3);
@@ -52,6 +54,33 @@ describe('UiPreferencesService', () => {
       locale: 'vi',
       appearance: { preset: 'craft', editorBackground: 'light' },
     });
+  });
+
+  it('migrates existing homepage preferences to Simple while preserving a valid saved mode', () => {
+    localStorage.setItem(
+      key,
+      JSON.stringify({ version: 1, locale: 'vi', appearance: { preset: 'light' } }),
+    );
+
+    const migrated = new UiPreferencesService();
+    expect(migrated.preferences()).toMatchObject({
+      version: 2,
+      locale: 'vi',
+      appearance: { homepageMode: 'simple', preset: 'light' },
+    });
+    expect(JSON.parse(localStorage.getItem(key) ?? '{}').appearance.homepageMode).toBe('simple');
+
+    migrated.setAppearance({ homepageMode: 'diorama' });
+    expect(new UiPreferencesService().preferences().appearance.homepageMode).toBe('diorama');
+  });
+
+  it('normalizes an invalid homepage mode on version 2 preferences', () => {
+    localStorage.setItem(
+      key,
+      JSON.stringify({ version: 2, appearance: { homepageMode: 'unknown' } }),
+    );
+
+    expect(new UiPreferencesService().preferences().appearance.homepageMode).toBe('diorama');
   });
 
   it('preserves legacy editor backgrounds and normalizes Reality presets independently', () => {
@@ -343,6 +372,7 @@ describe('UiPreferencesService', () => {
       font: 'chakra-petch',
       fontSize: 'large',
       editorBackground: 'light',
+      homepageMode: 'simple',
       reality: { groundPreset: 'plains-grass', skyPreset: 'overworld-day' },
     });
     expect(JSON.parse(localStorage.getItem(key) ?? '{}').appearance.font).toBe('chakra-petch');

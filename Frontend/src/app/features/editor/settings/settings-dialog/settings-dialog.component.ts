@@ -6,6 +6,7 @@ import {
   ThemePreset,
   UiFont,
   UiFontSize,
+  HomepageMode,
 } from '../../../../core/ui/preferences/ui-preferences.service';
 import { ContentAssetRuntimeService } from '../../../../core/assets/content-asset-runtime.service';
 import {
@@ -110,6 +111,10 @@ export class SettingsDialogComponent implements OnDestroy {
     { id: 'comfortaa', label: this.i18n.t('comfortaa') },
     { id: 'chakra-petch', label: this.i18n.t('chakraPetch') },
     { id: 'pangolin', label: this.i18n.t('pangolin') },
+  ]);
+  protected readonly homepageModeOptions = computed<readonly ThemedSelectOption[]>(() => [
+    { id: 'simple', label: this.i18n.t('homepageModeSimple') },
+    { id: 'diorama', label: this.i18n.t('homepageModeDiorama') },
   ]);
   protected readonly editorBackgroundOptions = computed<readonly ThemedSelectOption[]>(() => [
     { id: 'dark', label: this.i18n.t('editorBackgroundDark') },
@@ -254,6 +259,9 @@ export class SettingsDialogComponent implements OnDestroy {
   }
   protected setFontSize(fontSize: UiFontSize): void {
     this.session.setFontSize(fontSize);
+  }
+  protected setHomepageMode(mode: HomepageMode): void {
+    this.session.setHomepageMode(mode);
   }
   protected fontSizeIndex(): number {
     return ({ small: 0, normal: 1, large: 2 } as const)[this.draft().appearance.fontSize];

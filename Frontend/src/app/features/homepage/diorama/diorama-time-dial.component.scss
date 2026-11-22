@@ -1,0 +1,346 @@
+:host {
+  position: absolute;
+  z-index: 5;
+  inset-block-start: auto;
+  inset-block-end: max(0.5rem, env(safe-area-inset-bottom));
+  inset-inline-start: auto;
+  inset-inline-end: max(0.5rem, env(safe-area-inset-right));
+  display: block;
+  width: min(10.15rem, calc(100% - 1.5rem));
+  pointer-events: none;
+}
+
+.diorama-time-dial {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 1.2rem;
+  background: transparent;
+  color: var(--spatial-ink);
+  pointer-events: auto;
+  transition:
+    border-color 500ms ease,
+    background-color 500ms ease,
+    color 500ms ease;
+}
+
+.diorama-time-dial__face {
+  position: relative;
+  width: 10.15rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--spatial-clock-face) 84%, transparent);
+  transition: background-color 820ms cubic-bezier(0.22, 0.68, 0.18, 1);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.diorama-time-dial__face::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(
+    from -45deg,
+    color-mix(in srgb, #f4d683 28%, var(--spatial-panel)) 0deg 90deg,
+    color-mix(in srgb, #f49a62 31%, var(--spatial-panel)) 90deg 180deg,
+    color-mix(in srgb, #9b8eb0 29%, var(--spatial-panel)) 180deg 270deg,
+    color-mix(in srgb, #607a9f 31%, var(--spatial-panel)) 270deg 360deg
+  );
+  opacity: 0.88;
+  content: '';
+  mask: radial-gradient(circle, transparent 0 49%, #000 50% 100%);
+  pointer-events: none;
+  transition: opacity 820ms cubic-bezier(0.22, 0.68, 0.18, 1);
+}
+
+.diorama-time-dial__weather {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: 48%;
+  aspect-ratio: 1;
+  place-items: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.weather-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity 780ms cubic-bezier(0.22, 0.68, 0.18, 1),
+    transform 840ms cubic-bezier(0.22, 0.68, 0.18, 1);
+  pointer-events: none;
+}
+
+.weather-art.is-selected {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.weather-art__sun-rays {
+  transform-origin: 60px 51px;
+  animation: sun-rays-turn 28s linear infinite;
+}
+
+.weather-art__sun-glow,
+.weather-art__sunset-glow,
+.weather-art__twilight-glow,
+.weather-art__moon-glow {
+  animation: weather-glow-breathe 4s ease-in-out infinite alternate;
+}
+
+.weather-art__cloud--morning,
+.weather-art__cloud--sunset,
+.weather-art__cloud--twilight {
+  animation: cloud-drift 7s ease-in-out infinite alternate;
+}
+
+.weather-art__sunset-disc {
+  transform-origin: 60px 76px;
+  animation: sunset-sink 5s ease-in-out infinite alternate;
+}
+
+.weather-art__twilight-star,
+.weather-art__stars {
+  animation: stars-twinkle 2.8s ease-in-out infinite alternate;
+}
+
+.weather-art__moon-glow {
+  transform-origin: 59px 56px;
+}
+
+.weather-art__crescent--twilight {
+  opacity: 0.72;
+}
+
+.diorama-time-dial__face:active {
+  cursor: grabbing;
+}
+
+.diorama-time-dial__face:focus-within {
+  outline: 2px solid var(--spatial-focus);
+  outline-offset: 3px;
+}
+
+.diorama-time-dial__quarter {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  width: 7rem;
+  height: 2.35rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--spatial-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: color 220ms ease;
+}
+
+.diorama-time-dial__quarter:hover {
+  color: var(--spatial-ink);
+}
+
+.diorama-time-dial__quarter.is-selected {
+  color: var(--spatial-accent);
+}
+
+.diorama-time-dial__quarter:focus-visible {
+  outline: 2px solid var(--spatial-focus);
+  outline-offset: 2px;
+}
+
+.diorama-time-dial__quarter[data-time-index='0'] {
+  top: 0.08rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.diorama-time-dial__quarter[data-time-index='1'] {
+  top: 50%;
+  right: 0.08rem;
+  width: 2.35rem;
+  height: 7rem;
+  transform: translateY(-50%);
+}
+
+.diorama-time-dial__quarter[data-time-index='2'] {
+  bottom: 0.08rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.diorama-time-dial__quarter[data-time-index='3'] {
+  top: 50%;
+  left: 0.08rem;
+  width: 2.35rem;
+  height: 7rem;
+  transform: translateY(-50%);
+}
+
+.diorama-time-dial__quarter svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: currentColor;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.05px;
+  text-anchor: middle;
+  text-shadow: 0 1px 4px rgb(0 0 0 / 42%);
+}
+
+.diorama-time-dial__quarter textPath {
+  dominant-baseline: middle;
+}
+
+.diorama-time-dial__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.diorama-time-dial__slider:focus-visible {
+  outline: 2px solid var(--spatial-focus);
+  outline-offset: 4px;
+}
+
+@media (max-width: 760px) {
+  :host {
+    inset-block-start: auto;
+    inset-block-end: max(0.5rem, env(safe-area-inset-bottom));
+    inset-inline-start: auto;
+    inset-inline-end: max(0.7rem, env(safe-area-inset-right));
+    width: min(8.3rem, calc(100% - 1.4rem));
+  }
+
+  .diorama-time-dial {
+    gap: 0;
+    padding: 0;
+    border-radius: 1rem;
+  }
+
+  .diorama-time-dial__face {
+    width: 8.3rem;
+  }
+
+  .diorama-time-dial__quarter {
+    width: 5.6rem;
+    height: 1.9rem;
+    font-size: 0.72rem;
+  }
+  .diorama-time-dial__quarter[data-time-index='1'],
+  .diorama-time-dial__quarter[data-time-index='3'] {
+    width: 1.9rem;
+    height: 5.6rem;
+  }
+  .diorama-time-dial__quarter svg {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  :host {
+    inset-block-start: auto;
+    inset-block-end: max(0.5rem, env(safe-area-inset-bottom));
+    inset-inline-start: auto;
+    inset-inline-end: 0.625rem;
+    width: min(6.2rem, calc(100% - 1.25rem));
+  }
+
+  .diorama-time-dial {
+    gap: 0;
+    padding: 0;
+  }
+
+  .diorama-time-dial__face {
+    width: 6.2rem;
+  }
+
+  .diorama-time-dial__quarter {
+    width: 4.3rem;
+    height: 1.5rem;
+    font-size: 0.58rem;
+  }
+  .diorama-time-dial__quarter[data-time-index='1'],
+  .diorama-time-dial__quarter[data-time-index='3'] {
+    width: 1.5rem;
+    height: 4.3rem;
+  }
+  .diorama-time-dial__quarter svg {
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .diorama-time-dial,
+  .diorama-time-dial__quarter,
+  .weather-art,
+  .weather-art * {
+    transition: none;
+    animation: none;
+  }
+}
+
+@keyframes sun-rays-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes weather-glow-breathe {
+  from {
+    opacity: 0.6;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 0.82;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-2px);
+  }
+  to {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes sunset-sink {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes stars-twinkle {
+  from {
+    opacity: 0.48;
+  }
+  to {
+    opacity: 1;
+  }
+}

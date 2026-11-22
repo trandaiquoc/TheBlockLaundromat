@@ -1,6 +1,6 @@
-# Stage 3 production asset handoff
+# Stage 3 production asset archive and handoff
 
-**Review status (2026-11-20):** The user approved the Stage 3 browser captures. Automated build, test, asset, and route checks passed. The Stage 4 interaction work is a separate phase and has not started.
+**Historical review status (2026-11-20):** The user approved the Stage 3 browser captures. Goal 05 later replaced the preview routes with Simple/Diorama modes at `/`.
 
 This directory preserves the documentation and renders supplied in
 `Stage3-Production (1).zip`. The original archive was 49,014,163 bytes with
@@ -17,7 +17,7 @@ runtime contract.
 | `ASSETS.md`, `Parts/index.json`, `Parts/detail-kit.json`, and `Characters/UV-Verification.csv` | This directory                                                                   | Asset specification, Blender placement transforms, component catalog, and UV verification |
 | 27 JPGs under `Renders/` plus `Preview.jpg`                                                    | This directory                                                                   | Supplied room, character, theme, and detail renders                                       |
 | 322 `.blend` sources and 322 `.glb` exports                                                    | `Frontend/source-assets/homepage/models/`                                        | Editable production source and loose/exported modules                                     |
-| `Room/Octagonal-Laundromat.glb`                                                                | `Frontend/source-assets/homepage/models/Room/` and the Angular runtime allowlist | The single assembled Stage 3 scene used by `/mini-diorama-preview`                        |
+| `Room/Octagonal-Laundromat.glb`                                                                | `Frontend/source-assets/homepage/models/Room/` and the Angular runtime allowlist | The assembled scene used by the root Diorama mode                                           |
 
 The archive paths remain intact below their respective storage roots. Catalog
 paths such as `Parts/index.json` are relative to
@@ -26,11 +26,11 @@ Z-up coordinates and row-major matrices. The complete assembled scene is
 glTF Y-up. Its two characters are already included in the room GLB, which has
 four `KHR_materials_variants` and no animation clips.
 
-Angular copies only the assembled room GLB into
-`assets/homepage/runtime/models/Room/`. Loose exports, Blender files, renders,
-catalogs, and specifications stay out of the production bundle. The earlier
-assembled laundromat GLB remains packaged for the separate homepage
-integration-preview consumer; it is not loaded by the Stage 3 route.
+Angular copies only the assembled room GLB and the forest-floor texture into
+`assets/homepage/diorama/`. Loose exports, Blender files, renders, catalogs,
+and specifications stay out of the production bundle. The archived alternate
+washer sources remain preserved for Blender/source use; the assembled room
+already contains the washer, so the runtime does not load a second washer GLB.
 
 The supplied pack contains no license or provenance notice. Its authorship,
 redistribution rights, and attribution requirements remain unverified.

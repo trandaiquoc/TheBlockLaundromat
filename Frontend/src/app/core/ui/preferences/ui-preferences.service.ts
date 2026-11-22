@@ -30,6 +30,7 @@ export type BaseTheme = 'dark' | 'light';
 export type UiFont = 'comfortaa' | 'chakra-petch' | 'pangolin';
 export type UiFontSize = 'small' | 'normal' | 'large';
 export type PersistedEditorMode = '3d' | 'y-layer';
+export type HomepageMode = 'simple' | 'diorama';
 
 export interface StructureExportPreferences {
   readonly namespace: string;
@@ -38,7 +39,7 @@ export interface StructureExportPreferences {
 }
 
 export interface UiPreferences {
-  readonly version: 1;
+  readonly version: 2;
   readonly locale: UiLocale;
   readonly autoUseHugeStructureBlocks: boolean;
   readonly showStructureBlockGuide: boolean;
@@ -50,6 +51,7 @@ export interface UiPreferences {
     readonly font: UiFont;
     readonly fontSize: UiFontSize;
     readonly editorBackground: EditorBackgroundMode;
+    readonly homepageMode: HomepageMode;
     readonly reality: RealityBackgroundPreferences;
   };
   readonly accessibility: {
@@ -86,7 +88,7 @@ export const LEGACY_UI_PREFERENCES_KEY = 'minecraft-builder.ui-preferences';
 export const LEGACY_LAYOUT_KEY = 'minecraft-builder.editor-layout';
 export const DEFAULT_EDITOR_SIDEBAR_WIDTH = 340;
 const defaults: UiPreferences = {
-  version: 1,
+  version: 2,
   locale: 'en',
   autoUseHugeStructureBlocks: false,
   showStructureBlockGuide: true,
@@ -102,6 +104,7 @@ const defaults: UiPreferences = {
     font: 'comfortaa',
     fontSize: 'normal',
     editorBackground: 'dark',
+    homepageMode: 'diorama',
     reality: DEFAULT_REALITY_BACKGROUND,
   },
   accessibility: { blockBrightness: 3, sceneAnimationsEnabled: true },
@@ -168,7 +171,7 @@ export class UiPreferencesService {
           ),
         }
       : current.accessibility;
-    this.commit({ ...current, ...patch, accessibility, version: 1 });
+    this.commit({ ...current, ...patch, accessibility, version: 2 });
   }
 
   setLocale(locale: UiLocale): void {
@@ -268,10 +271,13 @@ export class UiPreferencesService {
       const legacyLayout = storage.getItem(LEGACY_LAYOUT_KEY);
       const migrated = legacyPreferences
         ? normalize(JSON.parse(legacyPreferences))
-        : {
-            ...defaults,
-            layout: legacyLayout ? normalizeLayout(JSON.parse(legacyLayout)) : defaults.layout,
-          };
+        : legacyLayout !== null
+          ? {
+              ...defaults,
+              appearance: { ...defaults.appearance, homepageMode: 'simple' as HomepageMode },
+              layout: normalizeLayout(JSON.parse(legacyLayout)),
+            }
+          : defaults;
       const serialized = JSON.stringify(migrated);
       storage.setItem(UI_PREFERENCES_KEY, serialized);
       if (storage.getItem(UI_PREFERENCES_KEY) === serialized) return migrated;
@@ -296,7 +302,11 @@ function readLegacyPreferences(storage: Pick<Storage, 'getItem'>): UiPreferences
     if (legacyPreferences) return normalize(JSON.parse(legacyPreferences));
     const legacyLayout = storage.getItem(LEGACY_LAYOUT_KEY);
     return legacyLayout
-      ? { ...defaults, layout: normalizeLayout(JSON.parse(legacyLayout)) }
+      ? {
+          ...defaults,
+          appearance: { ...defaults.appearance, homepageMode: 'simple' as HomepageMode },
+          layout: normalizeLayout(JSON.parse(legacyLayout)),
+        }
       : undefined;
   } catch {
     return undefined;
@@ -308,6 +318,13 @@ function normalize(value: unknown): UiPreferences {
   const candidate = value as Partial<UiPreferences>;
   const appearance =
     candidate.appearance && typeof candidate.appearance === 'object' ? candidate.appearance : {};
+  const storedHomepageMode = (appearance as { readonly homepageMode?: unknown }).homepageMode;
+  const storedVersion = (candidate as { readonly version?: unknown }).version;
+  const homepageMode = isHomepageMode(storedHomepageMode)
+    ? storedHomepageMode
+    : storedVersion === 1 || storedVersion === undefined
+      ? 'simple'
+      : defaults.appearance.homepageMode;
   const controls =
     candidate.controls && typeof candidate.controls === 'object' ? candidate.controls : {};
   const shortcuts = normalizeBindings(candidate.shortcuts);
@@ -364,6 +381,7 @@ function normalize(value: unknown): UiPreferences {
       )
         ? (appearance as Partial<UiPreferences['appearance']>).editorBackground!
         : defaults.appearance.editorBackground,
+      homepageMode,
       reality: normalizeRealityBackground(
         (appearance as Partial<UiPreferences['appearance']>).reality,
       ),
@@ -448,7 +466,7 @@ function normalize(value: unknown): UiPreferences {
         defaults.layout.rightSidebarWidth,
       ),
     },
-    version: 1,
+    version: 2,
   };
 }
 
@@ -509,6 +527,9 @@ function isFontSize(value: unknown): value is UiFontSize {
 }
 function isEditorMode(value: unknown): value is PersistedEditorMode {
   return value === '3d' || value === 'y-layer';
+}
+function isHomepageMode(value: unknown): value is HomepageMode {
+  return value === 'simple' || value === 'diorama';
 }
 
 function normalizeLayout(value: unknown): UiPreferences['layout'] {

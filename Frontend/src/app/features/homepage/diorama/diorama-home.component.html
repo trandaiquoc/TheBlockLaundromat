@@ -1,0 +1,44 @@
+<main
+  class="diorama"
+  [attr.data-theme]="themeService.theme()"
+  [attr.data-scene-animations-enabled]="time.sceneAnimationsEnabled()"
+  [attr.data-clock-dragging]="time.clockDragging()"
+  [attr.data-sky-orbit]="time.skyOrbitDirection()"
+>
+  <div class="diorama__atmosphere" aria-hidden="true">
+    <div class="diorama__sky-layer diorama__sky-layer--light"></div>
+    <div class="diorama__sky-layer diorama__sky-layer--craft"></div>
+    <div class="diorama__sky-layer diorama__sky-layer--raccoon"></div>
+    <div class="diorama__sky-layer diorama__sky-layer--dark"></div>
+    <div class="diorama__sky-glow" [style.left.%]="time.skyGlowPercent()"></div>
+    <span
+      class="diorama__celestial-orb"
+      [style.left.%]="time.skyGlowPercent()"
+      (animationend)="time.completeSkyOrbit($event)"
+    >
+      <span class="diorama__celestial-orb-disc"></span>
+    </span>
+    <span class="diorama__sky-cloud diorama__sky-cloud--one"></span>
+    <span class="diorama__sky-cloud diorama__sky-cloud--two"></span>
+    <span class="diorama__sky-star diorama__sky-star--one"></span>
+    <span class="diorama__sky-star diorama__sky-star--two"></span>
+    <span class="diorama__sky-star diorama__sky-star--three"></span>
+    <span class="diorama__sky-star diorama__sky-star--four"></span>
+  </div>
+
+  <app-diorama-scene />
+
+  <app-diorama-home-header (projectsRequested)="openProjects()" />
+
+  <app-diorama-time-dial
+    [selectedIndex]="time.timeStageIndex()"
+    [cycleProgress]="time.cycleProgress()"
+    (timeChanged)="handleTimeDialChange($event)"
+  />
+
+  <app-diorama-home-account (settingsRequested)="openSettings()" />
+
+  @if (settingsDialogOpen()) {
+    <app-settings-dialog (closed)="closeSettings()" />
+  }
+</main>

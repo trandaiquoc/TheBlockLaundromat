@@ -1,0 +1,34 @@
+<div class="diorama-scene">
+  <section
+    #sceneHost
+    class="diorama-scene__canvas"
+    [class.diorama-scene__canvas--fallback]="state() === 'fallback'"
+    [attr.aria-label]="i18n.t('dioramaSceneDescription')"
+    [attr.aria-busy]="state() === 'loading'"
+    [attr.data-scene-state]="state()"
+  >
+    @if (state() === 'loading') {
+      <p class="diorama-scene__loading" role="status">{{ i18n.t('dioramaLoading') }}</p>
+    }
+
+    @if (state() === 'fallback') {
+      <div class="diorama-scene__fallback" role="status">
+        <div class="diorama-scene__fallback-art" aria-hidden="true">
+          <div class="diorama-scene__fallback-board"><span></span><span></span><span></span></div>
+          <div class="diorama-scene__fallback-raccoon">🦝</div>
+          <div class="diorama-scene__fallback-washer"><span></span></div>
+        </div>
+        <h2>{{ i18n.t('dioramaFallbackTitle') }}</h2>
+        <p>{{ i18n.t(fallbackMessageKey()) }}</p>
+      </div>
+    }
+  </section>
+
+  <app-diorama-scene-focus-toolbar
+    [selectedTarget]="selectedTarget()"
+    (actionRequested)="handleFocusAction($event)"
+  />
+  <p class="diorama-scene__live-message" aria-live="polite" aria-atomic="true">
+    {{ sceneMessage() }}
+  </p>
+</div>

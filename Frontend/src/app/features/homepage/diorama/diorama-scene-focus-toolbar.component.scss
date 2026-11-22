@@ -1,0 +1,146 @@
+:host {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  right: calc(max(0.75rem, env(safe-area-inset-right)) + 3.4rem);
+  bottom: auto;
+  display: block;
+  transform: translateY(-50%);
+}
+
+.diorama__focus-toolbar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.18rem;
+  padding: 0.3rem;
+  border: 1px solid var(--spatial-border);
+  border-radius: 1.15rem;
+  background: var(--spatial-panel);
+  box-shadow: var(--spatial-shadow);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+}
+
+.diorama__focus-toolbar button {
+  position: relative;
+  display: grid;
+  width: 2.15rem;
+  min-height: 2.15rem;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 0.78rem;
+  background: transparent;
+  color: var(--spatial-muted);
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.diorama__focus-toolbar button:hover {
+  background: var(--spatial-hover);
+  color: var(--spatial-ink);
+  transform: translateY(-1px);
+}
+
+.diorama__focus-toolbar button.is-selected {
+  border-color: var(--spatial-selected-border);
+  background: var(--spatial-selected);
+  color: var(--spatial-selected-ink);
+}
+
+.diorama__focus-toolbar button:focus-visible {
+  outline: 2px solid var(--spatial-focus);
+  outline-offset: 2px;
+}
+
+.diorama__focus-toolbar svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  stroke-width: 1.9;
+}
+
+.diorama__focus-tooltip {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: calc(100% + 0.5rem);
+  max-width: 15rem;
+  padding: 0.48rem 0.65rem;
+  border: 1px solid var(--spatial-border);
+  border-radius: 0.72rem;
+  background: var(--spatial-panel);
+  color: var(--spatial-ink);
+  box-shadow: var(--spatial-shadow);
+  font-size: 0.72rem;
+  font-weight: 720;
+  line-height: 1.25;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-0.18rem, -50%);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+  white-space: nowrap;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.diorama__focus-toolbar button:hover .diorama__focus-tooltip,
+.diorama__focus-toolbar button:focus-visible .diorama__focus-tooltip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+@media (max-width: 760px) {
+  :host {
+    top: 50%;
+    right: calc(max(0.7rem, env(safe-area-inset-right)) + 2.95rem);
+    bottom: auto;
+    left: auto;
+    transform: translateY(-50%);
+  }
+
+  .diorama__focus-toolbar {
+    gap: 0.1rem;
+    padding: 0.22rem;
+    border-radius: 1rem;
+  }
+
+  .diorama__focus-toolbar button {
+    width: 1.85rem;
+    min-height: 1.85rem;
+    border-radius: 0.6rem;
+  }
+
+  .diorama__focus-tooltip {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  :host {
+    bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 6.2rem + 0.55rem);
+    right: calc(0.625rem + 2.2rem);
+    bottom: auto;
+  }
+
+  .diorama__focus-toolbar {
+    gap: 0.06rem;
+    padding: 0.15rem;
+  }
+
+  .diorama__focus-toolbar button {
+    width: 1.35rem;
+    min-height: 1.35rem;
+  }
+
+  .diorama__focus-toolbar svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+}

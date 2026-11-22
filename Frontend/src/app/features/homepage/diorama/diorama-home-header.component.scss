@@ -1,0 +1,78 @@
+:host {
+  position: absolute;
+  z-index: 5;
+  inset: max(0.65rem, env(safe-area-inset-top)) clamp(1rem, 3vw, 3rem) auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.diorama-header__logo,
+.diorama-header__projects {
+  pointer-events: auto;
+}
+
+.diorama-header__logo {
+  display: block;
+  width: clamp(12rem, 17vw, 17rem);
+  height: auto;
+  filter: drop-shadow(0 0.15rem 0.35rem rgb(25 29 31 / 16%));
+}
+
+.diorama-header__projects {
+  min-height: 2.65rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--spatial-border);
+  border-radius: 999px;
+  background: var(--spatial-panel);
+  color: var(--spatial-ink);
+  box-shadow: var(--spatial-shadow);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.diorama-header__projects:hover {
+  background: var(--spatial-hover);
+}
+
+.diorama-header__projects:focus-visible {
+  outline: 2px solid var(--spatial-focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  :host {
+    inset-inline: max(0.7rem, env(safe-area-inset-left)) max(0.7rem, env(safe-area-inset-right));
+    align-items: center;
+  }
+
+  .diorama-header__logo {
+    width: clamp(9rem, 32vw, 11rem);
+  }
+
+  .diorama-header__projects {
+    min-height: 2.35rem;
+    padding: 0.45rem 0.72rem;
+  }
+}
+
+@media (max-width: 380px) {
+  :host {
+    inset-block-start: max(0.55rem, env(safe-area-inset-top));
+  }
+
+  .diorama-header__logo {
+    width: 8.5rem;
+  }
+
+  .diorama-header__projects {
+    padding-inline: 0.58rem;
+    font-size: 0.75rem;
+  }
+}

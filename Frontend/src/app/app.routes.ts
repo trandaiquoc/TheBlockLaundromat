@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
-import { ProjectScreenComponent } from './features/projects/project-screen/project-screen.component';
 import { editorCanDeactivate } from './core/persistence/editor-leave-coordinator.service';
 
 export const routes: Routes = [
-  { path: '', component: ProjectScreenComponent },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./features/homepage/homepage.component').then(
+        ({ HomepageComponent }) => HomepageComponent,
+      ),
+  },
   {
     path: 'editor',
     loadComponent: () =>
@@ -11,27 +16,6 @@ export const routes: Routes = [
         ({ EditorShellComponent }) => EditorShellComponent,
       ),
     canDeactivate: [editorCanDeactivate],
-  },
-  {
-    path: 'homepage-2d-preview',
-    loadComponent: () =>
-      import('./features/homepage/homepage-preview.component').then(
-        ({ HomepagePreviewComponent }) => HomepagePreviewComponent,
-      ),
-  },
-  {
-    path: 'mini-diorama-preview',
-    loadComponent: () =>
-      import('./features/mini-diorama-preview/mini-diorama-preview.component').then(
-        ({ MiniDioramaPreviewComponent }) => MiniDioramaPreviewComponent,
-      ),
-  },
-  {
-    path: 'homepage-integration-preview',
-    loadComponent: () =>
-      import('./features/homepage/homepage-integration-preview.component').then(
-        ({ HomepageIntegrationPreviewComponent }) => HomepageIntegrationPreviewComponent,
-      ),
   },
   { path: '**', redirectTo: '' },
 ];

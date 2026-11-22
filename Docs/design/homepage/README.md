@@ -1,4 +1,18 @@
-# Creative Interactive Homepage: research and prototype gates
+# Homepage architecture and historical design records
+
+## Current contract — Goal 05 (2026-11-23)
+
+The root route `/` is the only Homepage route. `HomepageComponent` reads the persisted interface mode and lazy-loads either `DioramaHomeComponent` or the existing `ProjectScreenComponent`. New users start in Diorama. Existing version 1 or unversioned preferences migrate to Simple; a legacy layout-only account also migrates to Simple. The mode is editable under Settings → Appearance → Interface and takes effect immediately.
+
+Simple is the sole owner of project creation, opening, search, sorting, deletion, Structure JSON import, backup export, package restore, and their existing persistence. Diorama provides a visible Projects button to Simple. Its WebGL fallback keeps that button available. The editor and project persistence stay in place.
+
+The Diorama runtime uses one `LAUNDROMAT_DIORAMA_PROFILE` and one assembled room GLB. The room already contains the washer and characters; the runtime does not load a replacement washer. Angular copies only the room GLB and forest-floor texture to `assets/homepage/diorama/`. Camera, input, theme/time, animation, asset loading, and GPU resource teardown have separate owners. Preview routes and the former layered 2D Homepage renderer are retired.
+
+Goal 05 visual review is pending until the user approves the 16 production-browser captures under ignored `Frontend/.artifacts/goal-05/screenshots/`. Headless SwiftShader results are diagnostics only. They do not establish desktop or mobile hardware GPU performance; representative-device measurements remain a limitation.
+
+See [Goal 05 browser diagnostics](goal-05-performance.md) for the recorded packaging, lifecycle, and headless-browser measurements. Gate E remains partial pending representative-device performance evidence; Gate G remains pending visual approval.
+
+## Historical records
 
 **Historical Goal 02D status:** Goal 01 research and the engine decision are complete. The Goal 02B preview art direction was rejected in user review. Goal 02C concepts passed the art gate on 2026-11-17; their working look-dev package was later removed at the user's direction on 2026-11-19. The current room composition is documented in [Stage 2](stage-2-spatial-concepts/README.md). Goal 02D integrated an original Puddlepaw Raccoon candidate into the separate preview route; Art Gate A remained pending at that checkpoint. Room A and four-theme production were paused. The preview was not the production homepage.
 
@@ -6,9 +20,9 @@
 
 **Historical Goal 03 result (2026-11-18):** `/homepage-integration-preview` combined the existing Project Screen workflows with the shared scene runtime. The root route remained unchanged.
 
-**Current Stage 3 integration:** `/mini-diorama-preview` loads the supplied `Room/Octagonal-Laundromat.glb`. Its two Raccoons are already in that assembly. `/` and Project Screen workflows remain unchanged. The integration preview keeps its prior assembled GLB through the shared runtime's explicit scene contract. See [Stage 3 asset handoff](stage-3/README.md) for storage and provenance.
+**Historical Stage 3 integration:** `/mini-diorama-preview` loaded the supplied `Room/Octagonal-Laundromat.glb`; `/` and Project Screen workflows were unchanged at that checkpoint. That route was removed in Goal 05. See [Stage 3 asset handoff](stage-3/README.md) for the preserved source archive and provenance record.
 
-**Stage 3 visual approval (2026-11-20):** The user approved the browser captures after the Stage 3 build, test, asset, and route checks passed. Goal 04 integrates a full-bleed spatial preview on the existing `/mini-diorama-preview` route. A follow-up iteration is updating the exterior ground, clock interaction, camera feel, and component alignment; its visual review is pending. `/` and the Project Screen workflows remain unchanged. See [Stage 4 implementation and review](stage-4/README.md) for the current interaction contract and pending visual gate.
+**Historical Goal 04 record (2026-11-20):** The user approved the Stage 3 captures. Goal 04 then refined the spatial preview on `/mini-diorama-preview`; Goal 05 moved that experience to the root mode and removed the preview route. See [Stage 4 implementation and review](stage-4/README.md) for the archived interaction details.
 
 This report records inspected evidence, inferences, and prototype acceptance gates. The supplied `ASSETS.md` and catalogs describe the model payload and its node contracts; they do not override the user's integration request.
 

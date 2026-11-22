@@ -1,0 +1,203 @@
+<section
+  class="diorama-time-dial"
+  [attr.aria-label]="i18n.t('dioramaTimeOfDay')"
+  [attr.data-selected-theme]="selectedStage().theme"
+>
+  <div
+    class="diorama-time-dial__face"
+    role="group"
+    [attr.aria-label]="i18n.t('dioramaClockHint')"
+    (pointerdown)="beginRotation($event)"
+    (pointermove)="continueRotation($event)"
+    (pointerup)="finishRotation($event)"
+    (pointercancel)="finishRotation($event)"
+    (lostpointercapture)="finishRotation($event)"
+  >
+    <div class="diorama-time-dial__weather" aria-hidden="true">
+      <svg
+        class="weather-art weather-art--light"
+        [class.is-selected]="selectedStage().theme === 'light'"
+        viewBox="0 0 120 120"
+      >
+        <defs>
+          <radialGradient id="morning-sun-glow">
+            <stop offset="0" stop-color="#fff8c8" />
+            <stop offset="1" stop-color="#f8c85b" stop-opacity="0.12" />
+          </radialGradient>
+        </defs>
+        <circle
+          class="weather-art__sun-glow"
+          cx="60"
+          cy="51"
+          r="40"
+          fill="url(#morning-sun-glow)"
+        />
+        <g class="weather-art__sun-rays" stroke="#f1bd4f" stroke-linecap="round" stroke-width="3">
+          <path d="M60 16v8m0 54v8M25 51h8m54 0h8M35 26l6 6m38 38 6 6m0-50-6 6m-38 38-6 6" />
+        </g>
+        <circle class="weather-art__sun" cx="60" cy="51" r="23" fill="#ffd86e" />
+        <path
+          class="weather-art__cloud weather-art__cloud--morning"
+          d="M24 82c0-8 7-14 15-14 2-10 11-17 22-17 12 0 21 9 22 20 8 0 14 6 14 13s-6 12-14 12H39c-9 0-15-6-15-14Z"
+          fill="#fff5da"
+        />
+      </svg>
+      <svg
+        class="weather-art weather-art--craft"
+        [class.is-selected]="selectedStage().theme === 'craft'"
+        viewBox="0 0 120 120"
+      >
+        <defs>
+          <linearGradient id="sunset-sky" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="#f9b768" stop-opacity="0.1" />
+            <stop offset="1" stop-color="#ef7655" stop-opacity="0.52" />
+          </linearGradient>
+          <clipPath id="sunset-horizon">
+            <rect x="12" y="15" width="96" height="68" rx="40" />
+          </clipPath>
+        </defs>
+        <circle class="weather-art__sunset-glow" cx="60" cy="67" r="39" fill="url(#sunset-sky)" />
+        <circle
+          class="weather-art__sunset-disc"
+          cx="60"
+          cy="72"
+          r="28"
+          fill="#f58b4c"
+          clip-path="url(#sunset-horizon)"
+        />
+        <path d="M19 77h82" stroke="#ffd2a6" stroke-linecap="round" stroke-width="2" />
+        <path
+          class="weather-art__cloud weather-art__cloud--sunset"
+          d="M24 82c0-7 6-12 13-12 2-8 9-13 18-13 10 0 18 7 19 16 7 0 12 5 12 11s-5 10-12 10H38c-8 0-14-5-14-12Z"
+          fill="#5c526b"
+          fill-opacity="0.92"
+        />
+      </svg>
+      <svg
+        class="weather-art weather-art--raccoon"
+        [class.is-selected]="selectedStage().theme === 'raccoon'"
+        viewBox="0 0 120 120"
+      >
+        <circle
+          class="weather-art__twilight-glow"
+          cx="61"
+          cy="53"
+          r="43"
+          fill="#a895bb"
+          fill-opacity="0.22"
+        />
+        <path
+          class="weather-art__crescent weather-art__crescent--twilight"
+          d="M72 24a30 30 0 1 0 26 47A33 33 0 0 1 72 24Z"
+          fill="#eed6db"
+          fill-opacity="0.68"
+        />
+        <path
+          class="weather-art__cloud weather-art__cloud--twilight"
+          d="M15 78c0-8 7-14 15-14 2-9 10-15 20-15 11 0 20 8 21 18 7 0 13 6 13 12s-6 12-13 12H30c-9 0-15-5-15-13Z"
+          fill="#c7b8d1"
+          fill-opacity="0.48"
+        />
+        <circle class="weather-art__twilight-star" cx="36" cy="30" r="2" fill="#eee6ff" />
+      </svg>
+      <svg
+        class="weather-art weather-art--dark"
+        [class.is-selected]="selectedStage().theme === 'dark'"
+        viewBox="0 0 120 120"
+      >
+        <circle
+          class="weather-art__moon-glow"
+          cx="59"
+          cy="56"
+          r="41"
+          fill="#bcd4ff"
+          fill-opacity="0.12"
+        />
+        <path
+          class="weather-art__crescent"
+          d="M73 25a30 30 0 1 0 25 47A33 33 0 0 1 73 25Z"
+          fill="#dbe9ff"
+        />
+        <g class="weather-art__stars" fill="#f3f6ff">
+          <path d="m36 33 2.5 5.5L44 41l-5.5 2.5L36 49l-2.5-5.5L28 41l5.5-2.5L36 33Z" />
+          <circle cx="84" cy="36" r="2.5" />
+          <circle cx="30" cy="67" r="2" />
+          <circle cx="91" cy="75" r="1.8" />
+        </g>
+      </svg>
+    </div>
+
+    @for (stage of timeStages; track stage.theme; let index = $index) {
+      <button
+        type="button"
+        class="diorama-time-dial__quarter"
+        [attr.data-time-stage]="stage.theme"
+        [attr.data-time-index]="index"
+        [class.is-selected]="selectedIndex() === index"
+        [attr.aria-label]="i18n.t(stage.timeLabel) + ', ' + i18n.t(stage.themeLabel)"
+        [attr.aria-pressed]="selectedIndex() === index"
+        [attr.title]="i18n.t(stage.timeLabel)"
+        (pointerdown)="$event.stopPropagation()"
+        (click)="selectTimeStage(index)"
+      >
+        @switch (index) {
+          @case (0) {
+            <svg viewBox="0 0 132 50" aria-hidden="true">
+              <defs><path id="time-label-light" d="M10 39 Q66 -13 122 39" /></defs>
+              <text>
+                <textPath href="#time-label-light" startOffset="50%" text-anchor="middle">
+                  {{ i18n.t(stage.themeLabel) }}
+                </textPath>
+              </text>
+            </svg>
+          }
+          @case (1) {
+            <svg viewBox="0 0 50 132" aria-hidden="true">
+              <defs><path id="time-label-minecraft" d="M13 20 Q59 66 13 112" /></defs>
+              <text>
+                <textPath href="#time-label-minecraft" startOffset="50%" text-anchor="middle">
+                  {{ i18n.t(stage.themeLabel) }}
+                </textPath>
+              </text>
+            </svg>
+          }
+          @case (2) {
+            <svg viewBox="0 0 132 50" aria-hidden="true">
+              <defs><path id="time-label-raccoon" d="M10 8 Q66 56 122 8" /></defs>
+              <text>
+                <textPath href="#time-label-raccoon" startOffset="50%" text-anchor="middle">
+                  {{ i18n.t(stage.themeLabel) }}
+                </textPath>
+              </text>
+            </svg>
+          }
+          @case (3) {
+            <svg viewBox="0 0 50 132" aria-hidden="true">
+              <defs><path id="time-label-dark" d="M36 20 Q-10 66 36 112" /></defs>
+              <text>
+                <textPath href="#time-label-dark" startOffset="50%" text-anchor="middle">
+                  {{ i18n.t(stage.themeLabel) }}
+                </textPath>
+              </text>
+            </svg>
+          }
+        }
+      </button>
+    }
+  </div>
+
+  <label class="diorama-time-dial__visually-hidden" for="diorama-time-slider">
+    {{ i18n.t('dioramaTimeOfDay') }}
+  </label>
+  <input
+    id="diorama-time-slider"
+    class="diorama-time-dial__slider diorama-time-dial__visually-hidden"
+    type="range"
+    min="0"
+    max="3"
+    step="1"
+    [value]="selectedIndex()"
+    [attr.aria-valuetext]="i18n.t(selectedStage().timeLabel)"
+    (input)="updateFromSlider($event)"
+  />
+</section>

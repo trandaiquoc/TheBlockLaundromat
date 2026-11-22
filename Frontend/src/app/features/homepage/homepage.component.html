@@ -1,0 +1,13 @@
+@if (mode() === 'diorama') {
+  @defer (on immediate) {
+    <app-diorama-home />
+  } @placeholder {
+    <p class="homepage-loading" role="status">{{ i18n.t('homepageLoading') }}</p>
+  }
+} @else {
+  @defer (on immediate) {
+    <app-project-screen />
+  } @placeholder {
+    <p class="homepage-loading" role="status">{{ i18n.t('homepageLoading') }}</p>
+  }
+}

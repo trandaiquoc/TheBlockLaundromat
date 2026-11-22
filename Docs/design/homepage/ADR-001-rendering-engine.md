@@ -1,9 +1,9 @@
 # ADR 001: Homepage rendering engine
 
-- **Status:** Three.js remains selected for the isolated Goal 02 preview. Goal 02E loads the supplied assembled laundromat GLB and its four material variants on `/mini-diorama-preview`; at the user's direction, `/` remains unchanged. The former Puddlepaw candidate is no longer used, and its source files were removed. Production adoption remains open.
+- **Status:** Three.js is the production Diorama renderer on the root `/` route. The Homepage mode selects Simple or Diorama; the Diorama lazily loads its assembled room GLB and four material variants. Preview routes and the earlier layered 2D renderer are retired. Goal 05 visual approval and representative-device performance review remain pending.
 - **Date:** 2026-11-16.
 - **Reviewed:** 2026-11-17.
-- **Scope:** Goal 01 engine decision; Goal 02 applies that decision to a separate, non-production preview route.
+- **Scope:** Original Goal 01 engine decision and its superseding Goal 05 production adoption.
 
 ## Context
 

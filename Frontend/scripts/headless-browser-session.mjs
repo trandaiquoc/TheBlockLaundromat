@@ -87,6 +87,7 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
     await send('Runtime.enable');
 
     return {
+      bringToFront: () => send('Page.bringToFront'),
       evaluate: async (expression) => {
         const response = await send('Runtime.evaluate', {
           expression,
