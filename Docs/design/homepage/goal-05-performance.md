@@ -89,6 +89,19 @@ uninstrumented Chrome theme-switch smoke produced no console entries. The source
 of the warnings was not isolated, so the runs do not establish a clean-console
 result and the instrumented frame timings remain diagnostic.
 
+A follow-up used `EXT_disjoint_timer_query_webgl2` on the same Intel UHD desktop
+to time GPU work from the first WebGL draw through the end of each render
+callback. The driver reported no disjoint query results. During a Night-to-Light
+theme transition from Overview, 27 of 27 GPU queries completed: 18 frames at
+487 calls had GPU p95 6.9 ms, and 9 shadow-refresh frames at 969 calls had GPU
+p95 13.8 ms (13.8 ms maximum). Render-callback p95 was 9.6 ms; frame-interval
+p95 was 21.1 ms. A separate 33-frame high-shadow-load Overview window at 969
+calls per frame measured GPU p50 10.2 ms and p95 12.3 ms, with one 48.0 ms
+maximum outlier; callback p95 was 12.7 ms and frame-interval p95 was 55.4 ms.
+These small, instrumented samples show the shadow-refresh frames use more GPU
+time, but do not prove the 20 ms frame-interval target or represent mobile
+hardware. They do not justify reducing shadow quality without a visual test.
+
 On the same desktop Chrome/Intel UHD setup, a 60,029.9 ms visible idle interval
 reported zero draw calls, zero RAF callbacks, zero pending frames, zero long-task
 milliseconds, and no WebGL buffer or texture creates/deletes. JS heap changed from
