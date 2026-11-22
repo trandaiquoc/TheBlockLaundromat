@@ -6,9 +6,9 @@ The root route `/` is the only Homepage route. `HomepageComponent` reads the per
 
 Simple is the sole owner of project creation, opening, search, sorting, deletion, Structure JSON import, backup export, package restore, and their existing persistence. Diorama provides a visible Projects button to Simple. Its WebGL fallback keeps that button available. The editor and project persistence stay in place.
 
-The Diorama runtime uses one `LAUNDROMAT_DIORAMA_PROFILE` and one assembled room GLB. The room already contains the washer and characters; the runtime does not load a replacement washer. Angular copies only the room GLB and forest-floor texture to `assets/homepage/diorama/`. Camera, input, theme/time, animation, asset loading, and GPU resource teardown have separate owners. On mobile, focus actions use a horizontal dock below the room to keep the room and time indicator visible. Preview routes and the former layered 2D Homepage renderer are retired.
+The Diorama runtime uses one `LAUNDROMAT_DIORAMA_PROFILE` and one assembled room GLB. The room already contains the washer and characters; the runtime does not load a replacement washer. Angular copies only the room GLB and forest-floor texture to `assets/homepage/diorama/`. Camera, input, theme/time, animation, asset loading, and GPU resource teardown have separate owners. Teardown disposes scene shadow targets and the renderer, then requests WebGL context loss to release internal renderer resources without individual delete calls. The browser check verifies resource release over 20 mount/unmount cycles. On mobile, focus actions use a horizontal dock below the room to keep the room and time indicator visible. Preview routes and the former layered 2D Homepage renderer are retired.
 
-Goal 05 visual review is pending until the user approves the 16 production-browser captures under ignored `Frontend/.artifacts/goal-05/screenshots/`. Chrome/Intel UHD diagnostics record reduced draw-call and callback cost for static-camera theme changes and camera gestures. A follow-up removes the synchronous theme render; room-spin frames still refresh their shadows and remain above the 20 ms frame-interval target. Representative mobile hardware and GPU-memory measurements are still unavailable.
+Goal 05 visual review is pending until the user approves the 16 production-browser captures under ignored `Frontend/.artifacts/goal-05/screenshots/`. Chrome/Intel UHD diagnostics record reduced draw-call and callback cost for static-camera theme changes and camera gestures. A follow-up removes the synchronous theme render; room-spin frames still refresh their shadows and remain above the 20 ms frame-interval target. Windows GPU-process memory counters were sampled across actual Intel UHD mount/unmount cycles; representative mobile hardware remains untested.
 
 See [Goal 05 browser diagnostics](goal-05-performance.md) for packaging, lifecycle, headless-browser, and paired desktop measurements. Gate E remains partial because active desktop transitions miss the target and mobile hardware is untested; Gate G remains pending visual approval.
 
@@ -253,10 +253,10 @@ If a gate depends on unavailable hardware/browser, record the exact environment 
 ## Risks and unresolved evidence
 
 - Live Tooplate interaction and device behavior remain unverified; its archived source audit is not a live-browser test.
-- The current captures do not establish a formal art score, representative hardware/browser frame rate, GPU-memory growth, or assistive-technology quality.
-- Four images do not explain prior rejection reasons. The 54 MB source asset package is a packaging/runtime risk to measure, not a demonstrated performance failure.
+- At that Goal 02 checkpoint, the captures did not establish a formal art score, representative hardware/browser frame rate, GPU-memory growth, or assistive-technology quality. Goal 05 later recorded Intel UHD GPU-process memory across 20 desktop mount/unmount cycles; those counters do not isolate Diorama-specific bytes or establish mobile GPU-memory behavior. Assistive-technology quality remains unreviewed.
+- The Goal 02 review images did not explain prior rejection reasons. Goal 05's current production runtime allowlist is 12.2 MB; the earlier 54 MB source asset package was a packaging concern, not a measured runtime failure. See the [Goal 05 browser diagnostics](goal-05-performance.md) for the package comparison.
 - The public repository now contains the unmodified template ZIP at the user's direction for machine migration. The scope of permission for public source-repository distribution remains unverified.
-- Goal 02 adds one preview route and localization strings; it does not change root project behavior, dependencies, persistence, or Editor. Existing homepage tests still cover the raster preview only.
+- At its checkpoint, Goal 02 added a preview route and localization strings without changing the root route, dependencies, persistence, or Editor. Goal 05 retired that route and moved the mode-based Homepage to `/`; its browser check now covers Simple and Diorama workflows, fallback, themes, and lifecycle.
 
 ## Research references
 

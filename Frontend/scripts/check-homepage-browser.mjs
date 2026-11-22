@@ -344,8 +344,11 @@ async function switchHomepageModeInSettings(session, mode) {
 
 async function verifyInPlaceMountUnmountCycles(session) {
   await installFrameTracker(session);
+  await installWebGLResourceTracker(session);
   const observations = [];
+  const resourceTotals = { created: {}, deleted: {}, contextReleased: {} };
   for (let cycle = 1; cycle <= 20; cycle++) {
+    const resourcesBefore = await session.evaluate('window.__goal05GlResources.snapshot()');
     await switchHomepageModeInSettings(session, 'diorama');
     await waitFor(
       session,
@@ -353,35 +356,252 @@ async function verifyInPlaceMountUnmountCycles(session) {
       'ready',
       30_000,
     );
-    const mounted = await session.evaluate(`({
-      canvases: document.querySelectorAll('.diorama-scene-runtime__canvas').length,
-      frames: window.__goal05PendingFrames.size,
-    })`);
+    const mounted = await session.evaluate(`(() => {
+      const canvas = document.querySelector('.diorama-scene-runtime__canvas');
+      window.__goal05GlResources.trackCanvas(canvas);
+      return {
+        canvases: document.querySelectorAll('.diorama-scene-runtime__canvas').length,
+        frames: window.__goal05PendingFrames.size,
+      };
+    })()`);
     await session.evaluate("document.querySelector('.diorama-header__projects')?.click()");
     await waitFor(session, "Boolean(document.querySelector('.project-page--simple-home'))", true);
     await session.evaluate('new Promise(resolve => setTimeout(resolve, 60))');
+    await waitFor(session, 'window.__goal05GlResources.snapshot().contextLostEvents', cycle, 3_000);
     const unmounted = await session.evaluate(`({
       canvases: document.querySelectorAll('.diorama-scene-runtime__canvas').length,
       frames: window.__goal05PendingFrames.size,
+      resources: window.__goal05GlResources.snapshot(),
     })`);
+    const resourceChanges = summarizeResourceChanges(resourcesBefore, unmounted.resources);
     if (
       mounted.canvases !== 1 ||
       mounted.frames !== 0 ||
       unmounted.canvases !== 0 ||
-      unmounted.frames !== 0
+      unmounted.frames !== 0 ||
+      resourceChanges.liveDelta !== 0 ||
+      resourceChanges.contextLossRequests !== 1 ||
+      resourceChanges.contextLostEvents !== 1 ||
+      resourceChanges.unreleased.length > 0
     ) {
       throw new Error(
-        `Diorama lifecycle cycle ${cycle} leaked a canvas or animation frame: ${JSON.stringify({ mounted, unmounted })}.`,
+        `Diorama lifecycle cycle ${cycle} leaked a canvas, animation frame, or WebGL resource: ${JSON.stringify({ mounted, unmounted, resourceChanges })}.`,
       );
+    }
+    for (const [type, count] of Object.entries(resourceChanges.created)) {
+      resourceTotals.created[type] = (resourceTotals.created[type] ?? 0) + count;
+    }
+    for (const [type, count] of Object.entries(resourceChanges.deleted)) {
+      resourceTotals.deleted[type] = (resourceTotals.deleted[type] ?? 0) + count;
+    }
+    for (const [type, count] of Object.entries(resourceChanges.contextReleased)) {
+      resourceTotals.contextReleased[type] = (resourceTotals.contextReleased[type] ?? 0) + count;
     }
     observations.push({
       cycle,
       mountedCanvasCount: mounted.canvases,
       unmountedCanvasCount: unmounted.canvases,
       pendingFrames: unmounted.frames,
+      webglObjectsCreated: resourceChanges.created,
+      webglObjectsDeleted: resourceChanges.deleted,
+      webglObjectsReleasedByContextLoss: resourceChanges.contextReleased,
+      contextLossRequests: resourceChanges.contextLossRequests,
+      contextLostEvents: resourceChanges.contextLostEvents,
+      liveWebglObjectDelta: resourceChanges.liveDelta,
     });
   }
-  return { total: observations.length, passed: observations.length, observations };
+  return {
+    total: observations.length,
+    passed: observations.length,
+    resourceTracking:
+      'WebGL2 create/delete API counts and confirmed context loss; not a GPU-memory measurement',
+    webglObjectsCreated: resourceTotals.created,
+    webglObjectsDeleted: resourceTotals.deleted,
+    webglObjectsReleasedByContextLoss: resourceTotals.contextReleased,
+    contextLossRequests: observations.reduce((total, item) => total + item.contextLossRequests, 0),
+    contextLostEvents: observations.reduce((total, item) => total + item.contextLostEvents, 0),
+    liveWebglObjectsAfterEachUnmount: 0,
+    observations,
+  };
+}
+
+async function installWebGLResourceTracker(session) {
+  await session.evaluate(`(() => {
+    if (window.__goal05GlResources) return;
+    const definitions = [
+      ['createBuffer', 'deleteBuffer', 'buffers'],
+      ['createTexture', 'deleteTexture', 'textures'],
+      ['createFramebuffer', 'deleteFramebuffer', 'framebuffers'],
+      ['createRenderbuffer', 'deleteRenderbuffer', 'renderbuffers'],
+      ['createProgram', 'deleteProgram', 'programs'],
+      ['createShader', 'deleteShader', 'shaders'],
+      ['createVertexArray', 'deleteVertexArray', 'vertexArrays'],
+      ['createSampler', 'deleteSampler', 'samplers'],
+      ['createQuery', 'deleteQuery', 'queries'],
+      ['createTransformFeedback', 'deleteTransformFeedback', 'transformFeedbacks'],
+    ];
+    const prototype = globalThis.WebGL2RenderingContext?.prototype;
+    if (!prototype) throw new Error('WebGL2 resource instrumentation is unavailable.');
+    const contextIds = new WeakMap();
+    const contextStates = [];
+    const created = Object.create(null);
+    const deleted = Object.create(null);
+    const contextReleased = Object.create(null);
+    let instrumentedResourceTypes = 0;
+    let nextContextId = 1;
+    const stateFor = context => {
+      let state = contextIds.get(context);
+      if (!state) {
+        state = {
+          id: nextContextId++,
+          live: new Map(),
+          contextLossRequests: 0,
+          contextLostEvents: 0,
+        };
+        contextIds.set(context, state);
+        contextStates.push(state);
+      }
+      return state;
+    };
+    const markContextLost = state => {
+      state.contextLostEvents++;
+      for (const [type, objects] of state.live) {
+        contextReleased[type] += objects.size;
+        objects.clear();
+      }
+    };
+    for (const [createName, deleteName, type] of definitions) {
+      const createDescriptor = Object.getOwnPropertyDescriptor(prototype, createName);
+      const deleteDescriptor = Object.getOwnPropertyDescriptor(prototype, deleteName);
+      if (typeof createDescriptor?.value !== 'function' || typeof deleteDescriptor?.value !== 'function') {
+        continue;
+      }
+      instrumentedResourceTypes++;
+      created[type] = 0;
+      deleted[type] = 0;
+      contextReleased[type] = 0;
+      Object.defineProperty(prototype, createName, {
+        ...createDescriptor,
+        value: function (...args) {
+          const resource = createDescriptor.value.apply(this, args);
+          const state = stateFor(this);
+          let objects = state.live.get(type);
+          if (!objects) {
+            objects = new Set();
+            state.live.set(type, objects);
+          }
+          if (resource && !objects.has(resource)) {
+            objects.add(resource);
+            created[type]++;
+          }
+          return resource;
+        },
+      });
+      Object.defineProperty(prototype, deleteName, {
+        ...deleteDescriptor,
+        value: function (resource, ...args) {
+          const objects = stateFor(this).live.get(type);
+          if (objects?.delete(resource)) deleted[type]++;
+          return deleteDescriptor.value.call(this, resource, ...args);
+        },
+      });
+    }
+    const extensionDescriptor = Object.getOwnPropertyDescriptor(prototype, 'getExtension');
+    if (typeof extensionDescriptor?.value !== 'function') {
+      throw new Error('WebGL2 extension instrumentation is unavailable.');
+    }
+    const wrappedExtensions = new WeakSet();
+    Object.defineProperty(prototype, 'getExtension', {
+      ...extensionDescriptor,
+      value: function (name) {
+        const extension = extensionDescriptor.value.call(this, name);
+        if (name === 'WEBGL_lose_context' && extension && !wrappedExtensions.has(extension)) {
+          const loseContext = extension.loseContext;
+          if (typeof loseContext !== 'function') {
+            throw new Error('WEBGL_lose_context does not expose loseContext().');
+          }
+          const state = stateFor(this);
+          Object.defineProperty(extension, 'loseContext', {
+            configurable: true,
+            value: function (...args) {
+              state.contextLossRequests++;
+              return loseContext.apply(this, args);
+            },
+          });
+          wrappedExtensions.add(extension);
+        }
+        return extension;
+      },
+    });
+    if (instrumentedResourceTypes === 0) {
+      throw new Error('No WebGL2 resource APIs could be instrumented.');
+    }
+    window.__goal05GlResources = {
+      trackCanvas(canvas) {
+        const context = canvas?.getContext('webgl2');
+        if (!context) throw new Error('The mounted Diorama canvas has no WebGL2 context.');
+        const state = stateFor(context);
+        canvas.addEventListener('webglcontextlost', () => markContextLost(state), { once: true });
+      },
+      snapshot() {
+        const liveCounts = Object.create(null);
+        let contextLossRequests = 0;
+        let contextLostEvents = 0;
+        for (const state of contextStates) {
+          contextLossRequests += state.contextLossRequests;
+          contextLostEvents += state.contextLostEvents;
+          for (const [type, objects] of state.live) {
+            liveCounts[type] = (liveCounts[type] ?? 0) + objects.size;
+          }
+        }
+        return {
+          created: { ...created },
+          deleted: { ...deleted },
+          contextReleased: { ...contextReleased },
+          live: liveCounts,
+          liveTotal: Object.values(liveCounts).reduce((total, count) => total + count, 0),
+          contextLossRequests,
+          contextLostEvents,
+        };
+      },
+    };
+  })()`);
+}
+
+function summarizeResourceChanges(before, after) {
+  const types = new Set([...Object.keys(before.created), ...Object.keys(after.created)]);
+  const created = {};
+  const deleted = {};
+  const contextReleased = {};
+  const unreleased = [];
+  for (const type of types) {
+    const createdCount = (after.created[type] ?? 0) - (before.created[type] ?? 0);
+    const deletedCount = (after.deleted[type] ?? 0) - (before.deleted[type] ?? 0);
+    const releasedCount = (after.contextReleased[type] ?? 0) - (before.contextReleased[type] ?? 0);
+    const liveDelta = (after.live[type] ?? 0) - (before.live[type] ?? 0);
+    created[type] = createdCount;
+    deleted[type] = deletedCount;
+    contextReleased[type] = releasedCount;
+    const unmatchedCount = createdCount - deletedCount - releasedCount;
+    if (unmatchedCount !== 0 || liveDelta !== 0) {
+      unreleased.push({
+        type,
+        created: createdCount,
+        deleted: deletedCount,
+        contextReleased: releasedCount,
+        liveDelta,
+      });
+    }
+  }
+  return {
+    created,
+    deleted,
+    contextReleased,
+    liveDelta: after.liveTotal - before.liveTotal,
+    contextLossRequests: after.contextLossRequests - before.contextLossRequests,
+    contextLostEvents: after.contextLostEvents - before.contextLostEvents,
+    unreleased,
+  };
 }
 
 async function installFrameTracker(session) {

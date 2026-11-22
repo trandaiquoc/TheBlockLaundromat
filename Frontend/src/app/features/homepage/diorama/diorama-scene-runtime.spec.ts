@@ -308,6 +308,7 @@ function createRenderer(): WebGLRenderer {
     setSize: vi.fn(),
     render: vi.fn(),
     dispose: vi.fn(),
+    forceContextLoss: vi.fn(),
   } as unknown as WebGLRenderer;
 }
 

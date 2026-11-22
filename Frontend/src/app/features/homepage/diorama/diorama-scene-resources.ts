@@ -13,6 +13,7 @@ export class DioramaSceneResources {
   trackRenderer(renderer: WebGLRenderer): void {
     if (this.disposed) {
       renderer.dispose();
+      renderer.forceContextLoss();
       renderer.domElement.remove();
       return;
     }
@@ -34,9 +35,11 @@ export class DioramaSceneResources {
     if (this.sceneRoot) disposeDioramaResources(this.sceneRoot, this.sceneMaterials);
     this.sceneRoot = undefined;
     this.sceneMaterials = [];
-    this.renderer?.dispose();
-    this.renderer?.domElement.remove();
+    const renderer = this.renderer;
     this.renderer = undefined;
+    renderer?.dispose();
+    renderer?.forceContextLoss();
+    renderer?.domElement.remove();
   }
 }
 
@@ -51,9 +54,14 @@ export function disposeDioramaResources(
   const geometries = new Set<THREE.BufferGeometry>();
   const materials = new Set<THREE.Material>(additionalMaterials);
   const textures = new Set<THREE.Texture>(additionalTextures);
+  const shadows = new Set<DisposableShadowResource>();
   const imageBitmaps = new Set<ClosableImageBitmap>();
 
   root.traverse((object) => {
+    if ('shadow' in object && isDisposableShadowResource(object.shadow)) {
+      shadows.add(object.shadow);
+    }
+
     const mesh = object as THREE.Mesh;
     if (!mesh.isMesh) return;
     geometries.add(mesh.geometry);
@@ -78,6 +86,7 @@ export function disposeDioramaResources(
     }
   }
 
+  for (const shadow of shadows) shadow.dispose();
   for (const texture of textures) {
     for (const image of textureImages(texture.image)) {
       if (isClosableImageBitmap(image)) imageBitmaps.add(image);
@@ -88,6 +97,19 @@ export function disposeDioramaResources(
   for (const material of materials) material.dispose();
   for (const geometry of geometries) geometry.dispose();
   root.clear();
+}
+
+interface DisposableShadowResource {
+  dispose(): void;
+}
+
+function isDisposableShadowResource(value: unknown): value is DisposableShadowResource {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'dispose' in value &&
+    typeof value.dispose === 'function'
+  );
 }
 
 function isTexture(value: unknown): value is THREE.Texture {

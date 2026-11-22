@@ -9,7 +9,8 @@ for camera gestures and theme changes. A follow-up removes the extra synchronous
 theme render and avoids rebuilding a shadow map when the material variants do
 not change caster silhouettes. The 60-second desktop idle check passed. Active
 frame-interval p95 still exceeds the 20 ms desktop target, and mid-range mobile
-hardware and GPU-memory growth remain unmeasured.
+hardware remains unmeasured. A Windows GPU-process memory-counter follow-up over
+20 actual desktop mount/unmount cycles is recorded below.
 
 ## Environment and measurements
 
@@ -19,16 +20,20 @@ and should not be compared to hardware GPU timing.
 
 | Check                              | Observed result                                                                                |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Scene ready from navigation start  | 2,601 ms                                                                                       |
-| Room GLB                           | 10,660,804 transferred bytes; 10,660,504 decoded bytes; 96 ms reported resource duration       |
-| Forest-floor texture               | 1,552,232 transferred bytes; 1,551,932 decoded bytes; 14 ms reported resource duration         |
-| JS heap at scene ready             | 47,481,069 bytes (about 45.3 MiB)                                                              |
+| Scene ready from navigation start  | 2,805 ms                                                                                       |
+| Room GLB                           | 10,660,804 transferred bytes; 10,660,504 decoded bytes; 122 ms reported resource duration      |
+| Forest-floor texture               | 1,552,232 transferred bytes; 1,551,932 decoded bytes; 13 ms reported resource duration         |
+| JS heap at scene ready             | 49,554,617 bytes (about 47.3 MiB)                                                              |
 | One-second idle interval           | 0 draw calls; 0 pending animation frames; 0 observed long-task milliseconds                    |
-| JS heap after idle interval        | 47,498,450 bytes, 17,381 bytes above scene-ready reading                                       |
-| Theme switch (`craft` → `raccoon`) | Applied the `Raccoon` material variant; 4,845 draw calls; 0 buffer creates; 39 texture creates |
-| Theme-switch frame intervals       | 4 samples; median 83.3 ms, p95 701.4 ms; unstable SwiftShader diagnostic                       |
-| Camera gesture samples             | Orbit 3,891 draw calls, pan 1,948, zoom 974; each observed for 650 ms                          |
-| Mode mount/unmount cycles          | 20/20 passed; mounted canvas count 1, unmounted canvas count 0, pending frames 0 each cycle    |
+| JS heap after idle interval        | 49,571,998 bytes, 17,381 bytes above scene-ready reading                                       |
+| Theme switch (`craft` → `raccoon`) | Applied the `Raccoon` material variant; 3,876 draw calls; 0 buffer creates; 39 texture creates |
+| Theme-switch frame intervals       | 3 samples; median 201.5 ms, p95 756.9 ms; unstable SwiftShader diagnostic                      |
+| Camera gesture samples             | Orbit 2,435 draw calls, pan 1,948, zoom 974; each observed for 650 ms                          |
+| Mode mount/unmount cycles          | 20/20 passed; zero canvases, pending frames, or live tracked WebGL objects after each unmount  |
+
+An earlier headless run reported 2,601 ms scene-ready time and 47,481,069 bytes
+of JS heap. These single-run SwiftShader values vary and are not hardware or
+GPU-memory measurements.
 
 Draw-call counts are WebGL calls, not frame counts. The PerformanceObserver only
 reports long tasks of at least 50 ms, so zero observed milliseconds is not proof
@@ -59,6 +64,29 @@ cadence varied during the run, and the zoom runs did not produce the same number
 frames; draw calls per rendered frame and pointer-event samples provide the more
 direct paired comparison. These results establish a desktop diagnostic, not a
 mobile result or a GPU-memory measurement.
+
+## Hardware GPU process-memory follow-up
+
+Windows `GPU Process Memory` counters were sampled for the Chrome GPU process
+while Chrome 157 rendered on Intel UHD Graphics through ANGLE/Direct3D 11 at
+1280×720, DPR 1. The browser document remained visible. Counters are process and
+adapter totals; they include Chromium and driver allocations and do not isolate
+the Diorama renderer's exact bytes.
+
+| State                                               | Samples | Total Committed MiB (p50 / p95 / max) | Local / Shared Usage MiB (p50) |
+| --------------------------------------------------- | ------: | ------------------------------------: | -----------------------------: |
+| Diorama ready                                       |       5 |              138.59 / 138.59 / 138.59 |                125.82 / 125.82 |
+| Two seconds after first unmount                     |       5 |                 36.39 / 36.39 / 36.39 |                  28.71 / 35.38 |
+| During a later 10-cycle batch                       |      45 |               64.50 / 167.19 / 178.39 |                  61.57 / 61.57 |
+| Thirty seconds after the last unmount in that batch |      30 |                 37.82 / 43.84 / 43.84 |                  34.90 / 34.90 |
+
+The scene-ready to post-unmount difference was about 102 MiB in this GPU
+process. The page completed 20 hardware mount/unmount cycles in two 10-cycle
+batches; each observed mount reached `ready` with one canvas and each return to
+Simple left zero canvases. The later 30-second idle window returned close to the
+first post-unmount reading, with no continuing increase observed. This supports
+the context-disposal result but is not a per-scene allocation measurement or a
+mobile result.
 
 ## Theme scheduling follow-up
 
@@ -107,12 +135,31 @@ reported zero draw calls, zero RAF callbacks, zero pending frames, zero long-tas
 milliseconds, and no WebGL buffer or texture creates/deletes. JS heap changed from
 65,932,300 to 65,941,456 bytes (+9,156 bytes); this is not a GPU-memory reading.
 
-The browser harness was rerun on the optimized build: 16 captures were regenerated,
-20/20 in-place mount/unmount cycles left one canvas while mounted and zero after
-unmount, with zero pending frames each time. The WebGL fallback remained usable,
-and its one-second idle check also reported zero draw calls and zero pending
-frames. Representative mid-range mobile hardware and user approval of those
-captures remain open.
+## WebGL resource lifecycle follow-up
+
+API-level resource instrumentation found that 20 unmounts removed the canvas and
+stopped animation frames but left renderer-owned WebGL handles without matching
+delete calls. Scene cleanup now disposes shadow resources exposed by scene nodes,
+disposes the renderer, and requests context loss to release remaining context-owned
+allocations. The `LightShadow` render target is now disposed with the scene;
+context loss releases internal renderer resources for which Three.js does not
+issue individual delete calls.
+
+The production browser check completed 20/20 cycles. Each mount created 2,216
+buffers, 74 textures, 4 framebuffers, 10 programs, 20 shaders, and 969 vertex
+arrays. Each teardown explicitly deleted all buffers, shaders, and vertex arrays,
+plus 67 textures, 1 framebuffer, and 7 programs. The confirmed context-loss event
+released the remaining 7 textures, 3 framebuffers, and 3 programs. Every cycle
+ended with zero live tracked WebGL objects, zero canvases, and zero pending frames.
+This headless API-level check is separate from the Windows hardware-counter
+measurements above; it does not measure GPU-memory bytes or mobile-device
+behavior.
+
+The latest browser run regenerated 16 captures. WebGL fallback remained usable,
+and its one-second idle check reported zero draw calls and zero pending frames.
+Representative mid-range mobile hardware, exact Diorama-attributable GPU-memory
+measurements, and user approval of the captures remain open. Windows GPU-process
+memory counters were measured on desktop, but include Chromium and driver use.
 
 ## Packaging comparison
 
