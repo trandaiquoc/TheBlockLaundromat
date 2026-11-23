@@ -298,21 +298,6 @@ export class ProjectScreenComponent {
       ? this.i18n.t('verifiedSupport')
       : this.i18n.t('resourceCompatibility');
   }
-  protected summaryModeFullLabel(mode: StructureMode): string {
-    return this.i18n.t(
-      mode === 'huge-structure-blocks' ? 'hugeStructureBlocks' : 'vanillaStructureBlock',
-    );
-  }
-  protected summarySizeLabel(project: ProjectSummary): string {
-    return `${project.size.x} × ${project.size.y} × ${project.size.z}`;
-  }
-  protected summarySizeBadgeAriaLabel(project: ProjectSummary): string {
-    return this.i18n
-      .t('recentProjectSizeBadgeAria')
-      .replace('{mode}', this.summaryModeFullLabel(project.structureMode))
-      .replace('{size}', this.summarySizeLabel(project));
-  }
-
   protected async createProject(): Promise<void> {
     await this.workflow.createProject({
       name: this.name(),

@@ -4,7 +4,7 @@
 
 The root route `/` is the only Homepage route. `HomepageComponent` persists the selected mode and lazy-loads `DioramaHomeComponent` or `ProjectScreenComponent`. Fresh, mode-less, invalid-mode, and migrated preferences default to Diorama. A valid explicit Simple choice is preserved. Migration preserves theme, language, editor preferences, project data, and other settings without clearing localStorage or IndexedDB.
 
-Simple remains the owner of project creation, opening, search, sorting, deletion, Structure JSON import, backup export, package restore, and their existing persistence. The redesign keeps those workflows and presents a larger brand logo with one functional Projects heading, responsive themed controls, and localized empty states.
+Simple remains the owner of project creation, opening, search, sorting, deletion, Structure JSON import, backup export, package restore, and their existing persistence. Recent project rows show named Open, Download, and Delete actions without the structure-size badge. The redesign keeps those workflows and presents a larger brand logo with one functional Projects heading, responsive themed controls, and localized empty states.
 
 Simple and Diorama use one shared account menu for identity, homepage appearance selection, Settings, and guest/logout. Selecting Simple or Diorama applies and saves the preference immediately. The menu contains no language selector. Settings owns EN/VI under General; it no longer owns Homepage appearance. Diorama has no duplicate Projects navigation button. WebGL fallback keeps the shared menu available.
 

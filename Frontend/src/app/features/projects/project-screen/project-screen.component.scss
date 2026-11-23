@@ -374,7 +374,7 @@
   width: 100%;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  align-items: stretch;
+  align-items: center;
   gap: 0.35rem;
   margin-bottom: 0.55rem;
   border-radius: var(--radius-sm);
@@ -443,23 +443,6 @@
   color: inherit;
   font-size: inherit;
 }
-.project-size-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.4rem;
-  padding: 0.12rem 0.45rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--success) 17%, var(--surface-raised));
-  color: var(--success);
-  font-size: 0.7rem;
-  font-weight: 750;
-  letter-spacing: 0.01em;
-  font-variant-numeric: tabular-nums;
-}
-.project-size-badge--huge {
-  background: color-mix(in srgb, var(--info) 20%, var(--surface-raised));
-  color: var(--info);
-}
 .project-updated {
   color: var(--text-muted);
 }
@@ -474,8 +457,7 @@
 .project-row.opening .project-row-cta {
   color: inherit;
 }
-.project-delete-action,
-.project-backup-action {
+.project-delete-action {
   display: grid;
   place-items: center;
   width: var(--control-md);
@@ -490,8 +472,13 @@
   cursor: pointer;
 }
 .project-backup-action {
-  margin-right: 0;
+  gap: 0.35rem;
+  margin: 0.2rem 0;
+  padding: 0 0.65rem;
   color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
 }
 .project-backup-action:hover:not(:disabled),
 .project-backup-action:focus-visible {
@@ -501,6 +488,7 @@
 .project-backup-action svg {
   width: 1rem;
   height: 1rem;
+  flex: 0 0 auto;
 }
 .project-delete-action svg {
   width: 1rem;
@@ -791,12 +779,22 @@
   }
 }
 @media (max-width: 390px) {
+  .project-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 0;
+  }
   .project-open-action {
-    grid-template-columns: 1fr;
-    gap: 0.4rem;
+    grid-column: 1 / -1;
     padding-left: 0.75rem;
   }
+  .project-backup-action {
+    grid-column: 1 / 2;
+    justify-self: end;
+  }
+  .project-delete-action {
+    grid-column: 2 / 3;
+  }
   .project-row-cta {
-    justify-self: start;
+    justify-self: end;
   }
 }

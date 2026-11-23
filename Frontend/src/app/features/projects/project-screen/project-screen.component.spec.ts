@@ -49,6 +49,15 @@ describe('ProjectScreenComponent', () => {
     expect(template).toContain("i18n.t('deleteProjectAriaLabel')");
   });
 
+  it('shows a named download action without the out-of-scope size badge', () => {
+    const template = String(readFileSync(templatePath, 'utf8'));
+
+    expect(template).toContain('class="project-backup-action ui-button ui-button--secondary"');
+    expect(template).toContain("i18n.t('projectDownload')");
+    expect(template).not.toContain('project-size-badge');
+    expect(template).not.toContain('summarySizeBadgeAriaLabel');
+  });
+
   it('filters and sorts recent projects in the traditional list', async () => {
     const projects: readonly ProjectSummary[] = [
       summary('cabin', 'Lakeside Cabin', '2026-10-16T10:00:00.000Z'),
@@ -111,6 +120,8 @@ describe('ProjectScreenComponent', () => {
         (element) => element.textContent?.trim() ?? '',
       );
     expect(names()).toEqual(['Lakeside Cabin', 'Garden Study', 'Tower 2']);
+    expect(root.querySelector('.project-backup-action')?.textContent).toContain('Download');
+    expect(root.querySelector('.project-size-badge')).toBeNull();
 
     const search = root.querySelector('.project-search-field input') as HTMLInputElement;
     search.value = 'cabin';
