@@ -1,5 +1,5 @@
 import { MathUtils, Raycaster, Vector2 } from 'three';
-import type { Camera, Object3D } from 'three';
+import type { Camera, Material, Mesh, Object3D } from 'three';
 import { intentForSceneTarget, type DioramaIntent, type DioramaTarget } from './diorama-contracts';
 
 interface InteractionRoot {
@@ -53,6 +53,8 @@ export class DioramaInteractionController {
   private readonly raycaster = new Raycaster();
   private readonly pointer = new Vector2();
   private readonly targetByRoot: ReadonlyMap<Object3D, DioramaTarget>;
+  private readonly raycastObjects: Object3D[];
+  private readonly raycastRecursively: boolean;
   private readonly pointers = new Map<number, PointerContact>();
   private press?: PointerPress;
   private pinchDistance?: number;
@@ -229,8 +231,13 @@ export class DioramaInteractionController {
     private readonly callbacks: DioramaInteractionCallbacks,
     private readonly cameraGesturesEnabled: boolean | (() => boolean) = true,
     private readonly timeSwipeEnabled: boolean | (() => boolean) = true,
+    raycastRoot?: Object3D,
   ) {
     this.targetByRoot = new Map(roots.map(({ object, target }) => [object, target]));
+    this.raycastObjects = raycastRoot
+      ? visiblePickMeshes(raycastRoot)
+      : [...this.targetByRoot.keys()];
+    this.raycastRecursively = !raycastRoot;
     this.originalTouchAction = canvas.style.touchAction;
     this.cameraGestureListenersAttached = this.cameraGesturesAllowed();
     if (this.cameraGestureListenersAttached) canvas.style.touchAction = 'none';
@@ -339,7 +346,10 @@ export class DioramaInteractionController {
       -((clientY - bounds.top) / bounds.height) * 2 + 1,
     );
     this.raycaster.setFromCamera(this.pointer, this.camera);
-    const intersection = this.raycaster.intersectObjects([...this.targetByRoot.keys()], true)[0];
+    const intersection = this.raycaster.intersectObjects(
+      this.raycastObjects,
+      this.raycastRecursively,
+    )[0];
     let object: Object3D | undefined = intersection?.object;
     while (object) {
       const target = this.targetByRoot.get(object);
@@ -348,6 +358,26 @@ export class DioramaInteractionController {
     }
     return undefined;
   }
+}
+
+function visiblePickMeshes(root: Object3D): Mesh[] {
+  const meshes: Mesh[] = [];
+  const visit = (object: Object3D, parentVisible: boolean): void => {
+    const visible = parentVisible && object.visible;
+    if (!visible) return;
+    if ('isMesh' in object && object.isMesh === true) {
+      const mesh = object as Mesh;
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      if (materials.some(materialBlocksPointer)) meshes.push(mesh);
+    }
+    for (const child of object.children) visit(child, visible);
+  };
+  visit(root, true);
+  return meshes;
+}
+
+function materialBlocksPointer(material: Material): boolean {
+  return material.visible && material.opacity > 0 && (!material.transparent || material.depthWrite);
 }
 
 function pointerContact(event: PointerEvent): PointerContact {

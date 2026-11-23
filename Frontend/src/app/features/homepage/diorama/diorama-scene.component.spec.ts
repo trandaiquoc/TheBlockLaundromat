@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
 import { ThemeService } from '../../../core/ui/theme/theme.service';
+import type { DioramaIntent } from './diorama-contracts';
 import { DioramaSceneRuntime } from './diorama-scene-runtime';
 import { DioramaSceneComponent } from './diorama-scene.component';
 
@@ -53,6 +54,39 @@ describe('DioramaSceneComponent', () => {
 
     expect(setTheme).toHaveBeenCalledWith('raccoon');
     expect(setSceneAnimationsEnabled).toHaveBeenCalledWith(false);
+    fixture.destroy();
+  });
+
+  it('opens the Courier project flow for a scene click without changing toolbar-only focus', async () => {
+    vi.spyOn(DioramaSceneRuntime.prototype, 'mount').mockReturnValue(true);
+    vi.spyOn(DioramaSceneRuntime.prototype, 'greetRaccoon').mockImplementation(() => undefined);
+    vi.spyOn(DioramaSceneRuntime.prototype, 'dispose').mockImplementation(() => undefined);
+
+    const fixture = TestBed.createComponent(DioramaSceneComponent);
+    fixture.componentRef.setInput('timeTransition', {
+      id: 0,
+      phase: 'idle',
+      progress: 0,
+      targetProgress: 0,
+      source: 'theme',
+    });
+    fixture.componentRef.setInput('timeProgress', 0);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const activation = vi.fn();
+    fixture.componentInstance.courierActivated.subscribe(activation);
+
+    const scene = fixture.componentInstance as unknown as {
+      handleSceneIntent(intent: DioramaIntent): void;
+    };
+    scene.handleSceneIntent({ type: 'greet-raccoon' });
+    expect(activation).toHaveBeenCalledOnce();
+
+    const toolbar = fixture.componentInstance as unknown as {
+      handleFocusAction(action: 'raccoon'): void;
+    };
+    toolbar.handleFocusAction('raccoon');
+    expect(activation).toHaveBeenCalledOnce();
     fixture.destroy();
   });
 });

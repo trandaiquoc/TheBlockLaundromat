@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
+import type { ProjectSummary } from '../../core/persistence/project-store/project-store.port';
 import {
   filterAndSortProjectSummaries,
-  isProjectScreenProjectOrder,
-} from './project-screen-project-list';
+  isProjectOrder,
+} from './project-list';
 
 const projects: readonly ProjectSummary[] = [
   {
@@ -66,9 +66,9 @@ describe('Project Screen project list', () => {
   });
 
   it('accepts only supported sort values from the native select', () => {
-    expect(isProjectScreenProjectOrder('newest')).toBe(true);
-    expect(isProjectScreenProjectOrder('oldest')).toBe(true);
-    expect(isProjectScreenProjectOrder('name')).toBe(true);
-    expect(isProjectScreenProjectOrder('random')).toBe(false);
+    expect(isProjectOrder('newest')).toBe(true);
+    expect(isProjectOrder('oldest')).toBe(true);
+    expect(isProjectOrder('name')).toBe(true);
+    expect(isProjectOrder('random')).toBe(false);
   });
 });

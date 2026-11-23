@@ -18,6 +18,7 @@ import { ThemeService } from '../../../core/ui/theme/theme.service';
 import type { DioramaIntent, DioramaTarget } from './diorama-contracts';
 import { intentForSceneTarget } from './diorama-contracts';
 import { DioramaSceneRuntime } from './diorama-scene-runtime';
+import { DioramaProjectProjectionBridge } from './diorama-project-projection-bridge';
 import type { DioramaTimeDialChange } from './diorama-time-dial.component';
 import type { DioramaTimeAnimationUpdate, DioramaTimeTransition } from './diorama-time-transition';
 import {
@@ -44,6 +45,7 @@ export class DioramaSceneComponent {
   readonly timeProgress = input.required<number>();
   readonly timeChanged = output<DioramaTimeDialChange>();
   readonly timeAnimationUpdate = output<DioramaTimeAnimationUpdate>();
+  readonly courierActivated = output<void>();
 
   protected readonly i18n = inject(I18nService);
   protected readonly state = signal<DioramaState>('loading');
@@ -55,6 +57,7 @@ export class DioramaSceneComponent {
   private readonly themeService = inject(ThemeService);
   private readonly preferences = inject(UiPreferencesService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly projectProjection = inject(DioramaProjectProjectionBridge, { optional: true });
   private readonly sceneHost = viewChild<ElementRef<HTMLElement>>('sceneHost');
   private runtime?: DioramaSceneRuntime;
   private destroyed = false;
@@ -79,6 +82,7 @@ export class DioramaSceneComponent {
     });
     this.destroyRef.onDestroy(() => {
       this.destroyed = true;
+      this.projectProjection?.clear();
       this.runtime?.dispose();
       this.runtime = undefined;
     });
@@ -88,6 +92,10 @@ export class DioramaSceneComponent {
     if (action === 'overview') this.focusOverview();
     else if (action === 'raccoon') this.greetRaccoon();
     else this.focusTarget(action);
+  }
+
+  focusOverviewFromWorkspace(): void {
+    this.focusOverview();
   }
 
   private focusOverview(): void {
@@ -101,7 +109,7 @@ export class DioramaSceneComponent {
   }
 
   private greetRaccoon(): void {
-    this.handleSceneIntent({ type: 'greet-raccoon' });
+    this.showRaccoonGreeting();
   }
 
   private mountScene(): void {
@@ -117,7 +125,9 @@ export class DioramaSceneComponent {
       onTimeChange: (change) => this.timeChanged.emit(change),
       onTimeAnimationUpdate: (update) => this.timeAnimationUpdate.emit(update),
       currentTimeProgress: () => this.timeProgress(),
+      onProjectProjection: (projection) => this.projectProjection?.publish(projection),
       onWebGLUnavailable: (error) => {
+        this.projectProjection?.clear();
         this.fallbackMessageKey.set('dioramaWebGLUnavailable');
         if (error) console.error('Diorama could not initialize WebGL 2.', error);
         this.state.set('fallback');
@@ -125,6 +135,7 @@ export class DioramaSceneComponent {
       },
       onSceneLoaded: () => this.state.set('ready'),
       onSceneLoadFailed: (error) => {
+        this.projectProjection?.clear();
         console.error('Diorama scene could not be loaded.', error);
         this.fallbackMessageKey.set('dioramaSceneLoadUnavailable');
         this.state.set('fallback');
@@ -147,13 +158,18 @@ export class DioramaSceneComponent {
 
   private handleSceneIntent(intent: DioramaIntent): void {
     if (intent.type === 'greet-raccoon') {
-      this.runtime?.greetRaccoon();
-      this.selectedTarget.set('raccoon');
-      this.sceneMessageKey.set('dioramaGreeting');
+      this.showRaccoonGreeting();
+      this.courierActivated.emit();
       return;
     }
     this.runtime?.focus(intent.target);
     this.selectedTarget.set(intent.target);
     this.sceneMessageKey.set(focusMessageKeys[intent.target]);
+  }
+
+  private showRaccoonGreeting(): void {
+    this.runtime?.greetRaccoon();
+    this.selectedTarget.set('raccoon');
+    this.sceneMessageKey.set('dioramaGreeting');
   }
 }

@@ -18,4 +18,8 @@ export class ProjectPreviewService {
     if (saved) this.updateSubject.next({ projectId, updatedAt });
     return saved;
   }
+
+  openPreview(projectId: string, expectedUpdatedAt: string): Promise<Blob | undefined> {
+    return this.store.openPreview(projectId, expectedUpdatedAt);
+  }
 }

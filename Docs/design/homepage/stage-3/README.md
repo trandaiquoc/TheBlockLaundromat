@@ -19,18 +19,21 @@ runtime contract.
 | 322 `.blend` sources and 322 `.glb` exports                                                    | `Frontend/source-assets/homepage/models/`                                        | Editable production source and loose/exported modules                                     |
 | `Room/Octagonal-Laundromat.glb`                                                                | `Frontend/source-assets/homepage/models/Room/` and the Angular runtime allowlist | The assembled scene used by the root Diorama mode                                           |
 
-The archive paths remain intact below their respective storage roots. Catalog
-paths such as `Parts/index.json` are relative to
+The inventory preserves the supplied archive paths and original destinations;
+intentionally retired source files are called out below. Catalog paths such as
+`Parts/index.json` are relative to
 `Frontend/source-assets/homepage/models/`; their transforms use Blender's
 Z-up coordinates and row-major matrices. The complete assembled scene is
 glTF Y-up. Its two characters are already included in the room GLB, which has
 four `KHR_materials_variants` and no animation clips.
 
-Angular copies only the assembled room GLB and the forest-floor texture into
-`assets/homepage/diorama/`. Loose exports, Blender files, renders, catalogs,
-and specifications stay out of the production bundle. The archived alternate
-washer sources remain preserved for Blender/source use; the assembled room
-already contains the washer, so the runtime does not load a second washer GLB.
+Angular copies the assembled room GLB, the replacement washer GLB, and the
+forest-floor texture into `assets/homepage/diorama/`. Loose exports, Blender
+files, renders, catalogs, and specifications stay out of the production
+bundle. The original standalone washer model (`Props/Washer/Washer.blend` and
+`.glb`) was removed after its replacement was integrated. The inventory retains
+its original hashes as historical archive evidence. The runtime removes the
+washer embedded in the room GLB and attaches the replacement washer GLB.
 
 The supplied pack contains no license or provenance notice. Its authorship,
 redistribution rights, and attribution requirements remain unverified.

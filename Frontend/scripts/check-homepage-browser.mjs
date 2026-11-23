@@ -8,7 +8,7 @@ import { findBrowser, startHeadlessBrowser } from './headless-browser-session.mj
 
 const frontend = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const webRoot = resolve(frontend, 'dist/TheBlockLaundromat/browser');
-const artifacts = resolve(frontend, '.artifacts/goal-06');
+const artifacts = resolve(frontend, '.artifacts/goal-07');
 const screenshots = join(artifacts, 'screenshots');
 const traces = join(artifacts, 'traces');
 const profileDirectory = join(artifacts, 'profiles');
@@ -52,7 +52,12 @@ try {
     canvasCount: document.querySelectorAll('.diorama-scene-runtime__canvas').length,
     sceneReadyMs: performance.now(),
     assets: performance.getEntriesByType('resource')
-      .filter(entry => /Octagonal-Laundromat\.glb|forest-floor\.png$/.test(new URL(entry.name).pathname))
+      .filter(entry => {
+        const path = new URL(entry.name).pathname;
+        return path.endsWith('/Octagonal-Laundromat.glb') ||
+          path.includes('/washer-alternate/Washer.glb') ||
+          path.endsWith('/forest-floor.png');
+      })
       .map(entry => ({
         path: new URL(entry.name).pathname,
         transferBytes: entry.transferSize,
@@ -66,7 +71,7 @@ try {
     initialState.mode !== 'diorama' ||
     initialState.version !== 2 ||
     initialState.canvasCount !== 1 ||
-    initialState.assets.length !== 2
+    initialState.assets.length !== 3
   ) {
     throw new Error(`New-user Diorama startup failed: ${JSON.stringify(initialState)}.`);
   }
@@ -113,6 +118,8 @@ try {
     "document.querySelector('[data-scene-state]')?.dataset.sceneState",
     'ready',
   );
+  await createDioramaSampleProjects(primarySession);
+  const projectWorkspaceCaptures = await captureProjectWorkspaceScreenshots(primarySession);
   await switchHomepageMode(primarySession, 'simple');
   const cycles = await verifyInPlaceMountUnmountCycles(primarySession);
 
@@ -164,12 +171,14 @@ try {
       dioramaCaptures.length +
       dioramaAccountCaptures.length +
       simpleCaptures.length +
-      accountCaptures.length,
+      accountCaptures.length +
+      projectWorkspaceCaptures.length,
     screenshots: [
       ...dioramaCaptures,
       ...dioramaAccountCaptures,
       ...simpleCaptures,
       ...accountCaptures,
+      ...projectWorkspaceCaptures,
     ],
   };
   await writeFile(
@@ -177,7 +186,7 @@ try {
     `${JSON.stringify(report, null, 2)}\n`,
   );
   const visualReviewIndex = [
-    '# Goal 06 visual review',
+    '# Goal 07 visual review',
     '',
     'Review is pending; these captures do not imply Gate G approval.',
     '',
@@ -237,7 +246,7 @@ async function verifyLegacyPreferenceMigration(origin) {
     modeLessResult.version !== 2 ||
     !modeLessResult.dioramaMounted ||
     modeLessResult.simpleMounted ||
-    modeLessResult.sceneRequests.length !== 2
+    modeLessResult.sceneRequests.length !== 3
   ) {
     throw new Error(
       `Mode-less legacy preferences did not migrate to Diorama: ${JSON.stringify(modeLessResult)}.`,
@@ -419,6 +428,362 @@ async function captureAccountScreenshots(session) {
     }
   }
   return captured;
+}
+
+async function createDioramaSampleProjects(session) {
+  const names = [
+    'Project Note 01',
+    'Project Note 02',
+    'Project Note 03',
+    'Project Note 04',
+    'An Extraordinarily Long Laundry Structure',
+  ];
+  for (const name of names) {
+    await session.evaluate('document.querySelector(\'[data-focus-target="raccoon"]\')?.click()');
+    await waitFor(
+      session,
+      "document.querySelector('.diorama-project-workspace__courier-note')?.hidden === false",
+      true,
+    );
+    await session.evaluate(
+      "document.querySelector('.diorama-project-workspace__courier-note')?.click()",
+    );
+    await waitFor(
+      session,
+      "Boolean(document.querySelector('.diorama-project-workspace__create-dialog'))",
+      true,
+    );
+    const serializedName = JSON.stringify(name);
+    await session.evaluate(`(() => {
+      const input = document.querySelector('.diorama-project-workspace__create-form input:not([type="number"])');
+      if (!input) throw new Error('Diorama project name input is missing.');
+      input.value = ${serializedName};
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      document.querySelector('.diorama-project-workspace__create-form button[type="submit"]')?.click();
+    })()`);
+    await waitFor(session, 'location.pathname', '/editor', 30_000);
+    await session.evaluate('new Promise(resolve => setTimeout(resolve, 450))');
+    await session.evaluate(
+      "document.querySelector('.app-menus .menu-entry > .app-menu-trigger')?.click()",
+    );
+    await waitFor(session, 'Boolean(document.querySelector(\'.menu-popover[role="menu"]\'))', true);
+    await session.evaluate(`(() => {
+      const projects = document.querySelector(
+        '.menu-entry .menu-popover[role="menu"] [role="menuitem"]',
+      );
+      if (!projects) throw new Error('The editor Projects command is missing.');
+      projects.click();
+    })()`);
+    await waitFor(
+      session,
+      `location.pathname === '/' || Boolean(document.querySelector('.ui-alert-dialog'))`,
+      true,
+      10_000,
+    );
+    const leavePrompt = await session.evaluate(`(() => ({
+      pathname: location.pathname,
+      title: document.querySelector('.ui-alert-dialog h2')?.textContent?.trim() ?? '',
+    }))()`);
+    if (leavePrompt.pathname !== '/') {
+      if (
+        !/unsaved changes|thay đổi chưa lưu|assets are still being prepared|tài nguyên vẫn đang được chuẩn bị/i.test(
+          leavePrompt.title,
+        )
+      ) {
+        throw new Error(`Unexpected Editor leave prompt: ${JSON.stringify(leavePrompt)}.`);
+      }
+      await session.evaluate(
+        "document.querySelector('.ui-alert-dialog__actions button:last-child')?.click()",
+      );
+    }
+    await waitFor(session, 'location.pathname', '/', 30_000);
+    await waitFor(
+      session,
+      "document.querySelector('[data-scene-state]')?.dataset.sceneState",
+      'ready',
+      30_000,
+    );
+  }
+}
+
+async function captureProjectWorkspaceScreenshots(session) {
+  const captured = [];
+  for (const theme of themes) {
+    await setDioramaTheme(session, theme);
+    for (const viewport of viewports) {
+      await assertViewport(session, viewport);
+      await focusDioramaTarget(session, 'project-board');
+      const boardState = await session.evaluate(`(() => ({
+        visible: document.querySelector('.diorama-project-workspace__board')?.hidden === false,
+        projectiveTransform: document.querySelector('.diorama-project-workspace__board')?.style.transform.startsWith('matrix3d('),
+        notes: document.querySelectorAll('.project-note').length,
+        noteColors: new Set(Array.from(document.querySelectorAll('.project-note'), note => note.getAttribute('data-note-color'))).size,
+        nextDisabled: document.querySelector('.diorama-project-workspace__pagination button:last-child')?.disabled,
+        hasDetachedUtilities: Boolean(document.querySelector('.diorama-project-workspace__utility-slot')),
+      }))()`);
+      if (
+        !boardState.visible ||
+        !boardState.projectiveTransform ||
+        boardState.notes !== 4 ||
+        boardState.noteColors !== 4 ||
+        boardState.nextDisabled ||
+        boardState.hasDetachedUtilities
+      ) {
+        throw new Error(`The Diorama project board is incomplete: ${JSON.stringify(boardState)}.`);
+      }
+
+      await focusDioramaTarget(session, 'overview');
+      const zoomBefore = await waitForStableProjectedWidth(
+        session,
+        '.diorama-project-workspace__board',
+      );
+      await session.evaluate(`(() => {
+        const board = document.querySelector('.diorama-project-workspace__board');
+        const canvas = document.querySelector('.diorama-scene__canvas canvas');
+        if (!board || !canvas) throw new Error('The board projection or scene canvas is missing.');
+        canvas.dispatchEvent(new WheelEvent('wheel', { deltaY: -120, bubbles: true, cancelable: true }));
+      })()`);
+      const zoomAfter = await waitForStableProjectedWidth(
+        session,
+        '.diorama-project-workspace__board',
+      );
+      if (zoomAfter <= zoomBefore * 1.02) {
+        throw new Error(
+          `The project board did not scale with scene zoom: ${zoomBefore} → ${zoomAfter}.`,
+        );
+      }
+      await focusDioramaTarget(session, 'project-board');
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-board-${viewport.name}-${theme}.png`,
+      );
+
+      await session.evaluate(
+        "document.querySelector('.diorama-project-workspace__pagination button:last-child')?.click()",
+      );
+      await session.evaluate('new Promise(resolve => setTimeout(resolve, 80))');
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-board-page-2-${viewport.name}-${theme}.png`,
+      );
+      await session.evaluate(
+        "document.querySelector('.diorama-project-workspace__pagination button:first-child')?.click()",
+      );
+      await session.evaluate("document.querySelector('.project-note__select')?.click()");
+
+      await focusDioramaTarget(session, 'washer');
+      await waitFor(
+        session,
+        "document.querySelector('.diorama-project-workspace__washer-open')?.hidden === false",
+        true,
+      );
+      await waitFor(
+        session,
+        "document.querySelector('.diorama-project-workspace__washer-name')?.hidden === false",
+        true,
+      );
+      const washerNameState = await session.evaluate(`(() => ({
+        text: document.querySelector('.diorama-project-workspace__washer-name')?.textContent?.trim() ?? '',
+        scrolls: document.querySelector('.diorama-project-workspace__washer-name')?.classList.contains('diorama-project-workspace__washer-name--scroll') ?? false,
+        writingMode: getComputedStyle(document.querySelector('.diorama-project-workspace__washer-name')).writingMode,
+        projectedSurfaces: [
+          '.diorama-project-workspace__washer-preview',
+          '.diorama-project-workspace__washer-name',
+          '.diorama-project-workspace__washer-open',
+          '.diorama-project-workspace__washer-delete',
+        ].every(selector => document.querySelector(selector)?.style.transform.startsWith('matrix3d(')),
+      }))()`);
+      if (
+        !washerNameState.scrolls ||
+        !washerNameState.text ||
+        washerNameState.writingMode !== 'horizontal-tb' ||
+        !washerNameState.projectedSurfaces
+      ) {
+        throw new Error(
+          `A long project name is not scrolling on the washer: ${JSON.stringify(washerNameState)}.`,
+        );
+      }
+      const emptyProjectPreview = await session.evaluate(`(() => ({
+        hasImage: Boolean(document.querySelector('.diorama-project-workspace__washer-preview img')),
+        hasError: Boolean(document.querySelector('.diorama-project-workspace__preview-error')),
+      }))()`);
+      if (emptyProjectPreview.hasImage || emptyProjectPreview.hasError) {
+        throw new Error(
+          `An empty project must not show a fabricated washer preview: ${JSON.stringify(emptyProjectPreview)}.`,
+        );
+      }
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-washer-${viewport.name}-${theme}.png`,
+      );
+      await session.evaluate(
+        "document.querySelector('.diorama-project-workspace__washer-delete')?.click()",
+      );
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('app-ui-alert-dialog .ui-alert-dialog'))",
+        true,
+      );
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-delete-dialog-${viewport.name}-${theme}.png`,
+      );
+      await session.pressKey('Escape', 'Escape', 27);
+      await waitFor(session, "Boolean(document.querySelector('app-ui-alert-dialog'))", false);
+
+      await focusDioramaTarget(session, 'raccoon');
+      await waitFor(
+        session,
+        "document.querySelector('.diorama-project-workspace__courier-note')?.hidden === false",
+        true,
+      );
+      const courierProjection = await session.evaluate(
+        "document.querySelector('.diorama-project-workspace__courier-note')?.style.transform.startsWith('matrix3d(') ?? false",
+      );
+      if (!courierProjection) {
+        throw new Error('The Courier paper is not following its 3D scene surface.');
+      }
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-courier-${viewport.name}-${theme}.png`,
+      );
+      await clickProjectedCourierPaper(session);
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.diorama-project-workspace__create-dialog'))",
+        true,
+      );
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-create-dialog-${viewport.name}-${theme}.png`,
+      );
+      await session.evaluate('document.querySelector(\'[data-project-tab="import"]\')?.click()');
+      await waitFor(
+        session,
+        "document.querySelector('[data-project-tab=\"import\"]')?.getAttribute('aria-selected')",
+        'true',
+      );
+      const importOptions = await session.evaluate(`(() => ({
+        tabCount: document.querySelectorAll('.diorama-project-workspace__dialog-tabs [role="tab"]').length,
+        actionCount: document.querySelectorAll('#diorama-project-import-panel .project-utilities button').length,
+      }))()`);
+      if (importOptions.tabCount !== 2 || importOptions.actionCount !== 2) {
+        throw new Error(
+          `Courier does not expose Create and Import options: ${JSON.stringify(importOptions)}.`,
+        );
+      }
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-import-options-${viewport.name}-${theme}.png`,
+      );
+      await session.evaluate(
+        "document.querySelector('.project-utilities--compact button:last-of-type')?.click()",
+      );
+      await waitFor(session, "Boolean(document.querySelector('.backup-import-dialog'))", true);
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-backup-dialog-${viewport.name}-${theme}.png`,
+      );
+      await session.pressKey('Escape', 'Escape', 27);
+      await waitFor(session, "Boolean(document.querySelector('.backup-import-dialog'))", false);
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.diorama-project-workspace__create-dialog'))",
+        true,
+      );
+
+      await session.evaluate(`(() => {
+        const input = document.querySelector('.project-utilities input[type="file"]');
+        if (!input) throw new Error('The Structure JSON picker is missing.');
+        const files = new DataTransfer();
+        files.items.add(new File(['{ broken'], 'invalid.json', { type: 'application/json' }));
+        input.files = files.files;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      })()`);
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.project-import-dialog:not(.backup-import-dialog) .project-import-error'))",
+        true,
+      );
+      await captureProjectScreenshot(
+        session,
+        captured,
+        `project-structure-import-dialog-${viewport.name}-${theme}.png`,
+      );
+      await session.pressKey('Escape', 'Escape', 27);
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.project-import-dialog:not(.backup-import-dialog)'))",
+        false,
+      );
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.diorama-project-workspace__create-dialog'))",
+        true,
+      );
+      await session.pressKey('Escape', 'Escape', 27);
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.diorama-project-workspace__create-dialog'))",
+        false,
+      );
+    }
+  }
+  await focusDioramaTarget(session, 'overview');
+  return captured;
+}
+
+async function focusDioramaTarget(session, target) {
+  await session.evaluate(`document.querySelector('[data-focus-target="${target}"]')?.click()`);
+  await session.evaluate('new Promise(resolve => setTimeout(resolve, 850))');
+}
+
+async function waitForStableProjectedWidth(session, selector, timeoutMs = 3000) {
+  const widthExpression = `document.querySelector('${selector}')?.getBoundingClientRect().width ?? 0`;
+  let width = await session.evaluate(widthExpression);
+  if (!Number.isFinite(width) || width <= 0) {
+    throw new Error(
+      `Projected surface ${selector} is not visible while waiting for camera motion.`,
+    );
+  }
+  let stableSamples = 0;
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    await delay(100);
+    const nextWidth = await session.evaluate(widthExpression);
+    if (Math.abs(nextWidth - width) < 0.25) stableSamples++;
+    else stableSamples = 0;
+    width = nextWidth;
+    if (stableSamples >= 3) return width;
+  }
+  throw new Error(`Projected surface ${selector} did not settle after camera motion.`);
+}
+
+async function clickProjectedCourierPaper(session) {
+  await session.evaluate(`(() => {
+    const canvas = document.querySelector('.diorama-scene__canvas canvas');
+    const paper = document.querySelector('.diorama-project-workspace__courier-note');
+    if (!canvas || !paper || paper.hidden) throw new Error('The projected Courier paper is missing.');
+    const bounds = paper.getBoundingClientRect();
+    const point = { clientX: bounds.left + bounds.width / 2, clientY: bounds.top + bounds.height / 2 };
+    const base = { bubbles: true, cancelable: true, pointerId: 91, pointerType: 'mouse', isPrimary: true, button: 0, ...point };
+    canvas.dispatchEvent(new PointerEvent('pointerdown', { ...base, buttons: 1 }));
+    canvas.dispatchEvent(new PointerEvent('pointerup', { ...base, buttons: 0 }));
+  })()`);
+}
+
+async function captureProjectScreenshot(session, captures, filename) {
+  await session.evaluate('new Promise(resolve => setTimeout(resolve, 180))');
+  await session.captureScreenshot(join(screenshots, filename));
+  captures.push(filename);
 }
 
 async function setDioramaTheme(session, theme) {
@@ -900,7 +1265,20 @@ async function measureThemeTransition(session) {
 async function measureCameraActions(session) {
   const results = {};
   for (const action of ['orbit', 'pan', 'zoom']) {
+    if (action === 'orbit') {
+      await focusDioramaTarget(session, 'raccoon');
+      await waitForStableProjectedWidth(session, '.diorama-project-workspace__courier-note');
+    }
     const before = await session.evaluate('window.__goal06Perf.drawCalls');
+    const projectionBefore =
+      action === 'orbit' ? await readProjectionDiagnostics(session) : undefined;
+    const courierTransformBefore =
+      action === 'orbit'
+        ? await session.evaluate(
+            "document.querySelector('.diorama-project-workspace__courier-note')?.style.transform ?? ''",
+          )
+        : undefined;
+    if (action === 'orbit') await observeProjectionStyleMutations(session);
     if (action === 'zoom') {
       await session.evaluate(`(() => {
         const canvas = document.querySelector('.diorama-scene-runtime__canvas');
@@ -943,8 +1321,86 @@ async function measureCameraActions(session) {
     if (after <= before)
       throw new Error(`The Diorama ${action} interaction did not render any frames.`);
     results[action] = { drawCalls: after - before, observationMs: 650 };
+    if (action === 'orbit' && projectionBefore) {
+      const projectionAfter = await readProjectionDiagnostics(session);
+      const courierTransformAfter = await session.evaluate(
+        "document.querySelector('.diorama-project-workspace__courier-note')?.style.transform ?? ''",
+      );
+      const mutationRecords = await session.evaluate('window.__goal07ProjectionStyleMutations');
+      const sceneUpdates = projectionAfter.sceneUpdates - projectionBefore.sceneUpdates;
+      const cssBatches = projectionAfter.cssBatches - projectionBefore.cssBatches;
+      if (
+        sceneUpdates < 1 ||
+        cssBatches < 1 ||
+        mutationRecords < 1 ||
+        courierTransformBefore === courierTransformAfter
+      ) {
+        throw new Error(
+          `Camera orbit did not reproject measurable 3D overlays: ${JSON.stringify({ sceneUpdates, cssBatches, mutationRecords, transformChanged: courierTransformBefore !== courierTransformAfter })}.`,
+        );
+      }
+      results.overlayProjection = {
+        observationMs: 650,
+        sceneProjectionUpdates: sceneUpdates,
+        averageSceneProjectionMs:
+          (projectionAfter.sceneTotalMs - projectionBefore.sceneTotalMs) / sceneUpdates,
+        angularCssBatches: cssBatches,
+        averageAngularCssUpdateMs:
+          (projectionAfter.cssTotalMs - projectionBefore.cssTotalMs) / cssBatches,
+        surfaceStyleMutationRecords: mutationRecords,
+        courierMatrixChanged: courierTransformBefore !== courierTransformAfter,
+        measuredSurfaces: [
+          'project board',
+          'washer preview',
+          'washer name',
+          'washer open/delete',
+          'Courier note',
+        ],
+      };
+      await focusDioramaTarget(session, 'overview');
+      await waitForStableProjectedWidth(session, '.diorama-project-workspace__board');
+    }
   }
   return results;
+}
+
+async function readProjectionDiagnostics(session) {
+  return session.evaluate(`(() => {
+    const canvas = document.querySelector('.diorama-scene-runtime__canvas');
+    const workspace = document.querySelector('.diorama-project-workspace');
+    return {
+      sceneUpdates: Number(canvas?.dataset.sceneProjectionCount ?? 0),
+      sceneTotalMs: Number(canvas?.dataset.sceneProjectionTotalMs ?? 0),
+      cssBatches: Number(workspace?.dataset.projectionCssBatchCount ?? 0),
+      cssTotalMs: Number(workspace?.dataset.projectionCssTotalMs ?? 0),
+    };
+  })()`);
+}
+
+async function observeProjectionStyleMutations(session) {
+  await session.evaluate(`(() => {
+    const workspace = document.querySelector('.diorama-project-workspace');
+    if (!workspace) throw new Error('The Diorama workspace is missing for projection measurement.');
+    const surfaceSelector = [
+      '.diorama-project-workspace__board',
+      '.diorama-project-workspace__washer-preview',
+      '.diorama-project-workspace__washer-name',
+      '.diorama-project-workspace__washer-open',
+      '.diorama-project-workspace__washer-delete',
+      '.diorama-project-workspace__courier-note',
+    ].join(',');
+    const surfaces = new Set(workspace.querySelectorAll(surfaceSelector));
+    window.__goal07ProjectionStyleMutations = 0;
+    new MutationObserver(records => {
+      window.__goal07ProjectionStyleMutations += records.filter(
+        record => record.attributeName === 'style' && surfaces.has(record.target),
+      ).length;
+    }).observe(workspace, {
+      attributes: true,
+      subtree: true,
+      attributeFilter: ['style'],
+    });
+  })()`);
 }
 
 async function measureTimeSwipe(session) {
@@ -1169,7 +1625,8 @@ async function openSession(origin, name, options) {
   if (!resolve(profile).startsWith(profileDirectory + sep))
     throw new Error('Browser profile escaped artifacts.');
   profiles.push(profile);
-  const session = await startHeadlessBrowser(browser, `${origin}/`, profile, options);
+  const query = name === 'homepage' ? '?dioramaPerf=1' : '';
+  const session = await startHeadlessBrowser(browser, `${origin}/${query}`, profile, options);
   await session.bringToFront();
   return session;
 }
@@ -1180,6 +1637,17 @@ async function waitFor(session, expression, expected, timeoutMs = 15_000) {
   while (Date.now() < deadline) {
     value = await session.evaluate(expression);
     if (value === expected) return value;
+    if (value === 'fallback') {
+      const details = await session.evaluate(`(() => ({
+        fallbackMessage: document.querySelector('.diorama-scene__fallback')?.innerText,
+        loadedAssets: performance.getEntriesByType('resource')
+          .filter(entry => /Octagonal-Laundromat\\.glb|washer-alternate\\/Washer\\.glb|forest-floor\\.png/.test(entry.name))
+          .map(entry => ({ name: entry.name, duration: Math.round(entry.duration), transferSize: entry.transferSize })),
+      }))()`);
+      throw new Error(
+        `Browser reached scene fallback while waiting for ${JSON.stringify(expected)}: ${JSON.stringify(details)}; console: ${JSON.stringify(session.getConsoleMessages())}.`,
+      );
+    }
     await delay(75);
   }
   throw new Error(

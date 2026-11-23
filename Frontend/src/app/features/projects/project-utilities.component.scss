@@ -1,0 +1,270 @@
+:host {
+  display: contents;
+}
+
+.project-utilities {
+  display: flex;
+  flex: 1 1 13rem;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.project-utilities > button {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.project-utilities--compact {
+  gap: 0.3rem;
+}
+
+.project-utilities--compact > button {
+  flex: 1 1 0;
+  gap: 0.25rem;
+  min-height: 0;
+  padding: 0.32rem 0.42rem;
+  font-size: 0.68rem;
+}
+
+.huge-recommendation {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 0.85rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--status-warning) 10%, var(--surface-raised));
+  box-shadow: var(--shadow-control);
+}
+.huge-recommendation--active {
+  background: color-mix(in srgb, var(--info) 12%, var(--surface-raised));
+}
+.huge-recommendation-copy {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+.huge-recommendation-copy strong {
+  color: var(--text);
+  font-size: 0.86rem;
+}
+.huge-recommendation-copy p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+.huge-recommendation-copy details {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+.huge-recommendation-copy summary {
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 700;
+}
+.huge-recommendation-copy ol {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0.45rem 0 0 1.1rem;
+  padding: 0;
+}
+.huge-recommendation-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.huge-resource-link {
+  display: grid;
+  gap: 0.18rem;
+  min-width: 0;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  color: var(--text);
+  text-decoration: none;
+  box-shadow: var(--shadow-control);
+}
+.huge-resource-link:hover,
+.huge-resource-link:focus-visible {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+.huge-resource-link span {
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+.huge-resource-link small {
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.huge-recommendation .size-action {
+  flex: 0 0 auto;
+  align-self: center;
+}
+.project-import-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: var(--overlay-scrim);
+}
+.project-import-dialog {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: min(700px, 100%);
+  max-height: min(760px, 100%);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-modal);
+  color: var(--text);
+  box-shadow: var(--shadow-dialog);
+}
+.backup-import-dialog {
+  width: min(560px, 100%);
+}
+.backup-collision {
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--status-warning);
+  border-radius: var(--radius-sm);
+  color: var(--status-warning);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+.project-import-header,
+.project-import-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+  background: var(--surface-modal-raised);
+}
+.project-import-header {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--divider);
+}
+.project-import-header h2 {
+  margin: 0.25rem 0 0.35rem;
+  font-size: 1.05rem;
+}
+.project-import-header p:last-child {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+.project-import-body {
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+.project-import-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+.project-import-file code {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.project-import-progress,
+.project-import-error {
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+}
+.project-import-progress {
+  background: var(--surface-raised);
+  color: var(--accent);
+}
+.project-import-error {
+  background: color-mix(in srgb, var(--danger) 12%, var(--surface-raised));
+  color: var(--danger);
+}
+.project-import-summary {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+}
+.project-import-summary > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+}
+.project-import-summary dt {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+.project-import-summary dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: right;
+}
+.project-import-support {
+  display: block;
+  color: var(--success);
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+.project-import-warning dt,
+.project-import-warning dd {
+  color: var(--status-warning);
+}
+.project-import-compatibility dt,
+.project-import-compatibility dd {
+  color: var(--success);
+}
+.project-import-compatibility--huge dt,
+.project-import-compatibility--huge dd {
+  color: var(--info);
+}
+.project-import-huge-info {
+  margin: 0;
+}
+.project-import-footer {
+  justify-content: flex-end;
+  border-top: 1px solid var(--divider);
+}
+@media (max-width: 520px) {
+  .project-utilities:not(.project-utilities--compact) {
+    flex-direction: column;
+  }
+
+  .project-utilities:not(.project-utilities--compact) > button {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .huge-recommendation {
+    flex-direction: column;
+  }
+
+  .huge-recommendation-links {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}

@@ -1,6 +1,5 @@
 import { DatePipe, NgOptimizedImage } from '@angular/common';
-import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { Component, ElementRef, computed, inject, output, signal, viewChild } from '@angular/core';
+import { Component, computed, inject, output, signal } from '@angular/core';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
 import {
   DEFAULT_MINECRAFT_VERSION,
@@ -14,18 +13,11 @@ import {
   isStructureCreationAllowed,
 } from '../../../core/domain/structure-size-policy';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
-import type { TranslationKey } from '../../../core/ui/localization/translation-catalogs';
 import {
   UiPreferencesService,
   type HomepageMode,
 } from '../../../core/ui/preferences/ui-preferences.service';
-import {
-  LucideFileUp,
-  LucideFolderOpen,
-  LucideSearch,
-  LucideTrash2,
-  LucideX,
-} from '@lucide/angular';
+import { LucideFolderOpen, LucideSearch, LucideTrash2 } from '@lucide/angular';
 import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import {
   SearchableDropdownComponent,
@@ -35,35 +27,24 @@ import {
   MojangRelease,
   MojangVersionService,
 } from '../../../core/assets/vanilla/mojang-vanilla-asset-source';
-import type {
-  StructureJsonProjectImportError,
-  StructureJsonProjectImportPreview,
-} from '../../../core/persistence/structure-json/import/structure-json-project-import';
-import { StructureJsonProjectImportWorkflow } from './structure-json-project-import-workflow';
-import { ProjectScreenWorkflow } from './project-screen-workflow';
-import { ProjectBackupWorkflow, BackupFailure } from './project-backup-workflow';
+import { ProjectWorkflow } from '../project-workflow';
+import { ProjectUtilitiesComponent } from '../project-utilities.component';
 import { ProjectScreenThemePickerComponent } from './project-screen-theme-picker.component';
 import { HomepageAccountMenuComponent } from '../../homepage/account-menu/homepage-account-menu.component';
-import {
-  filterAndSortProjectSummaries,
-  isProjectScreenProjectOrder,
-} from './project-screen-project-list';
-import type { ProjectScreenProjectOrder } from './project-screen-project-list';
+import { filterAndSortProjectSummaries, isProjectOrder } from '../project-list';
+import type { ProjectOrder } from '../project-list';
 
 @Component({
   selector: 'app-project-screen',
-  providers: [ProjectScreenWorkflow, ProjectBackupWorkflow],
   imports: [
-    CdkTrapFocus,
     DatePipe,
     NgOptimizedImage,
-    LucideFileUp,
     LucideFolderOpen,
     LucideSearch,
     LucideTrash2,
-    LucideX,
     UiTooltipDirective,
     SearchableDropdownComponent,
+    ProjectUtilitiesComponent,
     ProjectScreenThemePickerComponent,
     HomepageAccountMenuComponent,
   ],
@@ -76,16 +57,8 @@ export class ProjectScreenComponent {
 
   protected readonly i18n = inject(I18nService);
   private readonly preferences = inject(UiPreferencesService);
-  protected readonly workflow = inject(ProjectScreenWorkflow);
-  protected readonly backup = inject(ProjectBackupWorkflow);
-  protected readonly backupDialogOpen = signal(false);
-  private readonly backupTrigger = viewChild<ElementRef<HTMLButtonElement>>('backupTrigger');
-  private readonly projectNameInput = viewChild<ElementRef<HTMLInputElement>>('projectNameInput');
-  private readonly structureJsonCreateTrigger = viewChild<ElementRef<HTMLButtonElement>>(
-    'structureJsonCreateTrigger',
-  );
+  protected readonly workflow = inject(ProjectWorkflow);
   protected readonly name = signal(this.i18n.t('untitledStructure'));
-  protected readonly defaultMinecraftVersion = DEFAULT_MINECRAFT_VERSION;
   protected readonly sizeX = signal('16');
   protected readonly sizeY = signal('16');
   protected readonly sizeZ = signal('16');
@@ -129,7 +102,7 @@ export class ProjectScreenComponent {
   });
   protected readonly projects = this.workflow.projects;
   protected readonly projectSearch = signal('');
-  protected readonly projectOrder = signal<ProjectScreenProjectOrder>('newest');
+  protected readonly projectOrder = signal<ProjectOrder>('newest');
   protected readonly visibleProjects = computed(() =>
     filterAndSortProjectSummaries(
       this.projects(),
@@ -144,10 +117,6 @@ export class ProjectScreenComponent {
   protected readonly openingId = this.workflow.openingId;
   protected readonly deletingProjectIds = this.workflow.deletingProjectIds;
   protected readonly deleteError = this.workflow.deleteError;
-  protected readonly structureJsonImport = new StructureJsonProjectImportWorkflow((project) =>
-    this.workflow.createImportedProject(project),
-  );
-
   constructor() {
     void this.workflow.loadProjects();
     void this.loadVersions();
@@ -189,92 +158,7 @@ export class ProjectScreenComponent {
   protected updateProjectOrder(event: Event): void {
     if (!(event.target instanceof HTMLSelectElement)) return;
     const value = event.target.value;
-    if (isProjectScreenProjectOrder(value)) this.projectOrder.set(value);
-  }
-  protected openStructureJsonPicker(input: HTMLInputElement): void {
-    if (!this.structureJsonImport.creating()) input.click();
-  }
-  protected openBackupDialog(): void {
-    this.backup.reset();
-    this.backupDialogOpen.set(true);
-  }
-  protected closeBackupDialog(): void {
-    if (this.backup.busy() === 'saving') return;
-    this.backup.reset();
-    this.backupDialogOpen.set(false);
-    queueMicrotask(() => this.backupTrigger()?.nativeElement.focus({ preventScroll: true }));
-  }
-  protected async selectBackup(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    input.value = '';
-    if (file) await this.backup.selectFile(file);
-  }
-  protected backupFailureLabel(failure: BackupFailure): string {
-    const key = {
-      'file-type': 'backupFileType',
-      'file-too-large': 'backupFileTooLarge',
-      read: 'projectBackupReadFailed',
-      'invalid-json': 'projectBackupInvalidJson',
-      'not-project-package': 'projectBackupNotRecognized',
-      'unsupported-package-version': 'projectBackupUnsupportedVersion',
-      'unsupported-project-schema': 'importUnsupportedSchema',
-      'invalid-project-data': 'importInvalidData',
-      storage: 'importStorageFailed',
-    } satisfies Record<BackupFailure, TranslationKey>;
-    return this.i18n.t(key[failure]);
-  }
-  protected async restoreBackup(): Promise<void> {
-    const restored = await this.backup.restore();
-    if (!restored) return;
-    await this.workflow.loadProjects();
-    this.closeBackupDialog();
-  }
-  protected async selectStructureJson(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    input.value = '';
-    if (!file) return;
-    await this.structureJsonImport.selectFile(file, this.i18n.t('untitledStructure'));
-  }
-  protected closeStructureJsonImport(): void {
-    const wasOpen = this.structureJsonImport.open();
-    this.structureJsonImport.close();
-    if (!wasOpen || this.structureJsonImport.open()) return;
-    queueMicrotask(() =>
-      this.structureJsonCreateTrigger()?.nativeElement.focus({ preventScroll: true }),
-    );
-  }
-  protected async createProjectFromStructureJson(): Promise<void> {
-    const project = await this.structureJsonImport.createProject();
-    if (!project) return;
-    await this.workflow.activateImportedProject(project);
-  }
-  protected structureJsonImportProgressLabel(): string {
-    const progress = this.structureJsonImport.progress();
-    if (progress === 'reading') return this.i18n.t('structureJsonProjectReading');
-    if (progress === 'parsing') return this.i18n.t('structureJsonProjectParsing');
-    if (progress === 'checking') return this.i18n.t('structureJsonProjectChecking');
-    if (progress === 'saving') return this.i18n.t('structureJsonProjectSaving');
-    return '';
-  }
-  protected structureJsonImportErrorMessage(): string {
-    const failure = this.structureJsonImport.failure();
-    if (!failure) return '';
-    if (failure.kind === 'file-type') return this.i18n.t('structureJsonFileTypeError');
-    if (failure.kind === 'file-size') return this.i18n.t('structureJsonFileSizeError');
-    if (failure.kind === 'parse') return this.structureJsonValidationError(failure.code);
-    if (failure.kind === 'prepare') return this.structureJsonProjectImportError(failure.code);
-    return this.i18n.t(
-      failure.kind === 'save' ? 'createStorageError' : 'structureJsonProjectFileReadError',
-    );
-  }
-  protected structureJsonImportModeLabel(preview: StructureJsonProjectImportPreview): string {
-    return this.i18n.t(
-      preview.structureMode === 'huge-structure-blocks'
-        ? 'hugeStructureBlocks'
-        : 'vanillaStructureBlock',
-    );
+    if (isProjectOrder(value)) this.projectOrder.set(value);
   }
   protected versionSupportLabel(): string {
     return this.minecraftVersion() === DEFAULT_MINECRAFT_VERSION
@@ -329,33 +213,5 @@ export class ProjectScreenComponent {
     } catch {
       /* Keep the safe 1.21.1 fallback when Mojang metadata is offline. */
     }
-  }
-
-  private structureJsonValidationError(code: string | undefined): string {
-    const key =
-      code === 'invalid-json'
-        ? 'structureJsonValidationInvalidJson'
-        : code === 'format'
-          ? 'structureJsonValidationFormat'
-          : code === 'version'
-            ? 'structureJsonValidationVersion'
-            : code === 'minecraft-version'
-              ? 'structureJsonValidationMinecraftVersion'
-              : code === 'block'
-                ? 'structureJsonValidationBlock'
-                : 'structureJsonValidationShape';
-    return this.i18n.t(key);
-  }
-  private structureJsonProjectImportError(code: StructureJsonProjectImportError): string {
-    const key = (
-      {
-        'empty-structure': 'structureJsonProjectEmpty',
-        'negative-coordinates': 'structureJsonProjectNegativeCoordinates',
-        'unsupported-size': 'hugeStructureBlocksLimitExceeded',
-        validation: 'structureJsonProjectValidationError',
-        'invalid-project': 'structureJsonProjectValidationError',
-      } as const
-    )[code];
-    return this.i18n.t(key);
   }
 }

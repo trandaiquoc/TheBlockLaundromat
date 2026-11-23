@@ -5,6 +5,12 @@ const portraitAspectLimit = 0.82;
 const transitionRate = 7.5;
 const landscapeFramePadding = 1.36;
 const portraitFramePadding = 1.16;
+const landscapeBoardFramePadding = 1.08;
+const portraitBoardFramePadding = 1.04;
+const landscapeWasherFramePadding = 1.42;
+const portraitWasherFramePadding = 1.52;
+const landscapeRaccoonFramePadding = 1.05;
+const portraitRaccoonFramePadding = 1.05;
 const defaultCameraYaw = Math.atan2(0.62, 1);
 const defaultCameraElevation = Math.atan2(0.72, Math.hypot(0.62, 1));
 const frontCameraElevation = 0.035;
@@ -185,7 +191,19 @@ export class DioramaCameraRig {
     const responsiveFramePadding =
       this.aspect < portraitAspectLimit ? portraitFramePadding : landscapeFramePadding;
     const focusFramePadding =
-      this.view === 'project-board' ? 1.18 : this.view === 'washer' ? 1.62 : responsiveFramePadding;
+      this.view === 'project-board'
+        ? this.aspect < portraitAspectLimit
+          ? portraitBoardFramePadding
+          : landscapeBoardFramePadding
+        : this.view === 'washer'
+          ? this.aspect < portraitAspectLimit
+            ? portraitWasherFramePadding
+            : landscapeWasherFramePadding
+          : this.view === 'raccoon'
+            ? this.aspect < portraitAspectLimit
+              ? portraitRaccoonFramePadding
+              : landscapeRaccoonFramePadding
+            : responsiveFramePadding;
     let distance = 0;
 
     for (const x of [bounds.min.x, bounds.max.x]) {

@@ -7,8 +7,9 @@ import type { ProjectSummary } from '../../../core/persistence/project-store/pro
 import { MojangVersionService } from '../../../core/assets/vanilla/mojang-vanilla-asset-source';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import { ProjectScreenComponent } from './project-screen.component';
-import { ProjectBackupWorkflow } from './project-backup-workflow';
-import { ProjectScreenWorkflow } from './project-screen-workflow';
+import { ProjectUtilitiesComponent } from '../project-utilities.component';
+import { ProjectBackupWorkflow } from '../project-backup-workflow';
+import { ProjectWorkflow } from '../project-workflow';
 
 const templatePath = 'src/app/features/projects/project-screen/project-screen.component.html';
 
@@ -32,7 +33,9 @@ describe('ProjectScreenComponent', () => {
     expect(template).not.toContain('data-locale');
     expect(template).toContain('projectName');
     expect(template).toContain('structureSize');
-    expect(template).toContain('createFromStructureJson');
+    expect(
+      String(readFileSync('src/app/features/projects/project-utilities.component.html', 'utf8')),
+    ).toContain('createFromStructureJson');
     expect(template).not.toContain('app-project-screen-scene');
     expect(template).not.toContain('project-board');
     expect(template).not.toContain('washer-');
@@ -41,8 +44,11 @@ describe('ProjectScreenComponent', () => {
   it('keeps the import dialog focused and exposes project list search and sort controls', () => {
     const template = String(readFileSync(templatePath, 'utf8'));
 
-    expect(template).toMatch(/<h2\s+cdkFocusInitial\s+tabindex="-1"/);
-    expect(template).toContain('(keydown.escape)="closeStructureJsonImport()"');
+    const utilityTemplate = String(
+      readFileSync('src/app/features/projects/project-utilities.component.html', 'utf8'),
+    );
+    expect(utilityTemplate).toMatch(/<h2\s+cdkFocusInitial\s+tabindex="-1"/);
+    expect(utilityTemplate).toContain('(keydown.escape)="closeStructureJsonImport()"');
     expect(template).toContain('(input)="updateProjectSearch($event)"');
     expect(template).toContain('(change)="updateProjectOrder($event)"');
     expect(template).toContain("i18n.t('openProjectAriaLabel')");
@@ -95,9 +101,11 @@ describe('ProjectScreenComponent', () => {
       ],
     });
     TestBed.overrideComponent(ProjectScreenComponent, {
+      set: { providers: [{ provide: ProjectWorkflow, useValue: workflow }] },
+    });
+    TestBed.overrideComponent(ProjectUtilitiesComponent, {
       set: {
         providers: [
-          { provide: ProjectScreenWorkflow, useValue: workflow },
           {
             provide: ProjectBackupWorkflow,
             useValue: {

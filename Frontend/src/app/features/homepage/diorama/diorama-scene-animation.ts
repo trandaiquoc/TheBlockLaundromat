@@ -43,6 +43,7 @@ export class DioramaSceneAnimation {
     private readonly raccoonController: DioramaRaccoonController | undefined,
     private readonly onTimeAnimationUpdate: (update: DioramaTimeAnimationUpdate) => void,
     reducedMotion: boolean,
+    private readonly onRenderedFrame: () => void = () => {},
   ) {
     this.reducedMotion = reducedMotion;
   }
@@ -217,6 +218,7 @@ export class DioramaSceneAnimation {
   private render(): void {
     if (this.disposed) return;
     this.renderer.render(this.assets.scene, this.camera);
+    this.onRenderedFrame();
   }
 
   private renderWithUpdatedShadows(): void {

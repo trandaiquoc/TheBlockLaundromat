@@ -1,0 +1,402 @@
+<div #workspaceRoot class="diorama-project-workspace">
+  <section
+    #boardPanel
+    class="diorama-project-workspace__board"
+    [attr.aria-label]="i18n.t('dioramaProjectBoard')"
+    [hidden]="true"
+  >
+    <div class="diorama-project-workspace__information-page">
+      <header class="diorama-project-workspace__board-header">
+        <div>
+          <p class="diorama-project-workspace__eyebrow">{{ i18n.t('recent') }}</p>
+          <h2>{{ i18n.t('dioramaProjectBoard') }}</h2>
+        </div>
+        <button
+          class="diorama-project-workspace__back ui-button ui-button--ghost ui-button--icon"
+          type="button"
+          [attr.aria-label]="i18n.t('dioramaBackToProjects')"
+          [attr.title]="i18n.t('dioramaBackToProjects')"
+          (click)="returnToOverview()"
+        >
+          <svg lucideArrowLeft aria-hidden="true"></svg>
+        </button>
+      </header>
+
+      <div class="diorama-project-workspace__controls">
+        <label class="diorama-project-workspace__search">
+          <svg lucideSearch aria-hidden="true"></svg>
+          <input
+            type="search"
+            [value]="projectSearch()"
+            [attr.aria-label]="i18n.t('searchProjects')"
+            [placeholder]="i18n.t('searchProjects')"
+            (input)="updateProjectSearch($event)"
+          />
+        </label>
+        <select
+          class="diorama-project-workspace__sort"
+          [value]="projectOrder()"
+          [attr.aria-label]="i18n.t('sortProjects')"
+          (change)="updateProjectOrder($event)"
+        >
+          <option value="newest">{{ i18n.t('projectSortNewest') }}</option>
+          <option value="oldest">{{ i18n.t('projectSortOldest') }}</option>
+          <option value="name">{{ i18n.t('projectSortName') }}</option>
+        </select>
+      </div>
+
+      <div class="diorama-project-workspace__notes" [attr.aria-busy]="loadStatus() === 'loading'">
+        @if (loadStatus() === 'loading') {
+          <p class="diorama-project-workspace__message" role="status">
+            {{ i18n.t('loadingProjects') }}
+          </p>
+        } @else if (loadStatus() === 'error') {
+          <div class="diorama-project-workspace__message" role="alert">
+            <p>{{ i18n.t('projectListError') }}</p>
+            <button
+              class="ui-button ui-button--ghost"
+              type="button"
+              (click)="workflow.loadProjects()"
+            >
+              {{ i18n.t('retry') }}
+            </button>
+          </div>
+        } @else if (visibleProjects().length === 0) {
+          <p class="diorama-project-workspace__message" role="status">
+            {{ projects().length === 0 ? i18n.t('noProjects') : i18n.t('noProjectMatches') }}
+          </p>
+        } @else {
+          @for (project of pageProjects(); track project.id) {
+            <article class="project-note" [attr.data-note-color]="noteColor(project.id)">
+              <button
+                class="project-note__select"
+                [class.project-note__select--selected]="selectedProjectId() === project.id"
+                type="button"
+                [attr.aria-pressed]="selectedProjectId() === project.id"
+                [attr.aria-label]="i18n.t('dioramaSelectProject').replace('{name}', project.name)"
+                (click)="selectProject(project)"
+              >
+                <span class="project-note__pin" aria-hidden="true"></span>
+                <strong>{{ project.name }}</strong>
+                <span class="project-note__meta">
+                  {{
+                    i18n.t('minecraftJavaVersion').replace('{version}', project.minecraftVersion)
+                  }}
+                  <time [attr.datetime]="project.updatedAt">
+                    {{ project.updatedAt | date: 'shortDate' }}
+                  </time>
+                </span>
+              </button>
+            </article>
+          }
+        }
+      </div>
+
+      <footer class="diorama-project-workspace__board-footer">
+        <div class="diorama-project-workspace__pagination" [hidden]="pageCount() < 2">
+          <button
+            class="ui-button ui-button--ghost ui-button--icon"
+            type="button"
+            [disabled]="currentPage() <= 1"
+            [attr.aria-label]="i18n.t('projectPreviousPage')"
+            (click)="previousPage()"
+          >
+            <svg lucideChevronLeft aria-hidden="true"></svg>
+          </button>
+          <span aria-live="polite">{{ currentPage() }} / {{ pageCount() }}</span>
+          <button
+            class="ui-button ui-button--ghost ui-button--icon"
+            type="button"
+            [disabled]="currentPage() >= pageCount()"
+            [attr.aria-label]="i18n.t('projectNextPage')"
+            (click)="nextPage()"
+          >
+            <svg lucideChevronRight aria-hidden="true"></svg>
+          </button>
+        </div>
+        <button
+          class="diorama-project-workspace__new ui-button ui-button--primary"
+          type="button"
+          [disabled]="creating() || !!openingId()"
+          (click)="openCreateDialog($event)"
+        >
+          <svg lucidePlus aria-hidden="true"></svg>{{ i18n.t('create') }}
+        </button>
+      </footer>
+      @if (deleteError()) {
+        <p class="diorama-project-workspace__error" role="alert">{{ deleteError() }}</p>
+      }
+      @if (previewError()) {
+        <p class="diorama-project-workspace__error" role="alert">
+          {{ i18n.t('dioramaProjectPreviewError') }}
+        </p>
+      }
+    </div>
+  </section>
+
+  <div
+    #washerPreview
+    class="diorama-project-workspace__washer-preview"
+    [hidden]="true"
+    [attr.aria-label]="selectedProject()?.name"
+  >
+    @if (previewUrl()) {
+      <img [src]="previewUrl()" alt="" aria-hidden="true" />
+    } @else if (previewError()) {
+      <span class="diorama-project-workspace__preview-error" aria-hidden="true">!</span>
+    }
+  </div>
+
+  <div
+    #washerName
+    class="diorama-project-workspace__washer-name"
+    [class.diorama-project-workspace__washer-name--scroll]="longProjectName()"
+    [hidden]="true"
+    role="status"
+    [attr.aria-label]="selectedProject()?.name"
+  >
+    @if (selectedProject(); as project) {
+      <span class="diorama-project-workspace__washer-name-track">
+        <span>{{ project.name }}</span>
+        @if (longProjectName()) {
+          <span aria-hidden="true">{{ project.name }}</span>
+        }
+      </span>
+    }
+  </div>
+
+  <button
+    #washerOpen
+    class="diorama-project-workspace__washer-action diorama-project-workspace__washer-open ui-button ui-button--primary ui-button--icon"
+    type="button"
+    [hidden]="true"
+    [disabled]="!!openingId() || creating()"
+    [attr.aria-label]="
+      selectedProject() && i18n.t('openProjectAriaLabel').replace('{name}', selectedProject()!.name)
+    "
+    [attr.title]="
+      selectedProject() && i18n.t('openProjectAriaLabel').replace('{name}', selectedProject()!.name)
+    "
+    (click)="openSelectedProject()"
+  >
+    <svg lucideFolderOpen aria-hidden="true"></svg>
+  </button>
+
+  <button
+    #washerDelete
+    class="diorama-project-workspace__washer-action diorama-project-workspace__washer-delete ui-button ui-button--danger ui-button--icon"
+    type="button"
+    [hidden]="true"
+    [disabled]="!selectedProject() || deletingProjectIds().has(selectedProjectId() ?? '')"
+    [attr.aria-label]="
+      selectedProject() &&
+      i18n.t('deleteProjectAriaLabel').replace('{name}', selectedProject()!.name)
+    "
+    [attr.title]="
+      selectedProject() &&
+      i18n.t('deleteProjectAriaLabel').replace('{name}', selectedProject()!.name)
+    "
+    (click)="deleteSelectedProject()"
+  >
+    <svg lucideTrash2 aria-hidden="true"></svg>
+  </button>
+
+  <button
+    #courierNote
+    class="diorama-project-workspace__courier-note ui-button ui-button--secondary"
+    type="button"
+    [hidden]="true"
+    [disabled]="creating() || !!openingId()"
+    [attr.aria-label]="i18n.t('dioramaCourierCreateProject')"
+    [attr.title]="i18n.t('dioramaCourierCreateProject')"
+    (click)="openCourierProjectDialog()"
+  >
+    <svg lucidePlus aria-hidden="true"></svg>
+    <span>{{ i18n.t('create') }}</span>
+  </button>
+
+  @if (createDialogOpen()) {
+    <div class="diorama-project-workspace__dialog-backdrop" role="presentation">
+      <section
+        class="diorama-project-workspace__create-dialog"
+        cdkTrapFocus
+        [cdkTrapFocusAutoCapture]="true"
+        role="dialog"
+        aria-modal="true"
+        tabindex="-1"
+        (keydown.escape)="handleCreateDialogEscape($event)"
+        [attr.aria-label]="i18n.t('newProject')"
+      >
+        <header class="diorama-project-workspace__dialog-header">
+          <div>
+            <p class="diorama-project-workspace__eyebrow">{{ i18n.t('projectActions') }}</p>
+            <h2>{{ i18n.t('newProject') }}</h2>
+          </div>
+          <button
+            class="ui-button ui-button--ghost ui-button--icon"
+            type="button"
+            [disabled]="creating()"
+            [attr.aria-label]="i18n.t('cancel')"
+            (click)="closeCreateDialog()"
+          >
+            <svg lucideX aria-hidden="true"></svg>
+          </button>
+        </header>
+        <div
+          #createDialogTabs
+          class="diorama-project-workspace__dialog-tabs"
+          role="tablist"
+          [attr.aria-label]="i18n.t('dioramaProjectEntryOptions')"
+          (keydown)="handleCreateDialogTabKeydown($event)"
+        >
+          <button
+            class="ui-button ui-button--ghost"
+            type="button"
+            role="tab"
+            id="diorama-project-create-tab"
+            data-project-tab="create"
+            aria-controls="diorama-project-create-panel"
+            [attr.aria-selected]="createDialogTab() === 'create'"
+            [attr.tabindex]="createDialogTab() === 'create' ? 0 : -1"
+            (click)="selectCreateDialogTab('create')"
+          >
+            {{ i18n.t('create') }}
+          </button>
+          <button
+            class="ui-button ui-button--ghost"
+            type="button"
+            role="tab"
+            id="diorama-project-import-tab"
+            data-project-tab="import"
+            aria-controls="diorama-project-import-panel"
+            [attr.aria-selected]="createDialogTab() === 'import'"
+            [attr.tabindex]="createDialogTab() === 'import' ? 0 : -1"
+            (click)="selectCreateDialogTab('import')"
+          >
+            {{ i18n.t('projectImportTab') }}
+          </button>
+        </div>
+        @if (createDialogTab() === 'create') {
+          <form
+            id="diorama-project-create-panel"
+            class="diorama-project-workspace__create-form"
+            role="tabpanel"
+            tabindex="0"
+            aria-labelledby="diorama-project-create-tab"
+            (submit)="$event.preventDefault(); createProject()"
+          >
+            <label>
+              {{ i18n.t('projectName') }}
+              <input
+                cdkFocusInitial
+                [value]="projectName()"
+                (input)="updateProjectName($any($event.target).value)"
+                required
+              />
+            </label>
+            <label>
+              {{ i18n.t('minecraftVersion') }}
+              <app-searchable-dropdown
+                [options]="versionOptions()"
+                [selectedId]="minecraftVersion()"
+                [placeholder]="i18n.t('searchMinecraftVersions')"
+                [emptyLabel]="i18n.t('minecraftVersionUnavailable')"
+                [noResults]="i18n.t('noMinecraftVersions')"
+                [ariaLabel]="i18n.t('minecraftVersion')"
+                (selectionChange)="setMinecraftVersion($any($event))"
+              />
+            </label>
+            <div class="diorama-project-workspace__size-heading">
+              <span>{{ i18n.t('structureSize') }}</span>
+              <button
+                class="ui-button ui-button--ghost ui-button--sm"
+                type="button"
+                (click)="setVanillaMax()"
+              >
+                {{ i18n.t('vanillaMax') }}
+              </button>
+            </div>
+            <div class="diorama-project-workspace__size-grid">
+              <label
+                >{{ i18n.t('sizeX')
+                }}<input
+                  type="number"
+                  min="1"
+                  [value]="sizeX()"
+                  (input)="updateSize('x', $any($event.target).value)"
+              /></label>
+              <label
+                >{{ i18n.t('sizeY')
+                }}<input
+                  type="number"
+                  min="1"
+                  [value]="sizeY()"
+                  (input)="updateSize('y', $any($event.target).value)"
+              /></label>
+              <label
+                >{{ i18n.t('sizeZ')
+                }}<input
+                  type="number"
+                  min="1"
+                  [value]="sizeZ()"
+                  (input)="updateSize('z', $any($event.target).value)"
+              /></label>
+            </div>
+            @if (!sizePolicy().dimensionsValid) {
+              <p class="diorama-project-workspace__form-error" role="alert">
+                {{ i18n.t('invalidProjectSize') }}
+              </p>
+            } @else if (!sizePolicy().fitsHugeStructureBlocks) {
+              <p class="diorama-project-workspace__form-error" role="alert">
+                {{ i18n.t('hugeStructureBlocksLimitExceeded') }}
+              </p>
+            } @else if (
+              sizePolicy().exceedsVanilla && structureModeForSize() !== 'huge-structure-blocks'
+            ) {
+              <button
+                class="ui-button ui-button--secondary"
+                type="button"
+                (click)="useHugeStructureBlocks()"
+              >
+                {{ i18n.t('useHugeStructureBlocks') }}
+              </button>
+            }
+            @if (workflow.error()) {
+              <p class="diorama-project-workspace__form-error" role="alert">
+                {{ workflow.error() }}
+              </p>
+            }
+            <footer>
+              <button
+                class="ui-button ui-button--ghost"
+                type="button"
+                [disabled]="creating()"
+                (click)="closeCreateDialog()"
+              >
+                {{ i18n.t('cancel') }}
+              </button>
+              <button
+                class="ui-button ui-button--primary"
+                type="submit"
+                [disabled]="creating() || !!openingId() || !canCreateProject()"
+              >
+                {{ creating() ? i18n.t('creatingProject') : i18n.t('create') }}
+              </button>
+            </footer>
+          </form>
+        } @else {
+          <section
+            id="diorama-project-import-panel"
+            class="diorama-project-workspace__import-panel"
+            role="tabpanel"
+            tabindex="0"
+            aria-labelledby="diorama-project-import-tab"
+          >
+            <p>{{ i18n.t('dioramaProjectImportDescription') }}</p>
+            <app-project-utilities variant="compact" />
+          </section>
+        }
+      </section>
+    </div>
+  }
+</div>

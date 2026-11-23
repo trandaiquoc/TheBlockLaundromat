@@ -4,6 +4,7 @@ import {
   Group,
   Mesh,
   MeshStandardMaterial,
+  PlaneGeometry,
   type WebGLRenderer,
 } from 'three';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -397,7 +398,23 @@ function createAsset(): DioramaSceneAsset {
     map: new DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1),
   });
   addNamedMesh(root, 'Floor', geometry, material, [0, 0, 0]);
-  addNamedMesh(root, 'Washer', geometry, material, [0, 1, -3]);
+  addNamedMesh(root, 'Washer', new BoxGeometry(1, 1, 1), material, [0, 1, -3]);
+  const replacementWasher = new Group();
+  const washer = new Group();
+  washer.name = dioramaSceneNodeName('Washer');
+  washer.position.set(0, 1, -3);
+  addNamedMesh(washer, 'Washer body', geometry, material, [0, 0, 0]);
+  addNamedMesh(
+    washer,
+    dioramaSceneNodeName('Washer.PreviewGlass'),
+    new BoxGeometry(0.74, 0.74, 0.04),
+    material,
+    [0.575, 0, 0.05],
+  );
+  addNamedSurfaceGroup(washer, 'Washer.Open.Keycap', [0.67, 1.05, 0.5], material);
+  addNamedSurfaceGroup(washer, 'Washer.Delete.Keycap', [0.67, 0.63, 0.5], material);
+  for (const [name, point] of washerAnchors) addAnchor(washer, name, point);
+  replacementWasher.add(washer);
   const board = addNamedMesh(root, 'ProjectBoard', geometry, material, [-2.7, 1.3, -2.6]);
   board.rotation.y = Math.PI / 4;
   addAnchor(root, 'Anchor.NicheLantern.Light', [2, 2, -2]);
@@ -411,11 +428,16 @@ function createAsset(): DioramaSceneAsset {
     addNamedGroup(root, nodeName, [0, 0, 0]);
   }
   for (const [name, point] of profileAnchors) addAnchor(root, name, point);
+  const courierNote = root.getObjectByName(dioramaSceneNodeName('Courier.Anchor.Note')) as Group;
+  const courierPaper = new Mesh(new PlaneGeometry(0.504, 0.41), material);
+  courierPaper.name = dioramaSceneNodeName('BlankNote.Sheet');
+  courierNote.add(courierPaper);
   addCharacterRoot(root, 'Courier.Root', -1.5, geometry, material);
   addCharacterRoot(root, 'Guide.Root', 1.5, geometry, material);
 
   return {
     root,
+    replacementWasher,
     materialVariants: new DioramaMaterialVariants([], [material, inactiveVariantMaterial]),
     exteriorGroundTexture: new DataTexture(new Uint8Array([215, 190, 154, 255]), 1, 1),
   };
@@ -432,9 +454,16 @@ const profileAnchors: readonly [string, readonly [number, number, number]][] = [
   ['Anchor.Board.BottomRight', [-1.5, 0.2, -2.56]],
   ['Anchor.Board.TopLeft', [-3.9, 2.4, -2.56]],
   ['Anchor.Board.TopRight', [-1.5, 2.4, -2.56]],
-  ['Anchor.Washer.Preview', [0, 1, -3.5]],
-  ['Anchor.Washer.Open', [0.5, 1, -3.5]],
-  ['Anchor.Washer.Delete', [-0.5, 1, -3.5]],
+  ['Courier.Anchor.Note', [-1.5, 1.8, -0.2]],
+];
+
+const washerAnchors: readonly [string, readonly [number, number, number]][] = [
+  ['Anchor.Washer.Preview', [0, 0, -0.5]],
+  ['Anchor.Washer.Open', [0.5, 0, -0.5]],
+  ['Anchor.Washer.Delete', [-0.5, 0, -0.5]],
+  ['Anchor.Washer.ProjectName', [0, 0.55, -0.5]],
+  ['Anchor.Washer.ProjectName.TopLeft', [-0.4, 0.7, -0.5]],
+  ['Anchor.Washer.ProjectName.BottomRight', [0.4, 0.45, -0.5]],
 ];
 
 function addCharacterRoot(
@@ -463,6 +492,25 @@ function addNamedGroup(root: Group, name: string, point: readonly [number, numbe
   group.name = dioramaSceneNodeName(name);
   group.position.set(...point);
   root.add(group);
+}
+
+function addNamedSurfaceGroup(
+  root: Group,
+  name: string,
+  point: readonly [number, number, number],
+  material: MeshStandardMaterial,
+): void {
+  const surface = new Group();
+  surface.name = dioramaSceneNodeName(name);
+  surface.position.set(...point);
+  root.add(surface);
+  addNamedMesh(
+    surface,
+    `${dioramaSceneNodeName(name)}.Primitive`,
+    new BoxGeometry(0.508, 0.379, 0.0615),
+    material,
+    [0, 0, 0],
+  );
 }
 
 function addNamedMesh(

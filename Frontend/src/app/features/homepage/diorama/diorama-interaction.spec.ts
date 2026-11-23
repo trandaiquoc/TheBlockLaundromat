@@ -6,6 +6,55 @@ import {
 } from './diorama-interaction';
 
 describe('DioramaInteractionController', () => {
+  it('treats a tap on the Courier root as a raccoon greeting intent', () => {
+    const canvas = createCanvas();
+    const callbacks = createCallbacks();
+    const raccoon = createTarget();
+    const scene = new Group();
+    scene.add(raccoon);
+    const controller = new DioramaInteractionController(
+      canvas,
+      createCamera(),
+      [{ object: raccoon, target: 'raccoon' }],
+      callbacks,
+      true,
+      true,
+      scene,
+    );
+
+    pointer(canvas, 'pointerdown', 50, 50);
+    pointer(canvas, 'pointerup', 50, 50);
+
+    expect(callbacks.onIntent).toHaveBeenCalledWith({ type: 'greet-raccoon' });
+    controller.dispose();
+  });
+
+  it('does not activate a target through a nearer opaque scene mesh', () => {
+    const canvas = createCanvas();
+    const callbacks = createCallbacks();
+    const washer = createTarget();
+    const wall = new Mesh(new BoxGeometry(2, 2, 0.1), new MeshBasicMaterial());
+    wall.position.z = 2;
+    const scene = new Group();
+    scene.add(washer, wall);
+    scene.updateMatrixWorld(true);
+    const controller = new DioramaInteractionController(
+      canvas,
+      createCamera(),
+      [{ object: washer, target: 'washer' }],
+      callbacks,
+      true,
+      true,
+      scene,
+    );
+
+    pointer(canvas, 'pointerdown', 50, 50);
+    pointer(canvas, 'pointerup', 50, 50);
+
+    expect(callbacks.onIntent).not.toHaveBeenCalled();
+    controller.dispose();
+  });
+
   it('raycasts the nearest target and emits its semantic intent after a tap', () => {
     const canvas = createCanvas();
     const callbacks = createCallbacks();

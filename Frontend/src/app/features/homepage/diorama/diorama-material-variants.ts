@@ -24,6 +24,15 @@ export class DioramaMaterialVariants {
   }
 }
 
+export function combineDioramaMaterialVariants(
+  variants: readonly DioramaMaterialVariants[],
+): DioramaMaterialVariants {
+  return new DioramaMaterialVariants(
+    variants.flatMap(({ targets }) => targets),
+    variants.flatMap(({ ownedMaterials }) => ownedMaterials),
+  );
+}
+
 interface GltfPrimitiveDefinition {
   readonly extensions?: Readonly<Record<string, unknown>>;
 }

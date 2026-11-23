@@ -1,22 +1,22 @@
 import type { Router } from '@angular/router';
-import type { ProjectDocument } from '../../../core/domain/project.types';
-import type { ProjectDeletionService } from '../../../core/persistence/project-deletion.service';
+import type { ProjectDocument } from '../../core/domain/project.types';
+import type { ProjectDeletionService } from '../../core/persistence/project-deletion.service';
 import type {
   ProjectStore,
   ProjectSummary,
-} from '../../../core/persistence/project-store/project-store.port';
-import type { WorkspaceStateService } from '../../../core/workspace/workspace-state.service';
-import type { EditorSessionService } from '../../../core/editor/state/editor-session.service';
-import type { DialogService } from '../../../core/ui/dialog/dialog.service';
-import type { I18nService } from '../../../core/ui/localization/i18n.service';
+} from '../../core/persistence/project-store/project-store.port';
+import type { WorkspaceStateService } from '../../core/workspace/workspace-state.service';
+import type { EditorSessionService } from '../../core/editor/state/editor-session.service';
+import type { DialogService } from '../../core/ui/dialog/dialog.service';
+import type { I18nService } from '../../core/ui/localization/i18n.service';
 import type { ErrorHandler } from '@angular/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   canDeleteProject,
   projectCreationFailureMessage,
   projectCreationGuard,
-  ProjectScreenWorkflow,
-} from './project-screen-workflow';
+  ProjectWorkflow,
+} from './project-workflow';
 
 const existingProject: ProjectDocument = {
   schemaVersion: 3,
@@ -58,7 +58,7 @@ describe('project screen workflow helpers', () => {
   });
 });
 
-describe('ProjectScreenWorkflow', () => {
+describe('ProjectWorkflow', () => {
   let store: ProjectStore;
   let stored: Map<string, ProjectDocument>;
   let summaries: ProjectSummary[];
@@ -80,7 +80,7 @@ describe('ProjectScreenWorkflow', () => {
     error: ReturnType<typeof vi.fn>;
   };
   let errorHandler: { handleError: ReturnType<typeof vi.fn> };
-  let workflow: ProjectScreenWorkflow;
+  let workflow: ProjectWorkflow;
 
   beforeEach(() => {
     stored = new Map([[existingProject.id, existingProject]]);
@@ -123,7 +123,7 @@ describe('ProjectScreenWorkflow', () => {
     };
     errorHandler = { handleError: vi.fn() };
     const i18n = { t: (key: string) => key };
-    workflow = new ProjectScreenWorkflow(
+    workflow = new ProjectWorkflow(
       store,
       workspace as unknown as WorkspaceStateService,
       session as unknown as EditorSessionService,
@@ -164,6 +164,7 @@ describe('ProjectScreenWorkflow', () => {
     expect(store.open).toHaveBeenCalledWith(existingProject.id);
     expect(session.resetForProjectChange).toHaveBeenCalledWith(existingProject.id);
     expect(workspace.activate).toHaveBeenCalledWith(existingProject);
+    expect(workflow.selectedProjectId()).toBe(existingProject.id);
     expect(workflow.openingId()).toBeUndefined();
   });
 
@@ -182,6 +183,7 @@ describe('ProjectScreenWorkflow', () => {
   it('does not mutate storage when recent-project deletion is cancelled', async () => {
     dialogs.confirm.mockResolvedValue(false);
     await workflow.loadProjects();
+    workflow.selectProject(existingProject.id);
 
     await workflow.deleteProject(summaryFor(existingProject));
 
@@ -189,18 +191,21 @@ describe('ProjectScreenWorkflow', () => {
     expect(projectDeletion.deleteProject).not.toHaveBeenCalled();
     expect(store.delete).not.toHaveBeenCalled();
     expect(workflow.projects()).toEqual([summaryFor(existingProject)]);
+    expect(workflow.selectedProjectId()).toBe(existingProject.id);
     expect(workflow.deletingProjectIds().size).toBe(0);
   });
 
   it('delegates confirmed project deletion to the shared lifecycle owner', async () => {
     workspace.project.mockReturnValue(existingProject);
     await workflow.loadProjects();
+    workflow.selectProject(existingProject.id);
 
     await workflow.deleteProject(summaryFor(existingProject));
 
     expect(projectDeletion.deleteProject).toHaveBeenCalledWith(existingProject.id);
     expect(store.delete).not.toHaveBeenCalled();
     expect(workflow.projects()).toEqual([]);
+    expect(workflow.selectedProjectId()).toBeUndefined();
   });
 
   it('keeps the project row when the shared deletion owner reports a storage failure', async () => {

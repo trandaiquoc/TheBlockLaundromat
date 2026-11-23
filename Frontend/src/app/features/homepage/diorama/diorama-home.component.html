@@ -30,11 +30,15 @@
   </div>
 
   <app-diorama-scene
+    #scene
     [timeTransition]="time.timeTransition()"
     [timeProgress]="time.cycleProgress()"
     (timeChanged)="handleTimeDialChange($event)"
     (timeAnimationUpdate)="handleTimeAnimationUpdate($event)"
+    (courierActivated)="handleCourierActivated()"
   />
+
+  <app-diorama-project-workspace (overviewRequested)="handleProjectBoardReturn()" />
 
   <app-diorama-home-header />
   <app-homepage-account-menu

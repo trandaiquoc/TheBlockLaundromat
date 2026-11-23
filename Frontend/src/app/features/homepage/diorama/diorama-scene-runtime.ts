@@ -17,6 +17,10 @@ import { DioramaCameraRig } from './diorama-camera-rig';
 import { DioramaInteractionController } from './diorama-interaction';
 import { DioramaRaccoonController } from './diorama-raccoon-controller';
 import { DioramaSceneAnimation } from './diorama-scene-animation';
+import {
+  DioramaProjectAnchorProjector,
+  type DioramaProjectProjection,
+} from './diorama-project-anchor-projector';
 import { LAUNDROMAT_DIORAMA_PROFILE } from './diorama-scene-profile';
 import {
   loadDioramaSceneAsset,
@@ -39,6 +43,7 @@ export interface DioramaRuntimeCallbacks {
   readonly onWebGLUnavailable: (error?: unknown) => void;
   readonly onSceneLoaded: () => void;
   readonly onSceneLoadFailed: (error: unknown) => void;
+  readonly onProjectProjection?: (projection: DioramaProjectProjection) => void;
 }
 
 export interface DioramaRuntimeAdapters {
@@ -76,6 +81,10 @@ export class DioramaSceneRuntime {
   private raccoonController?: DioramaRaccoonController;
   private interaction?: DioramaInteractionController;
   private animation?: DioramaSceneAnimation;
+  private projectAnchorProjector?: DioramaProjectAnchorProjector;
+  private projectionDiagnosticsEnabled = false;
+  private sceneProjectionCount = 0;
+  private sceneProjectionTotalMs = 0;
   private resizeObserver?: ResizeObserver;
   private window?: Window;
   private document?: Document;
@@ -151,6 +160,9 @@ export class DioramaSceneRuntime {
     );
     this.window = window;
     this.document = document;
+    this.projectionDiagnosticsEnabled = new URLSearchParams(window.location.search).has(
+      'dioramaPerf',
+    );
     this.motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     this.systemReducedMotion = this.motionQuery?.matches ?? false;
     this.reducedMotion = this.systemReducedMotion || !this.sceneAnimationsEnabled;
@@ -243,6 +255,7 @@ export class DioramaSceneRuntime {
     this.sceneLoadAbortController = undefined;
     this.animation?.dispose();
     this.animation = undefined;
+    this.projectAnchorProjector = undefined;
     this.raccoonController?.dispose();
     this.raccoonController = undefined;
     this.interaction?.dispose();
@@ -317,6 +330,7 @@ export class DioramaSceneRuntime {
       }
 
       this.assets = buildDioramaScene(asset);
+      this.projectAnchorProjector = new DioramaProjectAnchorProjector(this.assets);
       this.resources.trackScene(this.assets.scene, asset.materialVariants.ownedMaterials);
       this.cameraRig = new DioramaCameraRig(
         camera,
@@ -354,6 +368,7 @@ export class DioramaSceneRuntime {
         },
         () => profile.motion.roomSpinFocuses.includes(this.currentFocus),
         () => this.currentFocus === 'overview',
+        this.assets.scene,
       );
 
       this.animation = new DioramaSceneAnimation(
@@ -368,6 +383,7 @@ export class DioramaSceneRuntime {
           this.callbacks.onTimeAnimationUpdate(update);
         },
         this.reducedMotion,
+        () => this.publishProjectProjection(),
       );
       this.animation.setVisible(this.document?.visibilityState !== 'hidden');
       this.animation.initializeTheme(this.theme);
@@ -422,6 +438,35 @@ export class DioramaSceneRuntime {
       camera.updateProjectionMatrix();
     }
     this.animation?.invalidate();
+  }
+
+  private publishProjectProjection(): void {
+    if (
+      !this.callbacks.onProjectProjection ||
+      !this.camera ||
+      this.width <= 0 ||
+      this.height <= 0
+    ) {
+      return;
+    }
+    const projectionStartedAt = this.projectionDiagnosticsEnabled
+      ? this.window?.performance.now()
+      : undefined;
+    const projection = this.projectAnchorProjector?.project(this.camera, this.width, this.height);
+    if (!projection) return;
+    if (projectionStartedAt !== undefined) {
+      this.recordSceneProjectionDuration(this.window!.performance.now() - projectionStartedAt);
+    }
+    this.callbacks.onProjectProjection(projection);
+  }
+
+  private recordSceneProjectionDuration(durationMs: number): void {
+    const canvas = this.canvas;
+    if (!canvas) return;
+    this.sceneProjectionCount++;
+    this.sceneProjectionTotalMs += durationMs;
+    canvas.dataset['sceneProjectionCount'] = String(this.sceneProjectionCount);
+    canvas.dataset['sceneProjectionTotalMs'] = this.sceneProjectionTotalMs.toFixed(4);
   }
 
   private updateMotionPreference(): void {

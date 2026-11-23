@@ -1,17 +1,17 @@
 import { DestroyRef, inject, signal } from '@angular/core';
-import { BlockLibraryService } from '../../../core/blocks/catalog/block-library.service';
-import type { ProjectDocument } from '../../../core/domain/project.types';
-import { structureJsonFileIssue } from '../../../core/persistence/structure-json/import/structure-json-file-policy';
-import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
+import { BlockLibraryService } from '../../core/blocks/catalog/block-library.service';
+import type { ProjectDocument } from '../../core/domain/project.types';
+import { structureJsonFileIssue } from '../../core/persistence/structure-json/import/structure-json-file-policy';
+import { UiPreferencesService } from '../../core/ui/preferences/ui-preferences.service';
 import {
   parseStructureJsonWithWorker,
   type StructureJsonValidationCancellation,
-} from '../../../core/persistence/structure-json/import/structure-json-import';
+} from '../../core/persistence/structure-json/import/structure-json-import';
 import {
   prepareStructureJsonProjectImport,
   type StructureJsonProjectImportError,
   type StructureJsonProjectImportPreview,
-} from '../../../core/persistence/structure-json/import/structure-json-project-import';
+} from '../../core/persistence/structure-json/import/structure-json-project-import';
 
 export type StructureJsonProjectImportProgress =
   'idle' | 'reading' | 'parsing' | 'checking' | 'saving' | 'error' | 'ready';

@@ -1,9 +1,10 @@
 import { Inject, Injectable, signal } from '@angular/core';
-import { ProjectDocument } from '../../../core/domain/project.types';
-import { ProjectPackageError } from '../../../core/persistence/project-package/project-package';
-import { ProjectPersistenceService } from '../../../core/persistence/project-persistence.service';
-import { PROJECT_STORE } from '../../../core/persistence/project-store/project-store.token';
-import { ProjectStore } from '../../../core/persistence/project-store/project-store.port';
+import { ProjectDocument } from '../../core/domain/project.types';
+import { ProjectPackageError } from '../../core/persistence/project-package/project-package';
+import { ProjectPersistenceService } from '../../core/persistence/project-persistence.service';
+import { PROJECT_STORE } from '../../core/persistence/project-store/project-store.token';
+import { ProjectStore } from '../../core/persistence/project-store/project-store.port';
+import { ProjectWorkflow } from './project-workflow';
 
 export type BackupFailure =
   | 'file-type'
@@ -30,7 +31,10 @@ export class ProjectBackupWorkflow {
   readonly failure = this.failureState.asReadonly();
   readonly busy = this.busyState.asReadonly();
 
-  constructor(@Inject(PROJECT_STORE) store: ProjectStore) {
+  constructor(
+    @Inject(PROJECT_STORE) store: ProjectStore,
+    private readonly projectWorkflow: ProjectWorkflow,
+  ) {
     this.persistence = new ProjectPersistenceService(store);
   }
 
@@ -90,7 +94,7 @@ export class ProjectBackupWorkflow {
       const collision = await this.persistence.exists(preview.id);
       if (generation !== this.generation) return undefined;
       const project = collision ? { ...preview, id: crypto.randomUUID() } : preview;
-      await this.persistence.createValidatedImportedProject(project);
+      await this.projectWorkflow.createImportedProject(project);
       if (generation !== this.generation) return undefined;
       this.previewState.set(undefined);
       return project;

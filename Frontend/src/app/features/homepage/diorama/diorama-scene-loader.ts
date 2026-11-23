@@ -13,8 +13,10 @@ import {
   LAUNDROMAT_DIORAMA_PROFILE,
   dioramaSceneNodeName,
   requiredDioramaSceneNodes,
+  requiredDioramaWasherNodes,
 } from './diorama-scene-profile';
 import {
+  combineDioramaMaterialVariants,
   DioramaMaterialsVariantsPlugin,
   type DioramaMaterialVariants,
 } from './diorama-material-variants';
@@ -22,8 +24,14 @@ import { disposeDioramaResources } from './diorama-scene-resources';
 
 export interface DioramaSceneAsset {
   readonly root: Group;
+  readonly replacementWasher: Group;
   readonly materialVariants: DioramaMaterialVariants;
   readonly exteriorGroundTexture: Texture;
+}
+
+interface ParsedVariantScene {
+  readonly root: Group;
+  readonly materialVariants: DioramaMaterialVariants;
 }
 
 export type DioramaSceneAssetLoader = (
@@ -37,32 +45,39 @@ export async function loadDioramaSceneAsset(
   fetchAsset: typeof fetch = globalThis.fetch,
 ): Promise<DioramaSceneAsset> {
   const profile = LAUNDROMAT_DIORAMA_PROFILE;
-  const assetURL = new URL(profile.roomAssetPath, baseURI);
-  const response = await fetchAsset(assetURL, { signal });
-  if (!response.ok) throw new Error(`Could not load the Diorama room (HTTP ${response.status}).`);
-
-  const bytes = await response.arrayBuffer();
+  const roomURL = new URL(profile.roomAssetPath, baseURI);
+  const washerURL = new URL(profile.washerAssetPath, baseURI);
+  const [roomBytes, washerBytes] = await Promise.all([
+    fetchSceneBytes(roomURL, 'room', signal, fetchAsset),
+    fetchSceneBytes(washerURL, 'replacement washer', signal, fetchAsset),
+  ]);
   if (signal.aborted) throw createAbortError();
 
-  const loader = new GLTFLoader();
-  let variantsPlugin: DioramaMaterialsVariantsPlugin | undefined;
-  loader.register((parser) => {
-    variantsPlugin = new DioramaMaterialsVariantsPlugin(parser);
-    return variantsPlugin;
-  });
-
-  const gltf = await loader.parseAsync(bytes, new URL('.', assetURL).href);
-  const materialVariants = variantsPlugin?.materialVariants;
+  const parsed = await Promise.allSettled([
+    parseVariantScene(roomBytes, roomURL),
+    parseVariantScene(washerBytes, washerURL),
+  ]);
+  const room = parsed[0].status === 'fulfilled' ? parsed[0].value : undefined;
+  const washer = parsed[1].status === 'fulfilled' ? parsed[1].value : undefined;
+  if (parsed.some((result) => result.status === 'rejected')) {
+    if (room) disposeParsedScene(room.root, room.materialVariants);
+    if (washer) disposeParsedScene(washer.root, washer.materialVariants);
+    const failure = parsed.find((result) => result.status === 'rejected');
+    throw failure?.status === 'rejected' ? failure.reason : new Error('Diorama assets failed.');
+  }
+  if (!room || !washer) throw new Error('The Diorama room or replacement washer was not parsed.');
   if (signal.aborted) {
-    disposeParsedScene(gltf.scene, materialVariants);
+    disposeParsedScene(room.root, room.materialVariants);
+    disposeParsedScene(washer.root, washer.materialVariants);
     throw createAbortError();
   }
 
   let exteriorGroundTexture: Texture | undefined;
   try {
-    if (!materialVariants) throw new Error('The Diorama room did not load its material variants.');
-    assertRenderableScene(gltf.scene);
-    assertRequiredSceneObjects(gltf.scene);
+    assertRenderableScene(room.root);
+    assertRequiredSceneObjects(room.root);
+    assertRenderableScene(washer.root);
+    assertRequiredWasherObjects(washer.root);
     exteriorGroundTexture = await loadExteriorGroundTexture(
       new URL(profile.exteriorGroundTexturePath, baseURI),
       signal,
@@ -70,16 +85,50 @@ export async function loadDioramaSceneAsset(
     );
     if (signal.aborted) throw createAbortError();
     return {
-      root: gltf.scene,
-      materialVariants,
+      root: room.root,
+      replacementWasher: washer.root,
+      materialVariants: combineDioramaMaterialVariants([
+        room.materialVariants,
+        washer.materialVariants,
+      ]),
       exteriorGroundTexture,
     };
   } catch (error) {
     exteriorGroundTexture?.dispose();
     closeImageBitmap(exteriorGroundTexture?.image);
-    disposeParsedScene(gltf.scene, materialVariants);
+    disposeParsedScene(room.root, room.materialVariants);
+    disposeParsedScene(washer.root, washer.materialVariants);
     throw error;
   }
+}
+
+async function fetchSceneBytes(
+  url: URL,
+  label: string,
+  signal: AbortSignal,
+  fetchAsset: typeof fetch,
+): Promise<ArrayBuffer> {
+  const response = await fetchAsset(url, { signal });
+  if (!response.ok) {
+    throw new Error(`Could not load the Diorama ${label} (HTTP ${response.status}).`);
+  }
+  return response.arrayBuffer();
+}
+
+async function parseVariantScene(bytes: ArrayBuffer, assetURL: URL): Promise<ParsedVariantScene> {
+  const loader = new GLTFLoader();
+  let variantsPlugin: DioramaMaterialsVariantsPlugin | undefined;
+  loader.register((parser) => {
+    variantsPlugin = new DioramaMaterialsVariantsPlugin(parser);
+    return variantsPlugin;
+  });
+  const gltf = await loader.parseAsync(bytes, new URL('.', assetURL).href);
+  const materialVariants = variantsPlugin?.materialVariants;
+  if (!materialVariants) {
+    disposeDioramaResources(gltf.scene);
+    throw new Error(`The Diorama asset '${assetURL.pathname}' did not load its material variants.`);
+  }
+  return { root: gltf.scene, materialVariants };
 }
 
 function assertRenderableScene(root: Group): void {
@@ -115,6 +164,14 @@ function assertRequiredSceneObjects(root: Group): void {
     });
     if (matches !== 1) {
       throw new Error(`The Diorama room must contain exactly one '${name}' character root.`);
+    }
+  }
+}
+
+function assertRequiredWasherObjects(root: Group): void {
+  for (const name of requiredDioramaWasherNodes()) {
+    if (!root.getObjectByName(dioramaSceneNodeName(name))) {
+      throw new Error(`The replacement washer is missing its '${name}' scene object or anchor.`);
     }
   }
 }

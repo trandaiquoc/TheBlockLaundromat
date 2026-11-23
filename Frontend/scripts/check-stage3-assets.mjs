@@ -27,6 +27,10 @@ const expectedCounts = {
   'catalog-specification': 4,
   'documentation-render': 28,
 };
+const retiredStandaloneWasherAssets = new Set([
+  'Frontend/source-assets/homepage/models/Props/Washer/Washer.blend',
+  'Frontend/source-assets/homepage/models/Props/Washer/Washer.glb',
+]);
 const actualCounts = new Map();
 const seenArchivePaths = new Set();
 const seenRepositoryPaths = new Set();
@@ -64,6 +68,12 @@ for (const row of inventoryRows) {
   const filePath = resolve(repository, row.repositoryPath);
   if (!filePath.startsWith(repository + sep)) {
     throw new Error(`Stage 3 inventory path escapes the repository: ${row.repositoryPath}`);
+  }
+  if (retiredStandaloneWasherAssets.has(row.repositoryPath)) {
+    if (existsSync(filePath)) {
+      throw new Error(`Retired standalone washer asset is still present: ${row.repositoryPath}`);
+    }
+    continue;
   }
   const bytes = readFileSync(filePath);
   if (
@@ -194,7 +204,20 @@ if (existsSync(distRuntime)) {
       'Generated exterior forest-floor texture is missing or differs from its source.',
     );
   }
-  const expectedRuntimePaths = new Set([productionRuntimePath, groundTextureRuntimePath]);
+  const washerRuntimePath = 'washer-alternate/Washer.glb';
+  const washerRuntime = join(distRuntime, ...washerRuntimePath.split('/'));
+  if (
+    !existsSync(washerRuntime) ||
+    createHash('sha256').update(readFileSync(washerRuntime)).digest('hex') !==
+      replacementWasherDigest
+  ) {
+    throw new Error('Replacement washer GLB is missing or differs from the inspected asset.');
+  }
+  const expectedRuntimePaths = new Set([
+    productionRuntimePath,
+    washerRuntimePath,
+    groundTextureRuntimePath,
+  ]);
   const actualRuntimePaths = new Set(
     runtimeFiles.map((path) => relative(distRuntime, path).split(sep).join('/')),
   );
@@ -204,11 +227,11 @@ if (existsSync(distRuntime)) {
   ) {
     throw new Error('The Diorama runtime bundle contains missing or unexpected files.');
   }
-  runtimeSummary = `Single assembled room GLB and forest-floor texture verified in Angular output (${statSync(productionRuntime).size} GLB bytes; alternate washer Blender source contract remains archived but is not shipped).`;
+  runtimeSummary = `Assembled room GLB, replacement washer GLB, and forest-floor texture verified in Angular output (${statSync(productionRuntime).size + statSync(washerRuntime).size} GLB bytes).`;
 }
 
 console.log(
-  `Room asset archive verified: 676 inventoried files (322 Blender sources, 322 GLBs, 28 renders, and four catalog/specification files); alternate washer source contract remains intact. ${runtimeSummary}`,
+  `Room asset archive verified: 676 inventoried files (322 Blender sources, 322 GLBs, 28 renders, and four catalog/specification files); replacement washer contract remains intact. ${runtimeSummary}`,
 );
 
 function readGlb(path) {

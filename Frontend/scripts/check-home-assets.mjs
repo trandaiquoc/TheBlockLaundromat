@@ -7,6 +7,10 @@ const repository = resolve(frontend, '..');
 const source = join(frontend, 'source-assets/homepage');
 const runtimeSource = new Map([
   ['diorama/Octagonal-Laundromat.glb', join(source, 'models/Room/Octagonal-Laundromat.glb')],
+  [
+    'diorama/washer-alternate/Washer.glb',
+    join(source, 'models/Props/Washer-Alternate/Washer.glb'),
+  ],
   ['diorama/forest-floor.png', join(source, 'textures/diorama/forest-floor.png')],
 ]);
 const runtimeDirectory = join(frontend, 'dist/TheBlockLaundromat/browser/assets/homepage/diorama');
@@ -51,8 +55,10 @@ for (const [runtimePath, sourcePath] of runtimeSource) {
 }
 
 const roomDocument = readGlb(readFileSync([...runtimeSource.values()][0])).document;
+const washerDocument = readGlb(
+  readFileSync(runtimeSource.get('diorama/washer-alternate/Washer.glb')),
+).document;
 const requiredNodes = [
-  'Washer',
   'ProjectBoard',
   'Courier.Root',
   'Guide.Root',
@@ -68,9 +74,7 @@ const requiredNodes = [
   'Anchor.Camera.Board',
   'Anchor.Camera.Portrait',
   'Anchor.Camera.Recenter',
-  'Anchor.Washer.Preview',
-  'Anchor.Washer.Open',
-  'Anchor.Washer.Delete',
+  'Courier.Anchor.Note',
   'LeftCabinet',
   'WestIvy',
   'ShelfFern',
@@ -97,24 +101,47 @@ if (requiredNodes.some((name) => nodes.filter((candidate) => candidate === name)
   throw new Error('The room GLB is missing a unique profile object or anchor.');
 }
 
-const variants = roomDocument.extensions?.KHR_materials_variants?.variants ?? [];
-const variantNames = variants.map((variant) => variant?.name).sort();
-const usedVariantIndices = new Set();
-for (const mesh of roomDocument.meshes ?? []) {
-  for (const primitive of mesh.primitives ?? []) {
-    for (const mapping of primitive.extensions?.KHR_materials_variants?.mappings ?? []) {
-      for (const index of mapping.variants ?? []) usedVariantIndices.add(index);
-    }
-  }
-}
+const requiredWasherNodes = [
+  'Washer',
+  'Anchor.Washer.Preview',
+  'Anchor.Washer.Open',
+  'Anchor.Washer.Delete',
+  'Anchor.Washer.ProjectName',
+  'Anchor.Washer.ProjectName.TopLeft',
+  'Anchor.Washer.ProjectName.BottomRight',
+];
+const washerNodes = washerDocument.nodes?.map((node) => node.name) ?? [];
 if (
-  variantNames.join(',') !== 'Dark,Light,Minecraft,Raccoon' ||
-  usedVariantIndices.size !== variants.length ||
-  [...usedVariantIndices].some(
-    (index) => !Number.isInteger(index) || index < 0 || index >= variants.length,
+  requiredWasherNodes.some(
+    (name) => washerNodes.filter((candidate) => candidate === name).length !== 1,
   )
 ) {
-  throw new Error('The room GLB is missing one or more used theme variants.');
+  throw new Error('The replacement washer GLB is missing a unique profile object or anchor.');
+}
+
+for (const [label, document] of [
+  ['room', roomDocument],
+  ['replacement washer', washerDocument],
+]) {
+  const variants = document.extensions?.KHR_materials_variants?.variants ?? [];
+  const variantNames = variants.map((variant) => variant?.name).sort();
+  const usedVariantIndices = new Set();
+  for (const mesh of document.meshes ?? []) {
+    for (const primitive of mesh.primitives ?? []) {
+      for (const mapping of primitive.extensions?.KHR_materials_variants?.mappings ?? []) {
+        for (const index of mapping.variants ?? []) usedVariantIndices.add(index);
+      }
+    }
+  }
+  if (
+    variantNames.join(',') !== 'Dark,Light,Minecraft,Raccoon' ||
+    usedVariantIndices.size !== variants.length ||
+    [...usedVariantIndices].some(
+      (index) => !Number.isInteger(index) || index < 0 || index >= variants.length,
+    )
+  ) {
+    throw new Error(`The Diorama ${label} GLB is missing one or more used theme variants.`);
+  }
 }
 const materialVariantsChangeCasterSilhouette = profile.match(
   /materialVariantsChangeCasterSilhouette:\s*(true|false)/,
@@ -123,6 +150,14 @@ if (!materialVariantsChangeCasterSilhouette) {
   throw new Error('The Diorama profile must declare its theme shadow-silhouette contract.');
 }
 const nonOpaqueMaterials = (roomDocument.materials ?? []).filter((material) => {
+  const alpha = material.pbrMetallicRoughness?.baseColorFactor?.[3];
+  return (
+    (material.alphaMode ?? 'OPAQUE') !== 'OPAQUE' ||
+    (alpha !== undefined && alpha < 1) ||
+    material.alphaTexture !== undefined
+  );
+});
+const nonOpaqueWasherMaterials = (washerDocument.materials ?? []).filter((material) => {
   const alpha = material.pbrMetallicRoughness?.baseColorFactor?.[3];
   return (
     (material.alphaMode ?? 'OPAQUE') !== 'OPAQUE' ||
@@ -143,7 +178,22 @@ for (const mesh of roomDocument.meshes ?? []) {
     }
   }
 }
-if (materialVariantsChangeCasterSilhouette === 'false' && nonOpaqueMaterials.length > 0) {
+for (const mesh of washerDocument.meshes ?? []) {
+  for (const primitive of mesh.primitives ?? []) {
+    const baseMaterial = washerDocument.materials?.[primitive.material] ?? {};
+    const mappings = primitive.extensions?.KHR_materials_variants?.mappings ?? [];
+    for (const mapping of mappings) {
+      const variantMaterial = washerDocument.materials?.[mapping.material] ?? {};
+      if (Boolean(baseMaterial.doubleSided) !== Boolean(variantMaterial.doubleSided)) {
+        variantShadowSideChanges.push({ baseMaterial, variantMaterial });
+      }
+    }
+  }
+}
+if (
+  materialVariantsChangeCasterSilhouette === 'false' &&
+  (nonOpaqueMaterials.length > 0 || nonOpaqueWasherMaterials.length > 0)
+) {
   throw new Error(
     'Diorama profile skips theme shadow updates, but the room GLB contains opacity-sensitive materials.',
   );
@@ -174,7 +224,7 @@ if (existsSync(runtimeDirectory)) {
     (total, path) => total + readFileSync(path).length,
     0,
   );
-  runtimeSummary = `Diorama runtime allowlist verified: ${runtimeBytes} bytes across one room GLB and one texture.`;
+  runtimeSummary = `Diorama runtime allowlist verified: ${runtimeBytes} bytes across two GLBs and one texture.`;
 }
 
 const sourceBytes = [...runtimeSource.values()].reduce(

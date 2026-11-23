@@ -1,0 +1,317 @@
+<div
+  class="project-utilities"
+  [class.project-utilities--compact]="variant() === 'compact'"
+  [attr.aria-label]="i18n.t('projectActions')"
+>
+  <input
+    #structureJsonFile
+    type="file"
+    accept="application/json,.json"
+    hidden
+    (change)="selectStructureJson($event)"
+  />
+  <button
+    type="button"
+    class="ui-button ui-button--secondary structure-json-create-action"
+    [disabled]="creating() || !!openingId()"
+    #structureJsonCreateTrigger
+    (click)="openStructureJsonPicker(structureJsonFile)"
+  >
+    <svg lucideFileUp aria-hidden="true"></svg><span>{{ i18n.t('createFromStructureJson') }}</span>
+  </button>
+  <button
+    #backupTrigger
+    type="button"
+    class="ui-button ui-button--secondary structure-json-create-action"
+    [disabled]="creating() || !!openingId()"
+    (click)="openBackupDialog()"
+  >
+    <svg lucideFileUp aria-hidden="true"></svg><span>{{ i18n.t('importProjectPackage') }}</span>
+  </button>
+</div>
+@if (backupDialogOpen()) {
+  <div class="project-import-backdrop" role="presentation">
+    <section
+      class="project-import-dialog backup-import-dialog"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="i18n.t('importProjectPackage')"
+      (keydown.escape)="closeBackupDialog()"
+    >
+      <header class="project-import-header">
+        <div>
+          <h2>{{ i18n.t('importProjectPackage') }}</h2>
+          <p>{{ i18n.t('backupImportHint') }}</p>
+        </div>
+        <button
+          type="button"
+          class="ui-close-button"
+          [attr.aria-label]="i18n.t('cancel')"
+          [disabled]="backup.busy() === 'saving'"
+          (click)="closeBackupDialog()"
+        >
+          <svg lucideX aria-hidden="true"></svg>
+        </button>
+      </header>
+      <div class="project-import-body">
+        <input
+          #backupFile
+          type="file"
+          accept="application/json,.json"
+          hidden
+          (change)="selectBackup($event)"
+        />
+        <button
+          type="button"
+          class="ui-button ui-button--secondary"
+          [disabled]="!!backup.busy()"
+          (click)="backupFile.click()"
+        >
+          <svg lucideFileUp aria-hidden="true"></svg>{{ i18n.t('backupChooseFile') }}
+        </button>
+        @if (backup.busy() === 'reading') {
+          <p class="project-import-progress" role="status">
+            {{ i18n.t('projectBackupReadingFile') }}
+          </p>
+        }
+        @if (backup.busy() === 'saving') {
+          <p class="project-import-progress" role="status">
+            {{ i18n.t('projectBackupSavingRestored') }}
+          </p>
+        }
+        @if (backup.failure(); as failure) {
+          <p class="project-import-error" role="alert">{{ backupFailureLabel(failure) }}</p>
+        }
+        @if (backup.preview(); as project) {
+          <dl class="project-import-summary">
+            <div>
+              <dt>{{ i18n.t('projectName') }}</dt>
+              <dd>{{ project.metadata.name }}</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('minecraftVersion') }}</dt>
+              <dd>{{ project.metadata.minecraftVersion }}</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('structureSize') }}</dt>
+              <dd>{{ project.size.x }} × {{ project.size.y }} × {{ project.size.z }}</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('structureJsonBlockCount') }}</dt>
+              <dd>{{ project.blocks.length }}</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('structureJsonDecorationCount') }}</dt>
+              <dd>{{ project.decorations?.length ?? 0 }}</dd>
+            </div>
+          </dl>
+          @if (backup.collision()) {
+            <p class="backup-collision" role="status">{{ i18n.t('backupExistingCopy') }}</p>
+          }
+        }
+      </div>
+      <footer class="project-import-footer">
+        <button
+          type="button"
+          class="ui-button ui-button--ghost"
+          [disabled]="backup.busy() === 'saving'"
+          (click)="closeBackupDialog()"
+        >
+          {{ i18n.t('cancel') }}
+        </button>
+        <button
+          type="button"
+          class="ui-button ui-button--primary"
+          [disabled]="!backup.preview() || !!backup.busy()"
+          (click)="restoreBackup()"
+        >
+          {{ i18n.t('backupRestoreCopy') }}
+        </button>
+      </footer>
+    </section>
+  </div>
+}
+@if (structureJsonImport.open()) {
+  <div class="project-import-backdrop" role="presentation">
+    <section
+      class="project-import-dialog"
+      cdkTrapFocus
+      [cdkTrapFocusAutoCapture]="true"
+      role="dialog"
+      aria-modal="true"
+      tabindex="-1"
+      autofocus
+      (keydown.escape)="closeStructureJsonImport()"
+      [attr.aria-label]="i18n.t('createFromStructureJson')"
+    >
+      <header class="project-import-header">
+        <div>
+          <p class="eyebrow">{{ i18n.t('structureJsonFormat') }}</p>
+          <h2 cdkFocusInitial tabindex="-1">{{ i18n.t('createFromStructureJson') }}</h2>
+          <p>{{ i18n.t('createFromStructureJsonDescription') }}</p>
+        </div>
+        <button
+          type="button"
+          class="ui-close-button"
+          [disabled]="structureJsonImport.creating()"
+          [attr.aria-label]="i18n.t('cancel')"
+          [attr.title]="i18n.t('cancel')"
+          (click)="closeStructureJsonImport()"
+        >
+          <svg lucideX aria-hidden="true"></svg>
+        </button>
+      </header>
+      <div class="project-import-body">
+        <div class="project-import-file">
+          <span>{{ i18n.t('structureJsonSource') }}</span
+          ><code>{{ structureJsonImport.filename() }}</code>
+        </div>
+        @if (
+          structureJsonImport.progress() === 'reading' ||
+          structureJsonImport.progress() === 'parsing' ||
+          structureJsonImport.progress() === 'checking' ||
+          structureJsonImport.progress() === 'saving'
+        ) {
+          <p class="project-import-progress" role="status" aria-live="polite">
+            {{ structureJsonImportProgressLabel() }}
+          </p>
+        }
+        @if (structureJsonImport.failure()) {
+          <p class="project-import-error" role="alert">{{ structureJsonImportErrorMessage() }}</p>
+        }
+        @if (structureJsonImport.preview(); as imported) {
+          <dl class="project-import-summary">
+            <div>
+              <dt>{{ i18n.t('projectName') }}</dt>
+              <dd>{{ imported.projectName }}</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('structureJsonMinecraftVersion') }}</dt>
+              <dd>
+                {{ i18n.t('minecraftJavaVersion').replace('{version}', imported.minecraftVersion) }}
+                <span class="project-import-support">{{
+                  imported.minecraftVersion === defaultMinecraftVersion
+                    ? i18n.t('verifiedSupport')
+                    : i18n.t('resourceCompatibility')
+                }}</span>
+              </dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('structureSize') }}</dt>
+              <dd>{{ imported.size.x }} × {{ imported.size.y }} × {{ imported.size.z }}</dd>
+            </div>
+            <div>
+              <dt>{{ i18n.t('structureJsonTotalBlocks') }}</dt>
+              <dd>{{ imported.totalBlocks }}</dd>
+            </div>
+            @if (imported.totalDecorations > 0) {
+              <div>
+                <dt>{{ i18n.t('structureJsonTotalDecorations') }}</dt>
+                <dd>{{ imported.totalDecorations }}</dd>
+              </div>
+            }
+            @if (imported.missingBlocks > 0) {
+              <div class="project-import-warning">
+                <dt>{{ i18n.t('structureJsonMissingBlocks') }}</dt>
+                <dd>{{ imported.missingBlocks }}</dd>
+              </div>
+            }
+            @if (imported.missingDecorationAssets > 0) {
+              <div class="project-import-warning">
+                <dt>{{ i18n.t('structureJsonMissingDecorationAssets') }}</dt>
+                <dd>{{ imported.missingDecorationAssets }}</dd>
+              </div>
+            }
+            <div
+              class="project-import-compatibility"
+              [class.project-import-compatibility--huge]="
+                imported.structureMode === 'huge-structure-blocks'
+              "
+            >
+              <dt>{{ i18n.t('structureJsonImportCompatibility') }}</dt>
+              <dd>
+                {{ structureJsonImportModeLabel(imported)
+                }}{{
+                  imported.structureMode === 'huge-structure-blocks'
+                    ? ' · ' + i18n.t('structureJsonProjectHugeRequired')
+                    : ''
+                }}
+              </dd>
+            </div>
+          </dl>
+          @if (imported.structureMode === 'huge-structure-blocks') {
+            <aside class="huge-recommendation huge-recommendation--active project-import-huge-info">
+              <div class="huge-recommendation-copy">
+                <strong>{{ i18n.t('hugeStructureBlocksRecommendationTitle') }}</strong>
+                <p>
+                  {{
+                    imported.requiresHugeConfirmation
+                      ? i18n.t('structureJsonProjectHugeConfirm')
+                      : i18n.t('hugeStructureBlocksActive')
+                  }}
+                </p>
+                <details>
+                  <summary>{{ i18n.t('hugeStructureBlocksHowToUse') }}</summary>
+                  <ol>
+                    <li>
+                      {{
+                        i18n
+                          .t('hugeStructureBlocksStepInstall')
+                          .replace('{version}', imported.minecraftVersion)
+                      }}
+                    </li>
+                    <li>{{ i18n.t('hugeStructureBlocksStepLaunch') }}</li>
+                    <li>{{ i18n.t('hugeStructureBlocksStepUse') }}</li>
+                  </ol>
+                </details>
+                <div
+                  class="huge-recommendation-links"
+                  [attr.aria-label]="i18n.t('hugeStructureBlocksResources')"
+                >
+                  <a
+                    class="huge-resource-link"
+                    href="https://modrinth.com/mod/huge-structure-blocks"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span>{{ i18n.t('hugeStructureBlocks') }}</span
+                    ><small>{{ i18n.t('hugeStructureBlocksModrinth') }} ↗</small></a
+                  ><a
+                    class="huge-resource-link"
+                    href="https://www.curseforge.com/minecraft/mc-mods/huge-structure-blocks"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    ><span>{{ i18n.t('hugeStructureBlocks') }}</span
+                    ><small>{{ i18n.t('hugeStructureBlocksCurseForge') }} ↗</small></a
+                  >
+                </div>
+              </div>
+            </aside>
+          }
+        }
+      </div>
+      <footer class="project-import-footer">
+        <button
+          type="button"
+          class="ui-button ui-button--ghost"
+          [disabled]="structureJsonImport.creating()"
+          (click)="closeStructureJsonImport()"
+        >
+          {{ i18n.t('cancel') }}</button
+        ><button
+          type="button"
+          class="ui-button ui-button--primary"
+          [disabled]="!structureJsonImport.preview()?.project || structureJsonImport.creating()"
+          (click)="createProjectFromStructureJson()"
+        >
+          {{
+            structureJsonImport.preview()?.requiresHugeConfirmation
+              ? i18n.t('structureJsonProjectUseHugeAndCreate')
+              : i18n.t('structureJsonProjectCreate')
+          }}
+        </button>
+      </footer>
+    </section>
+  </div>
+}

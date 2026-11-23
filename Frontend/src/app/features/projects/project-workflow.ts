@@ -1,23 +1,23 @@
-import { DEFAULT_EDITOR_SETTINGS } from '../../../core/domain/editor-settings';
+import { DEFAULT_EDITOR_SETTINGS } from '../../core/domain/editor-settings';
 import { ErrorHandler, Inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProjectDocument, ProjectSize, StructureMode } from '../../../core/domain/project.types';
+import { ProjectDocument, ProjectSize, StructureMode } from '../../core/domain/project.types';
 import {
   evaluateStructureSize,
   isStructureCreationAllowed,
-} from '../../../core/domain/structure-size-policy';
-import { validateProject } from '../../../core/domain/validation';
-import { EditorSessionService } from '../../../core/editor/state/editor-session.service';
-import { DialogService } from '../../../core/ui/dialog/dialog.service';
-import { I18nService } from '../../../core/ui/localization/i18n.service';
-import { ProjectDeletionService } from '../../../core/persistence/project-deletion.service';
-import { ProjectPersistenceService } from '../../../core/persistence/project-persistence.service';
-import { PROJECT_STORE } from '../../../core/persistence/project-store/project-store.token';
+} from '../../core/domain/structure-size-policy';
+import { validateProject } from '../../core/domain/validation';
+import { EditorSessionService } from '../../core/editor/state/editor-session.service';
+import { DialogService } from '../../core/ui/dialog/dialog.service';
+import { I18nService } from '../../core/ui/localization/i18n.service';
+import { ProjectDeletionService } from '../../core/persistence/project-deletion.service';
+import { ProjectPersistenceService } from '../../core/persistence/project-persistence.service';
+import { PROJECT_STORE } from '../../core/persistence/project-store/project-store.token';
 import type {
   ProjectStore,
   ProjectSummary,
-} from '../../../core/persistence/project-store/project-store.port';
-import { WorkspaceStateService } from '../../../core/workspace/workspace-state.service';
+} from '../../core/persistence/project-store/project-store.port';
+import { WorkspaceStateService } from '../../core/workspace/workspace-state.service';
 import { navigateToEditor } from './editor-navigation';
 
 export interface NewProjectInput {
@@ -28,8 +28,9 @@ export interface NewProjectInput {
 }
 
 @Injectable()
-export class ProjectScreenWorkflow {
+export class ProjectWorkflow {
   private readonly projectList = signal<readonly ProjectSummary[]>([]);
+  private readonly selectedProject = signal<string | undefined>(undefined);
   private readonly workflowError = signal<string | undefined>(undefined);
   private readonly projectListError = signal(false);
   private readonly projectLoadStatus = signal<'loading' | 'ready' | 'error'>('loading');
@@ -38,6 +39,7 @@ export class ProjectScreenWorkflow {
   private readonly projectDeletionsInProgress = signal<ReadonlySet<string>>(new Set());
   private readonly projectDeleteError = signal<string | undefined>(undefined);
   readonly projects = this.projectList.asReadonly();
+  readonly selectedProjectId = this.selectedProject.asReadonly();
   readonly error = this.workflowError.asReadonly();
   readonly listError = this.projectListError.asReadonly();
   readonly loadStatus = this.projectLoadStatus.asReadonly();
@@ -47,6 +49,7 @@ export class ProjectScreenWorkflow {
   readonly deleteError = this.projectDeleteError.asReadonly();
 
   private readonly persistence: ProjectPersistenceService;
+  private projectListRequest = 0;
 
   constructor(
     @Inject(PROJECT_STORE) store: ProjectStore,
@@ -66,28 +69,39 @@ export class ProjectScreenWorkflow {
   }
 
   async loadProjects(): Promise<void> {
+    const request = ++this.projectListRequest;
     this.projectLoadStatus.set('loading');
     this.projectListError.set(false);
     try {
-      this.projectList.set(await this.persistence.list());
+      const projects = await this.persistence.list();
+      if (request !== this.projectListRequest) return;
+      this.projectList.set(projects);
+      this.reconcileSelection(projects);
       this.projectLoadStatus.set('ready');
     } catch {
+      if (request !== this.projectListRequest) return;
       this.projectList.set([]);
+      this.selectedProject.set(undefined);
       this.projectListError.set(true);
       this.projectLoadStatus.set('error');
     }
   }
 
-  async createProject(input: NewProjectInput): Promise<void> {
+  selectProject(projectId: string | undefined): void {
+    if (projectId && !this.projectList().some(({ id }) => id === projectId)) return;
+    this.selectedProject.set(projectId);
+  }
+
+  async createProject(input: NewProjectInput): Promise<boolean> {
     const guard = projectCreationGuard(
       this.projectCreationInProgress(),
       !!this.projectOpeningId(),
       isStructureCreationAllowed(input.size, input.structureMode),
     );
-    if (guard === 'busy') return;
+    if (guard === 'busy') return false;
     if (guard === 'invalid') {
       this.workflowError.set(this.creationValidationMessage(input));
-      return;
+      return false;
     }
 
     this.projectCreationInProgress.set(true);
@@ -121,14 +135,17 @@ export class ProjectScreenWorkflow {
       this.workflowError.set(detail);
       await this.dialogs.error(this.i18n.t('createErrorTitle'), detail);
       this.projectCreationInProgress.set(false);
-      return;
+      return false;
     }
 
     try {
       await this.persistence.create(project);
+      this.addProjectSummary(project);
+      this.selectedProject.set(project.id);
       this.session.resetForProjectChange(project.id);
       this.workspace.activate(project);
       await this.router.navigateByUrl('/editor');
+      return true;
     } catch (error) {
       const message = projectCreationFailureMessage(
         error,
@@ -137,6 +154,7 @@ export class ProjectScreenWorkflow {
       );
       this.workflowError.set(message);
       await this.dialogs.error(this.i18n.t('createErrorTitle'), message);
+      return false;
     } finally {
       this.projectCreationInProgress.set(false);
     }
@@ -149,6 +167,7 @@ export class ProjectScreenWorkflow {
     try {
       const project = await this.persistence.open(id);
       if (!project) throw new Error('Project not found');
+      this.selectedProject.set(project.id);
       this.session.resetForProjectChange(project.id);
       this.workspace.activate(project);
       await this.router.navigateByUrl('/editor');
@@ -182,7 +201,9 @@ export class ProjectScreenWorkflow {
       if (!confirmed) return;
 
       await this.projectDeletion.deleteProject(summary.id);
+      this.projectListRequest++;
       this.projectList.update((items) => items.filter((item) => item.id !== summary.id));
+      if (this.selectedProject() === summary.id) this.selectedProject.set(undefined);
     } catch {
       this.projectDeleteError.set(this.i18n.t('deleteProjectError'));
     } finally {
@@ -196,9 +217,11 @@ export class ProjectScreenWorkflow {
 
   async createImportedProject(project: ProjectDocument): Promise<void> {
     await this.persistence.createValidatedImportedProject(project);
+    this.addProjectSummary(project);
   }
 
   async activateImportedProject(project: ProjectDocument): Promise<void> {
+    this.selectedProject.set(project.id);
     this.session.resetForProjectChange(project.id);
     this.workspace.activate(project);
     const navigation = await navigateToEditor(this.router);
@@ -216,6 +239,29 @@ export class ProjectScreenWorkflow {
     return !policy.fitsHugeStructureBlocks
       ? this.i18n.t('hugeStructureBlocksLimitExceeded')
       : this.i18n.t('vanillaOversizedWarning');
+  }
+
+  private addProjectSummary(project: ProjectDocument): void {
+    this.projectListRequest++;
+    const summary: ProjectSummary = {
+      id: project.id,
+      name: project.metadata.name,
+      minecraftVersion: project.metadata.minecraftVersion,
+      size: project.size,
+      structureMode: project.structureMode,
+      updatedAt: project.metadata.updatedAt,
+    };
+    this.projectList.update((projects) => [
+      summary,
+      ...projects.filter(({ id }) => id !== project.id),
+    ]);
+  }
+
+  private reconcileSelection(projects: readonly ProjectSummary[]): void {
+    const selectedId = this.selectedProject();
+    if (selectedId && !projects.some(({ id }) => id === selectedId)) {
+      this.selectedProject.set(undefined);
+    }
   }
 }
 

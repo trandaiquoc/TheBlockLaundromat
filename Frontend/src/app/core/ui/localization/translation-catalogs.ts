@@ -384,6 +384,7 @@ export const translations = {
     assetImportErrorText:
       'The selected local asset file could not be imported. Check that it is a valid Minecraft JAR or ZIP for the selected version.',
     projectActions: 'Project actions',
+    projectImportTab: 'Import',
     createFromStructureJson: 'Create from Structure JSON',
     createFromStructureJsonDescription:
       'Create a new project from a Structure JSON file created by The Block Laundromat.',
@@ -652,6 +653,11 @@ export const translations = {
     homepageSceneLoadFailed: 'The homepage illustration could not be loaded.',
     homepageSceneRetry: 'Retry loading illustration',
     dioramaBackToProjects: 'Back to projects',
+    dioramaSelectProject: 'Preview {name} in the washer',
+    dioramaCourierCreateProject: 'Ask Courier to create a project',
+    dioramaProjectPreviewError: 'The project preview could not be loaded.',
+    projectPreviousPage: 'Previous project notes page',
+    projectNextPage: 'Next project notes page',
     homepageWorkspaceTitle: 'Interactive project workspace',
     homepageWorkspaceBackToProjects: 'Back to projects',
     homepageWorkspaceSceneHeading: 'Laundromat scene',
@@ -674,6 +680,9 @@ export const translations = {
     dioramaOverview: 'Overview',
     dioramaWasher: 'Washer',
     dioramaProjectBoard: 'Project board',
+    dioramaProjectEntryOptions: 'Project options',
+    dioramaProjectImportDescription:
+      'Create a project from Structure JSON or restore a project backup.',
     dioramaGreetRaccoon: 'Greet the Raccoon',
     dioramaOverviewSelected: 'Showing the laundromat overview.',
     dioramaWasherSelected: 'Focusing on the washer.',
@@ -1437,6 +1446,7 @@ export const translations = {
     assetImportErrorText:
       'Không thể nhập tệp tài nguyên đã chọn. Hãy kiểm tra đó là JAR hoặc ZIP Minecraft hợp lệ cho phiên bản đang chọn.',
     projectActions: 'Thao tác dự án',
+    projectImportTab: 'Nhập',
     createFromStructureJson: 'Tạo dự án từ Structure JSON',
     createFromStructureJsonDescription:
       'Tạo dự án mới từ tệp Structure JSON được tạo bằng The Block Laundromat.',
@@ -1711,6 +1721,11 @@ export const translations = {
     homepageSceneLoadFailed: 'Không thể tải minh họa Homepage.',
     homepageSceneRetry: 'Thử tải lại minh họa',
     dioramaBackToProjects: 'Quay lại dự án',
+    dioramaSelectProject: 'Xem {name} trong máy giặt',
+    dioramaCourierCreateProject: 'Nhờ Courier tạo dự án',
+    dioramaProjectPreviewError: 'Không thể tải ảnh xem trước dự án.',
+    projectPreviousPage: 'Trang giấy note trước',
+    projectNextPage: 'Trang giấy note tiếp theo',
     homepageWorkspaceTitle: 'Không gian dự án tương tác',
     homepageWorkspaceBackToProjects: 'Quay lại dự án',
     homepageWorkspaceSceneHeading: 'Cảnh tiệm giặt',
@@ -1733,6 +1748,9 @@ export const translations = {
     dioramaOverview: 'Toàn cảnh',
     dioramaWasher: 'Máy giặt',
     dioramaProjectBoard: 'Bảng dự án',
+    dioramaProjectEntryOptions: 'Lựa chọn dự án',
+    dioramaProjectImportDescription:
+      'Tạo dự án từ Structure JSON hoặc khôi phục bản sao lưu dự án.',
     dioramaGreetRaccoon: 'Chào Raccoon',
     dioramaOverviewSelected: 'Đang hiển thị toàn cảnh tiệm giặt.',
     dioramaWasherSelected: 'Đang tập trung vào máy giặt.',

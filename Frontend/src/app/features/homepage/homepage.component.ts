@@ -11,12 +11,14 @@ import { I18nService } from '../../core/ui/localization/i18n.service';
 import { UiPreferencesService } from '../../core/ui/preferences/ui-preferences.service';
 import type { HomepageMode } from '../../core/ui/preferences/ui-preferences.service';
 import { ProjectScreenComponent } from '../projects/project-screen/project-screen.component';
+import { ProjectWorkflow } from '../projects/project-workflow';
 import { SettingsDialogComponent } from '../editor/settings/settings-dialog/settings-dialog.component';
 import { DioramaHomeComponent } from './diorama/diorama-home.component';
 
 @Component({
   selector: 'app-homepage',
   imports: [ProjectScreenComponent, DioramaHomeComponent, SettingsDialogComponent],
+  providers: [ProjectWorkflow],
   templateUrl: './homepage.component.html',
 })
 export class HomepageComponent {

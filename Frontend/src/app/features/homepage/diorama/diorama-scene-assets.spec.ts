@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
-import { DioramaMaterialVariants } from './diorama-material-variants';
+import {
+  combineDioramaMaterialVariants,
+  DioramaMaterialVariants,
+} from './diorama-material-variants';
 import { buildDioramaScene } from './diorama-scene-assets';
 import { LAUNDROMAT_DIORAMA_PROFILE, dioramaSceneNodeName } from './diorama-scene-profile';
 import { applyDioramaTheme, dioramaVariantForTheme } from './diorama-scene-theme';
@@ -16,7 +19,17 @@ describe('Diorama scene assets', () => {
 
     expect(assets.profile.id).toBe('laundromat-diorama');
     expect(assets.scene.name).toBe('laundromat-diorama-scene');
-    expect(assets.scene.getObjectByName('Washer')).toBeTruthy();
+    const replacedWasher = assets.scene.getObjectByName('Washer');
+    expect(replacedWasher).toBeTruthy();
+    expect(replacedWasher).toBe(asset.replacementWasher.getObjectByName('Washer'));
+    expect(assets.projectWorkflowAnchors.washer.preview).toBeTruthy();
+    expect(assets.projectWorkflowAnchors.washer.projectName).toBeTruthy();
+    expect(assets.projectWorkflowAnchors.washerSurfaceMeshes.preview).toBeTruthy();
+    expect(assets.projectWorkflowAnchors.washerSurfaceMeshes.open).toBeTruthy();
+    expect(assets.projectWorkflowAnchors.washerSurfaceMeshes.delete).toBeTruthy();
+    expect(assets.projectWorkflowAnchors.board.corners).toHaveLength(4);
+    expect(assets.projectWorkflowAnchors.courierNote).toBeTruthy();
+    expect(assets.projectWorkflowAnchors.courierNoteSurface).toBeTruthy();
     expect(assets.scene.getObjectByName('ProjectBoard')).toBeTruthy();
     expect(assets.scene.getObjectByName('CourierRoot')).toBeTruthy();
     expect(assets.scene.getObjectByName('GuideRoot')).toBeTruthy();
@@ -36,7 +49,11 @@ describe('Diorama scene assets', () => {
     expect(assets.focusBounds.raccoon.max.x).toBeGreaterThan(1);
     expect(assets.cameraFocusTargets.overview?.toArray()).toEqual([0, 1.15, 0]);
     expect(assets.cameraFocusTargets['project-board']?.toArray()).toEqual([-2.7, 2, -2.57]);
-    expect(assets.cameraFocusTargets.washer?.toArray()).toEqual([0, 1, -3]);
+    expect(
+      assets.cameraFocusTargets.washer?.distanceTo(
+        assets.focusBounds.washer.getCenter(new THREE.Vector3()),
+      ),
+    ).toBeCloseTo(0);
     expect(assets.cameraFocusYaws.washer).toBeCloseTo(0);
     expect(assets.cameraFocusYaws['project-board']).toBeCloseTo(Math.PI / 4);
     expect(assets.focusBounds['project-board'].getSize(new THREE.Vector3()).x).toBeGreaterThan(2.4);
@@ -72,11 +89,17 @@ describe('Diorama scene assets', () => {
     const assets = buildDioramaScene(asset);
     const geometryBeforeTheme = collectGeometry(assets.model);
     const originalLight = assets.themeTargets.keyLight.intensity;
+    const washerVariantTarget = asset.materialVariants.targets.find(({ mesh }) =>
+      asset.replacementWasher.getObjectById(mesh.id),
+    );
 
     applyDioramaTheme(assets, 'dark');
     expect(assets.scene.background).toBeNull();
     expect(asset.materialVariants.targets[0].mesh.material).toBe(
       asset.materialVariants.targets[0].materialsByVariant.get('Dark'),
+    );
+    expect(washerVariantTarget?.mesh.material).toBe(
+      washerVariantTarget?.materialsByVariant.get('Dark'),
     );
     expect(assets.themeTargets.keyLight.intensity).not.toBe(originalLight);
     expect(assets.themeTargets.lanternLights.map(({ intensity }) => intensity)).toEqual([7.2, 7.2]);
@@ -91,7 +114,32 @@ describe('Diorama scene assets', () => {
 function createSceneAsset(): DioramaSceneAsset {
   const root = new THREE.Group();
   addBox(root, 'Floor', [0, 0.2, 0], [8, 0.4, 8]);
-  addBox(root, 'Washer', [0, 1, -3], [2, 2, 1]);
+  const embeddedWasher = new THREE.Group();
+  embeddedWasher.name = 'Washer';
+  embeddedWasher.add(
+    new THREE.Mesh(new THREE.BoxGeometry(2, 2, 1), new THREE.MeshStandardMaterial()),
+  );
+  embeddedWasher.position.set(0, 1, -3);
+  root.add(embeddedWasher);
+  const replacementWasher = new THREE.Group();
+  const washer = new THREE.Group();
+  washer.name = dioramaSceneNodeName('Washer');
+  washer.position.set(0, 1, -3);
+  addBox(washer, 'Washer body', [0, 0, 0], [2, 2, 1]);
+  addBox(washer, dioramaSceneNodeName('Washer.PreviewGlass'), [0.575, 0, 0.05], [0.74, 0.74, 0.04]);
+  addBox(
+    washer,
+    dioramaSceneNodeName('Washer.Open.Keycap'),
+    [0.67, 1.05, 0.5],
+    [0.508, 0.379, 0.0615],
+  );
+  addBox(
+    washer,
+    dioramaSceneNodeName('Washer.Delete.Keycap'),
+    [0.67, 0.63, 0.5],
+    [0.508, 0.379, 0.0615],
+  );
+  replacementWasher.add(washer);
   const projectBoard = addBox(root, 'ProjectBoard', [-2.7, 1.3, -2.6], [2.5, 2.2, 0.1]);
   projectBoard.rotation.y = Math.PI / 4;
   addAnchor(root, 'Anchor.NicheLantern.Light', [2, 2.4, -2]);
@@ -119,23 +167,59 @@ function createSceneAsset(): DioramaSceneAsset {
     ['Anchor.Board.BottomRight', [-1.5, 0.2, -2.56]],
     ['Anchor.Board.TopLeft', [-3.9, 2.4, -2.56]],
     ['Anchor.Board.TopRight', [-1.5, 2.4, -2.56]],
-    ['Anchor.Washer.Preview', [0, 1, -3.5]],
-    ['Anchor.Washer.Open', [0.5, 1, -3.5]],
-    ['Anchor.Washer.Delete', [-0.5, 1, -3.5]],
   ] as const) {
     addAnchor(root, name, point);
+  }
+  const courierNote = new THREE.Object3D();
+  courierNote.name = dioramaSceneNodeName('Courier.Anchor.Note');
+  courierNote.position.set(-1.5, 1.8, -0.2);
+  const courierPaper = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.504, 0.41),
+    new THREE.MeshStandardMaterial(),
+  );
+  courierPaper.name = dioramaSceneNodeName('BlankNote.Sheet');
+  courierNote.add(courierPaper);
+  root.add(courierNote);
+  for (const [name, point] of [
+    ['Anchor.Washer.Preview', [0, 0, -0.5]],
+    ['Anchor.Washer.Open', [0.5, 0, -0.5]],
+    ['Anchor.Washer.Delete', [-0.5, 0, -0.5]],
+    ['Anchor.Washer.ProjectName', [0, 0.55, -0.5]],
+    ['Anchor.Washer.ProjectName.TopLeft', [-0.4, 0.7, -0.5]],
+    ['Anchor.Washer.ProjectName.BottomRight', [0.4, 0.45, -0.5]],
+  ] as const) {
+    addAnchor(washer, name, point);
   }
   addCharacterRoot(root, 'Courier.Root', -1.5);
   addCharacterRoot(root, 'Guide.Root', 1.5);
 
+  const rootMeshes = collectMeshes(root);
+  const washerMeshes = collectMeshes(replacementWasher);
+  for (const mesh of [...rootMeshes, ...washerMeshes]) {
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+  }
+  const materialVariants = combineDioramaMaterialVariants([
+    createMaterialVariants(rootMeshes),
+    createMaterialVariants(washerMeshes),
+  ]);
+  return {
+    root,
+    replacementWasher,
+    materialVariants,
+    exteriorGroundTexture: new THREE.DataTexture(new Uint8Array([215, 190, 154, 255]), 1, 1),
+  };
+}
+
+function collectMeshes(root: THREE.Object3D): THREE.Mesh[] {
   const meshes: THREE.Mesh[] = [];
   root.traverse((object) => {
     if (object instanceof THREE.Mesh) meshes.push(object);
   });
-  for (const mesh of meshes) {
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-  }
+  return meshes;
+}
+
+function createMaterialVariants(meshes: readonly THREE.Mesh[]): DioramaMaterialVariants {
   const baseMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const variants = new Map([
     ['Light', new THREE.MeshStandardMaterial({ color: 0xffffff })],
@@ -143,15 +227,10 @@ function createSceneAsset(): DioramaSceneAsset {
     ['Raccoon', new THREE.MeshStandardMaterial({ color: 0xffffff })],
     ['Dark', new THREE.MeshStandardMaterial({ color: 0xffffff })],
   ] as const);
-  const materialVariants = new DioramaMaterialVariants(
+  return new DioramaMaterialVariants(
     meshes.map((mesh) => ({ mesh, baseMaterial, materialsByVariant: variants })),
     [baseMaterial, ...variants.values()],
   );
-  return {
-    root,
-    materialVariants,
-    exteriorGroundTexture: new THREE.DataTexture(new Uint8Array([215, 190, 154, 255]), 1, 1),
-  };
 }
 
 function addCharacterRoot(root: THREE.Group, name: string, x: number): void {

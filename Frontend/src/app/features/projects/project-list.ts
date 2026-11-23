@@ -1,15 +1,15 @@
-import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
+import type { ProjectSummary } from '../../core/persistence/project-store/project-store.port';
 
-export type ProjectScreenProjectOrder = 'newest' | 'oldest' | 'name';
+export type ProjectOrder = 'newest' | 'oldest' | 'name';
 
-export function isProjectScreenProjectOrder(value: string): value is ProjectScreenProjectOrder {
+export function isProjectOrder(value: string): value is ProjectOrder {
   return value === 'newest' || value === 'oldest' || value === 'name';
 }
 
 export function filterAndSortProjectSummaries(
   projects: readonly ProjectSummary[],
   query: string,
-  order: ProjectScreenProjectOrder,
+  order: ProjectOrder,
   locale: string,
 ): readonly ProjectSummary[] {
   const normalizedQuery = query.trim().toLocaleLowerCase(locale);

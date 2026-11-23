@@ -38,8 +38,13 @@
               {
                 "glob": "Octagonal-Laundromat.glb",
                 "input": "source-assets/homepage/models/Room",
-                "output": "assets/homepage/diorama"
-              }
+                  "output": "assets/homepage/diorama"
+                },
+                {
+                  "glob": "Washer.glb",
+                  "input": "source-assets/homepage/models/Props/Washer-Alternate",
+                  "output": "assets/homepage/diorama/washer-alternate"
+                }
             ],
             "styles": [
               "node_modules/@fontsource-variable/comfortaa/index.css",

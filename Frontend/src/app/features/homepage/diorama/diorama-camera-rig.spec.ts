@@ -117,6 +117,34 @@ describe('DioramaCameraRig', () => {
     expectBoundsWithinFrustum(camera, bounds.washer);
   });
 
+  it('frames both raccoons closer on desktop and portrait without clipping either', () => {
+    for (const viewport of [
+      { width: 1440, height: 900 },
+      { width: 390, height: 844 },
+    ]) {
+      const camera = new PerspectiveCamera();
+      const bounds = createFocusBounds();
+      const rig = new DioramaCameraRig(camera, bounds);
+      rig.resize(viewport.width, viewport.height);
+      rig.focus('raccoon', true);
+
+      expectBoundsWithinFrustum(camera, bounds.raccoon);
+      expect(projectedBoundsCoverage(camera, bounds.raccoon)).toBeGreaterThan(0.85);
+      expect(rig.currentView).toBe('raccoon');
+    }
+  });
+
+  it('fills most of the portrait viewport with the focused project board', () => {
+    const camera = new PerspectiveCamera();
+    const bounds = createFocusBounds();
+    const rig = new DioramaCameraRig(camera, bounds);
+    rig.resize(390, 844);
+    rig.focus('project-board', true);
+
+    expectBoundsWithinFrustum(camera, bounds['project-board']);
+    expect(projectedBoundsCoverage(camera, bounds['project-board'])).toBeGreaterThan(0.9);
+  });
+
   it('clamps orbit and zoom, keeps the room in view, and recenters to the original camera', () => {
     const camera = new PerspectiveCamera();
     const bounds = createFocusBounds();
@@ -211,4 +239,18 @@ function expectBoundsWithinFrustum(camera: PerspectiveCamera, bounds: Box3): voi
       }
     }
   }
+}
+
+function projectedBoundsCoverage(camera: PerspectiveCamera, bounds: Box3): number {
+  camera.updateMatrixWorld(true);
+  let coverage = 0;
+  for (const x of [bounds.min.x, bounds.max.x]) {
+    for (const y of [bounds.min.y, bounds.max.y]) {
+      for (const z of [bounds.min.z, bounds.max.z]) {
+        const projected = new Vector3(x, y, z).project(camera);
+        coverage = Math.max(coverage, Math.abs(projected.x), Math.abs(projected.y));
+      }
+    }
+  }
+  return coverage;
 }

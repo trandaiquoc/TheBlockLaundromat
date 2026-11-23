@@ -32,6 +32,32 @@ export interface DioramaSceneAssets {
     readonly object: THREE.Object3D;
     readonly target: DioramaTarget;
   }[];
+  readonly projectWorkflowAnchors: {
+    readonly board: {
+      readonly center: THREE.Object3D;
+      readonly corners: readonly [
+        bottomLeft: THREE.Object3D,
+        bottomRight: THREE.Object3D,
+        topLeft: THREE.Object3D,
+        topRight: THREE.Object3D,
+      ];
+    };
+    readonly washer: {
+      readonly preview: THREE.Object3D;
+      readonly open: THREE.Object3D;
+      readonly delete: THREE.Object3D;
+      readonly projectName: THREE.Object3D;
+      readonly projectNameTopLeft: THREE.Object3D;
+      readonly projectNameBottomRight: THREE.Object3D;
+    };
+    readonly washerSurfaceMeshes: {
+      readonly preview: THREE.Object3D;
+      readonly open: THREE.Object3D;
+      readonly delete: THREE.Object3D;
+    };
+    readonly courierNote: THREE.Object3D;
+    readonly courierNoteSurface: THREE.Object3D;
+  };
   readonly raccoonControllerRoot?: THREE.Object3D;
   readonly focusMarkers: Readonly<Record<DioramaTarget, THREE.Mesh>>;
 }
@@ -39,6 +65,10 @@ export interface DioramaSceneAssets {
 export function buildDioramaScene(asset: DioramaSceneAsset): DioramaSceneAssets {
   const profile = LAUNDROMAT_DIORAMA_PROFILE;
   const contract = profile.nodeNames;
+  const [boardBottomLeft, boardBottomRight, boardTopLeft, boardTopRight] =
+    contract.boardBoundsAnchors;
+  removeEmbeddedWasher(asset.root, contract.interactionNodes.washer);
+  asset.root.add(asset.replacementWasher);
   const scene = new THREE.Scene();
   scene.name = `${profile.id}-scene`;
   scene.background = null;
@@ -122,6 +152,41 @@ export function buildDioramaScene(asset: DioramaSceneAsset): DioramaSceneAssets 
       { object: targets['project-board'], target: 'project-board' },
       ...raccoonRoots.map((object) => ({ object, target: 'raccoon' as const })),
     ],
+    projectWorkflowAnchors: {
+      board: {
+        center: requireSceneObject(asset.root, 'Anchor.Board.Center'),
+        corners: [
+          requireSceneObject(asset.root, boardBottomLeft),
+          requireSceneObject(asset.root, boardBottomRight),
+          requireSceneObject(asset.root, boardTopLeft),
+          requireSceneObject(asset.root, boardTopRight),
+        ],
+      },
+      washer: {
+        preview: requireSceneObject(asset.root, contract.washerAnchors.preview),
+        open: requireSceneObject(asset.root, contract.washerAnchors.open),
+        delete: requireSceneObject(asset.root, contract.washerAnchors.delete),
+        projectName: requireSceneObject(asset.root, contract.washerAnchors.projectName),
+        projectNameTopLeft: requireSceneObject(
+          asset.root,
+          contract.washerAnchors.projectNameTopLeft,
+        ),
+        projectNameBottomRight: requireSceneObject(
+          asset.root,
+          contract.washerAnchors.projectNameBottomRight,
+        ),
+      },
+      washerSurfaceMeshes: {
+        preview: requireSceneSurface(asset.root, contract.washerSurfaceMeshes.preview),
+        open: requireSceneSurface(asset.root, contract.washerSurfaceMeshes.open),
+        delete: requireSceneSurface(asset.root, contract.washerSurfaceMeshes.delete),
+      },
+      courierNote: requireSceneObject(asset.root, 'Courier.Anchor.Note'),
+      courierNoteSurface: requireSceneSurface(
+        requireSceneObject(asset.root, 'Courier.Anchor.Note'),
+        'Courier.Anchor.Note',
+      ),
+    },
     raccoonControllerRoot: contract.raccoonControllerRoot
       ? requireSceneObject(asset.root, contract.raccoonControllerRoot)
       : undefined,
@@ -130,6 +195,25 @@ export function buildDioramaScene(asset: DioramaSceneAsset): DioramaSceneAssets 
 
   applyDioramaTheme(assets, 'craft');
   return assets;
+}
+
+function removeEmbeddedWasher(root: THREE.Group, name: string): void {
+  const washer = root.getObjectByName(dioramaSceneNodeName(name));
+  if (!washer || washer === root) return;
+  washer.traverse((object) => {
+    if (object instanceof THREE.Mesh) object.geometry.dispose();
+  });
+  washer.removeFromParent();
+}
+
+function requireSceneSurface(root: THREE.Object3D, authoredName: string): THREE.Object3D {
+  const surface = requireSceneObject(root, authoredName);
+  let hasMesh = false;
+  surface.traverse((object) => {
+    if (object instanceof THREE.Mesh) hasMesh = true;
+  });
+  if (!hasMesh) throw new Error(`Required Diorama surface '${authoredName}' has no mesh geometry.`);
+  return surface;
 }
 
 export function updateDioramaFeedback(
@@ -377,10 +461,9 @@ function addOutdoorGround(
       varying vec2 vGroundPosition;
       varying vec2 vUv;
       void main() {
-        vec2 outside = max(abs(vGroundPosition - uCenter) - uInnerBounds, vec2(0.0));
-        float distanceFromRoom = length(outside);
-        float fade = 1.0 - smoothstep(0.0, uFadeDistance, distanceFromRoom);
         float footprintDistance = length((vGroundPosition - uCenter) / uInnerBounds);
+        float fadeRadius = 1.0 + uFadeDistance / min(uInnerBounds.x, uInnerBounds.y);
+        float fade = 1.0 - smoothstep(1.0, fadeRadius, footprintDistance);
         float contactShadow = 1.0 - smoothstep(0.82, 1.55, footprintDistance);
         float contactShade = 1.0 - contactShadow * uContactStrength;
         vec3 paving = texture2D(uGroundTexture, vUv * uTextureRepeat).rgb * uTint;

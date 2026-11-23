@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { DEFAULT_EDITOR_SETTINGS } from '../../../core/domain/editor-settings';
-import { ProjectDocument } from '../../../core/domain/project.types';
-import { serializeProjectPackage } from '../../../core/persistence/project-package/project-package';
-import { ProjectStore } from '../../../core/persistence/project-store/project-store.port';
+import { DEFAULT_EDITOR_SETTINGS } from '../../core/domain/editor-settings';
+import { ProjectDocument } from '../../core/domain/project.types';
+import { serializeProjectPackage } from '../../core/persistence/project-package/project-package';
+import { ProjectStore } from '../../core/persistence/project-store/project-store.port';
 import { ProjectBackupWorkflow } from './project-backup-workflow';
+import { ProjectWorkflow } from './project-workflow';
 
 const project: ProjectDocument = {
   schemaVersion: 3,
@@ -31,7 +32,18 @@ function setup(initial: ProjectDocument[] = []) {
       projects.set(entry.id, entry);
     }),
   } as unknown as ProjectStore;
-  return { workflow: new ProjectBackupWorkflow(store), projects, store };
+  const projectWorkflow = {
+    createImportedProject: vi.fn(async (entry: ProjectDocument) => {
+      if (projects.has(entry.id)) throw new Error('Duplicate ID');
+      await store.create(entry);
+    }),
+  } as unknown as ProjectWorkflow;
+  return {
+    workflow: new ProjectBackupWorkflow(store, projectWorkflow),
+    projects,
+    store,
+    projectWorkflow,
+  };
 }
 
 function backupFile(content: string): File {
@@ -40,7 +52,7 @@ function backupFile(content: string): File {
 
 describe('ProjectBackupWorkflow', () => {
   it('restores the real package without changing existing project content', async () => {
-    const { workflow, projects } = setup([project]);
+    const { workflow, projects, projectWorkflow } = setup([project]);
     await workflow.selectFile(backupFile(serializeProjectPackage(project)));
     expect(workflow.collision()).toBe(true);
     const restored = await workflow.restore();
@@ -48,6 +60,7 @@ describe('ProjectBackupWorkflow', () => {
     expect({ ...restored, id: project.id }).toEqual(project);
     expect(projects.get(project.id)).toEqual(project);
     expect(projects.get(restored!.id)).toEqual(restored);
+    expect(projectWorkflow.createImportedProject).toHaveBeenCalledWith(restored);
   });
 
   it('rejects invalid input before storage and preserves the preview on storage failure', async () => {

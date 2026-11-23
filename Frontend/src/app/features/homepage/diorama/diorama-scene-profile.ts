@@ -4,6 +4,7 @@ import type { DioramaFocus, DioramaTarget } from './diorama-contracts';
 export interface DioramaSceneProfile {
   readonly id: string;
   readonly roomAssetPath: string;
+  readonly washerAssetPath: string;
   readonly exteriorGroundTexturePath: string;
   readonly nodeNames: {
     readonly interactionNodes: Readonly<Record<DioramaTarget, string>>;
@@ -11,6 +12,19 @@ export interface DioramaSceneProfile {
     readonly raccoonControllerRoot?: string;
     readonly lanternLightNodes: readonly string[];
     readonly boardBoundsAnchors: readonly string[];
+    readonly washerAnchors: {
+      readonly preview: string;
+      readonly open: string;
+      readonly delete: string;
+      readonly projectName: string;
+      readonly projectNameTopLeft: string;
+      readonly projectNameBottomRight: string;
+    };
+    readonly washerSurfaceMeshes: {
+      readonly preview: string;
+      readonly open: string;
+      readonly delete: string;
+    };
     readonly cameraFocusAnchors: Readonly<Record<DioramaFocus, string>>;
     readonly requiredAnchors: readonly string[];
     readonly roomSpinPivot: string;
@@ -121,6 +135,7 @@ const cabinetPlacements = cabinetContents.map((nodeName) => ({
 export const LAUNDROMAT_DIORAMA_PROFILE: DioramaSceneProfile = {
   id: 'laundromat-diorama',
   roomAssetPath: 'assets/homepage/diorama/Octagonal-Laundromat.glb',
+  washerAssetPath: 'assets/homepage/diorama/washer-alternate/Washer.glb',
   exteriorGroundTexturePath: 'assets/homepage/diorama/forest-floor.png',
   nodeNames: {
     interactionNodes: {
@@ -136,6 +151,19 @@ export const LAUNDROMAT_DIORAMA_PROFILE: DioramaSceneProfile = {
       'Anchor.Board.TopLeft',
       'Anchor.Board.TopRight',
     ],
+    washerAnchors: {
+      preview: 'Anchor.Washer.Preview',
+      open: 'Anchor.Washer.Open',
+      delete: 'Anchor.Washer.Delete',
+      projectName: 'Anchor.Washer.ProjectName',
+      projectNameTopLeft: 'Anchor.Washer.ProjectName.TopLeft',
+      projectNameBottomRight: 'Anchor.Washer.ProjectName.BottomRight',
+    },
+    washerSurfaceMeshes: {
+      preview: 'Washer.PreviewGlass',
+      open: 'Washer.Open.Keycap',
+      delete: 'Washer.Delete.Keycap',
+    },
     cameraFocusAnchors: {
       overview: 'Anchor.Camera.Overview',
       washer: 'Anchor.Camera.Washer',
@@ -144,10 +172,8 @@ export const LAUNDROMAT_DIORAMA_PROFILE: DioramaSceneProfile = {
     },
     requiredAnchors: [
       'Anchor.Board.Center',
-      'Anchor.Washer.Preview',
-      'Anchor.Washer.Open',
-      'Anchor.Washer.Delete',
       'Anchor.Camera.Recenter',
+      'Courier.Anchor.Note',
     ],
     roomSpinPivot: 'DioramaRoomSpinPivot',
   },
@@ -220,7 +246,9 @@ export function dioramaSceneNodeName(authoredName: string): string {
 export function requiredDioramaSceneNodes(profile = LAUNDROMAT_DIORAMA_PROFILE): readonly string[] {
   const names = profile.nodeNames;
   return [
-    ...Object.values(names.interactionNodes),
+    ...Object.entries(names.interactionNodes)
+      .filter(([target]) => target !== 'washer')
+      .map(([, name]) => name),
     ...names.raccoonRoots,
     ...profile.shadows.dynamicCasterRoots,
     ...names.lanternLightNodes,
@@ -229,4 +257,15 @@ export function requiredDioramaSceneNodes(profile = LAUNDROMAT_DIORAMA_PROFILE):
     ...Object.values(names.cameraFocusAnchors),
     ...names.requiredAnchors,
   ].filter((name, index, all) => all.indexOf(name) === index);
+}
+
+export function requiredDioramaWasherNodes(
+  profile = LAUNDROMAT_DIORAMA_PROFILE,
+): readonly string[] {
+  const anchors = profile.nodeNames.washerAnchors;
+  return [
+    profile.nodeNames.interactionNodes.washer,
+    ...Object.values(anchors),
+    ...Object.values(profile.nodeNames.washerSurfaceMeshes),
+  ];
 }
