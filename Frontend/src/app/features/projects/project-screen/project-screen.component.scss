@@ -396,28 +396,11 @@
   background: var(--control-selected);
   color: var(--control-selected-text);
 }
-.project-open-action {
-  width: 100%;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 0 0.75rem 1rem;
-  border: 0;
-  border-radius: inherit;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-}
-.project-open-action:disabled {
-  cursor: wait;
-  opacity: 0.72;
-}
 .project-row-copy {
+  min-width: 0;
+  padding: 0.75rem 0 0.75rem 1rem;
   display: grid;
   gap: 0.3rem;
-  min-width: 0;
 }
 .project-row-copy strong {
   min-width: 0;
@@ -463,43 +446,32 @@
 .project-updated {
   color: var(--text-muted);
 }
-.project-row-cta {
-  align-self: center;
-  color: var(--accent);
-  font-size: 0.8rem;
-  font-weight: 700;
-  white-space: nowrap;
+.project-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0.25rem;
 }
-.project-row.opening .project-row-copy small,
-.project-row.opening .project-row-cta {
-  color: inherit;
-}
-.project-delete-action {
-  display: grid;
-  place-items: center;
+.project-row-action {
+  flex: 0 0 auto;
   width: var(--control-md);
   min-width: var(--control-md);
   min-height: var(--control-md);
-  margin: 0.2rem 0.2rem 0.2rem 0;
   padding: 0;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--danger);
-  cursor: pointer;
 }
-.project-delete-action svg {
+.project-row-action svg {
   width: 1rem;
   height: 1rem;
 }
-.project-delete-action:hover:not(:disabled),
-.project-delete-action:focus-visible {
-  background: color-mix(in srgb, var(--danger) 15%, transparent);
+.project-open-action {
+  color: var(--accent);
+}
+.project-delete-action {
   color: var(--danger);
 }
-.project-delete-action:disabled {
+.project-row-action:disabled {
   cursor: wait;
-  opacity: 0.7;
+  opacity: 0.64;
 }
 .project-list-empty {
   min-height: 8rem;

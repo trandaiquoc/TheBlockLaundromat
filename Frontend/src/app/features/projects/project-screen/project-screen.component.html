@@ -283,54 +283,59 @@
                 [class.opening]="openingId() === project.id"
                 [class.deleting]="deletingProjectIds().has(project.id)"
               >
-                <button
-                  class="project-open-action"
-                  type="button"
-                  [disabled]="!!openingId() || creating() || deletingProjectIds().has(project.id)"
-                  (click)="openProject(project.id)"
-                >
-                  <span class="project-row-copy">
-                    <strong>{{
-                      openingId() === project.id ? i18n.t('openingProject') : project.name
-                    }}</strong>
-                    <span class="project-row-meta">
-                      <small>{{
-                        i18n
-                          .t('minecraftJavaVersion')
-                          .replace('{version}', project.minecraftVersion)
-                      }}</small>
-                      <span
-                        class="project-size-badge"
-                        [class.project-size-badge--huge]="
-                          project.structureMode === 'huge-structure-blocks'
-                        "
-                        [attr.aria-label]="summarySizeBadgeAriaLabel(project)"
-                        [attr.title]="summarySizeBadgeAriaLabel(project)"
-                        >{{ summarySizeLabel(project) }}</span
-                      >
-                      <small class="project-updated"
-                        >{{ i18n.t('recentProjectUpdated') }}
-                        {{ project.updatedAt | date: 'short' }}</small
-                      >
-                    </span>
+                <span class="project-row-copy">
+                  <strong>{{
+                    openingId() === project.id ? i18n.t('openingProject') : project.name
+                  }}</strong>
+                  <span class="project-row-meta">
+                    <small>{{
+                      i18n.t('minecraftJavaVersion').replace('{version}', project.minecraftVersion)
+                    }}</small>
+                    <span
+                      class="project-size-badge"
+                      [class.project-size-badge--huge]="
+                        project.structureMode === 'huge-structure-blocks'
+                      "
+                      [attr.aria-label]="summarySizeBadgeAriaLabel(project)"
+                      [attr.title]="summarySizeBadgeAriaLabel(project)"
+                      >{{ summarySizeLabel(project) }}</span
+                    >
+                    <small class="project-updated"
+                      >{{ i18n.t('recentProjectUpdated') }}
+                      {{ project.updatedAt | date: 'short' }}</small
+                    >
                   </span>
-                  <span class="project-row-cta">{{
-                    openingId() === project.id ? i18n.t('openingProject') : i18n.t('open')
-                  }}</span>
-                </button>
-                <button
-                  class="project-delete-action ui-button ui-button--danger ui-button--icon"
-                  type="button"
-                  uiTooltip="{{ i18n.t('deleteProjectAriaLabel').replace('{name}', project.name) }}"
-                  [disabled]="deletingProjectIds().has(project.id)"
-                  [attr.aria-label]="
-                    i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)
-                  "
-                  [attr.title]="i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)"
-                  (click)="deleteProject(project, $event)"
-                >
-                  <svg lucideTrash2 aria-hidden="true"></svg>
-                </button>
+                </span>
+                <div class="project-row-actions">
+                  <button
+                    class="project-row-action project-open-action ui-button ui-button--ghost ui-button--icon"
+                    type="button"
+                    uiTooltip="{{ i18n.t('openProjectAriaLabel').replace('{name}', project.name) }}"
+                    [disabled]="!!openingId() || creating() || deletingProjectIds().has(project.id)"
+                    [attr.aria-label]="
+                      i18n.t('openProjectAriaLabel').replace('{name}', project.name)
+                    "
+                    [attr.title]="i18n.t('openProjectAriaLabel').replace('{name}', project.name)"
+                    (click)="openProject(project.id)"
+                  >
+                    <svg lucideFolderOpen aria-hidden="true"></svg>
+                  </button>
+                  <button
+                    class="project-row-action project-delete-action ui-button ui-button--ghost ui-button--icon"
+                    type="button"
+                    uiTooltip="{{
+                      i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)
+                    }}"
+                    [disabled]="deletingProjectIds().has(project.id)"
+                    [attr.aria-label]="
+                      i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)
+                    "
+                    [attr.title]="i18n.t('deleteProjectAriaLabel').replace('{name}', project.name)"
+                    (click)="deleteProject(project, $event)"
+                  >
+                    <svg lucideTrash2 aria-hidden="true"></svg>
+                  </button>
+                </div>
               </div>
             }
           }

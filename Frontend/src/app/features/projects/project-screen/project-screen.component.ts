@@ -19,7 +19,13 @@ import {
   UiPreferencesService,
   type HomepageMode,
 } from '../../../core/ui/preferences/ui-preferences.service';
-import { LucideFileUp, LucideSearch, LucideTrash2, LucideX } from '@lucide/angular';
+import {
+  LucideFileUp,
+  LucideFolderOpen,
+  LucideSearch,
+  LucideTrash2,
+  LucideX,
+} from '@lucide/angular';
 import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import {
   SearchableDropdownComponent,
@@ -52,6 +58,7 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
     DatePipe,
     NgOptimizedImage,
     LucideFileUp,
+    LucideFolderOpen,
     LucideSearch,
     LucideTrash2,
     LucideX,

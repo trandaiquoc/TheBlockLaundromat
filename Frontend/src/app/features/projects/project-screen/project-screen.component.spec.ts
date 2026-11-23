@@ -45,8 +45,15 @@ describe('ProjectScreenComponent', () => {
     expect(template).toContain('(keydown.escape)="closeStructureJsonImport()"');
     expect(template).toContain('(input)="updateProjectSearch($event)"');
     expect(template).toContain('(change)="updateProjectOrder($event)"');
-    expect(template).toContain("i18n.t('open')");
+    expect(template).toContain("i18n.t('openProjectAriaLabel')");
     expect(template).toContain("i18n.t('deleteProjectAriaLabel')");
+    expect(template).toContain(
+      'class="project-row-action project-open-action ui-button ui-button--ghost ui-button--icon"',
+    );
+    expect(template).toContain(
+      'class="project-row-action project-delete-action ui-button ui-button--ghost ui-button--icon"',
+    );
+    expect(template).not.toContain('project-row-cta');
   });
 
   it('keeps download out of recent project rows', () => {
@@ -121,6 +128,20 @@ describe('ProjectScreenComponent', () => {
     expect(names()).toEqual(['Lakeside Cabin', 'Garden Study', 'Tower 2']);
     expect(root.querySelector('.project-backup-action')).toBeNull();
     expect(root.querySelector('.project-size-badge')?.textContent).toContain('16 × 16 × 16');
+    const firstProjectActions = root.querySelector('.project-row-actions');
+    const projectActions = Array.from(firstProjectActions?.querySelectorAll('button') ?? []);
+    expect(projectActions).toHaveLength(2);
+    expect(projectActions.map((button) => button.getAttribute('aria-label'))).toEqual([
+      'Open Lakeside Cabin',
+      'Delete Lakeside Cabin',
+    ]);
+    expect(
+      projectActions.every(
+        (button) =>
+          button.classList.contains('ui-button--ghost') &&
+          button.classList.contains('ui-button--icon'),
+      ),
+    ).toBe(true);
 
     const search = root.querySelector('.project-search-field input') as HTMLInputElement;
     search.value = 'cabin';
