@@ -11,6 +11,7 @@ const landscapeWasherFramePadding = 1.42;
 const portraitWasherFramePadding = 1.52;
 const landscapeRaccoonFramePadding = 1.05;
 const portraitRaccoonFramePadding = 1.05;
+const courierLeftCompositionOffset = 0.24;
 const defaultCameraYaw = Math.atan2(0.62, 1);
 const defaultCameraElevation = Math.atan2(0.72, Math.hypot(0.62, 1));
 const frontCameraElevation = 0.035;
@@ -37,6 +38,7 @@ export class DioramaCameraRig {
   private orbitYaw = 0;
   private orbitPitch = 0;
   private zoom = 1;
+  private motionSettled?: () => void;
 
   constructor(
     private readonly camera: PerspectiveCamera,
@@ -65,12 +67,13 @@ export class DioramaCameraRig {
     this.moveToDestination();
   }
 
-  focus(view: DioramaFocus, immediately = false): void {
+  focus(view: DioramaFocus, immediately = false, onSettled?: () => void): void {
     this.view = view;
     this.orbitYaw = 0;
     this.orbitPitch = 0;
     this.zoom = 1;
     this.panOffset.set(0, 0, 0);
+    this.motionSettled = onSettled;
     this.updateDestination();
     if (immediately || this.reducedMotion) this.applyDestination();
     else this.moving = true;
@@ -166,7 +169,7 @@ export class DioramaCameraRig {
     const baseElevation =
       this.focusYaws[this.view] !== undefined
         ? frontCameraElevation
-        : this.view === 'raccoon' && this.focusYaws.washer !== undefined
+        : this.view === 'courier' && this.focusYaws.washer !== undefined
           ? characterCameraElevation
           : defaultCameraElevation;
     const elevation = MathUtils.clamp(
@@ -199,7 +202,7 @@ export class DioramaCameraRig {
           ? this.aspect < portraitAspectLimit
             ? portraitWasherFramePadding
             : landscapeWasherFramePadding
-          : this.view === 'raccoon'
+          : this.view === 'courier'
             ? this.aspect < portraitAspectLimit
               ? portraitRaccoonFramePadding
               : landscapeRaccoonFramePadding
@@ -220,12 +223,23 @@ export class DioramaCameraRig {
       }
     }
 
+    const compositionOffset =
+      this.view === 'courier' && this.aspect >= portraitAspectLimit
+        ? courierLeftCompositionOffset
+        : 0;
+    if (compositionOffset > 0) distance /= 1 - compositionOffset;
+    const framedDistance = Math.max(distance * focusFramePadding * this.zoom, 0.1);
+    this.targetLookAt
+      .copy(this.focusLookAt)
+      .add(this.panOffset)
+      .addScaledVector(
+        this.cameraRight,
+        Math.tan(horizontalFov / 2) * framedDistance * compositionOffset,
+      );
+
     this.targetPosition
       .copy(this.targetLookAt)
-      .addScaledVector(
-        this.cameraDirection,
-        Math.max(distance * focusFramePadding * this.zoom, 0.1),
-      );
+      .addScaledVector(this.cameraDirection, framedDistance);
   }
 
   private applyDestination(): void {
@@ -233,5 +247,8 @@ export class DioramaCameraRig {
     this.lookAt.copy(this.targetLookAt);
     this.camera.lookAt(this.lookAt);
     this.moving = false;
+    const onSettled = this.motionSettled;
+    this.motionSettled = undefined;
+    onSettled?.();
   }
 }

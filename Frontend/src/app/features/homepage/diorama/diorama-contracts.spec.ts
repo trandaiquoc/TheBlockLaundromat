@@ -10,7 +10,7 @@ describe('intentForSceneTarget', () => {
     });
   });
 
-  it('routes raccoon selection as a greeting intent', () => {
-    expect(intentForSceneTarget('raccoon')).toEqual({ type: 'greet-raccoon' });
+  it('routes Courier selection as a focus intent', () => {
+    expect(intentForSceneTarget('courier')).toEqual({ type: 'focus-target', target: 'courier' });
   });
 });

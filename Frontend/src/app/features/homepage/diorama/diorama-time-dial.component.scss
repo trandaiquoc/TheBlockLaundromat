@@ -359,3 +359,54 @@
     opacity: 1;
   }
 }
+
+:host {
+  z-index: 9;
+  inset-block-start: auto;
+  inset-block-end: max(0.7rem, env(safe-area-inset-bottom));
+  inset-inline-start: max(0.7rem, env(safe-area-inset-left));
+  inset-inline-end: auto;
+  width: clamp(5.25rem, 9vw, 8rem);
+}
+
+.diorama-time-dial__face {
+  width: 100%;
+}
+
+.diorama-time-dial__quarter {
+  width: 70%;
+  height: 23%;
+  font-size: clamp(0.5rem, 0.7vw, 0.72rem);
+}
+
+.diorama-time-dial__quarter[data-time-index='1'],
+.diorama-time-dial__quarter[data-time-index='3'] {
+  width: 23%;
+  height: 70%;
+}
+
+@media (max-width: 760px) {
+  :host {
+    inset-block-start: auto;
+    inset-block-end: max(0.55rem, env(safe-area-inset-bottom));
+    inset-inline-start: max(0.55rem, env(safe-area-inset-left));
+    inset-inline-end: auto;
+    width: clamp(4.35rem, 14vw, 5.2rem);
+  }
+
+  .diorama-time-dial__face {
+    width: 100%;
+  }
+
+  .diorama-time-dial__quarter {
+    width: 70%;
+    height: 23%;
+    font-size: clamp(0.5rem, 1.7vw, 0.64rem);
+  }
+
+  .diorama-time-dial__quarter[data-time-index='1'],
+  .diorama-time-dial__quarter[data-time-index='3'] {
+    width: 23%;
+    height: 70%;
+  }
+}

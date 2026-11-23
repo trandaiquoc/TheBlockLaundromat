@@ -6,16 +6,16 @@ import {
 } from './diorama-interaction';
 
 describe('DioramaInteractionController', () => {
-  it('treats a tap on the Courier root as a raccoon greeting intent', () => {
+  it('treats a tap on the Courier root as a focus intent', () => {
     const canvas = createCanvas();
     const callbacks = createCallbacks();
-    const raccoon = createTarget();
+    const courier = createTarget();
     const scene = new Group();
-    scene.add(raccoon);
+    scene.add(courier);
     const controller = new DioramaInteractionController(
       canvas,
       createCamera(),
-      [{ object: raccoon, target: 'raccoon' }],
+      [{ object: courier, target: 'courier' }],
       callbacks,
       true,
       true,
@@ -25,7 +25,7 @@ describe('DioramaInteractionController', () => {
     pointer(canvas, 'pointerdown', 50, 50);
     pointer(canvas, 'pointerup', 50, 50);
 
-    expect(callbacks.onIntent).toHaveBeenCalledWith({ type: 'greet-raccoon' });
+    expect(callbacks.onIntent).toHaveBeenCalledWith({ type: 'focus-target', target: 'courier' });
     controller.dispose();
   });
 
@@ -85,7 +85,7 @@ describe('DioramaInteractionController', () => {
     const controller = new DioramaInteractionController(
       canvas,
       createCamera(),
-      [{ object: createTarget(), target: 'raccoon' }],
+      [{ object: createTarget(), target: 'courier' }],
       callbacks,
     );
 
@@ -246,7 +246,7 @@ describe('DioramaInteractionController', () => {
     const controller = new DioramaInteractionController(
       canvas,
       createCamera(),
-      [{ object: createTarget(), target: 'raccoon' }],
+      [{ object: createTarget(), target: 'courier' }],
       callbacks,
     );
     const removeListener = vi.spyOn(canvas, 'removeEventListener');

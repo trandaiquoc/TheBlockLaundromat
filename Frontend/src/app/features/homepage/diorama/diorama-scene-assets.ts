@@ -33,30 +33,15 @@ export interface DioramaSceneAssets {
     readonly target: DioramaTarget;
   }[];
   readonly projectWorkflowAnchors: {
-    readonly board: {
-      readonly center: THREE.Object3D;
-      readonly corners: readonly [
-        bottomLeft: THREE.Object3D,
-        bottomRight: THREE.Object3D,
-        topLeft: THREE.Object3D,
-        topRight: THREE.Object3D,
-      ];
-    };
-    readonly washer: {
-      readonly preview: THREE.Object3D;
-      readonly open: THREE.Object3D;
-      readonly delete: THREE.Object3D;
-      readonly projectName: THREE.Object3D;
-      readonly projectNameTopLeft: THREE.Object3D;
-      readonly projectNameBottomRight: THREE.Object3D;
-    };
-    readonly washerSurfaceMeshes: {
-      readonly preview: THREE.Object3D;
-      readonly open: THREE.Object3D;
-      readonly delete: THREE.Object3D;
-    };
+    readonly boardCenter: THREE.Object3D;
+    readonly washerPreview: THREE.Object3D;
     readonly courierNote: THREE.Object3D;
-    readonly courierNoteSurface: THREE.Object3D;
+  };
+  readonly washerDisplayAnchors: {
+    readonly preview: THREE.Object3D;
+    readonly previewSurface: THREE.Object3D;
+    readonly projectNameTopLeft: THREE.Object3D;
+    readonly projectNameBottomRight: THREE.Object3D;
   };
   readonly raccoonControllerRoot?: THREE.Object3D;
   readonly focusMarkers: Readonly<Record<DioramaTarget, THREE.Mesh>>;
@@ -65,8 +50,6 @@ export interface DioramaSceneAssets {
 export function buildDioramaScene(asset: DioramaSceneAsset): DioramaSceneAssets {
   const profile = LAUNDROMAT_DIORAMA_PROFILE;
   const contract = profile.nodeNames;
-  const [boardBottomLeft, boardBottomRight, boardTopLeft, boardTopRight] =
-    contract.boardBoundsAnchors;
   removeEmbeddedWasher(asset.root, contract.interactionNodes.washer);
   asset.root.add(asset.replacementWasher);
   const scene = new THREE.Scene();
@@ -93,16 +76,16 @@ export function buildDioramaScene(asset: DioramaSceneAsset): DioramaSceneAssets 
   const targets = {
     washer: requireSceneObject(asset.root, contract.interactionNodes.washer),
     'project-board': requireSceneObject(asset.root, contract.interactionNodes['project-board']),
-    raccoon: requireSceneObject(asset.root, contract.raccoonRoots[0]),
+    courier: requireSceneObject(asset.root, contract.interactionNodes.courier),
   } satisfies Record<DioramaTarget, THREE.Object3D>;
-  const raccoonRoots = contract.raccoonRoots.map((name) => requireSceneObject(asset.root, name));
+  const courierRoot = targets.courier;
   const focusBounds = {
     overview: bounds.clone(),
     washer: boundsFor(targets.washer),
     'project-board': contract.boardBoundsAnchors.length
       ? boundsFromAnchors(asset.root, contract.boardBoundsAnchors)
       : boundsFor(targets['project-board']),
-    raccoon: boundsForObjects(raccoonRoots),
+    courier: boundsFor(courierRoot),
   } satisfies Record<DioramaFocus, THREE.Box3>;
   const focusMarkers = createFocusMarkers(scene, bounds, focusBounds, profile);
   scene.updateMatrixWorld(true);
@@ -118,7 +101,7 @@ export function buildDioramaScene(asset: DioramaSceneAsset): DioramaSceneAssets 
     overviewTarget.z = center.z;
   }
   cameraFocusTargets.washer = focusBounds.washer.getCenter(new THREE.Vector3());
-  cameraFocusTargets.raccoon = focusBounds.raccoon.getCenter(new THREE.Vector3());
+  cameraFocusTargets.courier = focusBounds.courier.getCenter(new THREE.Vector3());
   const cameraFocusYaws: Partial<Record<DioramaFocus, number>> = {};
   for (const [view, target] of [
     ['washer', targets.washer],
@@ -150,41 +133,20 @@ export function buildDioramaScene(asset: DioramaSceneAsset): DioramaSceneAssets 
     interactionRoots: [
       { object: targets.washer, target: 'washer' },
       { object: targets['project-board'], target: 'project-board' },
-      ...raccoonRoots.map((object) => ({ object, target: 'raccoon' as const })),
+      { object: courierRoot, target: 'courier' },
     ],
     projectWorkflowAnchors: {
-      board: {
-        center: requireSceneObject(asset.root, 'Anchor.Board.Center'),
-        corners: [
-          requireSceneObject(asset.root, boardBottomLeft),
-          requireSceneObject(asset.root, boardBottomRight),
-          requireSceneObject(asset.root, boardTopLeft),
-          requireSceneObject(asset.root, boardTopRight),
-        ],
-      },
-      washer: {
-        preview: requireSceneObject(asset.root, contract.washerAnchors.preview),
-        open: requireSceneObject(asset.root, contract.washerAnchors.open),
-        delete: requireSceneObject(asset.root, contract.washerAnchors.delete),
-        projectName: requireSceneObject(asset.root, contract.washerAnchors.projectName),
-        projectNameTopLeft: requireSceneObject(
-          asset.root,
-          contract.washerAnchors.projectNameTopLeft,
-        ),
-        projectNameBottomRight: requireSceneObject(
-          asset.root,
-          contract.washerAnchors.projectNameBottomRight,
-        ),
-      },
-      washerSurfaceMeshes: {
-        preview: requireSceneSurface(asset.root, contract.washerSurfaceMeshes.preview),
-        open: requireSceneSurface(asset.root, contract.washerSurfaceMeshes.open),
-        delete: requireSceneSurface(asset.root, contract.washerSurfaceMeshes.delete),
-      },
+      boardCenter: requireSceneObject(asset.root, 'Anchor.Board.Center'),
+      washerPreview: requireSceneObject(asset.root, contract.washerPreviewAnchor),
       courierNote: requireSceneObject(asset.root, 'Courier.Anchor.Note'),
-      courierNoteSurface: requireSceneSurface(
-        requireSceneObject(asset.root, 'Courier.Anchor.Note'),
-        'Courier.Anchor.Note',
+    },
+    washerDisplayAnchors: {
+      preview: requireSceneObject(asset.root, contract.washerPreviewAnchor),
+      previewSurface: requireSceneObject(asset.root, 'Washer.PreviewGlass'),
+      projectNameTopLeft: requireSceneObject(asset.root, contract.washerProjectNameAnchors.topLeft),
+      projectNameBottomRight: requireSceneObject(
+        asset.root,
+        contract.washerProjectNameAnchors.bottomRight,
       ),
     },
     raccoonControllerRoot: contract.raccoonControllerRoot
@@ -204,16 +166,6 @@ function removeEmbeddedWasher(root: THREE.Group, name: string): void {
     if (object instanceof THREE.Mesh) object.geometry.dispose();
   });
   washer.removeFromParent();
-}
-
-function requireSceneSurface(root: THREE.Object3D, authoredName: string): THREE.Object3D {
-  const surface = requireSceneObject(root, authoredName);
-  let hasMesh = false;
-  surface.traverse((object) => {
-    if (object instanceof THREE.Mesh) hasMesh = true;
-  });
-  if (!hasMesh) throw new Error(`Required Diorama surface '${authoredName}' has no mesh geometry.`);
-  return surface;
 }
 
 export function updateDioramaFeedback(
@@ -252,13 +204,6 @@ function boundsFor(object: THREE.Object3D): THREE.Box3 {
   return bounds;
 }
 
-function boundsForObjects(objects: readonly THREE.Object3D[]): THREE.Box3 {
-  const bounds = new THREE.Box3();
-  for (const object of objects) bounds.union(boundsFor(object));
-  if (bounds.isEmpty()) throw new Error('The scene characters have empty bounds.');
-  return bounds;
-}
-
 function boundsFromAnchors(root: THREE.Object3D, names: readonly string[]): THREE.Box3 {
   const bounds = new THREE.Box3().setFromPoints(
     names.map((name) => worldPosition(requireSceneObject(root, name))),
@@ -291,11 +236,11 @@ function createFocusMarkers(
       markerPosition(sceneBounds, focusBounds['project-board'], profile),
       markerRadius(focusBounds['project-board'], profile),
     ),
-    raccoon: addFocusMarker(
+    courier: addFocusMarker(
       scene,
       profile.focusMarker.baseColor,
-      markerPosition(sceneBounds, focusBounds.raccoon, profile),
-      markerRadius(focusBounds.raccoon, profile),
+      markerPosition(sceneBounds, focusBounds.courier, profile),
+      markerRadius(focusBounds.courier, profile),
     ),
   };
 }

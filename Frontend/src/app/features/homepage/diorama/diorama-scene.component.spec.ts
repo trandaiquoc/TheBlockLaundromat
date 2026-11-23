@@ -57,12 +57,13 @@ describe('DioramaSceneComponent', () => {
     fixture.destroy();
   });
 
-  it('opens the Courier project flow for a scene click without changing toolbar-only focus', async () => {
+  it('forwards camera requests and reports Courier scene activation to the navigation owner', async () => {
     vi.spyOn(DioramaSceneRuntime.prototype, 'mount').mockReturnValue(true);
-    vi.spyOn(DioramaSceneRuntime.prototype, 'greetRaccoon').mockImplementation(() => undefined);
+    const requestFocus = vi.spyOn(DioramaSceneRuntime.prototype, 'requestFocus');
     vi.spyOn(DioramaSceneRuntime.prototype, 'dispose').mockImplementation(() => undefined);
 
     const fixture = TestBed.createComponent(DioramaSceneComponent);
+    const request = { requestId: 12, target: 'courier' } as const;
     fixture.componentRef.setInput('timeTransition', {
       id: 0,
       phase: 'idle',
@@ -71,22 +72,18 @@ describe('DioramaSceneComponent', () => {
       source: 'theme',
     });
     fixture.componentRef.setInput('timeProgress', 0);
+    fixture.componentRef.setInput('cameraRequest', request);
     fixture.detectChanges();
     await fixture.whenStable();
-    const activation = vi.fn();
-    fixture.componentInstance.courierActivated.subscribe(activation);
 
-    const scene = fixture.componentInstance as unknown as {
+    expect(requestFocus).toHaveBeenCalledWith(request);
+    const activated = vi.fn();
+    fixture.componentInstance.targetActivated.subscribe(activated);
+    const component = fixture.componentInstance as unknown as {
       handleSceneIntent(intent: DioramaIntent): void;
     };
-    scene.handleSceneIntent({ type: 'greet-raccoon' });
-    expect(activation).toHaveBeenCalledOnce();
-
-    const toolbar = fixture.componentInstance as unknown as {
-      handleFocusAction(action: 'raccoon'): void;
-    };
-    toolbar.handleFocusAction('raccoon');
-    expect(activation).toHaveBeenCalledOnce();
+    component.handleSceneIntent({ type: 'focus-target', target: 'courier' });
+    expect(activated).toHaveBeenCalledWith('courier');
     fixture.destroy();
   });
 });

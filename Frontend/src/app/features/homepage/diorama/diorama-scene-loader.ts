@@ -156,7 +156,7 @@ function assertRequiredSceneObjects(root: Group): void {
     }
   }
 
-  for (const name of profile.nodeNames.raccoonRoots) {
+  for (const name of profile.nodeNames.characterRoots) {
     let matches = 0;
     const loadedName = dioramaSceneNodeName(name);
     root.traverse((object) => {

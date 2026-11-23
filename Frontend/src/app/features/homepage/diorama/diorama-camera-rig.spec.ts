@@ -1,9 +1,29 @@
 import { Box3, PerspectiveCamera, Vector3 } from 'three';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { DioramaFocus } from './diorama-contracts';
 import { DioramaCameraRig } from './diorama-camera-rig';
 
 describe('DioramaCameraRig', () => {
+  it('reports only the latest focus arrival and settles immediately for reduced motion', () => {
+    const camera = new PerspectiveCamera();
+    const rig = new DioramaCameraRig(camera, createFocusBounds());
+    rig.resize(1440, 900);
+    const staleArrival = vi.fn();
+    const currentArrival = vi.fn();
+    rig.focus('project-board', false, staleArrival);
+    rig.update(0.05);
+    rig.focus('washer', false, currentArrival);
+    for (let frame = 0; rig.isMoving && frame < 200; frame++) rig.update(0.05);
+    expect(staleArrival).not.toHaveBeenCalled();
+    expect(currentArrival).toHaveBeenCalledOnce();
+
+    const reducedArrival = vi.fn();
+    rig.setReducedMotion(true);
+    rig.focus('courier', false, reducedArrival);
+    expect(reducedArrival).toHaveBeenCalledOnce();
+    expect(rig.currentView).toBe('courier');
+  });
+
   it('frames the supplied scene bounds and named targets without free camera movement', () => {
     const camera = new PerspectiveCamera();
     const bounds = createFocusBounds();
@@ -117,7 +137,7 @@ describe('DioramaCameraRig', () => {
     expectBoundsWithinFrustum(camera, bounds.washer);
   });
 
-  it('frames both raccoons closer on desktop and portrait without clipping either', () => {
+  it('frames Courier closer on desktop and portrait without clipping it', () => {
     for (const viewport of [
       { width: 1440, height: 900 },
       { width: 390, height: 844 },
@@ -126,11 +146,16 @@ describe('DioramaCameraRig', () => {
       const bounds = createFocusBounds();
       const rig = new DioramaCameraRig(camera, bounds);
       rig.resize(viewport.width, viewport.height);
-      rig.focus('raccoon', true);
+      rig.focus('courier', true);
 
-      expectBoundsWithinFrustum(camera, bounds.raccoon);
-      expect(projectedBoundsCoverage(camera, bounds.raccoon)).toBeGreaterThan(0.85);
-      expect(rig.currentView).toBe('raccoon');
+      expectBoundsWithinFrustum(camera, bounds.courier);
+      if (viewport.width / viewport.height >= 0.82) {
+        const courierCenter = bounds.courier.getCenter(new Vector3()).project(camera);
+        expect(courierCenter.x).toBeLessThan(-0.1);
+      } else {
+        expect(projectedBoundsCoverage(camera, bounds.courier)).toBeGreaterThan(0.85);
+      }
+      expect(rig.currentView).toBe('courier');
     }
   });
 
@@ -224,7 +249,7 @@ function createFocusBounds(): Record<DioramaFocus, Box3> {
     overview: new Box3(new Vector3(-4, 0, -3), new Vector3(4, 6, 3)),
     washer: new Box3(new Vector3(0.6, 0, -0.2), new Vector3(2, 2.4, 1.4)),
     'project-board': new Box3(new Vector3(-1.8, 2.2, -2.8), new Vector3(1, 4.1, -2.3)),
-    raccoon: new Box3(new Vector3(-2, 0, 0.3), new Vector3(-0.6, 1.5, 1.7)),
+    courier: new Box3(new Vector3(-2, 0, 0.3), new Vector3(-0.6, 1.5, 1.7)),
   };
 }
 

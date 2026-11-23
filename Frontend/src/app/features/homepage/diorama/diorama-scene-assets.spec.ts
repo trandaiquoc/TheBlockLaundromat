@@ -22,14 +22,12 @@ describe('Diorama scene assets', () => {
     const replacedWasher = assets.scene.getObjectByName('Washer');
     expect(replacedWasher).toBeTruthy();
     expect(replacedWasher).toBe(asset.replacementWasher.getObjectByName('Washer'));
-    expect(assets.projectWorkflowAnchors.washer.preview).toBeTruthy();
-    expect(assets.projectWorkflowAnchors.washer.projectName).toBeTruthy();
-    expect(assets.projectWorkflowAnchors.washerSurfaceMeshes.preview).toBeTruthy();
-    expect(assets.projectWorkflowAnchors.washerSurfaceMeshes.open).toBeTruthy();
-    expect(assets.projectWorkflowAnchors.washerSurfaceMeshes.delete).toBeTruthy();
-    expect(assets.projectWorkflowAnchors.board.corners).toHaveLength(4);
+    expect(assets.projectWorkflowAnchors.washerPreview).toBeTruthy();
+    expect(assets.washerDisplayAnchors.previewSurface).toBeTruthy();
+    expect(assets.washerDisplayAnchors.projectNameTopLeft).toBeTruthy();
+    expect(assets.washerDisplayAnchors.projectNameBottomRight).toBeTruthy();
+    expect(assets.projectWorkflowAnchors.boardCenter).toBeTruthy();
     expect(assets.projectWorkflowAnchors.courierNote).toBeTruthy();
-    expect(assets.projectWorkflowAnchors.courierNoteSurface).toBeTruthy();
     expect(assets.scene.getObjectByName('ProjectBoard')).toBeTruthy();
     expect(assets.scene.getObjectByName('CourierRoot')).toBeTruthy();
     expect(assets.scene.getObjectByName('GuideRoot')).toBeTruthy();
@@ -42,11 +40,17 @@ describe('Diorama scene assets', () => {
     expect(assets.interactionRoots.map(({ target }) => target)).toEqual([
       'washer',
       'project-board',
-      'raccoon',
-      'raccoon',
+      'courier',
     ]);
-    expect(assets.focusBounds.raccoon.min.x).toBeLessThan(-1);
-    expect(assets.focusBounds.raccoon.max.x).toBeGreaterThan(1);
+    expect(assets.focusBounds.courier.min.x).toBeLessThan(-1);
+    expect(assets.focusBounds.courier.max.x).toBeLessThan(0);
+    expect(assets.model.getObjectByName('CourierRoot')?.position.x).toBeCloseTo(-0.89);
+    expect(assets.model.getObjectByName('CourierRoot')?.position.z).toBeCloseTo(0.24);
+    const courierNotePosition = assets.projectWorkflowAnchors.courierNote.getWorldPosition(
+      new THREE.Vector3(),
+    );
+    expect(courierNotePosition.x).toBeCloseTo(-0.89);
+    expect(courierNotePosition.z).toBeCloseTo(0.04);
     expect(assets.cameraFocusTargets.overview?.toArray()).toEqual([0, 1.15, 0]);
     expect(assets.cameraFocusTargets['project-board']?.toArray()).toEqual([-2.7, 2, -2.57]);
     expect(
@@ -127,6 +131,8 @@ function createSceneAsset(): DioramaSceneAsset {
   washer.position.set(0, 1, -3);
   addBox(washer, 'Washer body', [0, 0, 0], [2, 2, 1]);
   addBox(washer, dioramaSceneNodeName('Washer.PreviewGlass'), [0.575, 0, 0.05], [0.74, 0.74, 0.04]);
+  addAnchor(washer, 'Anchor.Washer.ProjectName.TopLeft', [0.3, 1.35, 0.5]);
+  addAnchor(washer, 'Anchor.Washer.ProjectName.BottomRight', [1.1, 1.05, 0.5]);
   addBox(
     washer,
     dioramaSceneNodeName('Washer.Open.Keycap'),
@@ -150,7 +156,7 @@ function createSceneAsset(): DioramaSceneAsset {
   addAnchor(shelfLantern, 'Anchor.ShelfLantern.Light', [0, 0, 0]);
 
   for (const { nodeName } of LAUNDROMAT_DIORAMA_PROFILE.placements) {
-    if (nodeName === 'ShelfLantern') continue;
+    if (nodeName === 'ShelfLantern' || nodeName === 'Courier.Root') continue;
     const object = new THREE.Group();
     object.name = dioramaSceneNodeName(nodeName);
     object.position.set(0, 0, 0);
@@ -161,7 +167,6 @@ function createSceneAsset(): DioramaSceneAsset {
     ['Anchor.Camera.Portrait', [0, 1.48, -0.24]],
     ['Anchor.Camera.Board', [-2.7, 2, -2.57]],
     ['Anchor.Camera.Washer', [0, 1.05, -3.03]],
-    ['Anchor.Camera.Recenter', [0, 1.32, -0.2]],
     ['Anchor.Board.Center', [-2.7, 1.3, -2.56]],
     ['Anchor.Board.BottomLeft', [-3.9, 0.2, -2.56]],
     ['Anchor.Board.BottomRight', [-1.5, 0.2, -2.56]],
@@ -170,27 +175,15 @@ function createSceneAsset(): DioramaSceneAsset {
   ] as const) {
     addAnchor(root, name, point);
   }
-  const courierNote = new THREE.Object3D();
-  courierNote.name = dioramaSceneNodeName('Courier.Anchor.Note');
-  courierNote.position.set(-1.5, 1.8, -0.2);
+  const courierRoot = addCharacterRoot(root, 'Courier.Root', -1.64, 1.04);
+  const courierNote = addAnchor(courierRoot, 'Courier.Anchor.Note', [0, 1.8, -0.2]);
   const courierPaper = new THREE.Mesh(
     new THREE.PlaneGeometry(0.504, 0.41),
     new THREE.MeshStandardMaterial(),
   );
   courierPaper.name = dioramaSceneNodeName('BlankNote.Sheet');
   courierNote.add(courierPaper);
-  root.add(courierNote);
-  for (const [name, point] of [
-    ['Anchor.Washer.Preview', [0, 0, -0.5]],
-    ['Anchor.Washer.Open', [0.5, 0, -0.5]],
-    ['Anchor.Washer.Delete', [-0.5, 0, -0.5]],
-    ['Anchor.Washer.ProjectName', [0, 0.55, -0.5]],
-    ['Anchor.Washer.ProjectName.TopLeft', [-0.4, 0.7, -0.5]],
-    ['Anchor.Washer.ProjectName.BottomRight', [0.4, 0.45, -0.5]],
-  ] as const) {
-    addAnchor(washer, name, point);
-  }
-  addCharacterRoot(root, 'Courier.Root', -1.5);
+  addAnchor(washer, 'Anchor.Washer.Preview', [0, 0, -0.5]);
   addCharacterRoot(root, 'Guide.Root', 1.5);
 
   const rootMeshes = collectMeshes(root);
@@ -233,23 +226,25 @@ function createMaterialVariants(meshes: readonly THREE.Mesh[]): DioramaMaterialV
   );
 }
 
-function addCharacterRoot(root: THREE.Group, name: string, x: number): void {
+function addCharacterRoot(root: THREE.Group, name: string, x: number, z = 0): THREE.Group {
   const raccoon = new THREE.Group();
   raccoon.name = dioramaSceneNodeName(name);
-  raccoon.position.x = x;
+  raccoon.position.set(x, 0.003, z);
   root.add(raccoon);
   addBox(raccoon, `${name} body`, [0, 0.6, 0], [0.9, 1, 0.8]);
+  return raccoon;
 }
 
 function addAnchor(
   root: THREE.Group,
   name: string,
   position: readonly [number, number, number],
-): void {
+): THREE.Object3D {
   const anchor = new THREE.Object3D();
   anchor.name = dioramaSceneNodeName(name);
   anchor.position.set(...position);
   root.add(anchor);
+  return anchor;
 }
 
 function addBox(

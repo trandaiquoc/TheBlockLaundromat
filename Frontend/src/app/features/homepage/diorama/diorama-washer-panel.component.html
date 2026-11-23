@@ -1,0 +1,116 @@
+<div class="washer-layer">
+  <div
+    class="washer-nameplate"
+    [hidden]="!active() || !overlay().projectName.visible"
+    [style.left.px]="overlay().projectName.x"
+    [style.top.px]="overlay().projectName.y"
+    [style.width.px]="overlay().projectName.width"
+    [style.height.px]="overlay().projectName.height"
+    [attr.data-marquee]="hasLongProjectName()"
+    aria-hidden="true"
+  >
+    @if (hasLongProjectName()) {
+      <span class="washer-nameplate__track">
+        <span>{{ selectedProject()?.name }}</span>
+        <span>{{ selectedProject()?.name }}</span>
+      </span>
+    } @else {
+      <span>{{ selectedProject()?.name ?? i18n.t('dioramaWasher') }}</span>
+    }
+  </div>
+
+  <div
+    class="washer-preview-portal"
+    [hidden]="!active() || !selectedProject() || !overlay().preview.visible"
+    [style.left.px]="overlay().preview.x"
+    [style.top.px]="overlay().preview.y"
+    [style.width.px]="overlay().previewDiameter"
+    [style.height.px]="overlay().previewDiameter"
+    aria-hidden="true"
+  >
+    @if (previewUrl(); as preview) {
+      <img [src]="preview" alt="" />
+    } @else if (previewState() === 'error') {
+      <span class="washer-preview-portal__empty">!</span>
+    } @else {
+      <span class="washer-preview-portal__empty">{{
+        previewState() === 'loading' ? '···' : '✳'
+      }}</span>
+    }
+  </div>
+
+  <section
+    class="washer-panel"
+    [hidden]="!active()"
+    [inert]="!active()"
+    [attr.aria-hidden]="!active()"
+    [attr.aria-label]="i18n.t('dioramaWasherSelected')"
+    data-spatial-panel="washer"
+  >
+    <header class="washer-panel__header">
+      <div>
+        <p class="washer-panel__eyebrow">{{ i18n.t('dioramaWasherSelected') }}</p>
+        <h2 class="washer-panel__heading" tabindex="-1">
+          {{ selectedProject()?.name ?? i18n.t('dioramaWasher') }}
+        </h2>
+      </div>
+      <button
+        class="ui-button ui-button--ghost ui-button--icon"
+        type="button"
+        [attr.aria-label]="i18n.t('dioramaBackToProjects')"
+        (click)="backRequested.emit()"
+      >
+        <svg lucideArrowLeft aria-hidden="true"></svg>
+      </button>
+    </header>
+
+    @if (selectedProject(); as project) {
+      <div class="washer-panel__meta">
+        <span>{{
+          i18n.t('minecraftJavaVersion').replace('{version}', project.minecraftVersion)
+        }}</span>
+        @if (previewState() === 'loading') {
+          <span class="washer-panel__status" role="status">{{
+            i18n.t('dioramaPreviewLoading')
+          }}</span>
+        } @else if (previewState() === 'missing') {
+          <span class="washer-panel__status" role="status">{{
+            i18n.t('dioramaPreviewMissing')
+          }}</span>
+        } @else if (previewState() === 'error') {
+          <span class="washer-panel__error" role="alert">{{
+            i18n.t('dioramaProjectPreviewError')
+          }}</span>
+        }
+      </div>
+      @if (deleteError()) {
+        <p class="washer-panel__error" role="alert">{{ deleteError() }}</p>
+      }
+      <footer class="washer-panel__actions">
+        <button
+          class="ui-button ui-button--primary"
+          type="button"
+          [disabled]="!!openingId() || creating()"
+          (click)="openSelectedProject()"
+        >
+          <svg lucideFolderOpen aria-hidden="true"></svg>{{ i18n.t('open') }}
+        </button>
+        <button
+          class="ui-button ui-button--danger"
+          type="button"
+          [disabled]="deletingProjectIds().has(project.id)"
+          (click)="deleteSelectedProject()"
+        >
+          <svg lucideTrash2 aria-hidden="true"></svg>{{ i18n.t('deleteProjectConfirm') }}
+        </button>
+      </footer>
+    } @else {
+      <div class="washer-panel__empty">
+        <p>{{ i18n.t('dioramaWasherNoProject') }}</p>
+        <button class="ui-button ui-button--primary" type="button" (click)="boardRequested.emit()">
+          {{ i18n.t('dioramaProjectBoard') }}
+        </button>
+      </div>
+    }
+  </section>
+</div>

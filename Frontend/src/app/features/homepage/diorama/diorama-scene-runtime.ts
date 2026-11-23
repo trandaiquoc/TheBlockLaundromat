@@ -6,7 +6,7 @@ import {
   WebGLRenderer,
 } from 'three';
 import type { Theme } from '../../../core/ui/theme/theme.service';
-import type { DioramaFocus, DioramaIntent, DioramaTarget } from './diorama-contracts';
+import type { DioramaIntent, DioramaTarget } from './diorama-contracts';
 import type { DioramaTimeDialChange } from './diorama-time-dial.component';
 import type { DioramaTimeAnimationUpdate, DioramaTimeTransition } from './diorama-time-transition';
 import {
@@ -18,9 +18,14 @@ import { DioramaInteractionController } from './diorama-interaction';
 import { DioramaRaccoonController } from './diorama-raccoon-controller';
 import { DioramaSceneAnimation } from './diorama-scene-animation';
 import {
-  DioramaProjectAnchorProjector,
-  type DioramaProjectProjection,
-} from './diorama-project-anchor-projector';
+  DioramaHotspotProjector,
+  type DioramaHotspotProjection,
+} from './diorama-hotspot-projector';
+import {
+  DioramaWasherOverlayProjector,
+  type DioramaWasherOverlayProjection,
+} from './diorama-washer-overlay-projector';
+import type { DioramaCameraRequest } from './diorama-spatial-navigation';
 import { LAUNDROMAT_DIORAMA_PROFILE } from './diorama-scene-profile';
 import {
   loadDioramaSceneAsset,
@@ -43,7 +48,9 @@ export interface DioramaRuntimeCallbacks {
   readonly onWebGLUnavailable: (error?: unknown) => void;
   readonly onSceneLoaded: () => void;
   readonly onSceneLoadFailed: (error: unknown) => void;
-  readonly onProjectProjection?: (projection: DioramaProjectProjection) => void;
+  readonly onCameraFocusSettled: (requestId: number) => void;
+  readonly onHotspotProjection: (projection: DioramaHotspotProjection) => void;
+  readonly onWasherOverlayProjection: (projection: DioramaWasherOverlayProjection) => void;
 }
 
 export interface DioramaRuntimeAdapters {
@@ -81,7 +88,8 @@ export class DioramaSceneRuntime {
   private raccoonController?: DioramaRaccoonController;
   private interaction?: DioramaInteractionController;
   private animation?: DioramaSceneAnimation;
-  private projectAnchorProjector?: DioramaProjectAnchorProjector;
+  private hotspotProjector?: DioramaHotspotProjector;
+  private washerOverlayProjector?: DioramaWasherOverlayProjector;
   private projectionDiagnosticsEnabled = false;
   private sceneProjectionCount = 0;
   private sceneProjectionTotalMs = 0;
@@ -91,8 +99,7 @@ export class DioramaSceneRuntime {
   private motionQuery?: MediaQueryList;
   private sceneLoadAbortController?: AbortController;
   private hoveredTarget?: DioramaTarget;
-  private selectedTarget?: DioramaTarget;
-  private currentFocus: DioramaFocus = 'overview';
+  private cameraRequest?: DioramaCameraRequest;
   private theme: Theme = 'craft';
   private timeProgress = dioramaTimeStageIndexByTheme[this.theme];
   private timeTransition: DioramaTimeTransition = {
@@ -188,15 +195,11 @@ export class DioramaSceneRuntime {
     }
   }
 
-  focus(view: DioramaFocus): void {
-    if (this.disposed) return;
-    this.currentFocus = view;
-    this.animation?.setRoomRotationEnabled(profile.motion.roomSpinFocuses.includes(view));
-    this.selectedTarget = view === 'overview' ? undefined : view;
-    if (view === 'overview') this.cameraRig?.recenter();
-    else this.cameraRig?.focus(view);
-    this.updateFeedback();
-    this.animation?.invalidate();
+  requestFocus(request: DioramaCameraRequest): void {
+    if (this.disposed || this.cameraRequest?.requestId === request.requestId) return;
+    this.cameraRequest = request;
+    if (request.target === 'courier') this.raccoonController?.greet();
+    this.applyCameraRequest(request);
   }
 
   orbitCamera(yawDelta: number, pitchDelta: number): void {
@@ -237,17 +240,6 @@ export class DioramaSceneRuntime {
     this.animation?.setTimeTransition(transition);
   }
 
-  greetRaccoon(): void {
-    if (this.disposed) return;
-    this.currentFocus = 'raccoon';
-    this.animation?.setRoomRotationEnabled(profile.motion.roomSpinFocuses.includes('raccoon'));
-    this.selectedTarget = 'raccoon';
-    this.cameraRig?.focus('raccoon');
-    this.raccoonController?.greet();
-    this.updateFeedback();
-    this.animation?.invalidate();
-  }
-
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
@@ -255,7 +247,8 @@ export class DioramaSceneRuntime {
     this.sceneLoadAbortController = undefined;
     this.animation?.dispose();
     this.animation = undefined;
-    this.projectAnchorProjector = undefined;
+    this.hotspotProjector = undefined;
+    this.washerOverlayProjector = undefined;
     this.raccoonController?.dispose();
     this.raccoonController = undefined;
     this.interaction?.dispose();
@@ -280,7 +273,6 @@ export class DioramaSceneRuntime {
     this.motionQuery = undefined;
     this.container = undefined;
     this.hoveredTarget = undefined;
-    this.selectedTarget = undefined;
   }
 
   private observeContainer(): void {
@@ -330,7 +322,8 @@ export class DioramaSceneRuntime {
       }
 
       this.assets = buildDioramaScene(asset);
-      this.projectAnchorProjector = new DioramaProjectAnchorProjector(this.assets);
+      this.hotspotProjector = new DioramaHotspotProjector(this.assets);
+      this.washerOverlayProjector = new DioramaWasherOverlayProjector(this.assets);
       this.resources.trackScene(this.assets.scene, asset.materialVariants.ownedMaterials);
       this.cameraRig = new DioramaCameraRig(
         camera,
@@ -383,7 +376,7 @@ export class DioramaSceneRuntime {
           this.callbacks.onTimeAnimationUpdate(update);
         },
         this.reducedMotion,
-        () => this.publishProjectProjection(),
+        () => this.publishHotspotProjection(),
       );
       this.animation.setVisible(this.document?.visibilityState !== 'hidden');
       this.animation.initializeTheme(this.theme);
@@ -393,7 +386,8 @@ export class DioramaSceneRuntime {
       );
       this.animation.setTimeTransition(this.timeTransition);
       canvas.setAttribute('data-material-variant', dioramaVariantForTheme(this.theme));
-      this.cameraRig.focus(this.currentFocus, true);
+      if (this.cameraRequest) this.applyCameraRequest(this.cameraRequest);
+      else this.cameraRig.focus('overview', true);
       this.updateFeedback();
       this.animation.invalidate();
       this.callbacks.onSceneLoaded();
@@ -440,24 +434,25 @@ export class DioramaSceneRuntime {
     this.animation?.invalidate();
   }
 
-  private publishProjectProjection(): void {
-    if (
-      !this.callbacks.onProjectProjection ||
-      !this.camera ||
-      this.width <= 0 ||
-      this.height <= 0
-    ) {
+  private publishHotspotProjection(): void {
+    if (!this.camera || this.width <= 0 || this.height <= 0) {
       return;
     }
     const projectionStartedAt = this.projectionDiagnosticsEnabled
       ? this.window?.performance.now()
       : undefined;
-    const projection = this.projectAnchorProjector?.project(this.camera, this.width, this.height);
+    const projection = this.hotspotProjector?.project(this.camera, this.width, this.height);
     if (!projection) return;
+    const washerProjection = this.washerOverlayProjector?.project(
+      this.camera,
+      this.width,
+      this.height,
+    );
     if (projectionStartedAt !== undefined) {
       this.recordSceneProjectionDuration(this.window!.performance.now() - projectionStartedAt);
     }
-    this.callbacks.onProjectProjection(projection);
+    this.callbacks.onHotspotProjection(projection);
+    if (washerProjection) this.callbacks.onWasherOverlayProjection(washerProjection);
   }
 
   private recordSceneProjectionDuration(durationMs: number): void {
@@ -487,11 +482,20 @@ export class DioramaSceneRuntime {
 
   private updateFeedback(): void {
     if (!this.assets) return;
-    updateDioramaFeedback(
-      this.assets.focusMarkers,
-      this.selectedTarget,
-      this.hoveredTarget,
-      profile,
-    );
+    const selectedTarget = this.currentFocus === 'overview' ? undefined : this.currentFocus;
+    updateDioramaFeedback(this.assets.focusMarkers, selectedTarget, this.hoveredTarget, profile);
+  }
+
+  private get currentFocus(): 'overview' | DioramaTarget {
+    return this.cameraRequest?.target ?? this.cameraRig?.currentView ?? 'overview';
+  }
+
+  private applyCameraRequest(request: DioramaCameraRequest): void {
+    const rig = this.cameraRig;
+    if (!rig) return;
+    this.animation?.setRoomRotationEnabled(profile.motion.roomSpinFocuses.includes(request.target));
+    rig.focus(request.target, false, () => this.callbacks.onCameraFocusSettled(request.requestId));
+    this.updateFeedback();
+    this.animation?.invalidate();
   }
 }

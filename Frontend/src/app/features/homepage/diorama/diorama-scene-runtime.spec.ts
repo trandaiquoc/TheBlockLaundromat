@@ -234,7 +234,7 @@ describe('DioramaSceneRuntime', () => {
       source: 'clock',
     });
 
-    runtime.focus('washer');
+    runtime.requestFocus({ requestId: 1, target: 'washer' });
     runtime.setTimeTransition({
       id: 5,
       phase: 'dragging',
@@ -243,7 +243,7 @@ describe('DioramaSceneRuntime', () => {
       source: 'clock',
     });
     const lockedAngle = roomPivot.rotation.y;
-    runtime.focus('overview');
+    runtime.requestFocus({ requestId: 2, target: 'overview' });
     expect(roomPivot.rotation.y).toBeCloseTo(lockedAngle, 5);
     runtime.setTimeTransition({
       id: 6,
@@ -341,6 +341,9 @@ function createCallbacks(
     onWebGLUnavailable: vi.fn(),
     onSceneLoaded: vi.fn(),
     onSceneLoadFailed: vi.fn(),
+    onCameraFocusSettled: vi.fn(),
+    onHotspotProjection: vi.fn(),
+    onWasherOverlayProjection: vi.fn(),
     ...overrides,
   };
 }
@@ -411,9 +414,9 @@ function createAsset(): DioramaSceneAsset {
     material,
     [0.575, 0, 0.05],
   );
-  addNamedSurfaceGroup(washer, 'Washer.Open.Keycap', [0.67, 1.05, 0.5], material);
-  addNamedSurfaceGroup(washer, 'Washer.Delete.Keycap', [0.67, 0.63, 0.5], material);
-  for (const [name, point] of washerAnchors) addAnchor(washer, name, point);
+  addAnchor(washer, 'Anchor.Washer.ProjectName.TopLeft', [0.3, 1.35, 0.5]);
+  addAnchor(washer, 'Anchor.Washer.ProjectName.BottomRight', [1.1, 1.05, 0.5]);
+  addAnchor(washer, 'Anchor.Washer.Preview', [0, 0, -0.5]);
   replacementWasher.add(washer);
   const board = addNamedMesh(root, 'ProjectBoard', geometry, material, [-2.7, 1.3, -2.6]);
   board.rotation.y = Math.PI / 4;
@@ -424,15 +427,18 @@ function createAsset(): DioramaSceneAsset {
   root.add(shelfLantern);
   addAnchor(shelfLantern, 'Anchor.ShelfLantern.Light', [0, 0, 0]);
   for (const { nodeName } of LAUNDROMAT_DIORAMA_PROFILE.placements) {
-    if (nodeName === 'ShelfLantern') continue;
+    if (nodeName === 'ShelfLantern' || nodeName === 'Courier.Root') continue;
     addNamedGroup(root, nodeName, [0, 0, 0]);
   }
-  for (const [name, point] of profileAnchors) addAnchor(root, name, point);
-  const courierNote = root.getObjectByName(dioramaSceneNodeName('Courier.Anchor.Note')) as Group;
+  for (const [name, point] of profileAnchors) {
+    if (name === 'Courier.Anchor.Note') continue;
+    addAnchor(root, name, point);
+  }
+  const courierRoot = addCharacterRoot(root, 'Courier.Root', -1.5, geometry, material);
+  const courierNote = addAnchor(courierRoot, 'Courier.Anchor.Note', [0, 1.8, -0.2]);
   const courierPaper = new Mesh(new PlaneGeometry(0.504, 0.41), material);
   courierPaper.name = dioramaSceneNodeName('BlankNote.Sheet');
   courierNote.add(courierPaper);
-  addCharacterRoot(root, 'Courier.Root', -1.5, geometry, material);
   addCharacterRoot(root, 'Guide.Root', 1.5, geometry, material);
 
   return {
@@ -448,7 +454,6 @@ const profileAnchors: readonly [string, readonly [number, number, number]][] = [
   ['Anchor.Camera.Portrait', [0, 1.48, -0.24]],
   ['Anchor.Camera.Board', [-2.7, 2, -2.57]],
   ['Anchor.Camera.Washer', [0, 1.05, -3.03]],
-  ['Anchor.Camera.Recenter', [0, 1.32, -0.2]],
   ['Anchor.Board.Center', [-2.7, 1.3, -2.56]],
   ['Anchor.Board.BottomLeft', [-3.9, 0.2, -2.56]],
   ['Anchor.Board.BottomRight', [-1.5, 0.2, -2.56]],
@@ -457,34 +462,27 @@ const profileAnchors: readonly [string, readonly [number, number, number]][] = [
   ['Courier.Anchor.Note', [-1.5, 1.8, -0.2]],
 ];
 
-const washerAnchors: readonly [string, readonly [number, number, number]][] = [
-  ['Anchor.Washer.Preview', [0, 0, -0.5]],
-  ['Anchor.Washer.Open', [0.5, 0, -0.5]],
-  ['Anchor.Washer.Delete', [-0.5, 0, -0.5]],
-  ['Anchor.Washer.ProjectName', [0, 0.55, -0.5]],
-  ['Anchor.Washer.ProjectName.TopLeft', [-0.4, 0.7, -0.5]],
-  ['Anchor.Washer.ProjectName.BottomRight', [0.4, 0.45, -0.5]],
-];
-
 function addCharacterRoot(
   root: Group,
   name: string,
   x: number,
   geometry: BoxGeometry,
   material: MeshStandardMaterial,
-): void {
+): Group {
   const character = new Group();
   character.name = dioramaSceneNodeName(name);
   character.position.x = x;
   root.add(character);
   addNamedMesh(character, `${name} Body`, geometry, material, [0, 0.6, 0]);
+  return character;
 }
 
-function addAnchor(root: Group, name: string, point: readonly [number, number, number]): void {
+function addAnchor(root: Group, name: string, point: readonly [number, number, number]): Group {
   const anchor = new Group();
   anchor.name = dioramaSceneNodeName(name);
   anchor.position.set(...point);
   root.add(anchor);
+  return anchor;
 }
 
 function addNamedGroup(root: Group, name: string, point: readonly [number, number, number]): void {
@@ -492,25 +490,6 @@ function addNamedGroup(root: Group, name: string, point: readonly [number, numbe
   group.name = dioramaSceneNodeName(name);
   group.position.set(...point);
   root.add(group);
-}
-
-function addNamedSurfaceGroup(
-  root: Group,
-  name: string,
-  point: readonly [number, number, number],
-  material: MeshStandardMaterial,
-): void {
-  const surface = new Group();
-  surface.name = dioramaSceneNodeName(name);
-  surface.position.set(...point);
-  root.add(surface);
-  addNamedMesh(
-    surface,
-    `${dioramaSceneNodeName(name)}.Primitive`,
-    new BoxGeometry(0.508, 0.379, 0.0615),
-    material,
-    [0, 0, 0],
-  );
 }
 
 function addNamedMesh(

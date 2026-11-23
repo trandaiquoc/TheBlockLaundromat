@@ -40,3 +40,9 @@
     width: 8.5rem;
   }
 }
+
+@media (max-height: 650px) {
+  .diorama-header__logo {
+    width: clamp(6rem, 14vh, 9rem);
+  }
+}

@@ -8,22 +8,14 @@ export interface DioramaSceneProfile {
   readonly exteriorGroundTexturePath: string;
   readonly nodeNames: {
     readonly interactionNodes: Readonly<Record<DioramaTarget, string>>;
-    readonly raccoonRoots: readonly string[];
+    readonly characterRoots: readonly string[];
     readonly raccoonControllerRoot?: string;
     readonly lanternLightNodes: readonly string[];
     readonly boardBoundsAnchors: readonly string[];
-    readonly washerAnchors: {
-      readonly preview: string;
-      readonly open: string;
-      readonly delete: string;
-      readonly projectName: string;
-      readonly projectNameTopLeft: string;
-      readonly projectNameBottomRight: string;
-    };
-    readonly washerSurfaceMeshes: {
-      readonly preview: string;
-      readonly open: string;
-      readonly delete: string;
+    readonly washerPreviewAnchor: string;
+    readonly washerProjectNameAnchors: {
+      readonly topLeft: string;
+      readonly bottomRight: string;
     };
     readonly cameraFocusAnchors: Readonly<Record<DioramaFocus, string>>;
     readonly requiredAnchors: readonly string[];
@@ -141,9 +133,9 @@ export const LAUNDROMAT_DIORAMA_PROFILE: DioramaSceneProfile = {
     interactionNodes: {
       washer: 'Washer',
       'project-board': 'ProjectBoard',
-      raccoon: 'Courier.Root',
+      courier: 'Courier.Root',
     },
-    raccoonRoots: ['Courier.Root', 'Guide.Root'],
+    characterRoots: ['Courier.Root', 'Guide.Root'],
     lanternLightNodes: ['Anchor.NicheLantern.Light', 'Anchor.ShelfLantern.Light'],
     boardBoundsAnchors: [
       'Anchor.Board.BottomLeft',
@@ -151,33 +143,21 @@ export const LAUNDROMAT_DIORAMA_PROFILE: DioramaSceneProfile = {
       'Anchor.Board.TopLeft',
       'Anchor.Board.TopRight',
     ],
-    washerAnchors: {
-      preview: 'Anchor.Washer.Preview',
-      open: 'Anchor.Washer.Open',
-      delete: 'Anchor.Washer.Delete',
-      projectName: 'Anchor.Washer.ProjectName',
-      projectNameTopLeft: 'Anchor.Washer.ProjectName.TopLeft',
-      projectNameBottomRight: 'Anchor.Washer.ProjectName.BottomRight',
-    },
-    washerSurfaceMeshes: {
-      preview: 'Washer.PreviewGlass',
-      open: 'Washer.Open.Keycap',
-      delete: 'Washer.Delete.Keycap',
+    washerPreviewAnchor: 'Anchor.Washer.Preview',
+    washerProjectNameAnchors: {
+      topLeft: 'Anchor.Washer.ProjectName.TopLeft',
+      bottomRight: 'Anchor.Washer.ProjectName.BottomRight',
     },
     cameraFocusAnchors: {
       overview: 'Anchor.Camera.Overview',
       washer: 'Anchor.Camera.Washer',
       'project-board': 'Anchor.Camera.Board',
-      raccoon: 'Anchor.Camera.Portrait',
+      courier: 'Anchor.Camera.Portrait',
     },
-    requiredAnchors: [
-      'Anchor.Board.Center',
-      'Anchor.Camera.Recenter',
-      'Courier.Anchor.Note',
-    ],
+    requiredAnchors: ['Anchor.Board.Center', 'Courier.Anchor.Note'],
     roomSpinPivot: 'DioramaRoomSpinPivot',
   },
-  placements: cabinetPlacements,
+  placements: [...cabinetPlacements, { nodeName: 'Courier.Root', offset: [0.75, 0, -0.8] }],
   renderer: {
     alpha: true,
     antialias: true,
@@ -235,7 +215,7 @@ export const LAUNDROMAT_DIORAMA_PROFILE: DioramaSceneProfile = {
     roomSpinDurationSeconds: 0.95,
     roomSpinRadians: Math.PI * 2,
     raccoonIdleEnabled: false,
-    roomSpinFocuses: ['overview', 'raccoon'],
+    roomSpinFocuses: ['overview', 'courier'],
   },
 };
 
@@ -249,7 +229,7 @@ export function requiredDioramaSceneNodes(profile = LAUNDROMAT_DIORAMA_PROFILE):
     ...Object.entries(names.interactionNodes)
       .filter(([target]) => target !== 'washer')
       .map(([, name]) => name),
-    ...names.raccoonRoots,
+    ...names.characterRoots,
     ...profile.shadows.dynamicCasterRoots,
     ...names.lanternLightNodes,
     ...profile.placements.map(({ nodeName }) => nodeName),
@@ -262,10 +242,10 @@ export function requiredDioramaSceneNodes(profile = LAUNDROMAT_DIORAMA_PROFILE):
 export function requiredDioramaWasherNodes(
   profile = LAUNDROMAT_DIORAMA_PROFILE,
 ): readonly string[] {
-  const anchors = profile.nodeNames.washerAnchors;
   return [
     profile.nodeNames.interactionNodes.washer,
-    ...Object.values(anchors),
-    ...Object.values(profile.nodeNames.washerSurfaceMeshes),
+    profile.nodeNames.washerPreviewAnchor,
+    'Washer.PreviewGlass',
+    ...Object.values(profile.nodeNames.washerProjectNameAnchors),
   ];
 }

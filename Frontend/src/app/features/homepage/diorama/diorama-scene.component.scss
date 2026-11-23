@@ -10,6 +10,11 @@
 
 :host {
   overflow: hidden;
+  pointer-events: none;
+}
+
+.diorama-scene {
+  pointer-events: none;
 }
 
 .diorama-scene__canvas {
@@ -19,6 +24,7 @@
   border-radius: 0;
   background: transparent;
   touch-action: none;
+  pointer-events: auto;
 }
 
 .diorama-scene__canvas canvas {
@@ -156,10 +162,78 @@
   white-space: nowrap;
 }
 
+.diorama-scene__hotspot {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: min(12rem, calc(100vw - 2rem));
+  min-height: 2.5rem;
+  padding: 0.52rem 0.86rem 0.52rem 0.68rem;
+  border: 1px solid color-mix(in srgb, var(--spatial-border) 85%, white);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--spatial-panel) 94%, transparent);
+  color: var(--spatial-ink);
+  box-shadow: 0 0.4rem 1.25rem rgb(10 15 17 / 25%);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  backdrop-filter: blur(9px) saturate(0.88);
+}
+
+.diorama-scene__hotspot[hidden] {
+  display: none;
+}
+
+.diorama-scene__hotspot:hover {
+  border-color: var(--spatial-focus);
+  background: color-mix(in srgb, var(--spatial-panel) 78%, var(--spatial-selected));
+}
+
+.diorama-scene__hotspot:focus-visible {
+  outline: 3px solid var(--spatial-focus);
+  outline-offset: 3px;
+}
+
+.diorama-scene__hotspot-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  flex: 0 0 auto;
+  border: 2px solid var(--spatial-ink);
+  border-radius: 50%;
+  background: var(--spatial-accent);
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--spatial-accent) 22%, transparent);
+}
+
+.diorama-scene__hotspot--courier .diorama-scene__hotspot-dot {
+  background: var(--spatial-raccoon);
+}
+
+.diorama-scene__fallback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  max-width: 40rem;
+  pointer-events: auto;
+}
+
 @media (max-width: 760px) {
   .diorama-scene__fallback-art {
     width: min(27rem, 88%);
     height: min(16rem, 31vh);
+  }
+
+  .diorama-scene__hotspot {
+    min-height: 2.35rem;
+    padding-inline: 0.64rem;
+    font-size: 0.75rem;
   }
 }
 

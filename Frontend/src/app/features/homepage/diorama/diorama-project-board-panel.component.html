@@ -1,0 +1,118 @@
+<section
+  class="board-panel"
+  [hidden]="!active()"
+  [inert]="!active()"
+  [attr.aria-hidden]="!active()"
+  [attr.aria-label]="i18n.t('dioramaProjectBoard')"
+  data-spatial-panel="project-board"
+>
+  <header class="board-panel__header">
+    <div>
+      <p class="board-panel__eyebrow">{{ i18n.t('recent') }}</p>
+      <h2 tabindex="-1">{{ i18n.t('dioramaProjectBoard') }}</h2>
+    </div>
+    <button
+      class="ui-button ui-button--ghost ui-button--icon"
+      type="button"
+      [attr.aria-label]="i18n.t('dioramaBackToProjects')"
+      [attr.title]="i18n.t('dioramaBackToProjects')"
+      (click)="backRequested.emit()"
+    >
+      <svg lucideArrowLeft aria-hidden="true"></svg>
+    </button>
+  </header>
+
+  <div class="board-panel__controls">
+    <label class="board-panel__search">
+      <svg lucideSearch aria-hidden="true"></svg>
+      <input
+        type="search"
+        [value]="projectSearch()"
+        [attr.aria-label]="i18n.t('searchProjects')"
+        [placeholder]="i18n.t('searchProjects')"
+        (input)="updateProjectSearch($event)"
+      />
+    </label>
+    <select
+      class="board-panel__sort"
+      [value]="projectOrder()"
+      [attr.aria-label]="i18n.t('sortProjects')"
+      (change)="updateProjectOrder($event)"
+    >
+      <option value="newest">{{ i18n.t('projectSortNewest') }}</option>
+      <option value="oldest">{{ i18n.t('projectSortOldest') }}</option>
+      <option value="name">{{ i18n.t('projectSortName') }}</option>
+    </select>
+  </div>
+
+  <div class="board-panel__notes" [attr.aria-busy]="loadStatus() === 'loading'">
+    @if (loadStatus() === 'loading') {
+      <p class="board-panel__message" role="status">{{ i18n.t('loadingProjects') }}</p>
+    } @else if (loadStatus() === 'error') {
+      <div class="board-panel__message" role="alert">
+        <p>{{ i18n.t('projectListError') }}</p>
+        <button class="ui-button ui-button--ghost" type="button" (click)="workflow.loadProjects()">
+          {{ i18n.t('retry') }}
+        </button>
+      </div>
+    } @else if (visibleProjects().length === 0) {
+      <p class="board-panel__message" role="status">
+        {{ projects().length === 0 ? i18n.t('noProjects') : i18n.t('noProjectMatches') }}
+      </p>
+    } @else {
+      @for (project of pageProjects(); track project.id) {
+        <article class="project-note" [attr.data-note-color]="noteColor(project.id)">
+          <button
+            class="project-note__select"
+            [class.project-note__select--selected]="selectedProjectId() === project.id"
+            type="button"
+            [attr.aria-pressed]="selectedProjectId() === project.id"
+            [attr.aria-label]="i18n.t('dioramaSelectProject').replace('{name}', project.name)"
+            (click)="selectProject(project)"
+          >
+            <span class="project-note__pin" aria-hidden="true"></span>
+            <strong>{{ project.name }}</strong>
+            <span class="project-note__meta">
+              {{ i18n.t('minecraftJavaVersion').replace('{version}', project.minecraftVersion) }}
+              <time [attr.datetime]="project.updatedAt">{{
+                project.updatedAt | date: 'shortDate'
+              }}</time>
+            </span>
+          </button>
+        </article>
+      }
+    }
+  </div>
+
+  <footer class="board-panel__footer">
+    <div class="board-panel__pagination" [hidden]="pageCount() < 2">
+      <button
+        class="ui-button ui-button--ghost ui-button--icon"
+        type="button"
+        [disabled]="currentPage() <= 1"
+        [attr.aria-label]="i18n.t('projectPreviousPage')"
+        (click)="previousPage()"
+      >
+        <svg lucideChevronLeft aria-hidden="true"></svg>
+      </button>
+      <span aria-live="polite">{{ currentPage() }} / {{ pageCount() }}</span>
+      <button
+        class="ui-button ui-button--ghost ui-button--icon"
+        type="button"
+        [disabled]="currentPage() >= pageCount()"
+        [attr.aria-label]="i18n.t('projectNextPage')"
+        (click)="nextPage()"
+      >
+        <svg lucideChevronRight aria-hidden="true"></svg>
+      </button>
+    </div>
+    <button
+      class="ui-button ui-button--primary board-panel__create"
+      type="button"
+      [disabled]="creating() || !!openingId()"
+      (click)="createProject($event)"
+    >
+      <svg lucidePlus aria-hidden="true"></svg>{{ i18n.t('create') }}
+    </button>
+  </footer>
+</section>

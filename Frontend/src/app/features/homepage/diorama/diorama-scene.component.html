@@ -20,14 +20,45 @@
         </div>
         <h2>{{ i18n.t('dioramaFallbackTitle') }}</h2>
         <p>{{ i18n.t(fallbackMessageKey()) }}</p>
+        <nav
+          class="diorama-scene__fallback-actions"
+          [attr.aria-label]="i18n.t('dioramaSceneDescription')"
+        >
+          @for (target of targets; track target) {
+            <button
+              class="ui-button ui-button--secondary"
+              type="button"
+              (click)="activateTarget(target)"
+            >
+              {{ hotspotLabel(target) }}
+            </button>
+          }
+        </nav>
       </div>
     }
   </section>
 
-  <app-diorama-scene-focus-toolbar
-    [selectedTarget]="selectedTarget()"
-    (actionRequested)="handleFocusAction($event)"
-  />
+  @if (state() === 'ready') {
+    @for (target of targets; track target) {
+      <button
+        class="diorama-scene__hotspot"
+        [class.diorama-scene__hotspot--courier]="target === 'courier'"
+        [attr.data-hotspot-target]="target"
+        [style.left.px]="hotspots()[target].x"
+        [style.top.px]="hotspots()[target].y"
+        [hidden]="!hotspotsEnabled() || !hotspots()[target].visible"
+        [attr.aria-hidden]="!hotspotsEnabled() || !hotspots()[target].visible"
+        [attr.aria-label]="hotspotLabel(target)"
+        [attr.title]="hotspotLabel(target)"
+        type="button"
+        (click)="activateTarget(target)"
+      >
+        <span class="diorama-scene__hotspot-dot" aria-hidden="true"></span>
+        <span>{{ hotspotLabel(target) }}</span>
+      </button>
+    }
+  }
+
   <p class="diorama-scene__live-message" aria-live="polite" aria-atomic="true">
     {{ sceneMessage() }}
   </p>

@@ -1,5 +1,6 @@
 <main
   class="diorama"
+  tabindex="-1"
   [attr.data-theme]="themeService.theme()"
   [attr.data-scene-animations-enabled]="time.sceneAnimationsEnabled()"
   [attr.data-clock-dragging]="time.clockDragging()"
@@ -7,6 +8,9 @@
   [attr.data-time-transition]="time.timeTransition().phase"
   [attr.data-time-transition-id]="time.timeTransition().id"
   [attr.data-time-progress]="time.cycleProgress()"
+  [attr.data-spatial-phase]="navigation.state().phase"
+  [attr.data-spatial-target]="focusedTarget() ?? ''"
+  (keydown.escape)="handleEscape($event)"
 >
   <div class="diorama__atmosphere" aria-hidden="true">
     <div class="diorama__sky-layer diorama__sky-layer--light"></div>
@@ -33,12 +37,21 @@
     #scene
     [timeTransition]="time.timeTransition()"
     [timeProgress]="time.cycleProgress()"
+    [cameraRequest]="cameraRequest()"
+    [hotspotsEnabled]="hotspotsEnabled()"
     (timeChanged)="handleTimeDialChange($event)"
     (timeAnimationUpdate)="handleTimeAnimationUpdate($event)"
-    (courierActivated)="handleCourierActivated()"
+    (targetActivated)="handleTargetActivated($event)"
+    (cameraFocusSettled)="handleCameraSettled($event)"
+    (washerOverlayProjectionChanged)="handleWasherOverlayProjection($event)"
   />
 
-  <app-diorama-project-workspace (overviewRequested)="handleProjectBoardReturn()" />
+  <app-diorama-project-workspace
+    [focusedTarget]="focusedTarget()"
+    [washerOverlay]="washerOverlayProjection()"
+    (backRequested)="handleBackRequested()"
+    (targetRequested)="handleTargetRequested($event)"
+  />
 
   <app-diorama-home-header />
   <app-homepage-account-menu
