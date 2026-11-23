@@ -373,7 +373,7 @@
 .project-row {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.35rem;
   margin-bottom: 0.55rem;
@@ -443,6 +443,23 @@
   color: inherit;
   font-size: inherit;
 }
+.project-size-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.4rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--success) 17%, var(--surface-raised));
+  color: var(--success);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.project-size-badge--huge {
+  background: color-mix(in srgb, var(--info) 20%, var(--surface-raised));
+  color: var(--info);
+}
 .project-updated {
   color: var(--text-muted);
 }
@@ -470,25 +487,6 @@
   background: transparent;
   color: var(--danger);
   cursor: pointer;
-}
-.project-backup-action {
-  gap: 0.35rem;
-  margin: 0.2rem 0;
-  padding: 0 0.65rem;
-  color: var(--accent);
-  font-size: 0.76rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-.project-backup-action:hover:not(:disabled),
-.project-backup-action:focus-visible {
-  background: var(--surface-hover);
-  color: var(--accent);
-}
-.project-backup-action svg {
-  width: 1rem;
-  height: 1rem;
-  flex: 0 0 auto;
 }
 .project-delete-action svg {
   width: 1rem;
@@ -776,25 +774,5 @@
   .project-form,
   .recent-projects {
     border-radius: 1rem;
-  }
-}
-@media (max-width: 390px) {
-  .project-row {
-    grid-template-columns: minmax(0, 1fr) auto;
-    row-gap: 0;
-  }
-  .project-open-action {
-    grid-column: 1 / -1;
-    padding-left: 0.75rem;
-  }
-  .project-backup-action {
-    grid-column: 1 / 2;
-    justify-self: end;
-  }
-  .project-delete-action {
-    grid-column: 2 / 3;
-  }
-  .project-row-cta {
-    justify-self: end;
   }
 }

@@ -49,13 +49,13 @@ describe('ProjectScreenComponent', () => {
     expect(template).toContain("i18n.t('deleteProjectAriaLabel')");
   });
 
-  it('shows a named download action without the out-of-scope size badge', () => {
+  it('keeps download out of recent project rows', () => {
     const template = String(readFileSync(templatePath, 'utf8'));
 
-    expect(template).toContain('class="project-backup-action ui-button ui-button--secondary"');
-    expect(template).toContain("i18n.t('projectDownload')");
-    expect(template).not.toContain('project-size-badge');
-    expect(template).not.toContain('summarySizeBadgeAriaLabel');
+    expect(template).not.toContain('project-backup-action');
+    expect(template).not.toContain("i18n.t('projectDownload')");
+    expect(template).toContain('project-size-badge');
+    expect(template).toContain('summarySizeBadgeAriaLabel');
   });
 
   it('filters and sorts recent projects in the traditional list', async () => {
@@ -101,7 +101,6 @@ describe('ProjectScreenComponent', () => {
               reset: vi.fn(),
               selectFile: vi.fn(async () => undefined),
               restore: vi.fn(async () => undefined),
-              export: vi.fn(async () => undefined),
             },
           },
         ],
@@ -120,8 +119,8 @@ describe('ProjectScreenComponent', () => {
         (element) => element.textContent?.trim() ?? '',
       );
     expect(names()).toEqual(['Lakeside Cabin', 'Garden Study', 'Tower 2']);
-    expect(root.querySelector('.project-backup-action')?.textContent).toContain('Download');
-    expect(root.querySelector('.project-size-badge')).toBeNull();
+    expect(root.querySelector('.project-backup-action')).toBeNull();
+    expect(root.querySelector('.project-size-badge')?.textContent).toContain('16 × 16 × 16');
 
     const search = root.querySelector('.project-search-field input') as HTMLInputElement;
     search.value = 'cabin';

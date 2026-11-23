@@ -101,10 +101,4 @@ export class ProjectBackupWorkflow {
       if (generation === this.generation) this.busyState.set(undefined);
     }
   }
-
-  async export(id: string): Promise<{ name: string; content: string } | undefined> {
-    const project = await this.persistence.open(id);
-    if (!project) return undefined;
-    return { name: project.metadata.name, content: this.persistence.exportPackage(project) };
-  }
 }

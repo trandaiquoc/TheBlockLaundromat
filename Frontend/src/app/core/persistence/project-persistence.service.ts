@@ -1,7 +1,7 @@
 import { migrateProject } from '../domain/migrations';
 import { ProjectDocument, ProjectMetadata } from '../domain/project.types';
 import { validateProject } from '../domain/validation';
-import { parseProjectPackage, serializeProjectPackage } from './project-package/project-package';
+import { parseProjectPackage } from './project-package/project-package';
 import {
   ProjectPersistenceMetadata,
   ProjectRecord,
@@ -76,10 +76,6 @@ export class ProjectPersistenceService {
 
   delete(id: string): Promise<void> {
     return this.store.delete(id);
-  }
-
-  exportPackage(project: ProjectDocument): string {
-    return serializeProjectPackage(project);
   }
 
   importPackage(serialized: string): ProjectDocument {

@@ -26,7 +26,6 @@ function setup(initial: ProjectDocument[] = []) {
   const projects = new Map(initial.map((entry) => [entry.id, entry]));
   const store = {
     exists: vi.fn(async (id: string) => projects.has(id)),
-    open: vi.fn(async (id: string) => projects.get(id)),
     create: vi.fn(async (entry: ProjectDocument) => {
       if (projects.has(entry.id)) throw new Error('Duplicate ID');
       projects.set(entry.id, entry);
@@ -40,11 +39,9 @@ function backupFile(content: string): File {
 }
 
 describe('ProjectBackupWorkflow', () => {
-  it('exports and restores the real package without changing project content', async () => {
+  it('restores the real package without changing existing project content', async () => {
     const { workflow, projects } = setup([project]);
-    const exported = await workflow.export(project.id);
-    expect(exported?.content).toBe(serializeProjectPackage(project));
-    await workflow.selectFile(backupFile(exported!.content));
+    await workflow.selectFile(backupFile(serializeProjectPackage(project)));
     expect(workflow.collision()).toBe(true);
     const restored = await workflow.restore();
     expect(restored?.id).not.toBe(project.id);

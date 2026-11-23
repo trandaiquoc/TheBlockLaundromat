@@ -299,6 +299,15 @@
                           .t('minecraftJavaVersion')
                           .replace('{version}', project.minecraftVersion)
                       }}</small>
+                      <span
+                        class="project-size-badge"
+                        [class.project-size-badge--huge]="
+                          project.structureMode === 'huge-structure-blocks'
+                        "
+                        [attr.aria-label]="summarySizeBadgeAriaLabel(project)"
+                        [attr.title]="summarySizeBadgeAriaLabel(project)"
+                        >{{ summarySizeLabel(project) }}</span
+                      >
                       <small class="project-updated"
                         >{{ i18n.t('recentProjectUpdated') }}
                         {{ project.updatedAt | date: 'short' }}</small
@@ -308,17 +317,6 @@
                   <span class="project-row-cta">{{
                     openingId() === project.id ? i18n.t('openingProject') : i18n.t('open')
                   }}</span>
-                </button>
-                <button
-                  class="project-backup-action ui-button ui-button--secondary"
-                  type="button"
-                  [disabled]="!!backupExportingId() || deletingProjectIds().has(project.id)"
-                  [attr.aria-label]="i18n.t('backupExportNamed').replace('{name}', project.name)"
-                  [attr.title]="i18n.t('backupExportNamed').replace('{name}', project.name)"
-                  (click)="exportBackup(project, $event)"
-                >
-                  <svg lucideDownload aria-hidden="true"></svg>
-                  <span>{{ i18n.t('projectDownload') }}</span>
                 </button>
                 <button
                   class="project-delete-action ui-button ui-button--danger ui-button--icon"
@@ -339,9 +337,6 @@
         }
         @if (deleteError()) {
           <p class="error recent-project-error" role="alert">{{ deleteError() }}</p>
-        }
-        @if (backupExportError()) {
-          <p class="error recent-project-error" role="alert">{{ i18n.t('exportProjectError') }}</p>
         }
       </section>
     </section>

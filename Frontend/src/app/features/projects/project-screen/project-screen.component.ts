@@ -19,7 +19,7 @@ import {
   UiPreferencesService,
   type HomepageMode,
 } from '../../../core/ui/preferences/ui-preferences.service';
-import { LucideDownload, LucideFileUp, LucideSearch, LucideTrash2, LucideX } from '@lucide/angular';
+import { LucideFileUp, LucideSearch, LucideTrash2, LucideX } from '@lucide/angular';
 import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import {
   SearchableDropdownComponent,
@@ -52,7 +52,6 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
     DatePipe,
     NgOptimizedImage,
     LucideFileUp,
-    LucideDownload,
     LucideSearch,
     LucideTrash2,
     LucideX,
@@ -78,8 +77,6 @@ export class ProjectScreenComponent {
   private readonly structureJsonCreateTrigger = viewChild<ElementRef<HTMLButtonElement>>(
     'structureJsonCreateTrigger',
   );
-  protected readonly backupExportingId = signal<string | undefined>(undefined);
-  protected readonly backupExportError = signal(false);
   protected readonly name = signal(this.i18n.t('untitledStructure'));
   protected readonly defaultMinecraftVersion = DEFAULT_MINECRAFT_VERSION;
   protected readonly sizeX = signal('16');
@@ -226,27 +223,6 @@ export class ProjectScreenComponent {
     await this.workflow.loadProjects();
     this.closeBackupDialog();
   }
-  protected async exportBackup(project: ProjectSummary, event: Event): Promise<void> {
-    event.stopPropagation();
-    if (this.backupExportingId()) return;
-    this.backupExportingId.set(project.id);
-    this.backupExportError.set(false);
-    try {
-      const backup = await this.backup.export(project.id);
-      if (!backup) throw new Error('Project no longer exists');
-      const blob = new Blob([backup.content], { type: 'application/json;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = `${backup.name.replace(/[^a-z0-9_-]+/gi, '-').replace(/^-|-$/g, '') || 'project'}.tbl-project.json`;
-      anchor.click();
-      setTimeout(() => URL.revokeObjectURL(url), 0);
-    } catch {
-      this.backupExportError.set(true);
-    } finally {
-      this.backupExportingId.set(undefined);
-    }
-  }
   protected async selectStructureJson(event: Event): Promise<void> {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -298,6 +274,21 @@ export class ProjectScreenComponent {
       ? this.i18n.t('verifiedSupport')
       : this.i18n.t('resourceCompatibility');
   }
+  protected summaryModeFullLabel(mode: StructureMode): string {
+    return this.i18n.t(
+      mode === 'huge-structure-blocks' ? 'hugeStructureBlocks' : 'vanillaStructureBlock',
+    );
+  }
+  protected summarySizeLabel(project: ProjectSummary): string {
+    return `${project.size.x} × ${project.size.y} × ${project.size.z}`;
+  }
+  protected summarySizeBadgeAriaLabel(project: ProjectSummary): string {
+    return this.i18n
+      .t('recentProjectSizeBadgeAria')
+      .replace('{mode}', this.summaryModeFullLabel(project.structureMode))
+      .replace('{size}', this.summarySizeLabel(project));
+  }
+
   protected async createProject(): Promise<void> {
     await this.workflow.createProject({
       name: this.name(),
