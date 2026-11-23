@@ -5,6 +5,7 @@ import { buildDioramaScene } from './diorama-scene-assets';
 import { LAUNDROMAT_DIORAMA_PROFILE, dioramaSceneNodeName } from './diorama-scene-profile';
 import { applyDioramaTheme, dioramaVariantForTheme } from './diorama-scene-theme';
 import { disposeDioramaResources } from './diorama-scene-resources';
+import { dioramaShadowProxyLayer } from './diorama-scene-shadow';
 import type { DioramaSceneAsset } from './diorama-scene-loader';
 
 describe('Diorama scene assets', () => {
@@ -20,6 +21,7 @@ describe('Diorama scene assets', () => {
     expect(assets.scene.getObjectByName('CourierRoot')).toBeTruthy();
     expect(assets.scene.getObjectByName('GuideRoot')).toBeTruthy();
     expect(assets.scene.getObjectByName('DioramaRoomSpinPivot')).toBe(assets.roomSpinPivot);
+    expect(assets.scene.getObjectByName('laundromat-diorama-static-shadow-casters')).toBeTruthy();
     expect(assets.scene.getObjectByName('Preview.OutdoorGround')).toBeTruthy();
     expect(assets.scene.getObjectByName('Preview.RoomContactShadow')).toBeTruthy();
     expect(assets.scene.background).toBeNull();
@@ -44,6 +46,13 @@ describe('Diorama scene assets', () => {
     expect(assets.model.getObjectByName('ShelfLantern')?.position.toArray()).toEqual([
       -3, 2, -0.6000000000000001,
     ]);
+    expect(assets.model.getObjectByName('Floor')?.castShadow).toBe(false);
+    expect(
+      assets.model.getObjectByName(dioramaSceneNodeName('Courier.Root body'))?.castShadow,
+    ).toBe(true);
+    expect(
+      assets.themeTargets.keyLight.shadow.camera.layers.isEnabled(dioramaShadowProxyLayer),
+    ).toBe(true);
     expect(
       (assets.scene.getObjectByName('Preview.OutdoorGround') as THREE.Mesh).material,
     ).toBeInstanceOf(THREE.ShaderMaterial);
@@ -123,6 +132,10 @@ function createSceneAsset(): DioramaSceneAsset {
   root.traverse((object) => {
     if (object instanceof THREE.Mesh) meshes.push(object);
   });
+  for (const mesh of meshes) {
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+  }
   const baseMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const variants = new Map([
     ['Light', new THREE.MeshStandardMaterial({ color: 0xffffff })],

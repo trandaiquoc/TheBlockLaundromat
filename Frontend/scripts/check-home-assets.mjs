@@ -130,9 +130,27 @@ const nonOpaqueMaterials = (roomDocument.materials ?? []).filter((material) => {
     material.alphaTexture !== undefined
   );
 });
+const variantShadowSideChanges = [];
+for (const mesh of roomDocument.meshes ?? []) {
+  for (const primitive of mesh.primitives ?? []) {
+    const baseMaterial = roomDocument.materials?.[primitive.material] ?? {};
+    const mappings = primitive.extensions?.KHR_materials_variants?.mappings ?? [];
+    for (const mapping of mappings) {
+      const variantMaterial = roomDocument.materials?.[mapping.material] ?? {};
+      if (Boolean(baseMaterial.doubleSided) !== Boolean(variantMaterial.doubleSided)) {
+        variantShadowSideChanges.push({ baseMaterial, variantMaterial });
+      }
+    }
+  }
+}
 if (materialVariantsChangeCasterSilhouette === 'false' && nonOpaqueMaterials.length > 0) {
   throw new Error(
     'Diorama profile skips theme shadow updates, but the room GLB contains opacity-sensitive materials.',
+  );
+}
+if (materialVariantsChangeCasterSilhouette === 'false' && variantShadowSideChanges.length > 0) {
+  throw new Error(
+    'Diorama shadow proxy uses one theme-independent side, but GLB material variants change sidedness.',
   );
 }
 

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import type { DioramaFocus, DioramaTarget } from './diorama-contracts';
 import { addFocusMarker } from './diorama-scene-geometry';
 import type { DioramaSceneAsset } from './diorama-scene-loader';
+import { createDioramaStaticShadowCasters, dioramaShadowProxyLayer } from './diorama-scene-shadow';
 import {
   LAUNDROMAT_DIORAMA_PROFILE,
   dioramaSceneNodeName,
@@ -50,6 +51,13 @@ export function buildDioramaScene(asset: DioramaSceneAsset): DioramaSceneAssets 
   const bounds = new THREE.Box3().setFromObject(asset.root);
   if (bounds.isEmpty()) throw new Error('The scene GLB has empty scene bounds.');
   const roomSpinPivot = createRoomSpinPivot(scene, asset.root, bounds, profile);
+  createDioramaStaticShadowCasters(
+    asset.root,
+    roomSpinPivot,
+    profile.shadows.dynamicCasterRoots.map((name) => requireSceneObject(asset.root, name)),
+    profile.id,
+  );
+  scene.updateMatrixWorld(true);
   const outdoorGround = addOutdoorGround(scene, bounds, asset.exteriorGroundTexture, profile);
 
   const targets = {
@@ -251,6 +259,7 @@ function createThemeLights(
     bounds.max.z + extent * profile.lighting.key.positionScale[2],
   );
   keyLight.castShadow = true;
+  keyLight.shadow.camera.layers.enable(dioramaShadowProxyLayer);
   keyLight.shadow.mapSize.set(profile.shadows.mapSize, profile.shadows.mapSize);
   keyLight.shadow.camera.left = -extent;
   keyLight.shadow.camera.right = extent;

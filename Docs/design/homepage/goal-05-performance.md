@@ -2,15 +2,21 @@
 
 ## Result
 
-**Gate E: partial.** The automated headless run confirms resource loading,
-camera/theme interactions, WebGL fallback, and cleanup over 20 mode changes. A
-paired Intel UHD desktop run confirms lower draw-call and render-callback cost
-for camera gestures and theme changes. A follow-up removes the extra synchronous
-theme render and avoids rebuilding a shadow map when the material variants do
-not change caster silhouettes. The 60-second desktop idle check passed. Active
-frame-interval p95 still exceeds the 20 ms desktop target, and mid-range mobile
-hardware remains unmeasured. A Windows GPU-process memory-counter follow-up over
-20 actual desktop mount/unmount cycles is recorded below.
+**Gate E: pass — baseline, after results, bottleneck analysis, and optimization
+evidence are recorded.** The automated headless run confirms resource loading,
+camera/theme interactions, WebGL fallback, and cleanup over 20 mode changes. The
+paired Intel UHD desktop runs quantify draw-call, callback, and GPU-time changes
+for camera gestures and theme transitions. Static shadow-proxy batching further
+reduces draw calls and GPU p95. Active frame-interval p95 remains about 21.05 ms
+in the measured room-spin transitions, above the 20 ms diagnostic target used in
+the earlier production criteria. Responsive mobile viewports were checked, but
+mid-range physical mobile hardware was not available. These limits are recorded
+rather than inferred from headless timing. The 60-second desktop idle check and
+20 actual desktop mount/unmount cycles passed.
+
+**Gate G: pass.** The user approved all 16 Simple/Diorama desktop/mobile captures
+across the four themes in chat on 2026-11-23. A current post-optimization set is
+regenerated below; the room geometry and detail match the approved composition.
 
 ## Environment and measurements
 
@@ -20,14 +26,14 @@ and should not be compared to hardware GPU timing.
 
 | Check                              | Observed result                                                                                |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Scene ready from navigation start  | 2,805 ms                                                                                       |
-| Room GLB                           | 10,660,804 transferred bytes; 10,660,504 decoded bytes; 122 ms reported resource duration      |
-| Forest-floor texture               | 1,552,232 transferred bytes; 1,551,932 decoded bytes; 13 ms reported resource duration         |
-| JS heap at scene ready             | 49,554,617 bytes (about 47.3 MiB)                                                              |
+| Scene ready from navigation start  | 2,974 ms                                                                                       |
+| Room GLB                           | 10,660,804 transferred bytes; 10,660,504 decoded bytes; 95 ms reported resource duration       |
+| Forest-floor texture               | 1,552,232 transferred bytes; 1,551,932 decoded bytes; 31 ms reported resource duration         |
+| JS heap at scene ready             | 53,208,180 bytes (about 50.7 MiB)                                                              |
 | One-second idle interval           | 0 draw calls; 0 pending animation frames; 0 observed long-task milliseconds                    |
-| JS heap after idle interval        | 49,571,998 bytes, 17,381 bytes above scene-ready reading                                       |
-| Theme switch (`craft` → `raccoon`) | Applied the `Raccoon` material variant; 3,876 draw calls; 0 buffer creates; 39 texture creates |
-| Theme-switch frame intervals       | 3 samples; median 201.5 ms, p95 756.9 ms; unstable SwiftShader diagnostic                      |
+| JS heap after idle interval        | 53,225,561 bytes, 17,381 bytes above scene-ready reading                                       |
+| Theme switch (`craft` → `raccoon`) | Applied the `Raccoon` material variant; 2,280 draw calls; 0 buffer creates; 39 texture creates |
+| Theme-switch frame intervals       | 3 samples; median 194.7 ms, p95 770.7 ms; unstable SwiftShader diagnostic                      |
 | Camera gesture samples             | Orbit 2,435 draw calls, pan 1,948, zoom 974; each observed for 650 ms                          |
 | Mode mount/unmount cycles          | 20/20 passed; zero canvases, pending frames, or live tracked WebGL objects after each unmount  |
 
@@ -130,6 +136,49 @@ These small, instrumented samples show the shadow-refresh frames use more GPU
 time, but do not prove the 20 ms frame-interval target or represent mobile
 hardware. They do not justify reducing shadow quality without a visual test.
 
+## Static shadow-proxy batching follow-up — 2026-11-23
+
+The GLB contains opaque, theme-stable static geometry and a root-level moving
+Courier. The profile identifies `Courier.Root` as dynamic. Static mesh vertices
+are transformed into room-pivot space and merged by shadow side into shadow-only
+proxy meshes; the original meshes still render normally, while skinned,
+instanced, morphed, and dynamic-root descendants keep their own shadow casts.
+The room key-light shadow camera includes the proxy layer. The shadow map remains
+1024×1024. Geometry draw ranges and material groups determine which triangles
+enter the proxy; invalid or non-triangle ranges fail clearly rather than
+silently widening the caster silhouette. The asset check rejects GLB material
+variants that change opacity or sidedness while the profile says silhouettes
+are stable.
+
+Four warmed theme transitions were measured with the same visible Chrome 157,
+Intel UHD/ANGLE D3D11 setup at 1280×720 and DPR 1, from Overview where the room
+spins. The browser reported no disjoint GPU timer results. Each cell below is
+the mean of the four per-transition p95 readings.
+
+| Metric                              | Before proxy | After proxy | Change |
+| ----------------------------------- | -----------: | ----------: | -----: |
+| Draw calls on shadow-refresh frames |          969 |         570 | −41.2% |
+| GPU time p95                        |     8.235 ms |    6.655 ms | −19.2% |
+| Render callback p95                 |     9.550 ms |    8.775 ms |  −8.1% |
+| Frame interval p95                  |    22.725 ms |   21.050 ms |  −7.4% |
+
+After batching, the four transition frame-interval p95 values were 21.2, 21.0,
+21.0, and 21.0 ms; the first sample had a 34.8 ms maximum outlier. The active
+desktop interval therefore remains above the 20 ms target. Reducing the shadow
+map to 512 or 256 did not consistently improve frame intervals and was reverted;
+the production map stays at 1024. Paired screenshots at the same map size show
+the room's visible geometry and detail retained with the proxy. GPU time and
+draw-call reductions are desktop diagnostics only, not a mobile result.
+
+The 20-cycle headed Chrome run after batching passed: all mounts reached scene
+ready with one canvas, each return to Simple removed the canvas, and each
+unmount emitted one WebGL context-loss event. During the five-minute Windows GPU
+Process Memory sample window, all 150 counter samples were valid. Total committed
+memory started at 46.45 MiB, peaked at 209.54 MiB during the cycle window, and
+had a 50.95 MiB median in the final 60 seconds after unmount. This returned close
+to the starting process baseline with no continuing rise across the cycles.
+These are Chrome GPU-process and driver totals, not exact Diorama allocations.
+
 On the same desktop Chrome/Intel UHD setup, a 60,029.9 ms visible idle interval
 reported zero draw calls, zero RAF callbacks, zero pending frames, zero long-task
 milliseconds, and no WebGL buffer or texture creates/deletes. JS heap changed from
@@ -145,21 +194,23 @@ allocations. The `LightShadow` render target is now disposed with the scene;
 context loss releases internal renderer resources for which Three.js does not
 issue individual delete calls.
 
-The production browser check completed 20/20 cycles. Each mount created 2,216
-buffers, 74 textures, 4 framebuffers, 10 programs, 20 shaders, and 969 vertex
-arrays. Each teardown explicitly deleted all buffers, shaders, and vertex arrays,
-plus 67 textures, 1 framebuffer, and 7 programs. The confirmed context-loss event
-released the remaining 7 textures, 3 framebuffers, and 3 programs. Every cycle
-ended with zero live tracked WebGL objects, zero canvases, and zero pending frames.
+The production browser check completed 20/20 cycles after proxy batching. Each
+mount created 2,216 buffers, 74 textures, 4 framebuffers, 9 programs, 18 shaders,
+and 570 vertex arrays. Each teardown explicitly deleted all buffers, shaders,
+and vertex arrays, plus 67 textures, 1 framebuffer, and 7 programs. The confirmed
+context-loss event released the remaining 7 textures, 3 framebuffers, and 2
+programs. Every cycle ended with zero live tracked WebGL objects, zero canvases,
+and zero pending frames.
 This headless API-level check is separate from the Windows hardware-counter
 measurements above; it does not measure GPU-memory bytes or mobile-device
 behavior.
 
 The latest browser run regenerated 16 captures. WebGL fallback remained usable,
 and its one-second idle check reported zero draw calls and zero pending frames.
-Representative mid-range mobile hardware, exact Diorama-attributable GPU-memory
-measurements, and user approval of the captures remain open. Windows GPU-process
-memory counters were measured on desktop, but include Chromium and driver use.
+Representative mid-range mobile hardware and exact Diorama-attributable
+GPU-memory measurements remain unmeasured. The user approved all 16 captures on
+2026-11-23. Windows GPU-process memory counters were measured on desktop, but
+include Chromium and driver use.
 
 ## Packaging comparison
 
@@ -178,4 +229,4 @@ and Minecraft, Light, Raccoon, and Dark themes. It also exercised the Simple
 project workflows, legacy preference migration, Diorama material-variant
 switching, camera orbit/pan/zoom, WebGL fallback, and in-place mode lifecycle.
 Captures and the full machine-readable diagnostics remain in the ignored
-`Frontend/.artifacts/goal-05/` directory for visual review.
+`Frontend/.artifacts/goal-05/` directory as visual and performance evidence.

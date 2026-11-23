@@ -29,6 +29,7 @@ export interface DioramaSceneProfile {
   readonly shadows: {
     readonly mapSize: number;
     readonly materialVariantsChangeCasterSilhouette: boolean;
+    readonly dynamicCasterRoots: readonly string[];
   };
   readonly camera: {
     readonly fieldOfView: number;
@@ -161,6 +162,7 @@ export const LAUNDROMAT_DIORAMA_PROFILE: DioramaSceneProfile = {
   shadows: {
     mapSize: 1024,
     materialVariantsChangeCasterSilhouette: false,
+    dynamicCasterRoots: ['Courier.Root'],
   },
   camera: { fieldOfView: 37, near: 0.1, far: 100 },
   lighting: {
@@ -220,10 +222,11 @@ export function requiredDioramaSceneNodes(profile = LAUNDROMAT_DIORAMA_PROFILE):
   return [
     ...Object.values(names.interactionNodes),
     ...names.raccoonRoots,
+    ...profile.shadows.dynamicCasterRoots,
     ...names.lanternLightNodes,
     ...profile.placements.map(({ nodeName }) => nodeName),
     ...names.boardBoundsAnchors,
     ...Object.values(names.cameraFocusAnchors),
     ...names.requiredAnchors,
-  ];
+  ].filter((name, index, all) => all.indexOf(name) === index);
 }
