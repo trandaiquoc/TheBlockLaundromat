@@ -274,7 +274,6 @@ export class UiPreferencesService {
         : legacyLayout !== null
           ? {
               ...defaults,
-              appearance: { ...defaults.appearance, homepageMode: 'simple' as HomepageMode },
               layout: normalizeLayout(JSON.parse(legacyLayout)),
             }
           : defaults;
@@ -304,7 +303,6 @@ function readLegacyPreferences(storage: Pick<Storage, 'getItem'>): UiPreferences
     return legacyLayout
       ? {
           ...defaults,
-          appearance: { ...defaults.appearance, homepageMode: 'simple' as HomepageMode },
           layout: normalizeLayout(JSON.parse(legacyLayout)),
         }
       : undefined;
@@ -319,12 +317,9 @@ function normalize(value: unknown): UiPreferences {
   const appearance =
     candidate.appearance && typeof candidate.appearance === 'object' ? candidate.appearance : {};
   const storedHomepageMode = (appearance as { readonly homepageMode?: unknown }).homepageMode;
-  const storedVersion = (candidate as { readonly version?: unknown }).version;
   const homepageMode = isHomepageMode(storedHomepageMode)
     ? storedHomepageMode
-    : storedVersion === 1 || storedVersion === undefined
-      ? 'simple'
-      : defaults.appearance.homepageMode;
+    : defaults.appearance.homepageMode;
   const controls =
     candidate.controls && typeof candidate.controls === 'object' ? candidate.controls : {};
   const shortcuts = normalizeBindings(candidate.shortcuts);

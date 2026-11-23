@@ -66,9 +66,14 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
     pageSocket = await connectDebugger(target.webSocketDebuggerUrl);
     const send = createDebuggerSender(pageSocket);
     const consoleMessages = [];
+    let activeTrace;
     pageSocket.addEventListener('message', (event) => {
       const message = JSON.parse(event.data);
-      if (message.method === 'Runtime.consoleAPICalled') {
+      if (message.method === 'Tracing.dataCollected' && activeTrace) {
+        activeTrace.events.push(...message.params.value);
+      } else if (message.method === 'Tracing.tracingComplete' && activeTrace) {
+        activeTrace.resolve();
+      } else if (message.method === 'Runtime.consoleAPICalled') {
         consoleMessages.push({
           type: message.params.type,
           text: message.params.args
@@ -145,6 +150,27 @@ export async function startHeadlessBrowser(browser, url, userDataDirectory, opti
           ...(clip ? { clip } : {}),
         });
         await writeFile(path, Buffer.from(response.data, 'base64'));
+      },
+      captureTrace: async (path, action) => {
+        const events = [];
+        let resolveTrace;
+        const completed = new Promise((resolveTraceComplete) => {
+          resolveTrace = resolveTraceComplete;
+        });
+        activeTrace = { events, resolve: resolveTrace };
+        await send('Tracing.start', {
+          categories:
+            'devtools.timeline,disabled-by-default-devtools.timeline.frame,blink.user_timing',
+          transferMode: 'ReportEvents',
+        });
+        try {
+          await action();
+        } finally {
+          await send('Tracing.end');
+          await completed;
+          activeTrace = undefined;
+          await writeFile(path, `${JSON.stringify({ traceEvents: events }, null, 2)}\n`);
+        }
       },
       close: () => closeBrowser(),
     };

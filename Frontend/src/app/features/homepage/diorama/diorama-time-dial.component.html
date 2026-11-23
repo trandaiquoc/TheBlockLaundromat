@@ -126,6 +126,11 @@
         </g>
       </svg>
     </div>
+    <div
+      class="diorama-time-dial__progress"
+      aria-hidden="true"
+      [style.--time-progress]="timeProgressPercent()"
+    ></div>
 
     @for (stage of timeStages; track stage.theme; let index = $index) {
       <button

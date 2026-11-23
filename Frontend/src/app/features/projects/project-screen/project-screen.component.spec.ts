@@ -15,16 +15,21 @@ const templatePath = 'src/app/features/projects/project-screen/project-screen.co
 describe('ProjectScreenComponent', () => {
   afterEach(() => localStorage.removeItem('the-block-laundromat.ui-preferences'));
 
-  it('keeps the Simple Homepage compact while preserving accessible project workflows', () => {
+  it('keeps the Simple Homepage focused while preserving accessible project workflows', () => {
     const template = String(readFileSync(templatePath, 'utf8'));
 
     expect(template).toContain('assets/brand/the-block-laundromat-logo.svg');
-    expect(template).toContain('class="project-screen-heading"');
+    expect(template).toContain('class="outer-brand-title"');
+    expect(template).toContain('<h1 class="outer-brand-title">');
+    expect(template).not.toContain('simple-home-intro');
     expect(template).not.toContain('class="project-intro"');
     expect(template).not.toContain("i18n.t('projectSubtitle')");
     expect(template).toContain('class="project-form"');
     expect(template).toContain('class="recent-projects"');
-    expect(template).toContain('<app-project-screen-account');
+    expect(template).toContain('<app-homepage-account-menu');
+    expect(template).toContain('<app-project-screen-theme-picker');
+    expect(template).toContain("i18n.t('emptyProjectsTitle')");
+    expect(template).not.toContain('data-locale');
     expect(template).toContain('projectName');
     expect(template).toContain('structureSize');
     expect(template).toContain('createFromStructureJson');

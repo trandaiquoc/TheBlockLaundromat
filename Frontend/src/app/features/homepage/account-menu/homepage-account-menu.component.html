@@ -1,0 +1,111 @@
+<div class="homepage-account-anchor">
+  <button
+    #accountTrigger
+    class="homepage-account-trigger"
+    type="button"
+    [attr.aria-label]="i18n.t('accountMenu') + ': ' + displayName() + ', ' + accountLine()"
+    aria-haspopup="menu"
+    [attr.aria-expanded]="popoverOpen()"
+    (click)="togglePopover()"
+  >
+    <img
+      class="homepage-account-avatar"
+      ngSrc="assets/project-screen/account/rakoon-avatar.png"
+      width="48"
+      height="48"
+      alt=""
+      aria-hidden="true"
+    />
+    <span class="homepage-account-copy">
+      <strong>{{ displayName() }}</strong>
+      <span>{{ accountLine() }}</span>
+    </span>
+    <svg
+      class="homepage-account-chevron"
+      [class.is-open]="popoverOpen()"
+      lucideChevronDown
+      aria-hidden="true"
+    ></svg>
+  </button>
+
+  <section
+    class="homepage-account-menu"
+    [class.is-open]="popoverOpen()"
+    role="menu"
+    [attr.aria-label]="i18n.t('accountMenu')"
+    [attr.aria-hidden]="popoverOpen() ? null : 'true'"
+    [attr.inert]="popoverOpen() ? null : ''"
+    tabindex="-1"
+    (keydown)="keepMenuKeyboardFocus($event)"
+  >
+    <div class="homepage-account-identity">
+      <img
+        class="homepage-account-avatar homepage-account-avatar--menu"
+        ngSrc="assets/project-screen/account/rakoon-avatar.png"
+        width="48"
+        height="48"
+        alt=""
+        aria-hidden="true"
+      />
+      <span class="homepage-account-copy">
+        <strong>{{ displayName() }}</strong>
+        <span>{{ accountLine() }}</span>
+      </span>
+    </div>
+
+    <div class="homepage-account-separator" role="separator"></div>
+
+    <div
+      class="homepage-account-mode-group"
+      role="group"
+      [attr.aria-label]="i18n.t('homepageAppearance')"
+    >
+      <span class="homepage-account-section-title">{{ i18n.t('homepageAppearance') }}</span>
+      @for (mode of modes; track mode) {
+        <button
+          class="homepage-account-menu-action"
+          type="button"
+          role="menuitemradio"
+          [attr.data-homepage-mode]="mode"
+          [attr.aria-checked]="selectedMode() === mode"
+          [tabIndex]="selectedMode() === mode ? 0 : -1"
+          (click)="selectHomepageMode(mode)"
+        >
+          <span>{{
+            i18n.t(mode === 'diorama' ? 'homepageModeDiorama' : 'homepageModeSimple')
+          }}</span>
+          @if (selectedMode() === mode) {
+            <svg lucideCheck aria-hidden="true"></svg>
+          }
+        </button>
+      }
+    </div>
+
+    <div class="homepage-account-separator" role="separator"></div>
+
+    <button
+      class="homepage-account-menu-action homepage-account-menu-action--settings"
+      type="button"
+      role="menuitem"
+      tabindex="-1"
+      (click)="requestSettings()"
+    >
+      <svg lucideSettings aria-hidden="true"></svg>
+      <span>{{ i18n.t('settingsMenu') }}</span>
+    </button>
+    @if (isDemoAccount()) {
+      <button
+        class="homepage-account-menu-action homepage-account-menu-action--logout"
+        type="button"
+        role="menuitem"
+        tabindex="-1"
+        (click)="logOut()"
+      >
+        <svg lucideLogOut aria-hidden="true"></svg>
+        <span>{{ i18n.t('logOut') }}</span>
+      </button>
+    } @else {
+      <p class="homepage-account-note">{{ i18n.t('localProjectsDescription') }}</p>
+    }
+  </section>
+</div>

@@ -1,6 +1,6 @@
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { Component, ElementRef, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, inject, output, signal, viewChild } from '@angular/core';
 import type { ProjectSummary } from '../../../core/persistence/project-store/project-store.port';
 import {
   DEFAULT_MINECRAFT_VERSION,
@@ -15,7 +15,10 @@ import {
 } from '../../../core/domain/structure-size-policy';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 import type { TranslationKey } from '../../../core/ui/localization/translation-catalogs';
-import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
+import {
+  UiPreferencesService,
+  type HomepageMode,
+} from '../../../core/ui/preferences/ui-preferences.service';
 import { LucideDownload, LucideFileUp, LucideSearch, LucideTrash2, LucideX } from '@lucide/angular';
 import { UiTooltipDirective } from '../../../shared/ui/tooltip/ui-tooltip.directive';
 import {
@@ -26,7 +29,6 @@ import {
   MojangRelease,
   MojangVersionService,
 } from '../../../core/assets/vanilla/mojang-vanilla-asset-source';
-import { SettingsDialogComponent } from '../../editor/settings/settings-dialog/settings-dialog.component';
 import type {
   StructureJsonProjectImportError,
   StructureJsonProjectImportPreview,
@@ -34,8 +36,8 @@ import type {
 import { StructureJsonProjectImportWorkflow } from './structure-json-project-import-workflow';
 import { ProjectScreenWorkflow } from './project-screen-workflow';
 import { ProjectBackupWorkflow, BackupFailure } from './project-backup-workflow';
-import { ProjectScreenControlsComponent } from './project-screen-controls.component';
-import { ProjectScreenAccountComponent } from './project-screen-account.component';
+import { ProjectScreenThemePickerComponent } from './project-screen-theme-picker.component';
+import { HomepageAccountMenuComponent } from '../../homepage/account-menu/homepage-account-menu.component';
 import {
   filterAndSortProjectSummaries,
   isProjectScreenProjectOrder,
@@ -56,14 +58,16 @@ import type { ProjectScreenProjectOrder } from './project-screen-project-list';
     LucideX,
     UiTooltipDirective,
     SearchableDropdownComponent,
-    ProjectScreenControlsComponent,
-    ProjectScreenAccountComponent,
-    SettingsDialogComponent,
+    ProjectScreenThemePickerComponent,
+    HomepageAccountMenuComponent,
   ],
   templateUrl: './project-screen.component.html',
   styleUrl: './project-screen.component.scss',
 })
 export class ProjectScreenComponent {
+  readonly homepageModeRequested = output<HomepageMode>();
+  readonly settingsRequested = output<void>();
+
   protected readonly i18n = inject(I18nService);
   private readonly preferences = inject(UiPreferencesService);
   protected readonly workflow = inject(ProjectScreenWorkflow);
@@ -135,7 +139,6 @@ export class ProjectScreenComponent {
   protected readonly creating = this.workflow.creating;
   protected readonly openingId = this.workflow.openingId;
   protected readonly deletingProjectIds = this.workflow.deletingProjectIds;
-  protected readonly settingsDialogOpen = signal(false);
   protected readonly deleteError = this.workflow.deleteError;
   protected readonly structureJsonImport = new StructureJsonProjectImportWorkflow((project) =>
     this.workflow.createImportedProject(project),
@@ -175,12 +178,6 @@ export class ProjectScreenComponent {
     this.sizeY.set('48');
     this.sizeZ.set('48');
     this.structureMode.set(DEFAULT_STRUCTURE_MODE);
-  }
-  protected openSettingsDialog(): void {
-    this.settingsDialogOpen.set(true);
-  }
-  protected closeSettingsDialog(): void {
-    this.settingsDialogOpen.set(false);
   }
   protected updateProjectSearch(event: Event): void {
     if (event.target instanceof HTMLInputElement) this.projectSearch.set(event.target.value);

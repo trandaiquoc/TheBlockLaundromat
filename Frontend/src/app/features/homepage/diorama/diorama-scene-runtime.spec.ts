@@ -148,7 +148,7 @@ describe('DioramaSceneRuntime', () => {
     host.remove();
   });
 
-  it('animates theme transitions and room turns while preserving static idle rendering', async () => {
+  it('animates semantic time progress continuously and preserves static idle rendering', async () => {
     const host = createHost();
     const renderer = createRenderer();
     const shadowUpdateRequests = captureShadowUpdateRequests(renderer);
@@ -182,19 +182,83 @@ describe('DioramaSceneRuntime', () => {
     const renderCountBeforeThemeChange = shadowUpdateRequests.length;
     runtime.setTheme('raccoon');
     expect(shadowUpdateRequests).toHaveLength(renderCountBeforeThemeChange);
-    const firstSpinRender = shadowUpdateRequests.length;
-    const firstSpin = advanceFrames(frames, roomPivot, 0, 13, 1000 / 12);
-    expect(shadowUpdateRequests.slice(firstSpinRender).every(Boolean)).toBe(true);
-    expect(firstSpin.maximumRotation).toBeGreaterThan(Math.PI);
+    advanceFrames(frames, roomPivot, 0, 13, 1000 / 12);
+    expect(roomPivot.rotation.y).toBeCloseTo(0, 5);
+    expect(frames.size).toBe(0);
+
+    runtime.setTimeTransition({
+      id: 1,
+      phase: 'settling',
+      progress: 1,
+      targetProgress: 2,
+      source: 'clock',
+    });
+    const firstTurn = advanceFrames(frames, roomPivot, 1200, 24, 1000 / 12);
+    expect(firstTurn.maximumRotation).toBeGreaterThan(0);
+    expect(roomPivot.rotation.y).toBeCloseTo(Math.PI * 2, 5);
+
+    runtime.setTimeTransition({
+      id: 2,
+      phase: 'dragging',
+      progress: 1.5,
+      targetProgress: 1.5,
+      source: 'clock',
+    });
+    const interruptedAngle = roomPivot.rotation.y;
+    expect(interruptedAngle).toBeCloseTo(Math.PI, 5);
+    runtime.setTimeTransition({
+      id: 3,
+      phase: 'settling',
+      progress: 1.5,
+      targetProgress: 1,
+      source: 'clock',
+    });
+    advanceFrames(frames, roomPivot, 1400, 12, 1000 / 12);
     expect(roomPivot.rotation.y).toBeCloseTo(0, 5);
 
-    runtime.setTheme('dark');
-    const partialRotation = advanceFrames(frames, roomPivot, 1000, 6).finalRotation;
-    expect(partialRotation).toBeGreaterThan(0);
+    runtime.setTimeTransition({
+      id: 4,
+      phase: 'settling',
+      progress: 1,
+      targetProgress: 0,
+      source: 'clock',
+    });
+    advanceFrames(frames, roomPivot, 1600, 24, 1000 / 12);
+    expect(roomPivot.rotation.y).toBeCloseTo(-Math.PI * 2, 5);
+    runtime.setTimeTransition({
+      id: 4,
+      phase: 'idle',
+      progress: 0,
+      targetProgress: 0,
+      source: 'clock',
+    });
 
-    runtime.setTheme('raccoon');
-    const returnedRotation = advanceFrames(frames, roomPivot, 1100, 60).finalRotation;
-    expect(returnedRotation).toBeCloseTo(0, 5);
+    runtime.focus('washer');
+    runtime.setTimeTransition({
+      id: 5,
+      phase: 'dragging',
+      progress: 1,
+      targetProgress: 1,
+      source: 'clock',
+    });
+    const lockedAngle = roomPivot.rotation.y;
+    runtime.focus('overview');
+    expect(roomPivot.rotation.y).toBeCloseTo(lockedAngle, 5);
+    runtime.setTimeTransition({
+      id: 6,
+      phase: 'dragging',
+      progress: 1.2,
+      targetProgress: 1.2,
+      source: 'clock',
+    });
+    expect(roomPivot.rotation.y - lockedAngle).toBeCloseTo((Math.PI * 2) / 5, 5);
+    runtime.setTimeTransition({
+      id: 6,
+      phase: 'idle',
+      progress: 1.2,
+      targetProgress: 1.2,
+      source: 'clock',
+    });
     runtime.dispose();
     expect(renderer.dispose).toHaveBeenCalledOnce();
     host.remove();
@@ -270,6 +334,9 @@ function createCallbacks(
 ): DioramaRuntimeCallbacks {
   return {
     onIntent: vi.fn(),
+    onTimeChange: vi.fn(),
+    onTimeAnimationUpdate: vi.fn(),
+    currentTimeProgress: vi.fn(() => 1),
     onWebGLUnavailable: vi.fn(),
     onSceneLoaded: vi.fn(),
     onSceneLoadFailed: vi.fn(),

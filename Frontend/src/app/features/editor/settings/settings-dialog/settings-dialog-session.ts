@@ -5,7 +5,6 @@ import {
   UiPreferences,
   UiPreferencesService,
   UiLocale,
-  HomepageMode,
   ThemePreset,
   UiFont,
   UiFontSize,
@@ -89,9 +88,6 @@ export class SettingsDialogSession {
   }
   setFontSize(fontSize: UiFontSize): void {
     this.updateDraft({ appearance: { ...this.draft().appearance, fontSize } });
-  }
-  setHomepageMode(homepageMode: HomepageMode): void {
-    this.updateDraft({ appearance: { ...this.draft().appearance, homepageMode } });
   }
   setEditorBackground(editorBackground: EditorBackgroundMode): void {
     this.updateDraft({ appearance: { ...this.draft().appearance, editorBackground } });

@@ -1,5 +1,4 @@
 <main class="project-page project-page--simple-home">
-  <h1 class="project-screen-heading">{{ i18n.t('projectTitle') }}</h1>
   <header class="outer-topbar">
     <div class="outer-brand">
       <img
@@ -10,15 +9,31 @@
         [alt]="i18n.t('appName')"
         priority
       />
+      <span class="outer-brand-copy">
+        <h1 class="outer-brand-title">{{ i18n.t('projectTitle') }}</h1>
+      </span>
     </div>
-    <app-project-screen-controls (settingsRequested)="openSettingsDialog()" />
+    <nav class="homepage-header-actions" [attr.aria-label]="i18n.t('applicationMenu')">
+      <app-project-screen-theme-picker />
+      <app-homepage-account-menu
+        [selectedMode]="'simple'"
+        (homepageModeRequested)="homepageModeRequested.emit($event)"
+        (settingsRequested)="settingsRequested.emit()"
+      />
+    </nav>
   </header>
 
   <div class="project-page-content">
     <section class="project-grid" [attr.aria-label]="i18n.t('projectActions')">
       <form class="project-form" (submit)="$event.preventDefault(); createProject()">
         <div class="form-section form-section--identity">
-          <h2>{{ i18n.t('newProject') }}</h2>
+          <div class="section-heading">
+            <span class="section-heading-icon" aria-hidden="true">01</span>
+            <div>
+              <p class="eyebrow">{{ i18n.t('simpleHomepageNewProjectEyebrow') }}</p>
+              <h2>{{ i18n.t('newProject') }}</h2>
+            </div>
+          </div>
           <label class="field-label"
             >{{ i18n.t('projectName')
             }}<input
@@ -212,8 +227,14 @@
         }
       </form>
 
-      <section class="recent-projects">
-        <h2 #recentProjectsHeading tabindex="-1">{{ i18n.t('recent') }}</h2>
+      <section class="recent-projects" [attr.data-project-list-state]="loadStatus()">
+        <div class="section-heading section-heading--recent">
+          <span class="section-heading-icon" aria-hidden="true">02</span>
+          <div>
+            <p class="eyebrow">{{ i18n.t('simpleHomepageRecentEyebrow') }}</p>
+            <h2 #recentProjectsHeading tabindex="-1">{{ i18n.t('recent') }}</h2>
+          </div>
+        </div>
         @if (loadStatus() === 'loading') {
           <p class="muted" aria-live="polite">{{ i18n.t('loadingProjects') }}</p>
         } @else if (loadStatus() === 'error') {
@@ -222,7 +243,13 @@
             {{ i18n.t('retry') }}
           </button>
         } @else if (projects().length === 0) {
-          <p class="project-list-empty muted">{{ i18n.t('noProjects') }}</p>
+          <div class="project-empty-state">
+            <div class="project-empty-art" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <h3>{{ i18n.t('emptyProjectsTitle') }}</h3>
+            <p class="project-list-empty muted">{{ i18n.t('noProjects') }}</p>
+          </div>
         } @else {
           <div class="project-list-controls">
             <label class="project-search-field">
@@ -328,9 +355,6 @@
     </section>
   </div>
 
-  <footer class="project-page-footer">
-    <app-project-screen-account />
-  </footer>
   @if (backupDialogOpen()) {
     <div class="project-import-backdrop" role="presentation">
       <section
@@ -620,8 +644,5 @@
         </footer>
       </section>
     </div>
-  }
-  @if (settingsDialogOpen()) {
-    <app-settings-dialog (closed)="closeSettingsDialog()" />
   }
 </main>

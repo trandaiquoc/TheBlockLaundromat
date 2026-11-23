@@ -56,7 +56,7 @@ describe('UiPreferencesService', () => {
     });
   });
 
-  it('migrates existing homepage preferences to Simple while preserving a valid saved mode', () => {
+  it('defaults migrated mode-less preferences to Diorama and preserves an explicitly saved mode', () => {
     localStorage.setItem(
       key,
       JSON.stringify({ version: 1, locale: 'vi', appearance: { preset: 'light' } }),
@@ -66,11 +66,22 @@ describe('UiPreferencesService', () => {
     expect(migrated.preferences()).toMatchObject({
       version: 2,
       locale: 'vi',
-      appearance: { homepageMode: 'simple', preset: 'light' },
+      appearance: { homepageMode: 'diorama', preset: 'light' },
     });
-    expect(JSON.parse(localStorage.getItem(key) ?? '{}').appearance.homepageMode).toBe('simple');
+    expect(JSON.parse(localStorage.getItem(key) ?? '{}').appearance.homepageMode).toBe('diorama');
+
+    localStorage.setItem(
+      key,
+      JSON.stringify({ version: 1, appearance: { homepageMode: 'simple', preset: 'light' } }),
+    );
+    expect(new UiPreferencesService().preferences().appearance.homepageMode).toBe('simple');
 
     migrated.setAppearance({ homepageMode: 'diorama' });
+    expect(new UiPreferencesService().preferences().appearance.homepageMode).toBe('diorama');
+  });
+
+  it('uses the Diorama default when a versionless mode-less preference object is migrated', () => {
+    localStorage.setItem(key, JSON.stringify({ locale: 'vi', appearance: { preset: 'light' } }));
     expect(new UiPreferencesService().preferences().appearance.homepageMode).toBe('diorama');
   });
 
@@ -132,6 +143,7 @@ describe('UiPreferencesService', () => {
       }),
     );
     const preferences = new UiPreferencesService();
+    expect(preferences.preferences().appearance.homepageMode).toBe('diorama');
     expect(preferences.preferences().locale).toBe('vi');
     expect(preferences.preferences().appearance.preset).toBe('light');
     expect(preferences.preferences().accessibility.blockBrightness).toBe(8);
@@ -209,7 +221,7 @@ describe('UiPreferencesService', () => {
     const migrated = new UiPreferencesService();
     expect(migrated.preferences()).toMatchObject({
       locale: 'vi',
-      appearance: { preset: 'light', font: 'chakra-petch' },
+      appearance: { homepageMode: 'diorama', preset: 'light', font: 'chakra-petch' },
       layout: { leftSidebarWidth: 330 },
       shortcuts: { undo: 'Ctrl+Shift+Z' },
       structureExport: { namespace: 'minecraftbuilder', archiveName: 'mine' },
@@ -372,7 +384,7 @@ describe('UiPreferencesService', () => {
       font: 'chakra-petch',
       fontSize: 'large',
       editorBackground: 'light',
-      homepageMode: 'simple',
+      homepageMode: 'diorama',
       reality: { groundPreset: 'plains-grass', skyPreset: 'overworld-day' },
     });
     expect(JSON.parse(localStorage.getItem(key) ?? '{}').appearance.font).toBe('chakra-petch');

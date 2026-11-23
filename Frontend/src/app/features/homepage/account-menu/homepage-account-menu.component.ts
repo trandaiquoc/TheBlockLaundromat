@@ -11,37 +11,41 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { LucideChevronDown, LucideGlobe, LucideLogOut, LucideSettings } from '@lucide/angular';
+import { LucideCheck, LucideChevronDown, LucideLogOut, LucideSettings } from '@lucide/angular';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
+import type { HomepageMode } from '../../../core/ui/preferences/ui-preferences.service';
+
+const homepageModes: readonly HomepageMode[] = ['diorama', 'simple'];
 
 @Component({
-  selector: 'app-project-screen-account',
-  imports: [NgOptimizedImage, LucideChevronDown, LucideGlobe, LucideLogOut, LucideSettings],
-  templateUrl: './project-screen-account.component.html',
-  styleUrl: './project-screen-account.component.scss',
+  selector: 'app-homepage-account-menu',
+  imports: [NgOptimizedImage, LucideCheck, LucideChevronDown, LucideLogOut, LucideSettings],
+  templateUrl: './homepage-account-menu.component.html',
+  styleUrl: './homepage-account-menu.component.scss',
   host: {
     '(document:pointerdown)': 'closeOnOutsidePointer($event)',
     '(document:keydown)': 'closeOnEscape($event)',
   },
 })
-export class ProjectScreenAccountComponent {
-  readonly compact = input(false);
+export class HomepageAccountMenuComponent {
+  readonly selectedMode = input.required<HomepageMode>();
+  readonly homepageModeRequested = output<HomepageMode>();
   readonly settingsRequested = output<void>();
+
   protected readonly i18n = inject(I18nService);
-  protected readonly isDemoAccount = signal(true);
   protected readonly popoverOpen = signal(false);
+  protected readonly isDemoAccount = signal(true);
   protected readonly displayName = computed(() =>
     this.isDemoAccount() ? 'rakoon' : this.i18n.t('guest'),
   );
   protected readonly accountLine = computed(() =>
     this.i18n.t(this.isDemoAccount() ? 'freePlan' : 'localGuestMode'),
   );
+  protected readonly modes = homepageModes;
 
   private readonly injector = inject(Injector);
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly accountTrigger = viewChild<ElementRef<HTMLButtonElement>>('accountTrigger');
-  private readonly accountPopover = viewChild<ElementRef<HTMLElement>>('accountPopover');
-  private readonly logoutAction = viewChild<ElementRef<HTMLButtonElement>>('logoutAction');
 
   protected togglePopover(): void {
     if (this.popoverOpen()) {
@@ -53,13 +57,24 @@ export class ProjectScreenAccountComponent {
     afterNextRender(
       () => {
         if (!this.popoverOpen()) return;
-        const focusTarget = this.isDemoAccount()
-          ? this.logoutAction()?.nativeElement
-          : this.accountPopover()?.nativeElement;
-        focusTarget?.focus({ preventScroll: true });
+        this.modeAction(this.selectedMode())?.focus({ preventScroll: true });
       },
       { injector: this.injector },
     );
+  }
+
+  protected selectHomepageMode(mode: HomepageMode): void {
+    if (mode === this.selectedMode()) {
+      this.closePopover(false);
+      return;
+    }
+    this.closePopover(false);
+    this.homepageModeRequested.emit(mode);
+  }
+
+  protected requestSettings(): void {
+    this.closePopover(false);
+    this.settingsRequested.emit();
   }
 
   protected logOut(): void {
@@ -68,38 +83,23 @@ export class ProjectScreenAccountComponent {
     this.accountTrigger()?.nativeElement.focus({ preventScroll: true });
   }
 
-  protected setLocale(locale: 'en' | 'vi'): void {
-    this.i18n.setLocale(locale);
-  }
-
-  protected requestSettings(): void {
-    this.closePopover(false);
-    this.settingsRequested.emit();
-  }
-
-  protected closeWhenFocusLeaves(event: FocusEvent): void {
-    const nextTarget = event.relatedTarget;
-    if (nextTarget instanceof Node && this.host.nativeElement.contains(nextTarget)) return;
-    this.closePopover(false);
-  }
-
   protected keepMenuKeyboardFocus(event: KeyboardEvent): void {
-    if (!this.isDemoAccount()) return;
-
     if (event.key === 'Tab') {
       this.closePopover(false);
       return;
     }
 
-    if (
-      event.key === 'ArrowDown' ||
-      event.key === 'ArrowUp' ||
-      event.key === 'Home' ||
-      event.key === 'End'
-    ) {
-      event.preventDefault();
-      this.logoutAction()?.nativeElement.focus({ preventScroll: true });
-    }
+    const items = this.menuItems();
+    if (items.length === 0) return;
+    const currentIndex = items.indexOf(event.target as HTMLButtonElement);
+    let nextIndex: number | undefined;
+    if (event.key === 'ArrowDown') nextIndex = (currentIndex + 1) % items.length;
+    else if (event.key === 'ArrowUp') nextIndex = (currentIndex - 1 + items.length) % items.length;
+    else if (event.key === 'Home') nextIndex = 0;
+    else if (event.key === 'End') nextIndex = items.length - 1;
+    if (nextIndex === undefined) return;
+    event.preventDefault();
+    items[nextIndex]?.focus({ preventScroll: true });
   }
 
   protected closeOnOutsidePointer(event: PointerEvent): void {
@@ -115,6 +115,22 @@ export class ProjectScreenAccountComponent {
     event.preventDefault();
     event.stopPropagation();
     this.closePopover(true);
+  }
+
+  private modeAction(mode: HomepageMode): HTMLButtonElement | undefined {
+    return (
+      (this.host.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+        `[data-homepage-mode="${mode}"]`,
+      ) ?? undefined
+    );
+  }
+
+  private menuItems(): HTMLButtonElement[] {
+    return Array.from(
+      (this.host.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+        '[role="menuitemradio"], [role="menuitem"]',
+      ),
+    );
   }
 
   private closePopover(restoreFocus: boolean): void {

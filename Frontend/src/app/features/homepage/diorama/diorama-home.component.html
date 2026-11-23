@@ -4,6 +4,9 @@
   [attr.data-scene-animations-enabled]="time.sceneAnimationsEnabled()"
   [attr.data-clock-dragging]="time.clockDragging()"
   [attr.data-sky-orbit]="time.skyOrbitDirection()"
+  [attr.data-time-transition]="time.timeTransition().phase"
+  [attr.data-time-transition-id]="time.timeTransition().id"
+  [attr.data-time-progress]="time.cycleProgress()"
 >
   <div class="diorama__atmosphere" aria-hidden="true">
     <div class="diorama__sky-layer diorama__sky-layer--light"></div>
@@ -26,19 +29,24 @@
     <span class="diorama__sky-star diorama__sky-star--four"></span>
   </div>
 
-  <app-diorama-scene />
+  <app-diorama-scene
+    [timeTransition]="time.timeTransition()"
+    [timeProgress]="time.cycleProgress()"
+    (timeChanged)="handleTimeDialChange($event)"
+    (timeAnimationUpdate)="handleTimeAnimationUpdate($event)"
+  />
 
-  <app-diorama-home-header (projectsRequested)="openProjects()" />
+  <app-diorama-home-header />
+  <app-homepage-account-menu
+    class="diorama-account-menu"
+    [selectedMode]="'diorama'"
+    (homepageModeRequested)="homepageModeRequested.emit($event)"
+    (settingsRequested)="settingsRequested.emit()"
+  />
 
   <app-diorama-time-dial
     [selectedIndex]="time.timeStageIndex()"
     [cycleProgress]="time.cycleProgress()"
     (timeChanged)="handleTimeDialChange($event)"
   />
-
-  <app-diorama-home-account (settingsRequested)="openSettings()" />
-
-  @if (settingsDialogOpen()) {
-    <app-settings-dialog (closed)="closeSettings()" />
-  }
 </main>

@@ -1,4 +1,4 @@
-import { createReadStream, existsSync, statSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
 import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { extname, join, resolve, sep } from 'node:path';
@@ -8,8 +8,9 @@ import { findBrowser, startHeadlessBrowser } from './headless-browser-session.mj
 
 const frontend = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const webRoot = resolve(frontend, 'dist/TheBlockLaundromat/browser');
-const artifacts = resolve(frontend, '.artifacts/goal-05');
+const artifacts = resolve(frontend, '.artifacts/goal-06');
 const screenshots = join(artifacts, 'screenshots');
+const traces = join(artifacts, 'traces');
 const profileDirectory = join(artifacts, 'profiles');
 const browser = findBrowser();
 const themes = ['craft', 'light', 'raccoon', 'dark'];
@@ -28,6 +29,7 @@ if (!existsSync(join(webRoot, 'index.html'))) {
 }
 
 await mkdir(screenshots, { recursive: true });
+await mkdir(traces, { recursive: true });
 await mkdir(profileDirectory, { recursive: true });
 
 try {
@@ -69,15 +71,15 @@ try {
     throw new Error(`New-user Diorama startup failed: ${JSON.stringify(initialState)}.`);
   }
 
-  const simpleDefault = await verifyLegacyPreferenceMigration(origin);
+  const modeMigration = await verifyLegacyPreferenceMigration(origin);
   await installRuntimeDiagnostics(primarySession);
-  const idleBefore = await primarySession.evaluate('window.__goal05Perf.drawCalls');
+  const idleBefore = await primarySession.evaluate('window.__goal06Perf.drawCalls');
   await primarySession.evaluate('new Promise(resolve => setTimeout(resolve, 1000))');
   const idleAfter = await primarySession.evaluate(`({
-    drawCalls: window.__goal05Perf.drawCalls,
-    pendingFrames: window.__goal05PendingFrames.size,
+    drawCalls: window.__goal06Perf.drawCalls,
+    pendingFrames: window.__goal06PendingFrames.size,
     heapBytes: performance.memory?.usedJSHeapSize ?? null,
-    longTaskMs: window.__goal05LongTasks.reduce((total, duration) => total + duration, 0),
+    longTaskMs: window.__goal06LongTasks.reduce((total, duration) => total + duration, 0),
   })`);
   if (idleAfter.drawCalls !== idleBefore || idleAfter.pendingFrames !== 0) {
     throw new Error(`Diorama did not settle to a static idle scene: ${JSON.stringify(idleAfter)}.`);
@@ -85,31 +87,33 @@ try {
 
   const themeAction = await measureThemeTransition(primarySession);
   const cameraActions = await measureCameraActions(primarySession);
-  const dioramaCaptures = await captureDioramaScreenshots(primarySession);
+  let timeSwipe;
+  await primarySession.captureTrace(join(traces, 'diorama-time-swipe-trace.json'), async () => {
+    timeSwipe = await measureTimeSwipe(primarySession);
+  });
+  const clockActions = await measureClockInteractions(primarySession);
+  const { diorama: dioramaCaptures, dioramaAccount: dioramaAccountCaptures } =
+    await captureDioramaScreenshots(primarySession);
 
-  await primarySession.evaluate("document.querySelector('.diorama-header__projects')?.click()");
+  await switchHomepageMode(primarySession, 'simple');
   await waitFor(
     primarySession,
-    "Boolean(document.querySelector('.project-page--simple-home'))",
-    true,
+    "document.querySelector('.recent-projects')?.dataset.projectListState",
+    'ready',
   );
   await verifySimpleHomepage(primarySession);
   await verifySimpleLocalization(primarySession);
   const simpleCaptures = await captureSimpleScreenshots(primarySession);
+  const accountCaptures = await captureAccountScreenshots(primarySession);
 
   await primarySession.setViewport(1440, 900);
-  await switchHomepageModeInSettings(primarySession, 'diorama');
+  await switchHomepageMode(primarySession, 'diorama');
   await waitFor(
     primarySession,
     "document.querySelector('[data-scene-state]')?.dataset.sceneState",
     'ready',
   );
-  await primarySession.evaluate("document.querySelector('.diorama-header__projects')?.click()");
-  await waitFor(
-    primarySession,
-    "Boolean(document.querySelector('.project-page--simple-home'))",
-    true,
-  );
+  await switchHomepageMode(primarySession, 'simple');
   const cycles = await verifyInPlaceMountUnmountCycles(primarySession);
 
   fallbackSession = await openSession(origin, 'fallback', { webglEnabled: false });
@@ -120,25 +124,22 @@ try {
     'fallback',
   );
   const fallbackState = await fallbackSession.evaluate(`(() => ({
-    projectsButton: Boolean(document.querySelector('.diorama-header__projects')),
+    accountMenu: Boolean(document.querySelector('.homepage-account-trigger')),
     fallback: Boolean(document.querySelector('.diorama-scene__fallback')),
     canvasCount: document.querySelectorAll('.diorama-scene-runtime__canvas').length,
   }))()`);
-  if (!fallbackState.projectsButton || !fallbackState.fallback || fallbackState.canvasCount !== 0) {
-    throw new Error(`WebGL fallback is missing project access: ${JSON.stringify(fallbackState)}.`);
+  if (!fallbackState.accountMenu || !fallbackState.fallback || fallbackState.canvasCount !== 0) {
+    throw new Error(
+      `WebGL fallback is missing the shared account menu: ${JSON.stringify(fallbackState)}.`,
+    );
   }
-  await fallbackSession.evaluate("document.querySelector('.diorama-header__projects').click()");
-  await waitFor(
-    fallbackSession,
-    "Boolean(document.querySelector('.project-page--simple-home'))",
-    true,
-  );
+  await switchHomepageMode(fallbackSession, 'simple');
 
   const report = {
     browser: browser.split(/[\\/]/).at(-1),
     renderer: 'headless Chromium WebGL via SwiftShader; diagnostic only',
     initialState,
-    simpleDefault,
+    modeMigration,
     idle: {
       intervalMs: 1000,
       drawCalls: idleAfter.drawCalls - idleBefore,
@@ -148,15 +149,44 @@ try {
     },
     themeAction,
     cameraActions,
+    timeSwipe,
+    clockActions,
+    motionTrace: 'traces/diorama-time-swipe-trace.json',
+    baselineComparison: readBaselineComparison({
+      themeAction,
+      cameraActions,
+      timeSwipe,
+      clockActions,
+    }),
     cycles,
     fallbackState,
-    screenshotCount: dioramaCaptures.length + simpleCaptures.length,
-    screenshots: [...dioramaCaptures, ...simpleCaptures],
+    screenshotCount:
+      dioramaCaptures.length +
+      dioramaAccountCaptures.length +
+      simpleCaptures.length +
+      accountCaptures.length,
+    screenshots: [
+      ...dioramaCaptures,
+      ...dioramaAccountCaptures,
+      ...simpleCaptures,
+      ...accountCaptures,
+    ],
   };
   await writeFile(
     join(artifacts, 'browser-performance.json'),
     `${JSON.stringify(report, null, 2)}\n`,
   );
+  const visualReviewIndex = [
+    '# Goal 06 visual review',
+    '',
+    'Review is pending; these captures do not imply Gate G approval.',
+    '',
+    'Motion evidence: [Diorama time swipe trace](traces/diorama-time-swipe-trace.json).',
+    '',
+    ...report.screenshots.map((filename) => `- [${filename}](screenshots/${filename})`),
+    '',
+  ].join('\n');
+  await writeFile(join(artifacts, 'VISUAL-REVIEW.md'), visualReviewIndex);
 
   console.log('Homepage browser verification passed.');
   console.log(JSON.stringify(report, null, 2));
@@ -186,10 +216,10 @@ async function verifyLegacyPreferenceMigration(origin) {
   })()`);
   await waitFor(
     migrationSession,
-    "Boolean(document.querySelector('.project-page--simple-home'))",
-    true,
+    "document.querySelector('[data-scene-state]')?.dataset.sceneState",
+    'ready',
   );
-  const result = await migrationSession.evaluate(`(() => {
+  const modeLessResult = await migrationSession.evaluate(`(() => {
     const preferences = JSON.parse(localStorage.getItem('the-block-laundromat.ui-preferences') || '{}');
     const sceneRequests = performance.getEntriesByType('resource')
       .map(entry => new URL(entry.name).pathname)
@@ -199,22 +229,54 @@ async function verifyLegacyPreferenceMigration(origin) {
       version: preferences.version,
       dioramaMounted: Boolean(document.querySelector('.diorama')),
       sceneRequests,
-      workflows: Boolean(document.querySelector('.project-form .create-action')) &&
-        Boolean(document.querySelector('.project-form .structure-json-create-action')),
+      simpleMounted: Boolean(document.querySelector('.project-page--simple-home')),
     };
   })()`);
   if (
-    result.mode !== 'simple' ||
-    result.version !== 2 ||
-    result.dioramaMounted ||
-    result.sceneRequests.length !== 0 ||
-    !result.workflows
+    modeLessResult.mode !== 'diorama' ||
+    modeLessResult.version !== 2 ||
+    !modeLessResult.dioramaMounted ||
+    modeLessResult.simpleMounted ||
+    modeLessResult.sceneRequests.length !== 2
   ) {
     throw new Error(
-      `Legacy preferences did not migrate to the lazy Simple homepage: ${JSON.stringify(result)}.`,
+      `Mode-less legacy preferences did not migrate to Diorama: ${JSON.stringify(modeLessResult)}.`,
     );
   }
-  return result;
+
+  await migrationSession.evaluate(`(() => {
+    localStorage.setItem('the-block-laundromat.ui-preferences', JSON.stringify({
+      version: 1,
+      locale: 'en',
+      appearance: { homepageMode: 'simple', preset: 'craft' },
+    }));
+    location.reload();
+  })()`);
+  await waitFor(
+    migrationSession,
+    "document.querySelector('.project-page--simple-home')?.className",
+    'project-page project-page--simple-home',
+  );
+  await waitFor(
+    migrationSession,
+    "document.querySelector('.recent-projects')?.dataset.projectListState",
+    'ready',
+  );
+  const explicitSimple = await migrationSession.evaluate(`(() => ({
+    mode: JSON.parse(localStorage.getItem('the-block-laundromat.ui-preferences') || '{}').appearance?.homepageMode,
+    dioramaMounted: Boolean(document.querySelector('.diorama')),
+    projectMounted: Boolean(document.querySelector('.project-page--simple-home')),
+  }))()`);
+  if (
+    explicitSimple.mode !== 'simple' ||
+    explicitSimple.dioramaMounted ||
+    !explicitSimple.projectMounted
+  ) {
+    throw new Error(
+      `An explicitly saved Simple mode was not preserved: ${JSON.stringify(explicitSimple)}.`,
+    );
+  }
+  return { modeLess: modeLessResult, explicitSimple };
 }
 
 async function verifySimpleHomepage(session) {
@@ -223,7 +285,7 @@ async function verifySimpleHomepage(session) {
     create: Boolean(document.querySelector('.project-form .create-action')),
     importActions: document.querySelectorAll('.project-form .structure-json-create-action').length,
     recent: Boolean(document.querySelector('.recent-projects')),
-    settings: Boolean(document.querySelector('.settings-button')),
+    account: Boolean(document.querySelector('.homepage-account-trigger')),
     themes: document.querySelectorAll('[data-theme-option]').length,
     locales: document.querySelectorAll('[data-locale]').length,
     dioramaMounted: Boolean(document.querySelector('.diorama')),
@@ -233,42 +295,72 @@ async function verifySimpleHomepage(session) {
     !state.create ||
     state.importActions !== 2 ||
     !state.recent ||
-    !state.settings ||
+    !state.account ||
     state.themes !== 4 ||
-    state.locales !== 2 ||
+    state.locales !== 0 ||
     state.dioramaMounted
   ) {
     throw new Error(`Simple project workflows are incomplete: ${JSON.stringify(state)}.`);
   }
+
+  await session.evaluate("document.querySelector('.homepage-account-trigger')?.click()");
+  await waitFor(session, "Boolean(document.querySelector('.homepage-account-menu.is-open'))", true);
+  const menu = await session.evaluate(`(() => ({
+    simpleSelected: document.querySelector('[data-homepage-mode="simple"]')?.getAttribute('aria-checked'),
+    dioramaAvailable: Boolean(document.querySelector('[data-homepage-mode="diorama"]')),
+    settingsAvailable: Boolean(document.querySelector('.homepage-account-menu-action--settings')),
+    languageSelector: Boolean(document.querySelector('[data-locale]')),
+  }))()`);
+  if (
+    menu.simpleSelected !== 'true' ||
+    !menu.dioramaAvailable ||
+    !menu.settingsAvailable ||
+    menu.languageSelector
+  ) {
+    throw new Error(`The shared account menu is incomplete: ${JSON.stringify(menu)}.`);
+  }
+  await session.evaluate("document.querySelector('.homepage-account-trigger')?.click()");
 }
 
 async function verifySimpleLocalization(session) {
-  await session.evaluate("document.querySelector('[data-locale=vi]')?.click()");
-  await waitFor(
-    session,
-    "document.querySelector('[data-locale=vi]')?.getAttribute('aria-pressed')",
-    'true',
-  );
-  await session.evaluate("document.querySelector('[data-locale=en]')?.click()");
-  await waitFor(
-    session,
-    "document.querySelector('[data-locale=en]')?.getAttribute('aria-pressed')",
-    'true',
-  );
+  await setLanguageThroughSettings(session, 'vi');
+  await waitFor(session, 'document.documentElement.lang', 'vi');
+  await setLanguageThroughSettings(session, 'en');
+  await waitFor(session, 'document.documentElement.lang', 'en');
 }
 
 async function captureDioramaScreenshots(session) {
   const captured = [];
+  const accountCaptured = [];
   for (const theme of themes) {
     await setDioramaTheme(session, theme);
     for (const viewport of viewports) {
       await assertViewport(session, viewport);
+      await session.evaluate(
+        'document.activeElement instanceof HTMLElement && document.activeElement.blur()',
+      );
       const filename = `diorama-${viewport.name}-${theme}.png`;
       await session.captureScreenshot(join(screenshots, filename));
       captured.push(filename);
+      await session.evaluate("document.querySelector('.homepage-account-trigger')?.click()");
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.homepage-account-menu.is-open'))",
+        true,
+      );
+      await session.evaluate('new Promise(resolve => setTimeout(resolve, 350))');
+      const accountFilename = `account-diorama-${viewport.name}-${theme}.png`;
+      await session.captureScreenshot(join(screenshots, accountFilename));
+      accountCaptured.push(accountFilename);
+      await session.pressKey('Escape', 'Escape', 27);
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.homepage-account-menu.is-open'))",
+        false,
+      );
     }
   }
-  return captured;
+  return { diorama: captured, dioramaAccount: accountCaptured };
 }
 
 async function captureSimpleScreenshots(session) {
@@ -280,8 +372,14 @@ async function captureSimpleScreenshots(session) {
       `document.querySelector('[data-theme-option="${theme}"]')?.getAttribute('aria-pressed')`,
       'true',
     );
+    await session.evaluate('new Promise(resolve => setTimeout(resolve, 350))');
     for (const viewport of viewports) {
       await assertViewport(session, viewport);
+      await waitFor(
+        session,
+        "document.querySelector('.recent-projects')?.dataset.projectListState",
+        'ready',
+      );
       const filename = `simple-${viewport.name}-${theme}.png`;
       await session.captureScreenshot(join(screenshots, filename));
       captured.push(filename);
@@ -290,12 +388,55 @@ async function captureSimpleScreenshots(session) {
   return captured;
 }
 
+async function captureAccountScreenshots(session) {
+  const captured = [];
+  for (const theme of themes) {
+    await session.evaluate(`document.querySelector('[data-theme-option="${theme}"]')?.click()`);
+    await waitFor(
+      session,
+      `document.querySelector('[data-theme-option="${theme}"]')?.getAttribute('aria-pressed')`,
+      'true',
+    );
+    await session.evaluate('new Promise(resolve => setTimeout(resolve, 350))');
+    for (const viewport of viewports) {
+      await assertViewport(session, viewport);
+      await session.evaluate("document.querySelector('.homepage-account-trigger')?.click()");
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.homepage-account-menu.is-open'))",
+        true,
+      );
+      await session.evaluate('new Promise(resolve => setTimeout(resolve, 350))');
+      const filename = `account-${viewport.name}-${theme}.png`;
+      await session.captureScreenshot(join(screenshots, filename));
+      captured.push(filename);
+      await session.pressKey('Escape', 'Escape', 27);
+      await waitFor(
+        session,
+        "Boolean(document.querySelector('.homepage-account-menu.is-open'))",
+        false,
+      );
+    }
+  }
+  return captured;
+}
+
 async function setDioramaTheme(session, theme) {
+  const progressByTheme = { light: 0, craft: 25, raccoon: 50, dark: 75 };
   await session.evaluate(
     `document.querySelector('.diorama-time-dial__quarter[data-time-stage="${theme}"]')?.click()`,
   );
   await waitFor(session, `document.querySelector('.diorama')?.dataset.theme`, theme);
+  await waitFor(session, "document.querySelector('.diorama')?.dataset.timeTransition", 'idle');
   await session.evaluate('new Promise(resolve => setTimeout(resolve, 1150))');
+  const progress = await session.evaluate(
+    `Number(document.querySelector('[style*="--time-progress"]')?.style.getPropertyValue('--time-progress').replace('%', ''))`,
+  );
+  if (Math.abs(progress - progressByTheme[theme]) > 0.01) {
+    throw new Error(
+      `Diorama theme ${theme} did not synchronize the time dial: ${JSON.stringify({ progress, expected: progressByTheme[theme] })}.`,
+    );
+  }
 }
 
 async function assertViewport(session, viewport) {
@@ -306,40 +447,83 @@ async function assertViewport(session, viewport) {
     scrollWidth: document.documentElement.scrollWidth,
     height: innerHeight,
     hasMode: Boolean(document.querySelector('.diorama') || document.querySelector('.project-page--simple-home')),
+    focusToolbar: (() => {
+      const toolbar = document.querySelector('app-diorama-scene-focus-toolbar')?.getBoundingClientRect();
+      const clock = document.querySelector('.diorama-time-dial')?.getBoundingClientRect();
+      if (!toolbar || !clock) return null;
+      return {
+        left: toolbar.left,
+        right: toolbar.right,
+        top: toolbar.top,
+        bottom: toolbar.bottom,
+        overlapsClock: toolbar.right > clock.left && toolbar.left < clock.right &&
+          toolbar.bottom > clock.top && toolbar.top < clock.bottom,
+      };
+    })(),
   })`);
   if (state.width !== viewport.width || state.scrollWidth > viewport.width + 1 || !state.hasMode) {
     throw new Error(
       `${viewport.name} homepage overflow or missing content: ${JSON.stringify(state)}.`,
     );
   }
+  if (
+    state.focusToolbar &&
+    (state.focusToolbar.left > state.width * 0.2 ||
+      state.focusToolbar.bottom < state.height * 0.75 ||
+      state.focusToolbar.overlapsClock)
+  ) {
+    throw new Error(
+      `${viewport.name} Diorama toolbar is not bottom-left or overlaps the clock: ${JSON.stringify(state.focusToolbar)}.`,
+    );
+  }
 }
 
-async function switchHomepageModeInSettings(session, mode) {
-  await session.evaluate("document.querySelector('.settings-button')?.click()");
-  await waitFor(session, "Boolean(document.querySelector('.settings-dialog[role=dialog]'))", true);
-  await session.evaluate(`(() => {
-    const navigation = document.querySelector('.settings-nav-select');
-    navigation.value = 'appearance';
-    navigation.dispatchEvent(new Event('change', { bubbles: true }));
-  })()`);
-  const experienceSelector = '[role="combobox"][aria-label="Homepage experience"]';
-  await waitFor(
-    session,
-    `Boolean(document.querySelector(${JSON.stringify(experienceSelector)}))`,
-    true,
-  );
-  await session.evaluate(
-    'document.querySelector(\'[role=combobox][aria-label="Homepage experience"]\')?.click()',
-  );
-  await waitFor(session, 'Boolean(document.querySelector(`[role="option"]`))', true);
-  await session.evaluate(`Array.from(document.querySelectorAll('[role="option"]'))
-    .find(option => option.textContent.toLowerCase().includes('${mode === 'diorama' ? 'diorama' : 'simple'}'))?.click()`);
-  await session.evaluate("document.querySelector('.settings-dialog .primary')?.click()");
+async function switchHomepageMode(session, mode) {
+  await session.evaluate("document.querySelector('.homepage-account-trigger')?.click()");
+  await waitFor(session, "Boolean(document.querySelector('.homepage-account-menu.is-open'))", true);
+  await session.evaluate(`document.querySelector('[data-homepage-mode="${mode}"]')?.click()`);
   if (mode === 'diorama') {
-    await waitFor(session, "Boolean(document.querySelector('.diorama'))", true);
+    await waitFor(
+      session,
+      "document.querySelector('[data-scene-state]')?.dataset.sceneState",
+      'ready',
+      30_000,
+    );
   } else {
     await waitFor(session, "Boolean(document.querySelector('.project-page--simple-home'))", true);
+    await waitFor(
+      session,
+      "document.querySelector('.recent-projects')?.dataset.projectListState",
+      'ready',
+    );
   }
+  const savedMode = await session.evaluate(
+    "JSON.parse(localStorage.getItem('the-block-laundromat.ui-preferences') || '{}').appearance?.homepageMode",
+  );
+  if (savedMode !== mode) {
+    throw new Error(
+      `Homepage mode did not persist immediately: ${JSON.stringify({ mode, savedMode })}.`,
+    );
+  }
+}
+
+async function setLanguageThroughSettings(session, locale) {
+  await session.evaluate("document.querySelector('.homepage-account-trigger')?.click()");
+  await waitFor(session, "Boolean(document.querySelector('.homepage-account-menu.is-open'))", true);
+  await session.evaluate(
+    "document.querySelector('.homepage-account-menu-action--settings')?.click()",
+  );
+  await waitFor(session, "Boolean(document.querySelector('.settings-dialog[role=dialog]'))", true);
+  const selector = '.settings-dialog [role="combobox"]';
+  const selectorJson = JSON.stringify(selector);
+  await waitFor(session, `Boolean(document.querySelector(${selectorJson}))`, true);
+  await session.evaluate(`document.querySelector(${selectorJson})?.click()`);
+  await waitFor(session, "Boolean(document.querySelector('[role=option]'))", true);
+  await session.evaluate(
+    "document.querySelectorAll('[role=option]')[" + (locale === 'vi' ? 1 : 0) + ']?.click()',
+  );
+  await session.evaluate("document.querySelector('.settings-dialog .primary')?.click()");
+  await waitFor(session, "Boolean(document.querySelector('.settings-dialog[role=dialog]'))", false);
 }
 
 async function verifyInPlaceMountUnmountCycles(session) {
@@ -348,8 +532,8 @@ async function verifyInPlaceMountUnmountCycles(session) {
   const observations = [];
   const resourceTotals = { created: {}, deleted: {}, contextReleased: {} };
   for (let cycle = 1; cycle <= 20; cycle++) {
-    const resourcesBefore = await session.evaluate('window.__goal05GlResources.snapshot()');
-    await switchHomepageModeInSettings(session, 'diorama');
+    const resourcesBefore = await session.evaluate('window.__goal06GlResources.snapshot()');
+    await switchHomepageMode(session, 'diorama');
     await waitFor(
       session,
       "document.querySelector('[data-scene-state]')?.dataset.sceneState",
@@ -358,20 +542,19 @@ async function verifyInPlaceMountUnmountCycles(session) {
     );
     const mounted = await session.evaluate(`(() => {
       const canvas = document.querySelector('.diorama-scene-runtime__canvas');
-      window.__goal05GlResources.trackCanvas(canvas);
+      window.__goal06GlResources.trackCanvas(canvas);
       return {
         canvases: document.querySelectorAll('.diorama-scene-runtime__canvas').length,
-        frames: window.__goal05PendingFrames.size,
+        frames: window.__goal06PendingFrames.size,
       };
     })()`);
-    await session.evaluate("document.querySelector('.diorama-header__projects')?.click()");
-    await waitFor(session, "Boolean(document.querySelector('.project-page--simple-home'))", true);
+    await switchHomepageMode(session, 'simple');
     await session.evaluate('new Promise(resolve => setTimeout(resolve, 60))');
-    await waitFor(session, 'window.__goal05GlResources.snapshot().contextLostEvents', cycle, 3_000);
+    await waitFor(session, 'window.__goal06GlResources.snapshot().contextLostEvents', cycle, 3_000);
     const unmounted = await session.evaluate(`({
       canvases: document.querySelectorAll('.diorama-scene-runtime__canvas').length,
-      frames: window.__goal05PendingFrames.size,
-      resources: window.__goal05GlResources.snapshot(),
+      frames: window.__goal06PendingFrames.size,
+      resources: window.__goal06GlResources.snapshot(),
     })`);
     const resourceChanges = summarizeResourceChanges(resourcesBefore, unmounted.resources);
     if (
@@ -427,7 +610,7 @@ async function verifyInPlaceMountUnmountCycles(session) {
 
 async function installWebGLResourceTracker(session) {
   await session.evaluate(`(() => {
-    if (window.__goal05GlResources) return;
+    if (window.__goal06GlResources) return;
     const definitions = [
       ['createBuffer', 'deleteBuffer', 'buffers'],
       ['createTexture', 'deleteTexture', 'textures'],
@@ -536,7 +719,7 @@ async function installWebGLResourceTracker(session) {
     if (instrumentedResourceTypes === 0) {
       throw new Error('No WebGL2 resource APIs could be instrumented.');
     }
-    window.__goal05GlResources = {
+    window.__goal06GlResources = {
       trackCanvas(canvas) {
         const context = canvas?.getContext('webgl2');
         if (!context) throw new Error('The mounted Diorama canvas has no WebGL2 context.');
@@ -606,23 +789,23 @@ function summarizeResourceChanges(before, after) {
 
 async function installFrameTracker(session) {
   await session.evaluate(`(() => {
-    if (window.__goal05PendingFrames) return;
+    if (window.__goal06PendingFrames) return;
     const requestFrame = window.requestAnimationFrame.bind(window);
     const cancelFrame = window.cancelAnimationFrame.bind(window);
-    window.__goal05PendingFrames = new Set();
-    window.__goal05FrameTimestamps = [];
+    window.__goal06PendingFrames = new Set();
+    window.__goal06FrameTimestamps = [];
     window.requestAnimationFrame = callback => {
       let frameId;
       frameId = requestFrame(timestamp => {
-        window.__goal05PendingFrames.delete(frameId);
-        window.__goal05FrameTimestamps.push(timestamp);
+        window.__goal06PendingFrames.delete(frameId);
+        window.__goal06FrameTimestamps.push(timestamp);
         callback(timestamp);
       });
-      window.__goal05PendingFrames.add(frameId);
+      window.__goal06PendingFrames.add(frameId);
       return frameId;
     };
     window.cancelAnimationFrame = frameId => {
-      window.__goal05PendingFrames.delete(frameId);
+      window.__goal06PendingFrames.delete(frameId);
       cancelFrame(frameId);
     };
   })()`);
@@ -658,12 +841,12 @@ async function installRuntimeDiagnostics(session) {
         } catch {}
       }
     }
-    window.__goal05Perf = counters;
-    window.__goal05LongTasks = [];
+    window.__goal06Perf = counters;
+    window.__goal06LongTasks = [];
     if ('PerformanceObserver' in window) {
       try {
         new PerformanceObserver(entries => {
-          for (const entry of entries.getEntries()) window.__goal05LongTasks.push(entry.duration);
+          for (const entry of entries.getEntries()) window.__goal06LongTasks.push(entry.duration);
         }).observe({ type: 'longtask' });
       } catch {}
     }
@@ -672,24 +855,24 @@ async function installRuntimeDiagnostics(session) {
 
 async function measureThemeTransition(session) {
   const before = await session.evaluate(`({
-    drawCalls: window.__goal05Perf.drawCalls,
-    bufferCreates: window.__goal05Perf.bufferCreates,
-    textureCreates: window.__goal05Perf.textureCreates,
-    timestampIndex: window.__goal05Perf.timestamps.length,
-    frameIndex: window.__goal05FrameTimestamps.length,
-    longTaskCount: window.__goal05LongTasks.length,
+    drawCalls: window.__goal06Perf.drawCalls,
+    bufferCreates: window.__goal06Perf.bufferCreates,
+    textureCreates: window.__goal06Perf.textureCreates,
+    timestampIndex: window.__goal06Perf.timestamps.length,
+    frameIndex: window.__goal06FrameTimestamps.length,
+    longTaskCount: window.__goal06LongTasks.length,
     theme: document.querySelector('.diorama')?.dataset.theme,
     materialVariant:
       document.querySelector('.diorama-scene-runtime__canvas')?.dataset.materialVariant,
   })`);
   await setDioramaTheme(session, 'raccoon');
   const after = await session.evaluate(`({
-    drawCalls: window.__goal05Perf.drawCalls,
-    bufferCreates: window.__goal05Perf.bufferCreates,
-    textureCreates: window.__goal05Perf.textureCreates,
-    timestamps: window.__goal05Perf.timestamps.slice(${before.timestampIndex}),
-    frameTimestamps: window.__goal05FrameTimestamps.slice(${before.frameIndex}),
-    longTasks: window.__goal05LongTasks.slice(${before.longTaskCount}),
+    drawCalls: window.__goal06Perf.drawCalls,
+    bufferCreates: window.__goal06Perf.bufferCreates,
+    textureCreates: window.__goal06Perf.textureCreates,
+    timestamps: window.__goal06Perf.timestamps.slice(${before.timestampIndex}),
+    frameTimestamps: window.__goal06FrameTimestamps.slice(${before.frameIndex}),
+    longTasks: window.__goal06LongTasks.slice(${before.longTaskCount}),
     theme: document.querySelector('.diorama')?.dataset.theme,
     materialVariant:
       document.querySelector('.diorama-scene-runtime__canvas')?.dataset.materialVariant,
@@ -717,7 +900,7 @@ async function measureThemeTransition(session) {
 async function measureCameraActions(session) {
   const results = {};
   for (const action of ['orbit', 'pan', 'zoom']) {
-    const before = await session.evaluate('window.__goal05Perf.drawCalls');
+    const before = await session.evaluate('window.__goal06Perf.drawCalls');
     if (action === 'zoom') {
       await session.evaluate(`(() => {
         const canvas = document.querySelector('.diorama-scene-runtime__canvas');
@@ -737,18 +920,235 @@ async function measureCameraActions(session) {
       })()`);
       const button = action === 'pan' ? 'middle' : 'left';
       const buttons = action === 'pan' ? 4 : 1;
+      const delta = action === 'orbit' ? { x: 12, y: 36 } : { x: 36, y: 22 };
       await session.dispatchMouseEvent('mouseMoved', state.x, state.y);
       await session.dispatchMouseEvent('mousePressed', state.x, state.y, button, buttons);
-      await session.dispatchMouseEvent('mouseMoved', state.x + 36, state.y + 22, button, buttons);
-      await session.dispatchMouseEvent('mouseReleased', state.x + 36, state.y + 22, button, 0);
+      await session.dispatchMouseEvent(
+        'mouseMoved',
+        state.x + delta.x,
+        state.y + delta.y,
+        button,
+        buttons,
+      );
+      await session.dispatchMouseEvent(
+        'mouseReleased',
+        state.x + delta.x,
+        state.y + delta.y,
+        button,
+        0,
+      );
     }
     await session.evaluate('new Promise(resolve => setTimeout(resolve, 650))');
-    const after = await session.evaluate('window.__goal05Perf.drawCalls');
+    const after = await session.evaluate('window.__goal06Perf.drawCalls');
     if (after <= before)
       throw new Error(`The Diorama ${action} interaction did not render any frames.`);
     results[action] = { drawCalls: after - before, observationMs: 650 };
   }
   return results;
+}
+
+async function measureTimeSwipe(session) {
+  await setDioramaTheme(session, 'light');
+  const before = await session.evaluate(`({
+    drawCalls: window.__goal06Perf.drawCalls,
+    timestampIndex: window.__goal06Perf.timestamps.length,
+    frameIndex: window.__goal06FrameTimestamps.length,
+    longTaskCount: window.__goal06LongTasks.length,
+    progress: Number(document.querySelector('.diorama')?.querySelector('[style*="--time-progress"]')?.style.getPropertyValue('--time-progress').replace('%', '')),
+    theme: document.querySelector('.diorama')?.dataset.theme,
+  })`);
+  const center = await session.evaluate(`(() => {
+    const bounds = document.querySelector('.diorama-scene-runtime__canvas').getBoundingClientRect();
+    return { x: bounds.left + bounds.width * 0.54, y: bounds.top + bounds.height * 0.52 };
+  })()`);
+  await session.evaluate(`(() => {
+    const canvas = document.querySelector('.diorama-scene-runtime__canvas');
+    const pointerId = 73;
+    const dispatch = (type, clientX, clientY) => canvas.dispatchEvent(new PointerEvent(type, {
+      bubbles: true,
+      cancelable: true,
+      pointerId,
+      pointerType: 'mouse',
+      isPrimary: true,
+      button: 0,
+      clientX,
+      clientY,
+    }));
+    dispatch('pointerdown', ${center.x}, ${center.y});
+    dispatch('pointermove', ${center.x + 42}, ${center.y + 1});
+    dispatch('pointermove', ${center.x + 140}, ${center.y + 1});
+    dispatch('pointerup', ${center.x + 140}, ${center.y + 1});
+  })()`);
+  await session.evaluate('new Promise(resolve => setTimeout(resolve, 180))');
+  const gestureState = await session.evaluate(`({
+    theme: document.querySelector('.diorama')?.dataset.theme,
+    transition: document.querySelector('.diorama')?.dataset.timeTransition,
+    progress: Number(document.querySelector('.diorama')?.querySelector('[style*="--time-progress"]')?.style.getPropertyValue('--time-progress').replace('%', '')),
+  })`);
+  if (gestureState.theme !== 'craft') {
+    throw new Error(
+      `Left-to-right Overview swipe did not advance Morning to Minecraft: ${JSON.stringify({ before, gestureState })}.`,
+    );
+  }
+  await waitFor(session, "document.querySelector('.diorama')?.dataset.theme", 'craft');
+  try {
+    await waitFor(session, "document.querySelector('.diorama')?.dataset.timeTransition", 'idle');
+  } catch (error) {
+    const finalState = await session.evaluate(`(() => {
+      const homepage = document.querySelector('.diorama');
+      const progress = document.querySelector('[style*="--time-progress"]')?.style
+        .getPropertyValue('--time-progress');
+      return {
+        theme: homepage?.dataset.theme,
+        transition: homepage?.dataset.timeTransition,
+        transitionId: homepage?.dataset.timeTransitionId,
+        semanticProgress: homepage?.dataset.timeProgress,
+        dialProgress: progress,
+        sceneAnimationsEnabled: homepage?.dataset.sceneAnimationsEnabled,
+        reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+        drawCalls: window.__goal06Perf?.drawCalls,
+        pendingFrames: window.__goal06PendingFrames?.size,
+      };
+    })()`);
+    throw new Error(`Time swipe failed to settle: ${JSON.stringify(finalState)}. ${error.message}`);
+  }
+  await session.evaluate('new Promise(resolve => setTimeout(resolve, 600))');
+  const after = await session.evaluate(`({
+    drawCalls: window.__goal06Perf.drawCalls,
+    timestamps: window.__goal06Perf.timestamps.slice(${before.timestampIndex}),
+    frameTimestamps: window.__goal06FrameTimestamps.slice(${before.frameIndex}),
+    longTasks: window.__goal06LongTasks.slice(${before.longTaskCount}),
+    theme: document.querySelector('.diorama')?.dataset.theme,
+    transition: document.querySelector('.diorama')?.dataset.timeTransition,
+    progress: Number(document.querySelector('.diorama')?.querySelector('[style*="--time-progress"]')?.style.getPropertyValue('--time-progress').replace('%', '')),
+  })`);
+  if (
+    after.theme !== 'craft' ||
+    after.transition !== 'idle' ||
+    after.drawCalls <= before.drawCalls
+  ) {
+    throw new Error(
+      `Overview swipe did not continuously settle scene time: ${JSON.stringify({ before, after })}.`,
+    );
+  }
+  return {
+    fromTheme: before.theme,
+    toTheme: after.theme,
+    startProgressPercent: before.progress,
+    endProgressPercent: after.progress,
+    drawCalls: after.drawCalls - before.drawCalls,
+    approximateFrameIntervalsMs: summarizeFrameIntervals(after.frameTimestamps),
+    observedLongTaskMs:
+      Math.round(after.longTasks.reduce((total, duration) => total + duration, 0) * 10) / 10,
+  };
+}
+
+async function measureClockInteractions(session) {
+  await setDioramaTheme(session, 'dark');
+  const before = await session.evaluate(`({
+    drawCalls: window.__goal06Perf.drawCalls,
+    theme: document.querySelector('.diorama')?.dataset.theme,
+    progress: Number(document.querySelector('.diorama')?.dataset.timeProgress),
+  })`);
+  if (before.theme !== 'dark' || Math.abs(before.progress - 3) > 0.001) {
+    throw new Error(`Clock boundary probe expected Dark at progress 3: ${JSON.stringify(before)}.`);
+  }
+
+  await dragClockQuarter(session, 'left', 'top');
+  const morning = await waitForClockState(session, 'light', 4);
+  await dragClockQuarter(session, 'top', 'left');
+  const reverse = await waitForClockState(session, 'dark', 3);
+
+  await session.evaluate(
+    `document.querySelector('.diorama-time-dial__quarter[data-time-stage="craft"]')?.click()`,
+  );
+  const directStage = await waitForClockState(session, 'craft', 1);
+
+  for (const theme of ['dark', 'light', 'craft']) {
+    await session.evaluate(
+      `document.querySelector('.diorama-time-dial__quarter[data-time-stage="${theme}"]')?.click()`,
+    );
+    await session.evaluate('new Promise(resolve => setTimeout(resolve, 90))');
+  }
+  await waitFor(session, "document.querySelector('.diorama')?.dataset.timeTransition", 'idle');
+  const rapidSelection = await session.evaluate(`({
+    theme: document.querySelector('.diorama')?.dataset.theme,
+    progress: Number(document.querySelector('.diorama')?.dataset.timeProgress),
+    transition: document.querySelector('.diorama')?.dataset.timeTransition,
+  })`);
+  const rapidSelectionPhase = ((rapidSelection.progress % 4) + 4) % 4;
+  if (
+    rapidSelection.theme !== 'craft' ||
+    Math.abs(rapidSelectionPhase - 1) > 0.001 ||
+    rapidSelection.transition !== 'idle'
+  ) {
+    throw new Error(
+      `Rapid clock stage changes lost their semantic state: ${JSON.stringify(rapidSelection)}.`,
+    );
+  }
+
+  const after = await session.evaluate('window.__goal06Perf.drawCalls');
+  return {
+    startsAtSelectedTheme: { theme: before.theme, progress: before.progress },
+    crossesMinecraftCycleBoundary: { theme: morning.theme, progress: morning.progress, turns: 1 },
+    reversesFromCurrentProgress: { theme: reverse.theme, progress: reverse.progress, turns: -1 },
+    directStageSelection: directStage,
+    rapidStageSelection: rapidSelection,
+    drawCalls: after - before.drawCalls,
+  };
+}
+
+async function dragClockQuarter(session, from, to) {
+  const points = await session.evaluate(`(() => {
+    const bounds = document.querySelector('.diorama-time-dial__face').getBoundingClientRect();
+    const radius = bounds.width * 0.2;
+    const center = { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
+    const quarters = {
+      top: { x: center.x, y: center.y - radius },
+      left: { x: center.x - radius, y: center.y },
+    };
+    return { from: quarters['${from}'], to: quarters['${to}'] };
+  })()`);
+  await session.dispatchMouseEvent('mouseMoved', points.from.x, points.from.y);
+  await session.dispatchMouseEvent('mousePressed', points.from.x, points.from.y, 'left', 1);
+  await session.dispatchMouseEvent('mouseMoved', points.to.x, points.to.y, 'left', 1);
+  await session.dispatchMouseEvent('mouseReleased', points.to.x, points.to.y, 'left', 0);
+}
+
+async function waitForClockState(session, theme, progress) {
+  await waitFor(session, "document.querySelector('.diorama')?.dataset.theme", theme);
+  await waitFor(session, "document.querySelector('.diorama')?.dataset.timeTransition", 'idle');
+  const state = await session.evaluate(`({
+    theme: document.querySelector('.diorama')?.dataset.theme,
+    progress: Number(document.querySelector('.diorama')?.dataset.timeProgress),
+    transition: document.querySelector('.diorama')?.dataset.timeTransition,
+  })`);
+  if (
+    state.theme !== theme ||
+    Math.abs(state.progress - progress) > 0.001 ||
+    state.transition !== 'idle'
+  ) {
+    throw new Error(
+      `Clock did not settle to ${theme} at progress ${progress}: ${JSON.stringify(state)}.`,
+    );
+  }
+  return state;
+}
+
+function readBaselineComparison(current) {
+  const baselinePath = resolve(frontend, '.artifacts/goal-05/browser-performance.json');
+  if (!existsSync(baselinePath)) return { available: false };
+  const baseline = JSON.parse(readFileSync(baselinePath, 'utf8'));
+  return {
+    available: true,
+    runner: baseline.renderer,
+    previous: {
+      themeAction: baseline.themeAction,
+      cameraActions: baseline.cameraActions,
+    },
+    current,
+    note: 'Goal 05 and Goal 06 browser runs use headless Chromium with SwiftShader on this runner; compare only their diagnostic counters and frame intervals.',
+  };
 }
 
 function summarizeFrameIntervals(timestamps) {

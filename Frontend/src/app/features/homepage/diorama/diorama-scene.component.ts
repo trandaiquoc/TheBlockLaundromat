@@ -6,6 +6,8 @@ import {
   computed,
   effect,
   inject,
+  input,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -16,6 +18,8 @@ import { ThemeService } from '../../../core/ui/theme/theme.service';
 import type { DioramaIntent, DioramaTarget } from './diorama-contracts';
 import { intentForSceneTarget } from './diorama-contracts';
 import { DioramaSceneRuntime } from './diorama-scene-runtime';
+import type { DioramaTimeDialChange } from './diorama-time-dial.component';
+import type { DioramaTimeAnimationUpdate, DioramaTimeTransition } from './diorama-time-transition';
 import {
   DioramaSceneFocusToolbarComponent,
   type DioramaFocusAction,
@@ -36,6 +40,11 @@ const focusMessageKeys: Readonly<Record<DioramaTarget, TranslationKey>> = {
   styleUrl: './diorama-scene.component.scss',
 })
 export class DioramaSceneComponent {
+  readonly timeTransition = input.required<DioramaTimeTransition>();
+  readonly timeProgress = input.required<number>();
+  readonly timeChanged = output<DioramaTimeDialChange>();
+  readonly timeAnimationUpdate = output<DioramaTimeAnimationUpdate>();
+
   protected readonly i18n = inject(I18nService);
   protected readonly state = signal<DioramaState>('loading');
   protected readonly fallbackMessageKey = signal<TranslationKey>('dioramaFallback');
@@ -59,6 +68,10 @@ export class DioramaSceneComponent {
       const sceneAnimationsEnabled =
         this.preferences.effectivePreferences().accessibility.sceneAnimationsEnabled;
       this.runtime?.setSceneAnimationsEnabled(sceneAnimationsEnabled);
+    });
+    effect(() => {
+      const transition = this.timeTransition();
+      this.runtime?.setTimeTransition(transition);
     });
 
     afterNextRender(() => {
@@ -101,6 +114,9 @@ export class DioramaSceneComponent {
 
     this.runtime = new DioramaSceneRuntime({
       onIntent: (intent) => this.handleSceneIntent(intent),
+      onTimeChange: (change) => this.timeChanged.emit(change),
+      onTimeAnimationUpdate: (update) => this.timeAnimationUpdate.emit(update),
+      currentTimeProgress: () => this.timeProgress(),
       onWebGLUnavailable: (error) => {
         this.fallbackMessageKey.set('dioramaWebGLUnavailable');
         if (error) console.error('Diorama could not initialize WebGL 2.', error);
@@ -126,6 +142,7 @@ export class DioramaSceneComponent {
       this.preferences.effectivePreferences().accessibility.sceneAnimationsEnabled,
     );
     this.runtime.setTheme(this.themeService.theme());
+    this.runtime.setTimeTransition(this.timeTransition());
   }
 
   private handleSceneIntent(intent: DioramaIntent): void {

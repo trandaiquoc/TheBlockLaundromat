@@ -149,16 +149,6 @@
                 role="tabpanel"
                 aria-labelledby="appearance-interface-tab"
               >
-                <label>
-                  {{ i18n.t('homepageMode') }}
-                  <app-themed-select
-                    [options]="homepageModeOptions()"
-                    [selectedId]="draft().appearance.homepageMode"
-                    [ariaLabel]="i18n.t('homepageMode')"
-                    (selectionChange)="setHomepageMode($any($event))"
-                  />
-                  <small>{{ i18n.t('homepageModeHelp') }}</small>
-                </label>
                 <label
                   >{{ i18n.t('theme') }}
                   <app-themed-select

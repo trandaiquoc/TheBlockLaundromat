@@ -243,13 +243,13 @@ describe('Workspace color palette contract', () => {
     );
     const controlsStyles = String(
       readFileSync(
-        'src/app/features/projects/project-screen/project-screen-controls.component.scss',
+        'src/app/features/projects/project-screen/project-screen-theme-picker.component.scss',
         'utf8',
       ),
     );
     const accountStyles = String(
       readFileSync(
-        'src/app/features/projects/project-screen/project-screen-account.component.scss',
+        'src/app/features/homepage/account-menu/homepage-account-menu.component.scss',
         'utf8',
       ),
     );

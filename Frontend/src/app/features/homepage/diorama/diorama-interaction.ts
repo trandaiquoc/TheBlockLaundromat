@@ -14,12 +14,22 @@ interface PointerContact {
   readonly button: number;
 }
 
+type PointerGesture = 'pending' | 'orbit' | 'pan' | 'time-swipe' | 'locked';
+
 interface PointerPress {
   readonly pointerId: number;
   readonly clientX: number;
   readonly clientY: number;
   readonly button: number;
   moved: boolean;
+  gesture: PointerGesture;
+  timeStartProgress?: number;
+  timeProgress?: number;
+}
+
+interface PinchCenter {
+  readonly clientX: number;
+  readonly clientY: number;
 }
 
 export interface DioramaInteractionCallbacks {
@@ -28,10 +38,13 @@ export interface DioramaInteractionCallbacks {
   readonly orbitCamera: (yawDelta: number, pitchDelta: number) => void;
   readonly panCamera: (deltaX: number, deltaY: number, width: number, height: number) => void;
   readonly zoomCamera: (distanceScale: number) => void;
+  readonly onTimeChange: (progress: number, isDragging: boolean) => void;
+  readonly currentTimeProgress: () => number;
 }
 
 const dragThresholdPixels = 8;
 const orbitRadiansPerPixel = 0.004;
+const swipePixelsPerStage = 240;
 const pinchDistanceScaleLimit = 1.8;
 const wheelDeltaLimit = 180;
 const wheelZoomSensitivity = 0.00045;
@@ -43,6 +56,7 @@ export class DioramaInteractionController {
   private readonly pointers = new Map<number, PointerContact>();
   private press?: PointerPress;
   private pinchDistance?: number;
+  private pinchCenter?: PinchCenter;
   private disposed = false;
   private readonly originalTouchAction: string;
   private readonly cameraGestureListenersAttached: boolean;
@@ -60,6 +74,7 @@ export class DioramaInteractionController {
       event.preventDefault();
     }
 
+    if (this.pointers.size === 1) this.finishTimeSwipe();
     this.pointers.set(event.pointerId, pointerContact(event));
     if (this.pointers.size === 1) {
       this.press = {
@@ -68,10 +83,12 @@ export class DioramaInteractionController {
         clientY: event.clientY,
         button: event.button,
         moved: false,
+        gesture: 'pending',
       };
     } else if (this.pointers.size === 2) {
       this.press = undefined;
       this.pinchDistance = distanceBetweenPointers(this.pointers);
+      this.pinchCenter = centerOfPointers(this.pointers);
     }
 
     if (this.canvas.setPointerCapture) {
@@ -89,8 +106,14 @@ export class DioramaInteractionController {
 
     const press = this.press;
     this.pointers.delete(event.pointerId);
-    if (this.pointers.size < 2) this.pinchDistance = undefined;
+    if (this.pointers.size < 2) {
+      this.pinchDistance = undefined;
+      this.pinchCenter = undefined;
+    }
 
+    if (press?.pointerId === event.pointerId && press.gesture === 'time-swipe') {
+      this.finishTimeSwipe(press);
+    }
     if (this.pointers.size === 1) {
       const [pointerId, remaining] = this.pointers.entries().next().value as [
         number,
@@ -102,6 +125,7 @@ export class DioramaInteractionController {
         clientY: remaining.clientY,
         button: remaining.button,
         moved: true,
+        gesture: 'locked',
       };
     } else {
       this.press = undefined;
@@ -141,22 +165,30 @@ export class DioramaInteractionController {
     if (!press || press.pointerId !== event.pointerId) return;
     const deltaX = event.clientX - previous.clientX;
     const deltaY = event.clientY - previous.clientY;
+    const totalX = event.clientX - press.clientX;
+    const totalY = event.clientY - press.clientY;
     if (!press.moved) {
-      press.moved =
-        Math.hypot(event.clientX - press.clientX, event.clientY - press.clientY) >
-        dragThresholdPixels;
+      press.moved = Math.hypot(totalX, totalY) > dragThresholdPixels;
+      if (!press.moved) return;
+      this.classifyGesture(press, totalX, totalY);
     }
-    if (!press.moved) return;
-    if (!this.cameraGesturesAllowed()) return;
 
     this.callbacks.onHover(undefined);
-    if (press.button === 1) {
+    if (press.gesture === 'time-swipe') {
+      const startProgress = press.timeStartProgress ?? this.callbacks.currentTimeProgress();
+      const progress = startProgress + totalX / swipePixelsPerStage;
+      press.timeProgress = progress;
+      this.callbacks.onTimeChange(progress, true);
+      event.preventDefault();
+    } else if (press.gesture === 'pan') {
       const bounds = this.canvas.getBoundingClientRect();
       this.callbacks.panCamera(deltaX, deltaY, bounds.width, bounds.height);
-    } else {
+    } else if (press.gesture === 'orbit') {
       this.callbacks.orbitCamera(-deltaX * orbitRadiansPerPixel, deltaY * orbitRadiansPerPixel);
     }
-    this.canvas.style.cursor = 'grabbing';
+    if (press.gesture === 'time-swipe' || press.gesture === 'orbit' || press.gesture === 'pan') {
+      this.canvas.style.cursor = 'grabbing';
+    }
   };
 
   private readonly onPointerLeave = (): void => {
@@ -166,9 +198,13 @@ export class DioramaInteractionController {
   };
 
   private readonly onPointerCancel = (event: PointerEvent): void => {
+    if (this.press?.pointerId === event.pointerId && this.press.gesture === 'time-swipe') {
+      this.finishTimeSwipe(this.press);
+    }
     this.pointers.delete(event.pointerId);
     this.press = undefined;
     this.pinchDistance = undefined;
+    this.pinchCenter = undefined;
     if (this.pointers.size === 0) {
       this.canvas.style.cursor = '';
       this.callbacks.onHover(undefined);
@@ -192,6 +228,7 @@ export class DioramaInteractionController {
     roots: readonly InteractionRoot[],
     private readonly callbacks: DioramaInteractionCallbacks,
     private readonly cameraGesturesEnabled: boolean | (() => boolean) = true,
+    private readonly timeSwipeEnabled: boolean | (() => boolean) = true,
   ) {
     this.targetByRoot = new Map(roots.map(({ object, target }) => [object, target]));
     this.originalTouchAction = canvas.style.touchAction;
@@ -211,8 +248,10 @@ export class DioramaInteractionController {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    this.finishTimeSwipe();
     this.press = undefined;
     this.pinchDistance = undefined;
+    this.pinchCenter = undefined;
     this.pointers.clear();
     this.canvas.removeEventListener('pointerdown', this.onPointerDown);
     this.canvas.removeEventListener('pointerup', this.onPointerUp);
@@ -228,9 +267,30 @@ export class DioramaInteractionController {
     this.callbacks.onHover(undefined);
   }
 
+  private classifyGesture(press: PointerPress, deltaX: number, deltaY: number): void {
+    if (press.button === 1) {
+      press.gesture = this.cameraGesturesAllowed() ? 'pan' : 'locked';
+      return;
+    }
+    if (this.timeSwipeAllowed() && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      press.gesture = 'time-swipe';
+      press.timeStartProgress = this.callbacks.currentTimeProgress();
+      press.timeProgress = press.timeStartProgress;
+      return;
+    }
+    press.gesture = this.cameraGesturesAllowed() ? 'orbit' : 'locked';
+  }
+
+  private finishTimeSwipe(press = this.press): void {
+    if (!press || press.gesture !== 'time-swipe') return;
+    press.gesture = 'locked';
+    this.callbacks.onTimeChange(press.timeProgress ?? this.callbacks.currentTimeProgress(), false);
+  }
+
   private updatePinch(): void {
     const distance = distanceBetweenPointers(this.pointers);
-    if (distance === undefined || distance <= 0) return;
+    const center = centerOfPointers(this.pointers);
+    if (distance === undefined || distance <= 0 || !center) return;
     if (this.pinchDistance !== undefined && this.pinchDistance > 0) {
       const scale = MathUtils.clamp(
         this.pinchDistance / distance,
@@ -238,14 +298,30 @@ export class DioramaInteractionController {
         pinchDistanceScaleLimit,
       );
       if (Math.abs(scale - 1) > 0.001) this.callbacks.zoomCamera(scale);
+      if (this.pinchCenter) {
+        const bounds = this.canvas.getBoundingClientRect();
+        this.callbacks.panCamera(
+          center.clientX - this.pinchCenter.clientX,
+          center.clientY - this.pinchCenter.clientY,
+          bounds.width,
+          bounds.height,
+        );
+      }
     }
     this.pinchDistance = distance;
+    this.pinchCenter = center;
   }
 
   private cameraGesturesAllowed(): boolean {
     return typeof this.cameraGesturesEnabled === 'function'
       ? this.cameraGesturesEnabled()
       : this.cameraGesturesEnabled;
+  }
+
+  private timeSwipeAllowed(): boolean {
+    return typeof this.timeSwipeEnabled === 'function'
+      ? this.timeSwipeEnabled()
+      : this.timeSwipeEnabled;
   }
 
   private updateHover(clientX: number, clientY: number): void {
@@ -289,4 +365,13 @@ function distanceBetweenPointers(
   const [first, second] = [...pointers.values()];
   if (!first || !second) return undefined;
   return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+}
+
+function centerOfPointers(pointers: ReadonlyMap<number, PointerContact>): PinchCenter | undefined {
+  const [first, second] = [...pointers.values()];
+  if (!first || !second) return undefined;
+  return {
+    clientX: (first.clientX + second.clientX) / 2,
+    clientY: (first.clientY + second.clientY) / 2,
+  };
 }

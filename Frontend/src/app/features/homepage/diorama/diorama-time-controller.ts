@@ -1,8 +1,14 @@
-import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { UiPreferencesService } from '../../../core/ui/preferences/ui-preferences.service';
 import { ThemeService, type Theme } from '../../../core/ui/theme/theme.service';
 import type { DioramaTimeDialChange } from './diorama-time-dial.component';
+import type {
+  DioramaTimeAnimationUpdate,
+  DioramaTimeTransition,
+  DioramaTimeTransitionSource,
+} from './diorama-time-transition';
 import {
+  dioramaTimeStageIndexAtProgress,
   dioramaTimeStageIndexByTheme,
   dioramaTimeStages,
   nearestDioramaTimeProgress,
@@ -12,71 +18,97 @@ import {
 export class DioramaTimeController {
   private readonly themeService = inject(ThemeService);
   private readonly preferences = inject(UiPreferencesService);
-  readonly timeStageIndex = computed(() => dioramaTimeStageIndexByTheme[this.themeService.theme()]);
-  readonly cycleProgress = signal(this.timeStageIndex());
-  readonly clockDragging = signal(false);
+  readonly cycleProgress = signal(dioramaTimeStageIndexByTheme[this.themeService.theme()]);
+  readonly timeStageIndex = computed(() => dioramaTimeStageIndexAtProgress(this.cycleProgress()));
+  readonly timeTransition = signal<DioramaTimeTransition>({
+    id: 0,
+    phase: 'idle',
+    progress: this.cycleProgress(),
+    targetProgress: this.cycleProgress(),
+    source: 'theme',
+  });
+  readonly clockDragging = computed(() => this.timeTransition().phase === 'dragging');
   readonly skyOrbitDirection = signal<'right' | 'left' | undefined>(undefined);
   readonly sceneAnimationsEnabled = computed(
     () => this.preferences.effectivePreferences().accessibility.sceneAnimationsEnabled,
   );
-  readonly skyGlowPercent = computed(() => {
-    if (!this.clockDragging()) return skyGlowPositions[this.timeStageIndex()];
-    const stageCount = dioramaTimeStages.length;
-    const phase = ((this.cycleProgress() % stageCount) + stageCount) % stageCount;
-    const stageIndex = Math.floor(phase);
-    const fraction = phase - stageIndex;
-    if (stageIndex === 3) {
-      const darkSide = this.cycleProgress() < 0 ? skyGlowPositions[3] - 100 : skyGlowPositions[3];
-      const lightSide = this.cycleProgress() < 0 ? skyGlowPositions[0] : skyGlowPositions[0] + 100;
-      return darkSide + (lightSide - darkSide) * fraction;
-    }
-    return (
-      skyGlowPositions[stageIndex] +
-      (skyGlowPositions[stageIndex + 1] - skyGlowPositions[stageIndex]) * fraction
-    );
-  });
+  readonly skyGlowPercent = computed(() => skyPositionAtProgress(this.cycleProgress()));
 
   private lastSynchronizedTheme: Theme = this.themeService.theme();
-  private clockGestureStartProgress?: number;
+  private transitionSequence = 0;
+  private gestureStartProgress?: number;
 
   constructor() {
     effect(() => {
       const theme = this.themeService.theme();
       if (theme === this.lastSynchronizedTheme) return;
       this.lastSynchronizedTheme = theme;
-      const progress = untracked(this.cycleProgress);
-      untracked(() =>
-        this.cycleProgress.set(
-          nearestDioramaTimeProgress(progress, dioramaTimeStageIndexByTheme[theme]),
-        ),
-      );
+      const start = this.cycleProgress();
+      const target = nearestDioramaTimeProgress(start, dioramaTimeStageIndexByTheme[theme]);
+      this.beginSettle(start, target, 'theme');
     });
   }
 
   handleDialChange(change: DioramaTimeDialChange): void {
     const stage = dioramaTimeStages[change.index];
-    if (!stage) return;
-    const startProgress = this.clockGestureStartProgress ?? this.cycleProgress();
-    if (change.isDragging && this.clockGestureStartProgress === undefined) {
-      this.clockGestureStartProgress = this.cycleProgress();
+    if (!stage || !Number.isFinite(change.progress)) return;
+    const source = change.source ?? 'clock';
+
+    if (change.isDragging) {
+      if (this.gestureStartProgress === undefined) this.gestureStartProgress = this.cycleProgress();
+      const previousTransition = this.timeTransition();
+      const id =
+        previousTransition.phase === 'dragging' ? previousTransition.id : ++this.transitionSequence;
+      this.cycleProgress.set(change.progress);
+      this.timeTransition.set({
+        id,
+        phase: 'dragging',
+        progress: change.progress,
+        targetProgress: change.progress,
+        source,
+      });
+      this.synchronizeTheme(change.progress);
+      return;
     }
-    if (!change.isDragging) {
-      const direction = orbitDirectionAcrossMidnight(startProgress, change.progress);
-      this.skyOrbitDirection.set(this.sceneAnimationsEnabled() ? direction : undefined);
-      this.clockGestureStartProgress = undefined;
-    }
-    this.cycleProgress.set(change.progress);
-    this.clockDragging.set(change.isDragging);
-    if (stage.theme === this.themeService.theme()) return;
-    this.lastSynchronizedTheme = stage.theme;
-    this.themeService.setPreset(stage.theme);
+
+    const gestureStart = this.gestureStartProgress;
+    const start = gestureStart === undefined ? this.cycleProgress() : change.progress;
+    this.gestureStartProgress = undefined;
+    const target = nearestDioramaTimeProgress(change.progress, change.index);
+    this.cycleProgress.set(start);
+    this.skyOrbitDirection.set(
+      this.sceneAnimationsEnabled()
+        ? orbitDirectionAcrossMidnight(gestureStart ?? start, target)
+        : undefined,
+    );
+    this.synchronizeTheme(target);
+    this.beginSettle(start, target, source);
   }
 
   advanceTheme(direction: -1 | 1): void {
+    const current = this.cycleProgress();
     const nextIndex =
-      (this.timeStageIndex() + direction + dioramaTimeStages.length) % dioramaTimeStages.length;
-    const progress = nearestDioramaTimeProgress(this.cycleProgress(), nextIndex);
-    this.handleDialChange({ index: nextIndex, progress, isDragging: false });
+      (dioramaTimeStageIndexAtProgress(current) + direction + dioramaTimeStages.length) %
+      dioramaTimeStages.length;
+    const target = nearestDioramaTimeProgress(current, nextIndex);
+    this.skyOrbitDirection.set(
+      this.sceneAnimationsEnabled() ? orbitDirectionAcrossMidnight(current, target) : undefined,
+    );
+    this.synchronizeTheme(target);
+    this.beginSettle(current, target, 'swipe');
+  }
+
+  handleAnimationUpdate(update: DioramaTimeAnimationUpdate): void {
+    const transition = this.timeTransition();
+    if (transition.id !== update.id || transition.phase !== 'settling') return;
+    if (Number.isFinite(update.progress)) this.cycleProgress.set(update.progress);
+    if (!update.finished) return;
+    this.cycleProgress.set(transition.targetProgress);
+    this.timeTransition.set({
+      ...transition,
+      phase: 'idle',
+      progress: transition.targetProgress,
+    });
   }
 
   completeSkyOrbit(event: AnimationEvent): void {
@@ -87,9 +119,53 @@ export class DioramaTimeController {
       this.skyOrbitDirection.set(undefined);
     }
   }
+
+  private beginSettle(
+    startProgress: number,
+    targetProgress: number,
+    source: DioramaTimeTransitionSource,
+  ): void {
+    const id = ++this.transitionSequence;
+    if (Math.abs(targetProgress - startProgress) < 0.0001) {
+      this.cycleProgress.set(targetProgress);
+      this.timeTransition.set({
+        id,
+        phase: 'idle',
+        progress: targetProgress,
+        targetProgress,
+        source,
+      });
+      return;
+    }
+    this.timeTransition.set({
+      id,
+      phase: 'settling',
+      progress: startProgress,
+      targetProgress,
+      source,
+    });
+  }
+
+  private synchronizeTheme(progress: number): void {
+    const stage = dioramaTimeStages[dioramaTimeStageIndexAtProgress(progress)];
+    if (!stage || stage.theme === this.themeService.theme()) return;
+    this.lastSynchronizedTheme = stage.theme;
+    this.themeService.setPreset(stage.theme);
+  }
 }
 
-const skyGlowPositions = [14, 38, 63, 87, 14] as const;
+const skyGlowPositions = [14, 38, 63, 87] as const;
+
+function skyPositionAtProgress(progress: number): number {
+  const stageCount = dioramaTimeStages.length;
+  const phase = ((progress % stageCount) + stageCount) % stageCount;
+  const stageIndex = Math.floor(phase);
+  const fraction = phase - stageIndex;
+  const nextIndex = (stageIndex + 1) % stageCount;
+  const nextPosition =
+    stageIndex === stageCount - 1 ? skyGlowPositions[0] + 100 : skyGlowPositions[nextIndex];
+  return skyGlowPositions[stageIndex] + (nextPosition - skyGlowPositions[stageIndex]) * fraction;
+}
 
 function orbitDirectionAcrossMidnight(
   startProgress: number,

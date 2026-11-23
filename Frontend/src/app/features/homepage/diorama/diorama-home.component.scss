@@ -38,6 +38,25 @@
   color: var(--spatial-ink);
 }
 
+.diorama-account-menu {
+  position: absolute;
+  z-index: 6;
+  inset-block-start: max(0.65rem, env(safe-area-inset-top));
+  inset-inline-end: clamp(1rem, 3vw, 3rem);
+}
+
+@media (max-width: 760px) {
+  .diorama-account-menu {
+    inset-inline-end: max(0.7rem, env(safe-area-inset-right));
+  }
+}
+
+@media (max-width: 380px) {
+  .diorama-account-menu {
+    inset-block-start: max(0.55rem, env(safe-area-inset-top));
+  }
+}
+
 .diorama[data-theme='light'] {
   --spatial-ink: #34413f;
   --spatial-muted: #667471;

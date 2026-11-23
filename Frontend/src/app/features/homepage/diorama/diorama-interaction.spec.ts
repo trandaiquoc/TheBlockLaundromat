@@ -30,7 +30,7 @@ describe('DioramaInteractionController', () => {
     controller.dispose();
   });
 
-  it('orbits on a drag instead of activating the scene target', () => {
+  it('uses vertical drag for camera orbit without activating the scene target', () => {
     const canvas = createCanvas();
     const callbacks = createCallbacks();
     const controller = new DioramaInteractionController(
@@ -41,11 +41,56 @@ describe('DioramaInteractionController', () => {
     );
 
     pointer(canvas, 'pointerdown', 50, 50);
-    pointer(canvas, 'pointermove', 70, 60);
-    pointer(canvas, 'pointerup', 70, 60);
+    pointer(canvas, 'pointermove', 60, 80);
+    pointer(canvas, 'pointerup', 60, 80);
 
-    expect(callbacks.orbitCamera).toHaveBeenCalledWith(-0.08, 0.04);
+    expect(callbacks.orbitCamera).toHaveBeenCalledWith(-0.04, 0.12);
     expect(callbacks.onIntent).not.toHaveBeenCalled();
+    controller.dispose();
+  });
+
+  it('arbitrates Overview horizontal drags as continuous time changes and settles on release', () => {
+    const canvas = createCanvas();
+    const callbacks = createCallbacks();
+    const controller = new DioramaInteractionController(
+      canvas,
+      createCamera(),
+      [],
+      callbacks,
+      true,
+      true,
+    );
+
+    pointer(canvas, 'pointerdown', 60, 50);
+    pointer(canvas, 'pointermove', 0, 52);
+    pointer(canvas, 'pointermove', 20, 52);
+    pointer(canvas, 'pointerup', 20, 52);
+
+    expect(callbacks.onTimeChange).toHaveBeenNthCalledWith(1, 0.75, true);
+    expect(callbacks.onTimeChange).toHaveBeenNthCalledWith(2, 0.8333333333333334, true);
+    expect(callbacks.onTimeChange).toHaveBeenLastCalledWith(0.8333333333333334, false);
+    expect(callbacks.orbitCamera).not.toHaveBeenCalled();
+    controller.dispose();
+  });
+
+  it('advances from Light to Minecraft when swiping left to right', () => {
+    const canvas = createCanvas();
+    const callbacks = createCallbacks(0);
+    const controller = new DioramaInteractionController(
+      canvas,
+      createCamera(),
+      [],
+      callbacks,
+      true,
+      true,
+    );
+
+    pointer(canvas, 'pointerdown', 10, 50);
+    pointer(canvas, 'pointermove', 160, 50);
+    pointer(canvas, 'pointerup', 160, 50);
+
+    expect(callbacks.onTimeChange).toHaveBeenNthCalledWith(1, 0.625, true);
+    expect(callbacks.onTimeChange).toHaveBeenLastCalledWith(0.625, false);
     controller.dispose();
   });
 
@@ -109,6 +154,7 @@ describe('DioramaInteractionController', () => {
       [{ object: createTarget(), target: 'washer' }],
       callbacks,
       () => cameraGesturesAllowed,
+      () => false,
     );
 
     cameraGesturesAllowed = false;
@@ -125,7 +171,7 @@ describe('DioramaInteractionController', () => {
     controller.dispose();
   });
 
-  it('zooms with the wheel and pinch gesture while keeping touch action owned by the scene', () => {
+  it('zooms and pans with a pinch gesture while keeping touch action owned by the scene', () => {
     const canvas = createCanvas();
     const callbacks = createCallbacks();
     const controller = new DioramaInteractionController(canvas, createCamera(), [], callbacks);
@@ -139,6 +185,7 @@ describe('DioramaInteractionController', () => {
     expect(wheel.defaultPrevented).toBe(true);
     expect(callbacks.zoomCamera).toHaveBeenNthCalledWith(1, Math.exp(0.045));
     expect(callbacks.zoomCamera).toHaveBeenNthCalledWith(2, 20 / 35);
+    expect(callbacks.panCamera).toHaveBeenCalledWith(7.5, 0, 100, 100);
     expect(canvas.style.touchAction).toBe('none');
     controller.dispose();
     expect(canvas.style.touchAction).toBe('');
@@ -165,13 +212,15 @@ describe('DioramaInteractionController', () => {
   });
 });
 
-function createCallbacks(): DioramaInteractionCallbacks {
+function createCallbacks(startProgress = 1): DioramaInteractionCallbacks {
   return {
     onIntent: vi.fn(),
     onHover: vi.fn(),
     orbitCamera: vi.fn(),
     panCamera: vi.fn(),
     zoomCamera: vi.fn(),
+    onTimeChange: vi.fn(),
+    currentTimeProgress: vi.fn(() => startProgress),
   };
 }
 

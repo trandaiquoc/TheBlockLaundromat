@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, inject, output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { I18nService } from '../../../core/ui/localization/i18n.service';
 
 @Component({
@@ -10,5 +10,4 @@ import { I18nService } from '../../../core/ui/localization/i18n.service';
 })
 export class DioramaHomeHeaderComponent {
   protected readonly i18n = inject(I18nService);
-  readonly projectsRequested = output<void>();
 }

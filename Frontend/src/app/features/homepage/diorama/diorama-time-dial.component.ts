@@ -10,6 +10,7 @@ export interface DioramaTimeDialChange {
   readonly index: number;
   readonly progress: number;
   readonly isDragging: boolean;
+  readonly source?: 'clock' | 'swipe';
 }
 
 @Component({
@@ -24,6 +25,11 @@ export class DioramaTimeDialComponent {
   readonly timeChanged = output<DioramaTimeDialChange>();
   protected readonly timeStages = dioramaTimeStages;
   protected readonly selectedStage = computed(() => this.timeStages[this.selectedIndex()]);
+  protected readonly timeProgressPercent = computed(() => {
+    const cycleLength = this.timeStages.length;
+    const phase = ((this.cycleProgress() % cycleLength) + cycleLength) % cycleLength;
+    return `${(phase / cycleLength) * 100}%`;
+  });
 
   private activePointerId?: number;
   private lastPointerAngle = 0;
@@ -81,6 +87,7 @@ export class DioramaTimeDialComponent {
       index: dioramaTimeStageIndexAtProgress(this.dragProgress),
       progress: this.dragProgress,
       isDragging,
+      source: 'clock',
     });
   }
 }

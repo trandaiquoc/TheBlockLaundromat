@@ -70,6 +70,21 @@
   pointer-events: none;
 }
 
+.diorama-time-dial__progress {
+  position: absolute;
+  z-index: 2;
+  inset: 0.18rem;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    var(--spatial-accent) var(--time-progress),
+    transparent var(--time-progress)
+  );
+  opacity: 0.9;
+  pointer-events: none;
+  mask: radial-gradient(circle, transparent 0 46%, #000 47% 49%, transparent 50%);
+}
+
 .weather-art {
   position: absolute;
   inset: 0;

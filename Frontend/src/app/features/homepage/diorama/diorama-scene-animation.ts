@@ -4,7 +4,7 @@ import { DioramaCameraRig } from './diorama-camera-rig';
 import { DioramaRaccoonController } from './diorama-raccoon-controller';
 import type { DioramaSceneAssets } from './diorama-scene-assets';
 import { applyDioramaTheme, createDioramaThemeTransition } from './diorama-scene-theme';
-import { dioramaTimeDirectionBetweenThemes } from './diorama-time-stages';
+import type { DioramaTimeAnimationUpdate, DioramaTimeTransition } from './diorama-time-transition';
 
 export interface DioramaAnimationScheduler {
   readonly requestFrame: (callback: FrameRequestCallback) => number;
@@ -13,19 +13,23 @@ export interface DioramaAnimationScheduler {
 
 const maximumFrameDeltaSeconds = 0.05;
 
-/** Owns scene frames, theme transitions, room rotation, and motion scheduling. */
+/** Owns scene frames, theme transitions, semantic room motion, and motion scheduling. */
 export class DioramaSceneAnimation {
   private animationFrame?: number;
   private lastFrameTime?: number;
   private theme: Theme = 'craft';
   private themeTransition?: (progress: number) => void;
   private themeTransitionElapsed = 0;
-  private roomSpinElapsed = 0;
-  private roomSpinStartRotation = 0;
-  private roomSpinOriginRotation = 0;
-  private roomSpinTargetRotation = 0;
-  private roomSpinInitialDirection = 1;
-  private roomSpinActive = false;
+  private timeTransitionId?: number;
+  private timeTransitionActive = false;
+  private timeTransitionElapsed = 0;
+  private timeStartProgress = 0;
+  private timeProgress = 0;
+  private timeTargetProgress = 0;
+  private timeTransitionDuration = 0;
+  private roomRotationEnabled = true;
+  private roomProgressOrigin = 0;
+  private roomRotationOrigin = 0;
   private reducedMotion: boolean;
   private disposed = false;
   private visible = true;
@@ -37,6 +41,7 @@ export class DioramaSceneAnimation {
     private readonly assets: DioramaSceneAssets,
     private readonly cameraRig: DioramaCameraRig,
     private readonly raccoonController: DioramaRaccoonController | undefined,
+    private readonly onTimeAnimationUpdate: (update: DioramaTimeAnimationUpdate) => void,
     reducedMotion: boolean,
   ) {
     this.reducedMotion = reducedMotion;
@@ -46,11 +51,9 @@ export class DioramaSceneAnimation {
     return this.animationFrame !== undefined;
   }
 
-  setTheme(theme: Theme, spinRoom: boolean): void {
+  setTheme(theme: Theme): void {
     if (this.disposed || this.theme === theme) return;
-    const previousTheme = this.theme;
     this.theme = theme;
-    if (spinRoom) this.startRoomSpin(dioramaTimeDirectionBetweenThemes(previousTheme, theme));
     this.themeTransition = createDioramaThemeTransition(this.assets, theme);
     this.themeTransitionElapsed = 0;
     if (this.assets.profile.shadows.materialVariantsChangeCasterSilhouette) {
@@ -63,12 +66,72 @@ export class DioramaSceneAnimation {
     this.startAnimation();
   }
 
+  initializeTimeProgress(progress: number, roomRotationEnabled: boolean): void {
+    this.timeProgress = progress;
+    this.timeTargetProgress = progress;
+    this.roomRotationEnabled = roomRotationEnabled;
+    this.roomProgressOrigin = progress;
+    this.roomRotationOrigin = this.assets.roomSpinPivot.rotation.y;
+  }
+
+  setRoomRotationEnabled(enabled: boolean): void {
+    if (this.disposed || this.roomRotationEnabled === enabled) return;
+    this.roomRotationEnabled = enabled;
+    this.roomProgressOrigin = this.timeProgress;
+    this.roomRotationOrigin = this.assets.roomSpinPivot.rotation.y;
+  }
+
+  setTimeTransition(transition: DioramaTimeTransition): void {
+    if (this.disposed) return;
+    if (transition.phase === 'idle') {
+      this.timeTransitionActive = false;
+      this.timeProgress = transition.progress;
+      this.timeTargetProgress = transition.targetProgress;
+      this.stopIfIdle();
+      return;
+    }
+
+    if (transition.phase === 'dragging') {
+      this.timeTransitionId = transition.id;
+      this.timeTransitionActive = false;
+      this.timeProgress = transition.progress;
+      this.timeTargetProgress = transition.progress;
+      const previousRotation = this.assets.roomSpinPivot.rotation.y;
+      this.applyRoomProgress(transition.progress);
+      if (this.assets.roomSpinPivot.rotation.y !== previousRotation)
+        this.renderWithUpdatedShadows();
+      else this.render();
+      this.stopIfIdle();
+      return;
+    }
+
+    if (this.timeTransitionId === transition.id && this.timeTransitionActive) return;
+    this.timeTransitionId = transition.id;
+    this.timeStartProgress = this.timeProgress;
+    this.timeTargetProgress = transition.targetProgress;
+    this.timeTransitionElapsed = 0;
+    const secondsPerTheme = this.assets.profile.motion.roomSpinDurationSeconds;
+    this.timeTransitionDuration = Math.max(
+      0.12,
+      Math.abs(this.timeTargetProgress - this.timeStartProgress) * secondsPerTheme,
+    );
+    this.timeTransitionActive = Math.abs(this.timeTargetProgress - this.timeStartProgress) > 0.0001;
+
+    if (this.reducedMotion || !this.timeTransitionActive) {
+      this.finishTimeTransition();
+      if (this.roomRotationEnabled) this.renderWithUpdatedShadows();
+      else this.render();
+      return;
+    }
+    this.startAnimation();
+  }
+
   setReducedMotion(reducedMotion: boolean): void {
     if (this.disposed || this.reducedMotion === reducedMotion) return;
     this.reducedMotion = reducedMotion;
     if (reducedMotion) {
       this.finishThemeTransition();
-      this.finishRoomSpin();
+      if (this.timeTransitionActive) this.finishTimeTransition();
       this.stopAnimation();
     } else {
       this.startAnimation();
@@ -104,7 +167,7 @@ export class DioramaSceneAnimation {
     this.disposed = true;
     this.stopAnimation();
     this.themeTransition = undefined;
-    this.roomSpinActive = false;
+    this.timeTransitionActive = false;
   }
 
   private startAnimation(): void {
@@ -116,10 +179,14 @@ export class DioramaSceneAnimation {
   private hasActiveMotion(): boolean {
     return Boolean(
       this.themeTransition ||
-      this.roomSpinActive ||
+      this.timeTransitionActive ||
       this.cameraRig.isMoving ||
       this.raccoonController?.isAnimating,
     );
+  }
+
+  private stopIfIdle(): void {
+    if (!this.hasActiveMotion()) this.stopAnimation();
   }
 
   private stopAnimation(): void {
@@ -136,9 +203,10 @@ export class DioramaSceneAnimation {
       this.lastFrameTime === undefined ? 0 : Math.max((timestamp - this.lastFrameTime) / 1000, 0);
     const deltaSeconds = Math.min(elapsedSeconds, maximumFrameDeltaSeconds);
     this.lastFrameTime = timestamp;
-    const shadowCastersMoving = this.roomSpinActive || Boolean(this.raccoonController?.isGreeting);
+    const roomMoving = this.timeTransitionActive && this.roomRotationEnabled;
+    const shadowCastersMoving = roomMoving || Boolean(this.raccoonController?.isGreeting);
     this.updateThemeTransition(deltaSeconds);
-    this.updateRoomSpin(elapsedSeconds);
+    this.updateTimeTransition(deltaSeconds);
     this.raccoonController?.update(deltaSeconds);
     this.cameraRig.update(deltaSeconds);
     if (shadowCastersMoving) this.renderWithUpdatedShadows();
@@ -175,52 +243,36 @@ export class DioramaSceneAnimation {
     this.themeTransitionElapsed = 0;
   }
 
-  private startRoomSpin(direction: 'clockwise' | 'counterclockwise'): void {
-    const pivot = this.assets.roomSpinPivot;
-    if (this.reducedMotion) return;
-    const requestedDirection = direction === 'clockwise' ? 1 : -1;
-    if (!this.roomSpinActive) {
-      this.roomSpinOriginRotation = pivot.rotation.y;
-      this.roomSpinInitialDirection = requestedDirection;
-      this.roomSpinStartRotation = this.roomSpinOriginRotation;
-      this.roomSpinTargetRotation =
-        this.roomSpinOriginRotation +
-        requestedDirection * this.assets.profile.motion.roomSpinRadians;
-      this.roomSpinElapsed = 0;
-      this.roomSpinActive = true;
-      return;
+  private updateTimeTransition(deltaSeconds: number): void {
+    if (!this.timeTransitionActive) return;
+    this.timeTransitionElapsed += deltaSeconds;
+    const progress = Math.min(this.timeTransitionElapsed / this.timeTransitionDuration, 1);
+    const easedProgress = progress * progress * (3 - 2 * progress);
+    this.timeProgress =
+      this.timeStartProgress + (this.timeTargetProgress - this.timeStartProgress) * easedProgress;
+    this.applyRoomProgress(this.timeProgress);
+    const id = this.timeTransitionId;
+    if (id !== undefined) {
+      this.onTimeAnimationUpdate({ id, progress: this.timeProgress, finished: progress >= 1 });
     }
-
-    const requestedTarget =
-      requestedDirection === this.roomSpinInitialDirection
-        ? this.roomSpinOriginRotation +
-          this.roomSpinInitialDirection * this.assets.profile.motion.roomSpinRadians
-        : this.roomSpinOriginRotation;
-    if (requestedTarget === this.roomSpinTargetRotation) return;
-    this.roomSpinStartRotation = pivot.rotation.y;
-    this.roomSpinTargetRotation = requestedTarget;
-    this.roomSpinElapsed = 0;
+    if (progress >= 1) this.timeTransitionActive = false;
   }
 
-  private updateRoomSpin(deltaSeconds: number): void {
-    const pivot = this.assets.roomSpinPivot;
-    if (!this.roomSpinActive) return;
-    this.roomSpinElapsed += deltaSeconds;
-    const progress = Math.min(
-      this.roomSpinElapsed / this.assets.profile.motion.roomSpinDurationSeconds,
-      1,
-    );
-    const easedProgress = progress ** 3 * (progress * (progress * 6 - 15) + 10);
-    pivot.rotation.y =
-      this.roomSpinStartRotation +
-      (this.roomSpinTargetRotation - this.roomSpinStartRotation) * easedProgress;
-    if (progress >= 1) this.finishRoomSpin();
+  private finishTimeTransition(): void {
+    this.timeProgress = this.timeTargetProgress;
+    this.applyRoomProgress(this.timeProgress);
+    this.timeTransitionActive = false;
+    this.timeTransitionElapsed = 0;
+    const id = this.timeTransitionId;
+    if (id !== undefined) {
+      this.onTimeAnimationUpdate({ id, progress: this.timeProgress, finished: true });
+    }
   }
 
-  private finishRoomSpin(): void {
-    this.assets.roomSpinPivot.rotation.y = this.roomSpinOriginRotation;
-    this.roomSpinTargetRotation = this.roomSpinOriginRotation;
-    this.roomSpinElapsed = 0;
-    this.roomSpinActive = false;
+  private applyRoomProgress(progress: number): void {
+    if (!this.roomRotationEnabled) return;
+    this.assets.roomSpinPivot.rotation.y =
+      this.roomRotationOrigin +
+      (progress - this.roomProgressOrigin) * this.assets.profile.motion.roomSpinRadians;
   }
 }

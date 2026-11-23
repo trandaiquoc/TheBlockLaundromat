@@ -1,0 +1,15 @@
+<div class="screen-control-bar" role="group" [attr.aria-label]="i18n.t('theme')">
+  @for (option of themeOptions; track option.id) {
+    <button
+      type="button"
+      class="screen-control-button theme-button"
+      [class.selected]="themeService.theme() === option.id"
+      [attr.data-theme-option]="option.id"
+      [attr.aria-label]="i18n.t(option.labelKey)"
+      [attr.aria-pressed]="themeService.theme() === option.id"
+      (click)="setTheme(option.id)"
+    >
+      {{ i18n.t(option.labelKey) }}
+    </button>
+  }
+</div>

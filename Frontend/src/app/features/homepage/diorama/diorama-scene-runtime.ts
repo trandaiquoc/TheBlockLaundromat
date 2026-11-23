@@ -7,6 +7,12 @@ import {
 } from 'three';
 import type { Theme } from '../../../core/ui/theme/theme.service';
 import type { DioramaFocus, DioramaIntent, DioramaTarget } from './diorama-contracts';
+import type { DioramaTimeDialChange } from './diorama-time-dial.component';
+import type { DioramaTimeAnimationUpdate, DioramaTimeTransition } from './diorama-time-transition';
+import {
+  dioramaTimeStageIndexAtProgress,
+  dioramaTimeStageIndexByTheme,
+} from './diorama-time-stages';
 import { DioramaCameraRig } from './diorama-camera-rig';
 import { DioramaInteractionController } from './diorama-interaction';
 import { DioramaRaccoonController } from './diorama-raccoon-controller';
@@ -27,6 +33,9 @@ import {
 
 export interface DioramaRuntimeCallbacks {
   readonly onIntent: (intent: DioramaIntent) => void;
+  readonly onTimeChange: (change: DioramaTimeDialChange) => void;
+  readonly onTimeAnimationUpdate: (update: DioramaTimeAnimationUpdate) => void;
+  readonly currentTimeProgress: () => number;
   readonly onWebGLUnavailable: (error?: unknown) => void;
   readonly onSceneLoaded: () => void;
   readonly onSceneLoadFailed: (error: unknown) => void;
@@ -76,6 +85,14 @@ export class DioramaSceneRuntime {
   private selectedTarget?: DioramaTarget;
   private currentFocus: DioramaFocus = 'overview';
   private theme: Theme = 'craft';
+  private timeProgress = dioramaTimeStageIndexByTheme[this.theme];
+  private timeTransition: DioramaTimeTransition = {
+    id: 0,
+    phase: 'idle',
+    progress: this.timeProgress,
+    targetProgress: this.timeProgress,
+    source: 'theme',
+  };
   private systemReducedMotion = false;
   private sceneAnimationsEnabled = true;
   private reducedMotion = false;
@@ -162,6 +179,7 @@ export class DioramaSceneRuntime {
   focus(view: DioramaFocus): void {
     if (this.disposed) return;
     this.currentFocus = view;
+    this.animation?.setRoomRotationEnabled(profile.motion.roomSpinFocuses.includes(view));
     this.selectedTarget = view === 'overview' ? undefined : view;
     if (view === 'overview') this.cameraRig?.recenter();
     else this.cameraRig?.focus(view);
@@ -197,13 +215,20 @@ export class DioramaSceneRuntime {
     if (this.disposed || this.theme === theme) return;
     this.theme = theme;
     this.canvas?.setAttribute('data-material-variant', dioramaVariantForTheme(theme));
-    const spinRoom = profile.motion.roomSpinFocuses.includes(this.currentFocus);
-    this.animation?.setTheme(theme, spinRoom);
+    this.animation?.setTheme(theme);
+  }
+
+  setTimeTransition(transition: DioramaTimeTransition): void {
+    if (this.disposed) return;
+    this.timeTransition = transition;
+    this.timeProgress = transition.progress;
+    this.animation?.setTimeTransition(transition);
   }
 
   greetRaccoon(): void {
     if (this.disposed) return;
     this.currentFocus = 'raccoon';
+    this.animation?.setRoomRotationEnabled(profile.motion.roomSpinFocuses.includes('raccoon'));
     this.selectedTarget = 'raccoon';
     this.cameraRig?.focus('raccoon');
     this.raccoonController?.greet();
@@ -318,8 +343,17 @@ export class DioramaSceneRuntime {
           panCamera: (deltaX, deltaY, width, height) =>
             this.panCamera(deltaX, deltaY, width, height),
           zoomCamera: (distanceScale) => this.zoomCamera(distanceScale),
+          onTimeChange: (progress, isDragging) =>
+            this.callbacks.onTimeChange({
+              index: dioramaTimeStageIndexAtProgress(progress),
+              progress,
+              isDragging,
+              source: 'swipe',
+            }),
+          currentTimeProgress: () => this.callbacks.currentTimeProgress(),
         },
         () => profile.motion.roomSpinFocuses.includes(this.currentFocus),
+        () => this.currentFocus === 'overview',
       );
 
       this.animation = new DioramaSceneAnimation(
@@ -329,10 +363,19 @@ export class DioramaSceneRuntime {
         this.assets,
         this.cameraRig,
         this.raccoonController,
+        (update) => {
+          this.timeProgress = update.progress;
+          this.callbacks.onTimeAnimationUpdate(update);
+        },
         this.reducedMotion,
       );
       this.animation.setVisible(this.document?.visibilityState !== 'hidden');
       this.animation.initializeTheme(this.theme);
+      this.animation.initializeTimeProgress(
+        this.timeProgress,
+        profile.motion.roomSpinFocuses.includes(this.currentFocus),
+      );
+      this.animation.setTimeTransition(this.timeTransition);
       canvas.setAttribute('data-material-variant', dioramaVariantForTheme(this.theme));
       this.cameraRig.focus(this.currentFocus, true);
       this.updateFeedback();

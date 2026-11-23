@@ -1,20 +1,20 @@
 :host {
   position: absolute;
   z-index: 3;
-  top: 50%;
-  right: calc(max(0.75rem, env(safe-area-inset-right)) + 3.4rem);
-  bottom: auto;
+  top: auto;
+  right: auto;
+  bottom: max(0.9rem, env(safe-area-inset-bottom));
+  left: max(0.9rem, env(safe-area-inset-left));
   display: block;
-  transform: translateY(-50%);
 }
 
 .diorama__focus-toolbar {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 0.18rem;
-  padding: 0.3rem;
+  gap: 0.22rem;
+  padding: 0.38rem;
   border: 1px solid var(--spatial-border);
   border-radius: 1.15rem;
   background: var(--spatial-panel);
@@ -26,8 +26,8 @@
 .diorama__focus-toolbar button {
   position: relative;
   display: grid;
-  width: 2.15rem;
-  min-height: 2.15rem;
+  width: 2.4rem;
+  min-height: 2.4rem;
   place-items: center;
   border: 1px solid transparent;
   border-radius: 0.78rem;
@@ -59,16 +59,18 @@
 }
 
 .diorama__focus-toolbar svg {
-  width: 1.05rem;
-  height: 1.05rem;
+  width: 1.15rem;
+  height: 1.15rem;
   stroke-width: 1.9;
 }
 
 .diorama__focus-tooltip {
   position: absolute;
   z-index: 1;
-  top: 50%;
-  right: calc(100% + 0.5rem);
+  top: auto;
+  right: auto;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
   max-width: 15rem;
   padding: 0.48rem 0.65rem;
   border: 1px solid var(--spatial-border);
@@ -81,7 +83,7 @@
   line-height: 1.25;
   opacity: 0;
   pointer-events: none;
-  transform: translate(-0.18rem, -50%);
+  transform: translate(-50%, 0.18rem);
   transition:
     opacity 140ms ease,
     transform 140ms ease;
@@ -93,49 +95,26 @@
 .diorama__focus-toolbar button:hover .diorama__focus-tooltip,
 .diorama__focus-toolbar button:focus-visible .diorama__focus-tooltip {
   opacity: 1;
-  transform: translate(0, -50%);
+  transform: translate(-50%, 0);
 }
 
 @media (max-width: 760px) {
   :host {
-    top: auto;
-    right: auto;
-    bottom: calc(max(0.8rem, env(safe-area-inset-bottom)) + 8.5rem);
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: max(0.7rem, env(safe-area-inset-bottom));
+    left: max(0.7rem, env(safe-area-inset-left));
   }
 
   .diorama__focus-toolbar {
-    flex-direction: row;
-    gap: 0.1rem;
-    padding: 0.22rem;
-    border-radius: 1rem;
+    gap: 0.18rem;
+    padding: 0.32rem;
   }
 
   .diorama__focus-toolbar button {
-    width: 1.85rem;
-    min-height: 1.85rem;
-    border-radius: 0.6rem;
+    width: 2.2rem;
+    min-height: 2.2rem;
   }
 
   .diorama__focus-tooltip {
     display: none;
-  }
-}
-
-@media (max-width: 380px) {
-  .diorama__focus-toolbar {
-    gap: 0.06rem;
-    padding: 0.15rem;
-  }
-
-  .diorama__focus-toolbar button {
-    width: 1.35rem;
-    min-height: 1.35rem;
-  }
-
-  .diorama__focus-toolbar svg {
-    width: 0.9rem;
-    height: 0.9rem;
   }
 }
